@@ -5,72 +5,71 @@ var ntoday = my.ndate(new Date()​);​
 var today = my.date(new Date())​;
 
 var my = {
+  d : null, 
+  nd : 0,
   date : function (value)  {
     if (value != null) {
-      return new Date(value.getFullYear(), value.getMonth(),value.getDate(), 7) ;
+      this.d = new Date(value.getFullYear(), value.getMonth(),value.getDate(), 7) ;
+      return this.d;
     }
- 
-   else {
-      return null;
+    else {
+      this.d = null;
+      return this.d;
     }
   },
- 
- dateadd : function (value, add)  {
-
+  dateadd : function (value, add)  {
     if (value != null) {
-      let d = new Date(value.getTime() + (add*86400000))​;
-      return new Date(d.getFullYear(),  d.getMonth(), d.getDate(), 7) ;
+      this.d = new Date(value.getTime() + (add*86400000))​;
+      this.d = this.date(this.d) ;
+      return this.d;
     }
     else {
-      return null;
+      this.d = null;
+      return this.d;
     }
- 
  },
   dateminus : function (value, minus)  {
-
     if (value != null) {
-      let d = new Date(value.getTime() -​ (minus*86400000))​;
-
-      return new Date(d.getFullYear(),  d.getMonth(), d.getDate(), 7) ;
+      this.d = new Date(value.getTime() -​ (minus*86400000))​;
+      this.d = this.date(this.d) ;
+      return this.d;
     }
     else {
-      return null;
-
+      this.d = null;
+      return this.d;
     }
   }, 
   ndate : function (value) {
     if (value != null) {
-      let d = this.date(value);
-      return d.getTime()​ ;
-
+      this.d = this.date(value);
+      this.nd = this.d.getTime()​;
+      return this.nd;
     }
- 
-   else {
-      return null;
+    else {
+      this.nd = 0;
+      return this.nd;
     }​
   }, 
- 
  ndateadd : function (value, add)  {
-
     if (value != null) {
-      let d = this.dateadd(value,add) ;
-      return d.getTime()​ ;
+      this.d = this.dateadd(value,add);
+      this.nd = this.d.getTime()​;
+      return this.nd;
     }
     else {
-      return null;
+      this.nd = 0;
+      return this.nd;
     }
- 
  },
   ndateminus : function (value, minus)  {
-
     if (value != null) {
-      let d = this.dateminus(value,minus) 
-
-      return d.getTime() ;
+      this.d = this.dateminus(value,minus);
+      this.nd = this.d.getTime();
+      return this.nd;
     }
     else {
-      return null;
-
+      this.nd = 0;
+      return this.nd;
     }
   }
 }​;​
@@ -102,7 +101,6 @@ function lastadmit(date)  {
         o["lib"] = "or" ;
         o["ent"] = orlinks[r] ;
       }
-
       else {
         o["lib"] = "cs" ;
         o["ent"] = cslinks[s] ;
@@ -141,14 +139,15 @@ function mergelastadmit(thislib)  {
       }
       else {
         str = m.field("MergeID") + "," + thislib + "," + e.id;
-
       }
       m.set("Merge", true)​;
       e.set("MergeID", str) ;
-      mid = getmergeid(e)​;
-      let k = mid.length-1;
+
+      let mpos = posinmerge()​;
+      let k = mpos["pos"];
+      mid = mpos["mar"];
       changeother(k, mid, "MergeID")​;
-      if (e.field("DischargeDate") !=null)​
+      if (e.field("DischargeDate") != null)​
         changeother(k, mid, "DischargeDate")​;
       return true;
     }
@@ -160,13 +159,14 @@ function mergelastadmit(thislib)  {
   }
   return false;
 } ;​
-function mergeeffect()  {
+function posinmerge()​{
   let mid = getmergeid(e) ;
 
   if (mid.length>0) {
-    let found = false, k = 0;
     let thislib = lib().title ;
     let thisid = e.id ;
+    let o = new Object()​;
+    o["found"]​= false;
 
     for(let i in mid) {
       let lib ="", id="" ;
@@ -180,26 +180,31 @@ function mergeeffect()  {
       }
 
       if ((lib==thislib)​&&(id==thisid)​) {
-        found = true ;
-        k = i ;
+        o["found"] = true ;
+        o["pos"]​ = i ;
+        o["mar"] ​= mid;
         break;
       }
     }
+  }​
+  return o;
+}​ ;
+function mergeeffect()  {
+  let mpos = posinmerge()​;
 
-    if(found == true ) { //parent or child
-      if(my.ndate(old.vsdate) != my.ndate(e.field("VisitDate"))) {
-        changeother(k, mid, "VisitDate" ) ;
-      }
-      if(old.ward != e.field("Ward") ) {
-        changeother(k, mid, "Ward" ) ;
-      } 
-      if(my.ndate(old.dcdate) != my.ndate(e.field("DischargeDate")) ) {
-        changeother(k, mid, "DischargeDate" ) ;
-      }
-      if(old.vstype != e.field("VisitType") ) {
-        e.set("VisitType", old.vstype);
-      } 
+  if(mpos["found"]​ == true ) { //parent or child
+    if(my.ndate(old.vsdate) != my.ndate(e.field("VisitDate"))) {
+      changeother(mpos["pos"]​, mpos["mar"]​, "VisitDate" ) ;
     }
+    if(old.ward != e.field("Ward") ) {
+      changeother(mpos["pos"], mpos["mar"], "Ward" ) ;
+    } 
+    if(my.ndate(old.dcdate) != my.ndate(e.field("DischargeDate")) ) {
+      changeother(mpos["pos"], mpos["mar"], "DischargeDate" ) ;
+    }
+    if(old.vstype != e.field("VisitType") ) {
+      e.set("VisitType", old.vstype);
+    } 
   } 
 } ;​
 function changeother(pos, mla, field) {
@@ -315,7 +320,7 @@ function createnew (libto, libfrom)​ {
           ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
         else  
           ent​["VisitDate"] = my.date(e.field("AppointDate"))​;
-        ent​["RecordDate"] = new Date(ntoday)​;
+          ent​["RecordDate"] = today​;
       }​
       else if (libto == "consult" &​& libfrom == "uro") {
         ent​["Ward"] = e.field("Ward")​;
@@ -324,7 +329,7 @@ function createnew (libto, libfrom)​ {
       }​
       else if (libto == "uro" &​& libfrom == "consult" ) {​
         ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
-        ent​["RecordDate"] = new Date(ntoday)​;
+        ent​["RecordDate"] = today​;
         ent["Photo"] = e.field("Photo").join()​;
       }​
       else if (libto == "consult" &​& libfrom == "consult") {​
