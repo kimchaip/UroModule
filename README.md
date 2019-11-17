@@ -5,7 +5,7 @@
 @function : lastadmit, getmergeid, 
             mergelastadmit, mergeeffect, 
             changeother, mlacancel
-
+            createnew
 ## Urobase
 @variable : old
 @function : setnewdate, setvisitdate, 
@@ -13,7 +13,6 @@
             updateDJStamp, 
             setptstatus
 ## Consult
-
-old2,
-today, ntoday
-createnew
+@variable : old
+@function : setnewdate, setvisitdate, 
+            setptstatus
