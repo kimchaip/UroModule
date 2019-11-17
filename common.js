@@ -254,3 +254,87 @@ function mlacancel() {
     }​
   } 
 } ;​
+function createnew (libto, libfrom)​ {
+  let libname = "", field1 = "";
+  let min = 0,​ defau = "" ;
+  if (libto == "uro" &​& libfrom == "uro") {
+    libname = "UroBase";
+    field1 = "Date" ;
+    min = 1;
+    defau = "<Default>";
+  }​
+  else if (libto == "consult" &​& libfrom == "uro")​ {​
+    libname = "Consult";
+    field1 = "ConsultDate" ;
+    min = 0;
+    defau = "<Default>";
+  }​
+  else if (libto == "uro" &​& libfrom == "consult" ) {​
+    libname = "UroBase";
+    field1 = "Date" ;
+    min = 0;
+    defau = "Pending";
+  }​
+  else if (libto == "consult" &​& libfrom == "consult") {​
+    libname = "Consult";
+    field1 = "ConsultDate" ;
+    min = 1;
+    defau = "Pending";
+  }​
+
+  if (links.length > 0) {
+    let lib = libByName(libname)​;
+    let pt = libByName("Patient")​;
+    let ptent = pt.findById(links[0].id);
+    let entlinks = lib.linksTo(ptent);
+    let found = false;
+
+    if (entlinks.length > min) {
+      for (let i in entlinks) {
+        if (entlinks[i].field(field1).getTime() == my.ndate(e.field("AppointDate")))​ {
+          found = true;
+          break ;
+        }
+      }
+    } 
+
+    if (!found) {
+      let ent​ = new Object();
+      ent​[field1] = my.date(e.field("AppointDate")​);
+      ent​["Patient"]​ = links[0].title;
+      ent​["PastHx"] = e.field("PastHx")​;
+      ent​["Inv"] = e.field("Inv").join()​;
+      ent​["InvResult"] = e.field("InvResult");
+      ent​["Dx"] = e.field("Dx")​;
+
+      if (libto == "uro" &​& libfrom == "uro") {
+        ent​["Op"] = e.field("Op")​;
+        ent​["ORType"] = e.field("ORType")​;
+        ent​["VisitType"] = e.field("VisitType")​;
+        if (e.field("VisitType")​== "Admit")​
+          ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
+        else  
+          ent​["VisitDate"] = my.date(e.field("AppointDate"))​;
+        ent​["RecordDate"] = new Date(ntoday)​;
+      }​
+      else if (libto == "consult" &​& libfrom == "uro") {
+        ent​["Ward"] = e.field("Ward")​;
+        ent​["VisitType"] = "OPD";
+        ent​["VisitDate"] = my.date(e.field("AppointDate")​);
+      }​
+      else if (libto == "uro" &​& libfrom == "consult" ) {​
+        ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
+        ent​["RecordDate"] = new Date(ntoday)​;
+        ent["Photo"] = e.field("Photo").join()​;
+      }​
+      else if (libto == "consult" &​& libfrom == "consult") {​
+        ent["VisitType"]​ = "OPD" ;
+        ent["VisitDate"]​ = my.date(e.field("AppointDate"));
+      }​
+
+      lib.create(ent);
+      message("successfully created new Entry") ;
+    }​
+  }​
+  e.set("EntryMx", defau) ;
+}​;​
