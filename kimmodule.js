@@ -1,6 +1,8 @@
 var e = entry();
 var links = e.field("Patient")​;
 var all = lib().entries();
+var ntoday = my.ndate(new Date()​);
+var today = my.date(new Date())​;
 
 var old = {
   a : [],​
@@ -309,7 +311,6 @@ function mlacancel() {
     }​
   } 
 } ;
-
 function mergeeffect()  {
   let mid = getmergeid(e) ;
 
@@ -418,6 +419,189 @@ function setDJstent() {
 	   } 
   }​
 }​;
-var today = my.date(new Date())​;​
+function updateDJStamp() {
+  let d = lastDJStamp(today) ;
 
-var ntoday = my.ndate(new Date()​);​
+  if (d==null) { // not found
+    links[0].set("DJStamp",null);
+    links[0].set("DJstent","");
+  } 
+  else { // found
+    links[0].set("DJStamp", d.field("Date")) ;
+    links[0].set("DJstent","on DJ");
+  }
+};
+function setptstatus(lib)​ {
+  //--set pt.status, pt.ward, wardStamp and Description
+ if (links.length​ > 0) {
+
+  let thisstat = null, thisrx ="", note ="" ;
+  if (lib=="uro" ) {
+    thisstat = "Status";
+    thisrx = "Op" ;
+    note = "OpResult" ;
+  }​
+  else if (lib =="consult" )​ {
+    thisstat = "EntryMx";
+    thisrx = "Rx" ;
+    note = "Note" ;
+  }​
+
+  //--update WardStamp
+  let m = lastadmit(today)​["ent"];
+  if (m != null)​{
+    links[0].set("WardStamp", m.field("VisitDate")​);
+  }
+  else {
+    links[0].set("WardStamp",null);
+  }​
+
+  if ((links[0].field("WardStamp")​==null || e.field("VisitDate")>=links[0].field("WardStamp")​) && 
+(links[0].field("Status")​=="Still"||links[0].field("Status")​=="Active")​​ &​&
+e.field(thisstat) != "Not")​ {
+    if (e.field("VisitType")​=="Admit" && 
+my.ndate(e.field("VisitDate"))<=ntoday && (e.field("DischargeDate")​==null|| my.ndate(e.field("DischargeDate"))​>ntoday) ) {//Admit
+      links[0].set("Status" ,"Active");
+      links[0].set("Ward",e.field("Ward"));
+      links[0].set("WardStamp", e.field("VisitDate")​)​;
+      let str = "" ;
+      if (e.field("Dx")!="")​
+        str = e.field("Dx");
+      if (e.field(thisrx)!="")​ {
+        if (str!="" )
+          str += " -​> " ;
+        str += e.field(thisrx);
+      }​
+       
+      links[0].set("Descript", str);
+    }
+    else if (e.field("VisitType")​=="Admit" && my.ndate(e.field("VisitDate"))<=ntoday && my.ndate(e.field("DischargeDate"))​<=ntoday​​ ) { // D/C
+      links[0].set("Status" ,"Still");
+      links[0].set("Ward", "");
+      let str = "" ;
+      if (e.field("Dx")!="")​
+        str = e.field("Dx");
+      if (e.field(thisrx)!="")​ {
+        if (str!="")
+          str += " -​> " ;
+        str += e.field(thisrx);
+      }​
+      if (e.field(note)!="")​ {
+        if (str!="")
+          str += " -​> " ;
+        str += e.field(note);
+      }​
+       
+      links[0].set("Descript", str);
+    }​
+    else if ((m==null)​ || (m.field("DischargeDate") != null && my.ndate(m.field("DischargeDate"))​<=ntoday)​ ) {//D/C of last visit: still
+      links[0].set("Status" ,"Still");
+      links[0].set("Ward", "");
+    }​
+  }​
+  else if (e.field(thisstat) == "Not")​ {
+    links[0].set("Status" ,"Still");
+    links[0].set("Ward", "");
+    links[0].set("WardStamp", e.field("VisitDate"));
+    let str = "" ;
+    if (e.field("Dx")!="")​
+      str = e.field("Dx");
+    if (e.field(thisrx)!="")​ {
+      if (str!="")
+        str += " -​> " ;
+      str += e.field(thisrx);
+    }​
+    if (e.field(note)!="")​ {
+      if (str!="")
+        str += " -​> " ;
+      str += e.field(note);
+    }​
+       
+    links[0].set("Descript", str);
+  }​
+ }​
+}​;​
+function createnew (libto, libfrom)​ {
+  let libname = "", field1 = "";
+  let min = 0,​ defau = "" ;
+  if (libto == "uro" &​& libfrom == "uro") {
+    libname = "UroBase";
+    field1 = "Date" ;
+    min = 1;
+    defau = "<Default>";
+  }​
+  else if (libto == "consult" &​& libfrom == "uro")​ {​
+    libname = "Consult";
+    field1 = "ConsultDate" ;
+    min = 0;
+    defau = "<Default>";
+  }​
+  else if (libto == "uro" &​& libfrom == "consult" ) {​
+    libname = "UroBase";
+    field1 = "Date" ;
+    min = 0;
+    defau = "Pending";
+  }​
+  else if (libto == "consult" &​& libfrom == "consult") {​
+    libname = "Consult";
+    field1 = "ConsultDate" ;
+    min = 1;
+    defau = "Pending";
+  }​
+
+  if (links.length > 0) {
+    let lib = libByName(libname)​;
+    let pt = libByName("Patient")​;
+    let ptent = pt.findById(links[0].id);
+    let entlinks = lib.linksTo(ptent);
+    let found = false;
+
+    if (entlinks.length > min) {
+      for (let i in entlinks) {
+        if (entlinks[i].field(field1).getTime() == my.ndate(e.field("AppointDate")))​ {
+          found = true;
+          break ;
+        }
+      }
+    } 
+
+    if (!found) {
+      let ent​ = new Object();
+      ent​[field1] = my.date(e.field("AppointDate")​);
+      ent​["Patient"]​ = links[0].title;
+      ent​["PastHx"] = e.field("PastHx")​;
+      ent​["Inv"] = e.field("Inv").join()​;
+      ent​["InvResult"] = e.field("InvResult");
+      ent​["Dx"] = e.field("Dx")​;
+
+      if (libto == "uro" &​& libfrom == "uro") {
+        ent​["Op"] = e.field("Op")​;
+        ent​["ORType"] = e.field("ORType")​;
+        ent​["VisitType"] = e.field("VisitType")​;
+        if (e.field("VisitType")​== "Admit")​
+          ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
+        else  
+          ent​["VisitDate"] = my.date(e.field("AppointDate"))​;
+        ent​["RecordDate"] = new Date(ntoday)​;
+      }​
+      else if (libto == "consult" &​& libfrom == "uro") {
+        ent​["Ward"] = e.field("Ward")​;
+        ent​["VisitType"] = "OPD";
+        ent​["VisitDate"] = my.date(e.field("AppointDate")​);
+      }​
+      else if (libto == "uro" &​& libfrom == "consult" ) {​
+        ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
+        ent​["RecordDate"] = new Date(ntoday)​;
+        ent["Photo"] = e.field("Photo").join()​;
+      }​
+      else if (libto == "consult" &​& libfrom == "consult") {​
+        ent["VisitType"]​ = "OPD" ;
+        ent["VisitDate"]​ = my.date(e.field("AppointDate"));
+      }​
+
+      lib.create(ent);
+      message("successfully created new Entry") ;
+    }​
+  }​
+  e.set("EntryMx", defau) ;
+}​;​
