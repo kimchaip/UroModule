@@ -1,9 +1,13 @@
 # UroModule
 
 ## Common
-### variable : 
-	e, links, my
-### function : 
+
+### variable​ : 
+	e, links, 
+	my, 
+	ndate, date
+
+### function​ : 
 	lastadmit, getmergeid, 
 	mergelastadmit, mergeeffect, 
 	changeother, mlacancel, 
@@ -11,17 +15,20 @@
 
 ## Urobase
 
-### variable : 
+### variable​ : 
 	old
-### function : 
+
+### function​ : 
 	setnewdate, setvisitdate, 
 	lastDJStamp, setDJstent, 
 	updateDJStamp, 
 	setptstatus
 
 ## Consult
+
 ### variable : 
 	old
-### function : 
+
+### function​ : 
 	setnewdate, setvisitdate, 
 	setptstatus
