@@ -1,9 +1,5 @@
 var e = entry()​;
 var links = e.field("Patient")​;
-var all = lib().entries();
-
-var ntoday = my.ndate(new Date()​);​
-var today = my.date(new Date())​;
 
 var my = {
   d : null, 
@@ -28,7 +24,7 @@ var my = {
       this.d = null;
       return this.d;
     }
- },
+  },
   dateminus : function (value, minus)  {
     if (value != null) {
       this.d = new Date(value.getTime() -​ (minus*86400000))​;
@@ -51,7 +47,7 @@ var my = {
       return this.nd;
     }​
   }, 
- ndateadd : function (value, add)  {
+  ndateadd : function (value, add)  {
     if (value != null) {
       this.d = this.dateadd(value,add);
       this.nd = this.d.getTime()​;
@@ -61,7 +57,7 @@ var my = {
       this.nd = 0;
       return this.nd;
     }
- },
+  },
   ndateminus : function (value, minus)  {
     if (value != null) {
       this.d = this.dateminus(value,minus);
@@ -74,6 +70,8 @@ var my = {
     }
   }
 }​;​
+var ntoday = my.ndate(new Date()​);​
+var today = my.date(new Date())​;
 
 function lastadmit(date)  {
   let pt = libByName("Patient") ;
