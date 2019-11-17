@@ -1,0 +1,257 @@
+var old = {
+  a : [],​
+  getstart : function ()​ {
+    a = e.field("Previous").split(",");
+  },
+  store : function ()​ {
+    a = [] ;
+    a.push(e.field("Date"));	        //0
+    a.push(links[0].title);             //​1
+    a.push(e.field("ORType"));          //​2
+    a.push(e.field("Que"));             //​3
+    a.push(e.field("VisitType"));       //​4
+    a.push(e.field("Ward"));            //​5
+    a.push(e.field("VisitDate"));       //​6
+    a.push(e.field("DischargeDate"));   //​7
+    a.push(e.field("EntryMx"));         //​8
+    a.push(e.field("AppointDate"));     //​9
+    a.push(e.field("Status"));         //​10 
+    a.push(e.field("DJstent"));        //​11
+    a.push(e.field("OpExtra"));        //​12
+    a.push(e.field("Bonus"));          //​13
+    a.push(e.field("RecordDate"));     //​14
+    a.push(e.field("Dx"));             //​15
+    a.push(e.field("Op"));             //​16
+    a.push(e.field("OpResult"));       //​17
+  
+    e.set("Previous", a.join());
+  }, 
+  get opdate() {
+    if (a[0]!​="" )​ return new Date(a[0])​;
+    else return null;
+  }​,
+  get patient() {
+    return a[1] ;
+  }​, 
+  get optype() {
+    return a[2] ;
+  }​,​
+  get que() {
+    return a[3] ;
+  }​,
+  get vstype() {
+    return a[4] ;
+  }​,
+  get ward() {
+    return a[5] ;
+  }​,
+  get vsdate() {
+    if (a[6]!​="" )​ return new Date(a[6])​ ;
+    else return null;​
+  }​,
+  get dcdate() {
+    if (a[7]!​="" )​ return new Date(a[7])​ ;
+    else return null;​
+  }​,
+  get emx() {
+    return a[8] ;
+  }​,
+  get apdate() {
+    if (a[9]!​="" )​ return new Date(a[9])​ ;
+    else return null;​
+  }​,
+  get status() {
+    return a[10] ;
+  }​,
+  get dj() {
+    return a[11] ;
+  }​,
+  get opext() {
+    return a[12] ;
+  }​,
+  get bonus() {
+    return a[13] ;
+  }, 
+  get rcdate() {
+    if (a[14]!​="" )​ return new Date(a[14])​ ;
+    else return null;​
+  }​,
+  get dx() {
+    return a[15] ;
+  }​,
+  get op() {
+    return a[16] ;
+  }​,
+  get result() {
+    return a[17] ;
+  }​
+} ;
+function setnewdate(trig) {
+  let t = false ;
+  if (trig=="update")​ 
+    t = false;
+  else 
+    t = true;
+
+  //---if Date change : set new date
+  if (t || my.ndate(old.opdate)!=my.ndate(​e.field("Date"))​) {
+    e.set("Date", my.date(e.field("Date")));
+  }​
+  if (t || my.ndate(​old.vsdate)!=my.ndate(​e.field("VisitDate"))) {
+    e.set("VisitDate", my.date(e.field("VisitDate")));
+  }​
+  if (t || my.ndate(​old.dcdate)!=my.ndate(​e.field("DischargeDate"))​) {
+    e.set("DischargeDate", my.date(e.field("DischargeDate")));
+  }​
+  if (t || my.ndate(​old.apdate)!=my.ndate(​e.field("AppointDate"))) {
+    e.set("AppointDate", my.date(e.field("AppointDate")));
+  }​
+  if (t || my.ndate(​old.rcdate)!=my.ndate(​e.field("RecordDate"))​) {
+    e.set("RecordDate", my.date(e.field("RecordDate")));
+  }​
+} ;
+function setvisitdate()​ {
+  if (e.field("EntryMx")​== "<Default>" &​& e.field("VisitDate") == null) {
+    if (e.field("ORType") == "GA") {
+      if (e.field("VisitType") == "OPD")​
+        e.set("VisitType", "Admit")​;
+      e.set("VisitDate", my.dateminus(e.field("Date"),1));
+    }​
+    else ​{
+      e.set("VisitDate", my.date(e.field("Date")))​;
+    }​
+  }
+}​;
+function lastDJStamp(date)  {
+  let pt = libByName("Patient") ;
+  let or = libByName("UroBase") ;
+  let ptent = pt.findById(links[0].id) ;
+  let orlinks = or.linksTo(ptent) ;
+  let o = null ;
+  if (orlinks.length>0) {
+    let last = null, r=null;
+    for (let i in orlinks) {
+      if ((orlinks[i].field("DJstent")=="on DJ" || orlinks[i].field("DJstent")=="change DJ" || orlinks[i].field("DJstent")=="off DJ")​ && orlinks[i].field("Date") > last && orlinks[i].field("Date").getTime() <= date.getTime()) {
+        last = orlinks[i].field("Date");
+        r=i;
+      }
+    }
+    if (last != null &​& orlinks[i].field("DJstent")!="off DJ") {
+      o = orlinks[r] ;
+    }
+  }
+  return o ;
+};​
+function setDJstent() {
+  if (links[0].field("DJStamp") == null) {
+    if(e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ")​
+      e.set("DJstent", "<none>")​;
+  }​
+  else if (e.field("Date") > links[0].field("DJStamp") && e.field("Date") <= today) { // DJStamp not null 
+    if (e.field("DJstent") == "on DJ")​
+       e.set("DJstent", "<none>")​ ;
+  }​
+  else if (e.field("Date") < links[0].field("DJStamp"))​  {// the past
+    e.set("DJstent", old.dj) ;
+  }​
+  else if (e.field("Date") == links[0].field("DJStamp"))​ {// entry update DJStamp
+    let d = lastDJStamp(my.dateminus(e.field("Date"), 1)) ;
+    if (d == null) { // off -​> none, on
+	     if (e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ") 
+	       e.set("DJstent" , "<none>") ;
+	   }
+	   else { // on,change -> none,change,off
+	     if(e.field("DJstent") == "on DJ") 
+	       e.set("DJstent", "<none>") ;
+	   } 
+  }​
+}​;
+function updateDJStamp() {
+  let d = lastDJStamp(today) ;
+
+  if (d==null) { // not found
+    links[0].set("DJStamp",null);
+    links[0].set("DJstent","");
+  } 
+  else { // found
+    links[0].set("DJStamp", d.field("Date")) ;
+    links[0].set("DJstent","on DJ");
+  }
+};
+function setptstatus()​ {
+  
+  //--update WardStamp
+  let m = lastadmit(today)​["ent"];
+  if (m != null)​{
+    links[0].set("WardStamp", m.field("VisitDate")​);
+  }
+  else {
+    links[0].set("WardStamp",null);
+  }​
+
+  //--set pt.status, pt.ward, wardStamp and Description
+  if ((links[0].field("WardStamp")​==null || e.field("VisitDate")>=links[0].field("WardStamp")​) && 
+(links[0].field("Status")​=="Still"||links[0].field("Status")​=="Active")​​ &​&
+e.field("Status") != "Not")​ {
+    if (e.field("VisitType")​=="Admit" && 
+my.ndate(e.field("VisitDate"))<=ntoday && (e.field("DischargeDate")​==null|| my.ndate(e.field("DischargeDate"))​>ntoday) ) {//Admit
+      links[0].set("Status" ,"Active");
+      links[0].set("Ward",e.field("Ward"));
+      links[0].set("WardStamp", e.field("VisitDate")​)​;
+      let str = "" ;
+      if (e.field("Dx")!="")​
+        str = e.field("Dx");
+      if (e.field("Op")!="")​ {
+        if (str!="" )
+          str += " -​> " ;
+        str += e.field("Op");
+      }​
+       
+      links[0].set("Descript", str);
+    }
+    else if (e.field("VisitType")​=="Admit" && my.ndate(e.field("VisitDate"))<=ntoday && my.ndate(e.field("DischargeDate"))​<=ntoday​​ ) { // D/C
+      links[0].set("Status" ,"Still");
+      links[0].set("Ward", "");
+      let str = "" ;
+      if (e.field("Dx")!="")​
+        str = e.field("Dx");
+      if (e.field("Op")!="")​ {
+        if (str!="")
+          str += " -​> " ;
+        str += e.field("Op");
+      }​
+      if (e.field("OpResult")!="")​ {
+        if (str!="")
+          str += " -​> " ;
+        str += e.field("OpResult");
+      }​
+       
+      links[0].set("Descript", str);
+    }​
+    else if ((m==null)​ || (m.field("DischargeDate") != null && my.ndate(m.field("DischargeDate"))​<=ntoday)​ ) {//D/C of last visit: still
+      links[0].set("Status" ,"Still");
+      links[0].set("Ward", "");
+    }​
+  }​
+  else if (e.field("Status") == "Not")​ {
+    links[0].set("Status" ,"Still");
+    links[0].set("Ward", "");
+    links[0].set("WardStamp", e.field("VisitDate"));
+    let str = "" ;
+    if (e.field("Dx")!="")​
+      str = e.field("Dx");
+    if (e.field("Op")!="")​ {
+      if (str!="")
+        str += " -​> " ;
+      str += e.field("Op");
+    }​
+    if (e.field("OpResult")!="")​ {
+      if (str!="")
+        str += " -​> " ;
+      str += e.field("OpResult");
+    }​
+       
+    links[0].set("Descript", str);
+  }​
+ }​
+}​;​
