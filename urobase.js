@@ -2,9 +2,6 @@
 var e = entry()​;
 var links = e.field("Patient")​;
 
-var ntoday = my.ndate(new Date()​);​
-var today = my.date(new Date())​;
-
 var my = {
   d : null, 
   nd : 0,
@@ -74,6 +71,9 @@ var my = {
     }
   }
 }​;​
+var ntoday = my.ndate(new Date()​);​
+var today = my.date(new Date())​;
+
 function lastadmit(date)  {
   let pt = libByName("Patient") ;
   let or = libByName("UroBase") ;
@@ -600,5 +600,4 @@ e.field("Status") != "Not")​ {
        
     links[0].set("Descript", str);
   }​
- }​
 }​;
