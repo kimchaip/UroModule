@@ -1,6 +1,7 @@
 // Common
 var e = entry()​;
 var links = e.field("Patient")​;
+
 var my = {
   d : null, 
   nd : 0,
