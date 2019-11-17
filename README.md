@@ -9,7 +9,7 @@
 
 ### function​ : 
 	lastadmit, getmergeid, 
-	mergelastadmit, mergeeffect, 
+	mergelastadmit, posinmerge, mergeeffect, 
 	changeother, mlacancel, 
 	createnew
 
