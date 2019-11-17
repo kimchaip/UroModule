@@ -1,4 +1,4 @@
-var e;
+var e = entry()​;
 var links = e.field("Patient")​;
 
 var ntoday = my.ndate(new Date()​);​
