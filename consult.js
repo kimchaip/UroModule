@@ -1,10 +1,6 @@
 // Common
 var e = entry()​;
 var links = e.field("Patient")​;
-
-var ntoday = my.ndate(new Date()​);​
-var today = my.date(new Date())​;
-
 var my = {
   d : null, 
   nd : 0,
@@ -74,6 +70,8 @@ var my = {
     }
   }
 }​;​
+var ntoday = my.ndate(new Date()​);​
+var today = my.date(new Date())​;
 
 function lastadmit(date)  {
   let pt = libByName("Patient") ;
@@ -234,19 +232,14 @@ function mlacancel() {
   let mid = getmergeid(e)​;
   if(mid.length>0)​{
     for (let i in mid) {
-
       let lib =null, id="" ;
-
       if (mid[i]["lib"]=="or") {
         lib = libByName("UroBase")​ ;
         id = mid[i]["id"] ;
-
       }
-
       else if (mid[i]["lib"]=="cs" ) {
         lib = libByName("Consult")​ ;
         id = mid[i]["id"] ;
-
       }
 
       if (lib != null)​ {
@@ -255,7 +248,6 @@ function mlacancel() {
           toent.set("MergeID" , "") ;
           if(i!=0)​ toent.set("VisitDate" , null)​;
         }​
-
       }
     }​
   } 
@@ -426,14 +418,14 @@ function setnewdate(trig) {
   }​
 } ;​
 function setvisitdate()​ {
-    if (e.field("EntryMx")​ == "Pending" &​& e.field("VisitDate") == null) {
-      if (e.field("VisitType") == "Admit") {
-        e.set("VisitDate", e.field("ConsultDate")-86400000);
-      }​
-      else ​{
-        e.set("VisitDate", e.field("ConsultDate")​)​;
-      }​
-    }
+  if (e.field("EntryMx")​ == "Pending" &​& e.field("VisitDate") == null) {
+    if (e.field("VisitType") == "Admit") {
+      e.set("VisitDate", e.field("ConsultDate")-86400000);
+    }​
+    else ​{
+      e.set("VisitDate", e.field("ConsultDate")​)​;
+    }​
+  }
 }​;​
 function setptstatus()​ {
   //--update WardStamp
@@ -508,5 +500,4 @@ e.field("EntryMx") != "Not")​ {
        
     links[0].set("Descript", str);
   }​
- }​
 }​;​
