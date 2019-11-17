@@ -1,16 +1,19 @@
 # UroModule
-Momento Uro Module
 
-variables : 
-e, links, all, 
-old, my, 
+## Common
+@variable : e, links, my
+@function : lastadmit, getmergeid, 
+            mergelastadmit, mergeeffect, 
+            changeother, mlacancel
+
+## Urobase
+@variable : old
+@function : setnewdate, setvisitdate, 
+            lastDJStamp, setDJstent, 
+            updateDJStamp, 
+            setptstatus
+## Consult
+
+old2,
 today, ntoday
-
-function : 
-setnewdate, setvisitdate, 
-lastadmit, getmergeid, 
-mergelastadmit, mlacancel, 
-mergeeffect, changeother, 
-lastDJStamp, setDJstent, 
-updateDJStamp, 
-setptstatus, createnew
+createnew
