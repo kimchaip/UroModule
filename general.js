@@ -1,5 +1,6 @@
-var e = entry()​;
-var links = e.field("Patient")​;
+var e = entry();
+var links = e.field("Patient");
+
 var my = {
   d : null, 
   nd : 0,
@@ -23,7 +24,7 @@ var my = {
       this.d = null;
       return this.d;
     }
- },
+  },
   dateminus : function (value, minus)  {
     if (value != null) {
       this.d = new Date(value.getTime() -​ (minus*86400000))​;
@@ -46,7 +47,7 @@ var my = {
       return this.nd;
     }​
   }, 
- ndateadd : function (value, add)  {
+  ndateadd : function (value, add)  {
     if (value != null) {
       this.d = this.dateadd(value,add);
       this.nd = this.d.getTime()​;
@@ -231,19 +232,14 @@ function mlacancel() {
   let mid = getmergeid(e)​;
   if(mid.length>0)​{
     for (let i in mid) {
-
       let lib =null, id="" ;
-
       if (mid[i]["lib"]=="or") {
         lib = libByName("UroBase")​ ;
         id = mid[i]["id"] ;
-
       }
-
       else if (mid[i]["lib"]=="cs" ) {
         lib = libByName("Consult")​ ;
         id = mid[i]["id"] ;
-
       }
 
       if (lib != null)​ {
@@ -252,7 +248,6 @@ function mlacancel() {
           toent.set("MergeID" , "") ;
           if(i!=0)​ toent.set("VisitDate" , null)​;
         }​
-
       }
     }​
   } 
