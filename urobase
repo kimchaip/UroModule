@@ -5,85 +5,85 @@ var old = {
   },
   store : function ()​ {
     this.a = [] ;
-    a.push(e.field("Date"));	        //0
-    a.push(links[0].title);             //​1
-    a.push(e.field("ORType"));          //​2
-    a.push(e.field("Que"));             //​3
-    a.push(e.field("VisitType"));       //​4
-    a.push(e.field("Ward"));            //​5
-    a.push(e.field("VisitDate"));       //​6
-    a.push(e.field("DischargeDate"));   //​7
-    a.push(e.field("EntryMx"));         //​8
-    a.push(e.field("AppointDate"));     //​9
-    a.push(e.field("Status"));         //​10 
-    a.push(e.field("DJstent"));        //​11
-    a.push(e.field("OpExtra"));        //​12
-    a.push(e.field("Bonus"));          //​13
-    a.push(e.field("RecordDate"));     //​14
-    a.push(e.field("Dx"));             //​15
-    a.push(e.field("Op"));             //​16
-    a.push(e.field("OpResult"));       //​17
+    this.a.push(e.field("Date"));	        //0
+    this.a.push(links[0].title);             //​1
+    this.a.push(e.field("ORType"));          //​2
+    this.a.push(e.field("Que"));             //​3
+    this.a.push(e.field("VisitType"));       //​4
+    this.a.push(e.field("Ward"));            //​5
+    this.a.push(e.field("VisitDate"));       //​6
+    this.a.push(e.field("DischargeDate"));   //​7
+    this.a.push(e.field("EntryMx"));         //​8
+    this.a.push(e.field("AppointDate"));     //​9
+    this.a.push(e.field("Status"));         //​10 
+    this.a.push(e.field("DJstent"));        //​11
+    this.a.push(e.field("OpExtra"));        //​12
+    this.a.push(e.field("Bonus"));          //​13
+    this.a.push(e.field("RecordDate"));     //​14
+    this.a.push(e.field("Dx"));             //​15
+    this.a.push(e.field("Op"));             //​16
+    this.a.push(e.field("OpResult"));       //​17
   
-    e.set("Previous", a.join());
+    e.set("Previous", this.a.join());
   }, 
   get opdate() {
-    if (a[0]!​="" )​ return new Date(a[0])​;
+    if (this.a[0]!​="" )​ return new Date(this.a[0])​;
     else return null;
   }​,
   get patient() {
-    return a[1] ;
+    return this.a[1] ;
   }​, 
   get optype() {
-    return a[2] ;
+    return this.a[2] ;
   }​,​
   get que() {
-    return a[3] ;
+    return this.a[3] ;
   }​,
   get vstype() {
-    return a[4] ;
+    return this.a[4] ;
   }​,
   get ward() {
-    return a[5] ;
+    return this.a[5] ;
   }​,
   get vsdate() {
-    if (a[6]!​="" )​ return new Date(a[6])​ ;
+    if (this.a[6]!​="" )​ return new Date(this.a[6])​ ;
     else return null;​
   }​,
   get dcdate() {
-    if (a[7]!​="" )​ return new Date(a[7])​ ;
+    if (this.a[7]!​="" )​ return new Date(this.a[7])​ ;
     else return null;​
   }​,
   get emx() {
-    return a[8] ;
+    return this.a[8] ;
   }​,
   get apdate() {
-    if (a[9]!​="" )​ return new Date(a[9])​ ;
+    if (this.a[9]!​="" )​ return new Date(this.a[9])​ ;
     else return null;​
   }​,
   get status() {
-    return a[10] ;
+    return this.a[10] ;
   }​,
   get dj() {
-    return a[11] ;
+    return this.a[11] ;
   }​,
   get opext() {
-    return a[12] ;
+    return this.a[12] ;
   }​,
   get bonus() {
-    return a[13] ;
+    return this.a[13] ;
   }, 
   get rcdate() {
-    if (a[14]!​="" )​ return new Date(a[14])​ ;
+    if (this.a[14]!​="" )​ return new Date(this.a[14])​ ;
     else return null;​
   }​,
   get dx() {
-    return a[15] ;
+    return this.a[15] ;
   }​,
   get op() {
-    return a[16] ;
+    return this.a[16] ;
   }​,
   get result() {
-    return a[17] ;
+    return this.a[17] ;
   }​
 } ;
 function setnewdate(trig) {
