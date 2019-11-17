@@ -1,13 +1,13 @@
 # UroModule
 
 ## Common
-@variable : e, links, my
+@variable : e, links, my, 
 @function : lastadmit, getmergeid, 
             mergelastadmit, mergeeffect, 
-            changeother, mlacancel
+            changeother, mlacancel, 
             createnew
 ## Urobase
-@variable : old
+@variable : old, 
 @function : setnewdate, setvisitdate, 
             lastDJStamp, setDJstent, 
             updateDJStamp, 
