@@ -1,5 +1,6 @@
 var e = entry()​;
 var links = e.field("Patient")​;
+var all = lib().entries();
 
 var ntoday = my.ndate(new Date()​);​
 var today = my.date(new Date())​;
