@@ -99,8 +99,8 @@ function lastadmit(date)  {
       if (s==null) {
         o["lib"] = "or" ;
         o["ent"] = orlinks[r] ;
-      }
-      else {
+      }
+      else {
         o["lib"] = "cs" ;
         o["ent"] = cslinks[s] ;
       }
@@ -149,12 +149,12 @@ function mergelastadmit(thislib)  {
       if (e.field("DischargeDate") != null)​
         changeother(k, mid, "DischargeDate")​;
       return true;
-    }
-    else {
+    }
+    else {
       message("not found last admit, can't merge");
-      e.set("Merge", false) ;
+      e.set("Merge", false) ;
       return false;
-    }
+    }
   }
   return false;
 } ;​
@@ -290,44 +290,44 @@ function createnew (libto, libfrom)​ {
     let lib = libByName(libname)​;
     let pt = libByName("Patient")​;
     let ptent = pt.findById(links[0].id);
-    let entlinks = lib.linksTo(ptent);
-    let found = false;
+    let entlinks = lib.linksTo(ptent);
+    let found = false;
 
-    if (entlinks.length > min) {
-      for (let i in entlinks) {
-        if (entlinks[i].field(field1).getTime() == my.ndate(e.field("AppointDate")))​ {
-          found = true;
-          break ;
-        }
+    if (entlinks.length > min) {
+      for (let i in entlinks) {
+        if (entlinks[i].field(field1).getTime() == my.ndate(e.field("AppointDate")))​ {
+          found = true;
+          break ;
+        }
       }
     } 
 
-    if (!found) {
-      let ent​ = new Object();
+    if (!found) {
+      let ent​ = new Object();
       ent​[field1] = my.date(e.field("AppointDate")​);
-      ent​["Patient"]​ = links[0].title;
+      ent​["Patient"]​ = links[0].title;
       ent​["PastHx"] = e.field("PastHx")​;
-      ent​["Inv"] = e.field("Inv").join()​;
-      ent​["InvResult"] = e.field("InvResult");
+      ent​["Inv"] = e.field("Inv").join()​;
+      ent​["InvResult"] = e.field("InvResult");
       ent​["Dx"] = e.field("Dx")​;
 
       if (libto == "uro" &​& libfrom == "uro") {
         ent​["Op"] = e.field("Op")​;
         ent​["ORType"] = e.field("ORType")​;
-        ent​["VisitType"] = e.field("VisitType")​;
-        if (e.field("VisitType")​== "Admit")​
-          ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
-        else  
-          ent​["VisitDate"] = my.date(e.field("AppointDate"))​;
+        ent​["VisitType"] = e.field("VisitType")​;
+        if (e.field("VisitType")​== "Admit")​
+          ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
+        else  
+          ent​["VisitDate"] = my.date(e.field("AppointDate"))​;
           ent​["RecordDate"] = today​;
       }​
       else if (libto == "consult" &​& libfrom == "uro") {
-        ent​["Ward"] = e.field("Ward")​;
-        ent​["VisitType"] = "OPD";
+        ent​["Ward"] = e.field("Ward")​;
+        ent​["VisitType"] = "OPD";
         ent​["VisitDate"] = my.date(e.field("AppointDate")​);
       }​
       else if (libto == "uro" &​& libfrom == "consult" ) {​
-        ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
+        ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
         ent​["RecordDate"] = today​;
         ent["Photo"] = e.field("Photo").join()​;
       }​
@@ -336,9 +336,10 @@ function createnew (libto, libfrom)​ {
         ent["VisitDate"]​ = my.date(e.field("AppointDate"));
       }​
 
-      lib.create(ent);
+      lib.create(ent);
       message("successfully created new Entry") ;
     }​
   }​
   e.set("EntryMx", defau) ;
 }​;​
+
