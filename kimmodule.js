@@ -8,6 +8,29 @@ var old = {
   a : [],​
   getstart : function ()​ {
     a = e.field("Previous").split(",");
+  },
+  store : function ()​ {
+    a = [] ;
+    a.push(e.field("Date"));	        //0
+    a.push(links[0].title);             //​1
+    a.push(e.field("ORType"));          //​2
+    a.push(e.field("Que"));             //​3
+    a.push(e.field("VisitType"));       //​4
+    a.push(e.field("Ward"));            //​5
+    a.push(e.field("VisitDate"));       //​6
+    a.push(e.field("DischargeDate"));   //​7
+    a.push(e.field("EntryMx"));         //​8
+    a.push(e.field("AppointDate"));     //​9
+    a.push(e.field("Status"));         //​10 
+    a.push(e.field("DJstent"));        //​11
+    a.push(e.field("OpExtra"));        //​12
+    a.push(e.field("Bonus"));          //​13
+    a.push(e.field("RecordDate"));     //​14
+    a.push(e.field("Dx"));             //​15
+    a.push(e.field("Op"));             //​16
+    a.push(e.field("OpResult"));       //​17
+  
+    e.set("Previous", a.join());
   }, 
   get opdate() {
     if (a[0]!​="" )​ return new Date(a[0])​;
@@ -139,22 +162,16 @@ var my = {
     }
   }
 }​;​
-function setnewdate(lib, trig) {
-  let t = false, l = false, f = ""​;
-  if (trig=="update")​ t = false;
-  else t = true;
-  if (lib=="uro")​ {
-    l = true;
-    f = "Date" ;
-  }​
-  else {
-    l = false;
-    f = "ConsultDate" ;
-  }​
+function setnewdate(trig) {
+  let t = false ;
+  if (trig=="update")​ 
+    t = false;
+  else 
+    t = true;
 
   //---if Date change : set new date
-  if (t || my.ndate(old.opdate)!=my.ndate(​e.field(f))​) {
-    e.set(f, my.date(e.field(f)));
+  if (t || my.ndate(old.opdate)!=my.ndate(​e.field("Date"))​) {
+    e.set("Date", my.date(e.field("Date")));
   }​
   if (t || my.ndate(​old.vsdate)!=my.ndate(​e.field("VisitDate"))) {
     e.set("VisitDate", my.date(e.field("VisitDate")));
@@ -165,36 +182,21 @@ function setnewdate(lib, trig) {
   if (t || my.ndate(​old.apdate)!=my.ndate(​e.field("AppointDate"))) {
     e.set("AppointDate", my.date(e.field("AppointDate")));
   }​
-  if (l &​& (t || my.ndate(​old.rcdate)!=my.ndate(​e.field("RecordDate")))​) {
+  if (t || my.ndate(​old.rcdate)!=my.ndate(​e.field("RecordDate"))​) {
     e.set("RecordDate", my.date(e.field("RecordDate")));
   }​
 } ;
-function setvisitdate(lib)​ {
-  let value1="", str1="" , str2=""​, 
-      field1=""​;
-    if (lib=="uro")​{
-      value1 = "<Default>" ;
-      str1 = e.field("ORType") == "GA" ;
-      str2 = e.field("VisitType") == "OPD" ;
-      field1 = "Date";
+function setvisitdate()​ {
+  if (e.field("EntryMx")​== "<Default>" &​& e.field("VisitDate") == null) {
+    if (e.field("ORType") == "GA") {
+      if (e.field("VisitType") == "OPD")​
+        e.set("VisitType", "Admit")​;
+      e.set("VisitDate", my.dateminus(e.field("Date"),1));
     }​
-    else {
-      value1 = "Pending" ;
-      str1 = e.field("VisitType") == "Admit";
-      str2 = false ;
-      field1 = "ConsultDate" ;
+    else ​{
+      e.set("VisitDate", my.date(e.field("Date")))​;
     }​
-
-    if (e.field("EntryMx")​== value1 &​& e.field("VisitDate") == null) {
-      if (str1) {
-        if (str2)​
-          e.set("VisitType", "Admit")​;
-        e.set("VisitDate", my.dateminus(e.field(field1),1));
-      }​
-      else ​{
-        e.set("VisitDate", my.date(e.field(field1)))​;
-      }​
-    }
+  }
 }​;
 function lastadmit(date)  {
   let pt = libByName("Patient") ;
@@ -431,22 +433,8 @@ function updateDJStamp() {
     links[0].set("DJstent","on DJ");
   }
 };
-function setptstatus(lib)​ {
-  //--set pt.status, pt.ward, wardStamp and Description
- if (links.length​ > 0) {
-
-  let thisstat = null, thisrx ="", note ="" ;
-  if (lib=="uro" ) {
-    thisstat = "Status";
-    thisrx = "Op" ;
-    note = "OpResult" ;
-  }​
-  else if (lib =="consult" )​ {
-    thisstat = "EntryMx";
-    thisrx = "Rx" ;
-    note = "Note" ;
-  }​
-
+function setptstatus()​ {
+  
   //--update WardStamp
   let m = lastadmit(today)​["ent"];
   if (m != null)​{
@@ -456,9 +444,10 @@ function setptstatus(lib)​ {
     links[0].set("WardStamp",null);
   }​
 
+  //--set pt.status, pt.ward, wardStamp and Description
   if ((links[0].field("WardStamp")​==null || e.field("VisitDate")>=links[0].field("WardStamp")​) && 
 (links[0].field("Status")​=="Still"||links[0].field("Status")​=="Active")​​ &​&
-e.field(thisstat) != "Not")​ {
+e.field("Status") != "Not")​ {
     if (e.field("VisitType")​=="Admit" && 
 my.ndate(e.field("VisitDate"))<=ntoday && (e.field("DischargeDate")​==null|| my.ndate(e.field("DischargeDate"))​>ntoday) ) {//Admit
       links[0].set("Status" ,"Active");
@@ -467,10 +456,10 @@ my.ndate(e.field("VisitDate"))<=ntoday && (e.field("DischargeDate")​==null|| 
       let str = "" ;
       if (e.field("Dx")!="")​
         str = e.field("Dx");
-      if (e.field(thisrx)!="")​ {
+      if (e.field("Op")!="")​ {
         if (str!="" )
           str += " -​> " ;
-        str += e.field(thisrx);
+        str += e.field("Op");
       }​
        
       links[0].set("Descript", str);
@@ -481,15 +470,15 @@ my.ndate(e.field("VisitDate"))<=ntoday && (e.field("DischargeDate")​==null|| 
       let str = "" ;
       if (e.field("Dx")!="")​
         str = e.field("Dx");
-      if (e.field(thisrx)!="")​ {
+      if (e.field("Op")!="")​ {
         if (str!="")
           str += " -​> " ;
-        str += e.field(thisrx);
+        str += e.field("Op");
       }​
-      if (e.field(note)!="")​ {
+      if (e.field("OpResult")!="")​ {
         if (str!="")
           str += " -​> " ;
-        str += e.field(note);
+        str += e.field("OpResult");
       }​
        
       links[0].set("Descript", str);
@@ -499,22 +488,22 @@ my.ndate(e.field("VisitDate"))<=ntoday && (e.field("DischargeDate")​==null|| 
       links[0].set("Ward", "");
     }​
   }​
-  else if (e.field(thisstat) == "Not")​ {
+  else if (e.field("Status") == "Not")​ {
     links[0].set("Status" ,"Still");
     links[0].set("Ward", "");
     links[0].set("WardStamp", e.field("VisitDate"));
     let str = "" ;
     if (e.field("Dx")!="")​
       str = e.field("Dx");
-    if (e.field(thisrx)!="")​ {
+    if (e.field("Op")!="")​ {
       if (str!="")
         str += " -​> " ;
-      str += e.field(thisrx);
+      str += e.field("Op");
     }​
-    if (e.field(note)!="")​ {
+    if (e.field("OpResult")!="")​ {
       if (str!="")
         str += " -​> " ;
-      str += e.field(note);
+      str += e.field("OpResult");
     }​
        
     links[0].set("Descript", str);
