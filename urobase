@@ -1,10 +1,10 @@
 var old = {
   a : [],​
   getstart : function ()​ {
-    a = e.field("Previous").split(",");
+    this.a = e.field("Previous").split(",");
   },
   store : function ()​ {
-    a = [] ;
+    this.a = [] ;
     a.push(e.field("Date"));	        //0
     a.push(links[0].title);             //​1
     a.push(e.field("ORType"));          //​2
@@ -115,10 +115,10 @@ function setvisitdate()​ {
     if (e.field("ORType") == "GA") {
       if (e.field("VisitType") == "OPD")​
         e.set("VisitType", "Admit")​;
-      e.set("VisitDate", my.dateminus(e.field("Date"),1));
+      e.set("VisitDate", e.field("Date")-86400000);
     }​
     else ​{
-      e.set("VisitDate", my.date(e.field("Date")))​;
+      e.set("VisitDate", e.field("Date"))​;
     }​
   }
 }​;
@@ -129,14 +129,14 @@ function lastDJStamp(date)  {
   let orlinks = or.linksTo(ptent) ;
   let o = null ;
   if (orlinks.length>0) {
-    let last = null, r=null;
+    let last = null, r = null;
     for (let i in orlinks) {
-      if ((orlinks[i].field("DJstent")=="on DJ" || orlinks[i].field("DJstent")=="change DJ" || orlinks[i].field("DJstent")=="off DJ")​ && orlinks[i].field("Date") > last && orlinks[i].field("Date").getTime() <= date.getTime()) {
+      if (orlinks[i].field("DJstent") != "<none>"​ && orlinks[i].field("Date") > last && orlinks[i].field("Date").getTime() <= date.getTime()) {
         last = orlinks[i].field("Date");
         r=i;
       }
     }
-    if (last != null &​& orlinks[i].field("DJstent")!="off DJ") {
+    if (last != null &​& orlinks[i].field("DJstent") != "off DJ") {
       o = orlinks[r] ;
     }
   }
@@ -147,23 +147,24 @@ function setDJstent() {
     if(e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ")​
       e.set("DJstent", "<none>")​;
   }​
-  else if (e.field("Date") > links[0].field("DJStamp") && e.field("Date") <= today) { // DJStamp not null 
+  else if (e.field("Date") > links[0].field("DJStamp") && my.ndate(e.field("Date")) <= ntoday) { // DJStamp not null 
     if (e.field("DJstent") == "on DJ")​
        e.set("DJstent", "<none>")​ ;
   }​
   else if (e.field("Date") < links[0].field("DJStamp"))​  {// the past
-    e.set("DJstent", old.dj) ;
+    if (old.dj != null)​
+      e.set("DJstent", old.dj) ;
   }​
-  else if (e.field("Date") == links[0].field("DJStamp"))​ {// entry update DJStamp
+  else if (my.ndate(e.field("Date")) == my.ndate(links[0].field("DJStamp")))​ {// entry update DJStamp
     let d = lastDJStamp(my.dateminus(e.field("Date"), 1)) ;
     if (d == null) { // off -​> none, on
-	     if (e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ") 
-	       e.set("DJstent" , "<none>") ;
-	   }
-	   else { // on,change -> none,change,off
-	     if(e.field("DJstent") == "on DJ") 
-	       e.set("DJstent", "<none>") ;
-	   } 
+      if (e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ") 
+        e.set("DJstent" , "<none>") ;
+    }
+    else { // on,change -> none,change,off
+      if (e.field("DJstent") == "on DJ") 
+        e.set("DJstent", "<none>") ;
+    } 
   }​
 }​;
 function updateDJStamp() {
@@ -193,8 +194,7 @@ function setptstatus()​ {
   if ((links[0].field("WardStamp")​==null || e.field("VisitDate")>=links[0].field("WardStamp")​) && 
 (links[0].field("Status")​=="Still"||links[0].field("Status")​=="Active")​​ &​&
 e.field("Status") != "Not")​ {
-    if (e.field("VisitType")​=="Admit" && 
-my.ndate(e.field("VisitDate"))<=ntoday && (e.field("DischargeDate")​==null|| my.ndate(e.field("DischargeDate"))​>ntoday) ) {//Admit
+    if (e.field("VisitType")​=="Admit" && my.ndate(e.field("VisitDate"))<=ntoday && (e.field("DischargeDate")​==null || my.ndate(e.field("DischargeDate"))​>ntoday) ) {//Admit
       links[0].set("Status" ,"Active");
       links[0].set("Ward",e.field("Ward"));
       links[0].set("WardStamp", e.field("VisitDate")​)​;
