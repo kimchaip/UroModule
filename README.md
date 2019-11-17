@@ -1,24 +1,20 @@
 # UroModule
 
-## Common
+## Urobase
 
-### variable​ : 
+### common​ : 
 	e, links, 
 	my, 
 	ndate, date
 
-### function​ : 
 	lastadmit, getmergeid, 
 	mergelastadmit, posinmerge, mergeeffect, 
 	changeother, mlacancel, 
 	createnew
 
-## Urobase
-
-### variable​ : 
+### urobase​ : 
 	old
 
-### function​ : 
 	setnewdate, setvisitdate, 
 	lastDJStamp, setDJstent, 
 	updateDJStamp, 
@@ -26,9 +22,18 @@
 
 ## Consult
 
-### variable : 
+### common​ : 
+	e, links, 
+	my, 
+	ndate, date
+
+	lastadmit, getmergeid, 
+	mergelastadmit, posinmerge, mergeeffect, 
+	changeother, mlacancel, 
+	createnew
+
+### consult : 
 	old
 
-### function​ : 
 	setnewdate, setvisitdate, 
 	setptstatus
