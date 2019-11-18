@@ -5,7 +5,7 @@
 ### common​ : 
 	e, links, 
 	my, 
-	ndate, date
+	today, ntoday
 
 	lastadmit, getmergeid, 
 	mergelastadmit, posinmerge, mergeeffect, 
@@ -25,7 +25,7 @@
 ### common​ : 
 	e, links, 
 	my, 
-	ndate, date
+	today, ntoday
 
 	lastadmit, getmergeid, 
 	mergelastadmit, posinmerge, mergeeffect, 
