@@ -37,32 +37,9 @@ var my = {
       return this.d;
     }
   }, 
-  ndate : function (value) {
+  gdate : function (value)  {
     if (value != null) {
-      this.d = this.date(value);
-      this.nd = this.d.getTime()​;
-      return this.nd;
-    }
-    else {
-      this.nd = 0;
-      return this.nd;
-    }​
-  }, 
-  ndateadd : function (value, add)  {
-    if (value != null) {
-      this.d = this.dateadd(value,add);
-      this.nd = this.d.getTime()​;
-      return this.nd;
-    }
-    else {
-      this.nd = 0;
-      return this.nd;
-    }
-  },
-  ndateminus : function (value, minus)  {
-    if (value != null) {
-      this.d = this.dateminus(value,minus);
-      this.nd = this.d.getTime();
+      this.nd = value.getTime()​;
       return this.nd;
     }
     else {
@@ -71,8 +48,8 @@ var my = {
     }
   }
 }​;​
-var ntoday = my.ndate(new Date()​);​
 var today = my.date(new Date())​;
+var ntoday = my.gdate(today);​
 
 function lastadmit(date)  {
   let pt = libByName("Patient") ;
@@ -85,13 +62,13 @@ function lastadmit(date)  {
   if (orlinks.length+cslinks.length>0) {
     let last = null, s=null, r=null;
     for (let i in orlinks) {
-      if (orlinks[i].field("VisitType")=="Admit" && orlinks[i].field("VisitDate") > last && my.ndate(​orlinks[i].field("VisitDate"))​<= my.ndate(​date)​) {
+      if (orlinks[i].field("VisitType")=="Admit" && orlinks[i].field("VisitDate") > last && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​) {
         last = orlinks[i].field("VisitDate");
         r=i;
       }
     }
     for (let i in cslinks) {
-      if (cslinks[i].field("VisitType")=="Admit" && cslinks[i].field("VisitDate") > last && my.ndate(​cslinks[i].field("VisitDate"))​<= my.ndate(​date) ) {
+      if (cslinks[i].field("VisitType")=="Admit" && cslinks[i].field("VisitDate") > last && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) ) {
         last = cslinks[i].field("VisitDate");
         s=i;
       }
@@ -193,13 +170,13 @@ function mergeeffect()  {
   let mpos = posinmerge()​;
 
   if(mpos["found"]​ == true ) { //parent or child
-    if(my.ndate(old.vsdate) != my.ndate(e.field("VisitDate"))) {
+    if(my.gdate(old.vsdate) != my.gdate(e.field("VisitDate"))) {
       changeother(mpos["pos"]​, mpos["mar"]​, "VisitDate" ) ;
     }
     if(old.ward != e.field("Ward") ) {
       changeother(mpos["pos"], mpos["mar"], "Ward" ) ;
     } 
-    if(my.ndate(old.dcdate) != my.ndate(e.field("DischargeDate")) ) {
+    if(my.gdate(old.dcdate) != my.gdate(e.field("DischargeDate")) ) {
       changeother(mpos["pos"], mpos["mar"], "DischargeDate" ) ;
     }
     if(old.vstype != e.field("VisitType") ) {
@@ -252,7 +229,7 @@ function mlacancel() {
         let toent = libByName(lib).findById(id) ;
         if (toent != null) {
           toent.set("MergeID" , "") ;
-          if(i!=0)​ toent.set("VisitDate" , null)​;
+          if(i!=0)​ toent.set("VisitDate" , my.dateminus(toent.field("Date"), 1))​;
         }​
 
       }
@@ -296,7 +273,7 @@ function createnew (libto, libfrom)​ {
 
     if (entlinks.length > min) {
       for (let i in entlinks) {
-        if (entlinks[i].field(field1).getTime() == my.ndate(e.field("AppointDate")))​ {
+        if (my.gdate(entlinks[i].field(field1))​ == my.gdate(e.field("AppointDate")))​ {
           found = true;
           break ;
         }
@@ -441,19 +418,19 @@ function setnewdate(trig) {
     t = true;
 
   //---if Date change : set new date
-  if (t || my.ndate(old.opdate)!=my.ndate(​e.field("Date"))​) {
+  if (t || my.gdate(old.opdate) != my.gdate(​e.field("Date"))​) {
     e.set("Date", my.date(e.field("Date")));
   }​
-  if (t || my.ndate(​old.vsdate)!=my.ndate(​e.field("VisitDate"))) {
+  if (t || my.gdate(​old.vsdate) != my.gdate(​e.field("VisitDate"))) {
     e.set("VisitDate", my.date(e.field("VisitDate")));
   }​
-  if (t || my.ndate(​old.dcdate)!=my.ndate(​e.field("DischargeDate"))​) {
+  if (t || my.gdate(​old.dcdate) != my.gdate(​e.field("DischargeDate"))​) {
     e.set("DischargeDate", my.date(e.field("DischargeDate")));
   }​
-  if (t || my.ndate(​old.apdate)!=my.ndate(​e.field("AppointDate"))) {
+  if (t || my.gdate(​old.apdate) != my.gdate(​e.field("AppointDate"))) {
     e.set("AppointDate", my.date(e.field("AppointDate")));
   }​
-  if (t || my.ndate(​old.rcdate)!=my.ndate(​e.field("RecordDate"))​) {
+  if (t || my.gdate(​old.rcdate) != my.gdate(​e.field("RecordDate"))​) {
     e.set("RecordDate", my.date(e.field("RecordDate")));
   }​
 } ;
@@ -462,10 +439,10 @@ function setvisitdate()​ {
     if (e.field("ORType") == "GA") {
       if (e.field("VisitType") == "OPD")​
         e.set("VisitType", "Admit")​;
-      e.set("VisitDate", e.field("Date")-86400000);
+      e.set("VisitDate", my.dateminus(e.field("Date"), 1));
     }​
     else ​{
-      e.set("VisitDate", e.field("Date"))​;
+      e.set("VisitDate", my.date(e.field("Date")))​;
     }​
   }
 }​;
@@ -478,7 +455,7 @@ function lastDJStamp(date)  {
   if (orlinks.length>0) {
     let last = null, r = null;
     for (let i in orlinks) {
-      if (orlinks[i].field("DJstent") != "<none>"​ && orlinks[i].field("Date") > last && orlinks[i].field("Date").getTime() <= date.getTime()) {
+      if (orlinks[i].field("DJstent") != "<none>"​ && orlinks[i].field("Date") > last && my.gdate(orlinks[i].field("Date")) <= my.gdate(date)​) {
         last = orlinks[i].field("Date");
         r=i;
       }
@@ -494,7 +471,7 @@ function setDJstent() {
     if(e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ")​
       e.set("DJstent", "<none>")​;
   }​
-  else if (e.field("Date") > links[0].field("DJStamp") && my.ndate(e.field("Date")) <= ntoday) { // DJStamp not null 
+  else if (e.field("Date") > links[0].field("DJStamp") && my.gdate(e.field("Date")) <= ntoday) { // DJStamp not null 
     if (e.field("DJstent") == "on DJ")​
        e.set("DJstent", "<none>")​ ;
   }​
@@ -502,7 +479,7 @@ function setDJstent() {
     if (old.dj != null)​
       e.set("DJstent", old.dj) ;
   }​
-  else if (my.ndate(e.field("Date")) == my.ndate(links[0].field("DJStamp")))​ {// entry update DJStamp
+  else if (my.gdate(e.field("Date")) == my.gdate(links[0].field("DJStamp")))​ {// entry update DJStamp
     let d = lastDJStamp(my.dateminus(e.field("Date"), 1)) ;
     if (d == null) { // off -​> none, on
       if (e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ") 
@@ -538,10 +515,10 @@ function setptstatus()​ {
   }​
 
   //--set pt.status, pt.ward, wardStamp and Description
-  if ((links[0].field("WardStamp")​==null || e.field("VisitDate")>=links[0].field("WardStamp")​) && 
-(links[0].field("Status")​=="Still"||links[0].field("Status")​=="Active")​​ &​&
+  if ((links[0].field("WardStamp")​ == null || my.gdate(e.field("VisitDate")​) >= my.gdate(links[0].field("WardStamp"))​) && 
+(links[0].field("Status")​ == "Still" || links[0].field("Status")​ == "Active")​​ &​&
 e.field("Status") != "Not")​ {
-    if (e.field("VisitType")​=="Admit" && my.ndate(e.field("VisitDate"))<=ntoday && (e.field("DischargeDate")​==null || my.ndate(e.field("DischargeDate"))​>ntoday) ) {//Admit
+    if (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) ) {//Admit
       links[0].set("Status" ,"Active");
       links[0].set("Ward",e.field("Ward"));
       links[0].set("WardStamp", e.field("VisitDate")​)​;
@@ -556,7 +533,7 @@ e.field("Status") != "Not")​ {
        
       links[0].set("Descript", str);
     }
-    else if (e.field("VisitType")​=="Admit" && my.ndate(e.field("VisitDate"))<=ntoday && my.ndate(e.field("DischargeDate"))​<=ntoday​​ ) { // D/C
+    else if (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ ) { // D/C
       links[0].set("Status" ,"Still");
       links[0].set("Ward", "");
       let str = "" ;
@@ -575,7 +552,7 @@ e.field("Status") != "Not")​ {
        
       links[0].set("Descript", str);
     }​
-    else if ((m==null)​ || (m.field("DischargeDate") != null && my.ndate(m.field("DischargeDate"))​<=ntoday)​ ) {//D/C of last visit: still
+    else if ((m == null)​ || (m.field("DischargeDate") != null && my.gdate(m.field("DischargeDate"))​ <= ntoday)​ ) {//if future, check last admit :never admit or already D/C of last visit: still
       links[0].set("Status" ,"Still");
       links[0].set("Ward", "");
     }​
@@ -583,7 +560,7 @@ e.field("Status") != "Not")​ {
   else if (e.field("Status") == "Not")​ {
     links[0].set("Status" ,"Still");
     links[0].set("Ward", "");
-    links[0].set("WardStamp", e.field("VisitDate"));
+    links[0].set("WardStamp", e.field("VisitDate")​)​;
     let str = "" ;
     if (e.field("Dx")!="")​
       str = e.field("Dx");
