@@ -468,7 +468,7 @@ e.field("EntryMx") != "Not")​ {
           str += " -​> " ;
         str += e.field("Rx");
       }​
-      if (e.field(note)!="")​ {
+      if (e.field("Note")!="")​ {
         if (str!="")
           str += " -​> " ;
         str += e.field("Note");
