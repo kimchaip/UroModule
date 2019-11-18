@@ -1,5 +1,5 @@
-var e = entry();
-var links = e.field("Patient");
+var e = entry()​;
+var links = e.field("Patient")​;
 
 var my = {
   d : null, 
@@ -36,32 +36,9 @@ var my = {
       return this.d;
     }
   }, 
-  ndate : function (value) {
+  gdate : function (value)  {
     if (value != null) {
-      this.d = this.date(value);
-      this.nd = this.d.getTime()​;
-      return this.nd;
-    }
-    else {
-      this.nd = 0;
-      return this.nd;
-    }​
-  }, 
-  ndateadd : function (value, add)  {
-    if (value != null) {
-      this.d = this.dateadd(value,add);
-      this.nd = this.d.getTime()​;
-      return this.nd;
-    }
-    else {
-      this.nd = 0;
-      return this.nd;
-    }
-  },
-  ndateminus : function (value, minus)  {
-    if (value != null) {
-      this.d = this.dateminus(value,minus);
-      this.nd = this.d.getTime();
+      this.nd = value.getTime()​;
       return this.nd;
     }
     else {
@@ -70,8 +47,8 @@ var my = {
     }
   }
 }​;​
-var ntoday = my.ndate(new Date()​);​
 var today = my.date(new Date())​;
+var ntoday = my.gdate(today);​
 
 function lastadmit(date)  {
   let pt = libByName("Patient") ;
@@ -84,13 +61,13 @@ function lastadmit(date)  {
   if (orlinks.length+cslinks.length>0) {
     let last = null, s=null, r=null;
     for (let i in orlinks) {
-      if (orlinks[i].field("VisitType")=="Admit" && orlinks[i].field("VisitDate") > last && my.ndate(​orlinks[i].field("VisitDate"))​<= my.ndate(​date)​) {
+      if (orlinks[i].field("VisitType")=="Admit" && orlinks[i].field("VisitDate") > last && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​) {
         last = orlinks[i].field("VisitDate");
         r=i;
       }
     }
     for (let i in cslinks) {
-      if (cslinks[i].field("VisitType")=="Admit" && cslinks[i].field("VisitDate") > last && my.ndate(​cslinks[i].field("VisitDate"))​<= my.ndate(​date) ) {
+      if (cslinks[i].field("VisitType")=="Admit" && cslinks[i].field("VisitDate") > last && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) ) {
         last = cslinks[i].field("VisitDate");
         s=i;
       }
@@ -192,13 +169,13 @@ function mergeeffect()  {
   let mpos = posinmerge()​;
 
   if(mpos["found"]​ == true ) { //parent or child
-    if(my.ndate(old.vsdate) != my.ndate(e.field("VisitDate"))) {
+    if(my.gdate(old.vsdate) != my.gdate(e.field("VisitDate"))) {
       changeother(mpos["pos"]​, mpos["mar"]​, "VisitDate" ) ;
     }
     if(old.ward != e.field("Ward") ) {
       changeother(mpos["pos"], mpos["mar"], "Ward" ) ;
     } 
-    if(my.ndate(old.dcdate) != my.ndate(e.field("DischargeDate")) ) {
+    if(my.gdate(old.dcdate) != my.gdate(e.field("DischargeDate")) ) {
       changeother(mpos["pos"], mpos["mar"], "DischargeDate" ) ;
     }
     if(old.vstype != e.field("VisitType") ) {
@@ -232,22 +209,28 @@ function mlacancel() {
   let mid = getmergeid(e)​;
   if(mid.length>0)​{
     for (let i in mid) {
+
       let lib =null, id="" ;
+
       if (mid[i]["lib"]=="or") {
         lib = libByName("UroBase")​ ;
         id = mid[i]["id"] ;
+
       }
+
       else if (mid[i]["lib"]=="cs" ) {
         lib = libByName("Consult")​ ;
         id = mid[i]["id"] ;
+
       }
 
       if (lib != null)​ {
         let toent = libByName(lib).findById(id) ;
         if (toent != null) {
           toent.set("MergeID" , "") ;
-          if(i!=0)​ toent.set("VisitDate" , null)​;
+          if(i!=0)​ toent.set("VisitDate" , my.dateminus(toent.field("Date"), 1))​;
         }​
+
       }
     }​
   } 
@@ -289,7 +272,7 @@ function createnew (libto, libfrom)​ {
 
     if (entlinks.length > min) {
       for (let i in entlinks) {
-        if (entlinks[i].field(field1).getTime() == my.ndate(e.field("AppointDate")))​ {
+        if (my.gdate(entlinks[i].field(field1))​ == my.gdate(e.field("AppointDate")))​ {
           found = true;
           break ;
         }
