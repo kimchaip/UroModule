@@ -1,4 +1,4 @@
-// Common
+//Common
 var e = entry()​;
 var links = e.field("Patient")​;
 
@@ -37,32 +37,9 @@ var my = {
       return this.d;
     }
   }, 
-  ndate : function (value) {
+  gdate : function (value)  {
     if (value != null) {
-      this.d = this.date(value);
-      this.nd = this.d.getTime()​;
-      return this.nd;
-    }
-    else {
-      this.nd = 0;
-      return this.nd;
-    }​
-  }, 
-  ndateadd : function (value, add)  {
-    if (value != null) {
-      this.d = this.dateadd(value,add);
-      this.nd = this.d.getTime()​;
-      return this.nd;
-    }
-    else {
-      this.nd = 0;
-      return this.nd;
-    }
-  },
-  ndateminus : function (value, minus)  {
-    if (value != null) {
-      this.d = this.dateminus(value,minus);
-      this.nd = this.d.getTime();
+      this.nd = value.getTime()​;
       return this.nd;
     }
     else {
@@ -71,8 +48,8 @@ var my = {
     }
   }
 }​;​
-var ntoday = my.ndate(new Date()​);​
 var today = my.date(new Date())​;
+var ntoday = my.gdate(today);​
 
 function lastadmit(date)  {
   let pt = libByName("Patient") ;
@@ -85,13 +62,13 @@ function lastadmit(date)  {
   if (orlinks.length+cslinks.length>0) {
     let last = null, s=null, r=null;
     for (let i in orlinks) {
-      if (orlinks[i].field("VisitType")=="Admit" && orlinks[i].field("VisitDate") > last && my.ndate(​orlinks[i].field("VisitDate"))​<= my.ndate(​date)​) {
+      if (orlinks[i].field("VisitType")=="Admit" && orlinks[i].field("VisitDate") > last && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​) {
         last = orlinks[i].field("VisitDate");
         r=i;
       }
     }
     for (let i in cslinks) {
-      if (cslinks[i].field("VisitType")=="Admit" && cslinks[i].field("VisitDate") > last && my.ndate(​cslinks[i].field("VisitDate"))​<= my.ndate(​date) ) {
+      if (cslinks[i].field("VisitType")=="Admit" && cslinks[i].field("VisitDate") > last && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) ) {
         last = cslinks[i].field("VisitDate");
         s=i;
       }
@@ -193,13 +170,13 @@ function mergeeffect()  {
   let mpos = posinmerge()​;
 
   if(mpos["found"]​ == true ) { //parent or child
-    if(my.ndate(old.vsdate) != my.ndate(e.field("VisitDate"))) {
+    if(my.gdate(old.vsdate) != my.gdate(e.field("VisitDate"))) {
       changeother(mpos["pos"]​, mpos["mar"]​, "VisitDate" ) ;
     }
     if(old.ward != e.field("Ward") ) {
       changeother(mpos["pos"], mpos["mar"], "Ward" ) ;
     } 
-    if(my.ndate(old.dcdate) != my.ndate(e.field("DischargeDate")) ) {
+    if(my.gdate(old.dcdate) != my.gdate(e.field("DischargeDate")) ) {
       changeother(mpos["pos"], mpos["mar"], "DischargeDate" ) ;
     }
     if(old.vstype != e.field("VisitType") ) {
@@ -233,22 +210,28 @@ function mlacancel() {
   let mid = getmergeid(e)​;
   if(mid.length>0)​{
     for (let i in mid) {
+
       let lib =null, id="" ;
+
       if (mid[i]["lib"]=="or") {
         lib = libByName("UroBase")​ ;
         id = mid[i]["id"] ;
+
       }
+
       else if (mid[i]["lib"]=="cs" ) {
         lib = libByName("Consult")​ ;
         id = mid[i]["id"] ;
+
       }
 
       if (lib != null)​ {
         let toent = libByName(lib).findById(id) ;
         if (toent != null) {
           toent.set("MergeID" , "") ;
-          if(i!=0)​ toent.set("VisitDate" , null)​;
+          if(i!=0)​ toent.set("VisitDate" , my.dateminus(toent.field("Date"), 1))​;
         }​
+
       }
     }​
   } 
@@ -290,7 +273,7 @@ function createnew (libto, libfrom)​ {
 
     if (entlinks.length > min) {
       for (let i in entlinks) {
-        if (entlinks[i].field(field1).getTime() == my.ndate(e.field("AppointDate")))​ {
+        if (my.gdate(entlinks[i].field(field1))​ == my.gdate(e.field("AppointDate")))​ {
           found = true;
           break ;
         }
@@ -405,23 +388,23 @@ function setnewdate(trig) {
     t = true;
 
   //---if Date change : set new date
-  if (t || my.ndate(old.csdate)!=my.ndate(​e.field("ConsultDate"))​​) {
+  if (t || my.gdate(old.csdate) != my.gdate(​e.field("ConsultDate"))​​) {
     e.set("ConsultDate", my.date(e.field("ConsultDate")));
   }​
-  if (t || my.ndate(​old.vsdate)!=my.ndate(​e.field("VisitDate"))​) {
+  if (t || my.gdate(​old.vsdate) != my.gdate(​e.field("VisitDate"))​) {
     e.set("VisitDate", my.date(e.field("VisitDate")));
   }​
-  if (t || my.ndate(​old.dcdate)!=my.ndate(​e.field("DischargeDate"))​) {
+  if (t || my.gdate(​old.dcdate) != my.gdate(​e.field("DischargeDate"))​) {
     e.set("DischargeDate", my.date(e.field("DischargeDate")));
   }​
-  if (t || my.ndate(​old.apdate)!=my.ndate(​e.field("AppointDate"))​) {
+  if (t || my.gdate(​old.apdate) != my.gdate(​e.field("AppointDate"))​) {
     e.set("AppointDate", my.date(e.field("AppointDate")));
   }​
 } ;​
 function setvisitdate()​ {
   if (e.field("EntryMx")​ == "Pending" &​& e.field("VisitDate") == null) {
     if (e.field("VisitType") == "Admit") {
-      e.set("VisitDate", e.field("ConsultDate")-86400000);
+      e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1));
     }​
     else ​{
       e.set("VisitDate", e.field("ConsultDate")​)​;
@@ -439,10 +422,10 @@ function setptstatus()​ {
   }​
 
   //--set pt.status, pt.ward, wardStamp and Description
-  if ((links[0].field("WardStamp")​ == null || my.ndate(e.field("VisitDate")) >= my.ndate(links[0].field("WardStamp")​)) && 
+  if ((links[0].field("WardStamp")​ == null || my.gdate(e.field("VisitDate")) >= my.gdate(links[0].field("WardStamp")​)) && 
 (links[0].field("Status")​ == "Still" || links[0].field("Status") ​== "Active")​​ &​&
 e.field("EntryMx") != "Not")​ {
-    if (e.field("VisitType") ​== "Admit" && my.ndate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.ndate(e.field("DischargeDate")) ​> ntoday) ) {//Admit
+    if (e.field("VisitType") ​== "Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate")) ​> ntoday) ) {//Admit
       links[0].set("Status" ,"Active");
       links[0].set("Ward", e.field("Ward"));
       links[0].set("WardStamp", e.field("VisitDate")​)​;
@@ -457,7 +440,7 @@ e.field("EntryMx") != "Not")​ {
        
       links[0].set("Descript", str);
     }
-    else if (e.field("VisitType")​ == "Admit" && my.ndate(e.field("VisitDate")) <= ntoday && my.ndate(e.field("DischargeDate"))​ <= ntoday​​ ) { // D/C
+    else if (e.field("VisitType")​ == "Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ ) { // D/C
       links[0].set("Status" ,"Still");
       links[0].set("Ward", "");
       let str = "" ;
@@ -476,7 +459,7 @@ e.field("EntryMx") != "Not")​ {
        
       links[0].set("Descript", str);
     }​
-    else if ((m == null)​ || (m.field("DischargeDate") != null && my.ndate(m.field("DischargeDate"))​<=ntoday)​ ) {//D/C of last visit: still 
+    else if ((m == null)​ || (m.field("DischargeDate") != null && my.gdate(m.field("DischargeDate"))​ <= ntoday)​ ) {//if future check last admit if never admit or already D/C of last visit: still 
       links[0].set("Status" ,"Still");
       links[0].set("Ward", "");
     }​
