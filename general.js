@@ -57,7 +57,7 @@ var my = {
       this.nd = 0;
       return this.nd;
     }
- },
+  },
   ndateminus : function (value, minus)  {
     if (value != null) {
       this.d = this.dateminus(value,minus);
@@ -160,13 +160,13 @@ function mergelastadmit(thislib)  {
 } ;​
 function posinmerge()​{
   let mid = getmergeid(e) ;
+  let o = new Object()​;
+  o["found"]​= false;
 
   if (mid.length>0) {
     let thislib = lib().title ;
     let thisid = e.id ;
-    let o = new Object()​;
-    o["found"]​= false;
-
+    
     for(let i in mid) {
       let lib ="", id="" ;
       if (mid[i]​["lib"]=="or") {
