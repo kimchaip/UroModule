@@ -13,7 +13,7 @@
 	createnew
 
 ### urobase​ : 
-	old
+	old, que
 
 	setnewdate, setvisitdate, 
 	lastDJStamp, setDJstent, 
