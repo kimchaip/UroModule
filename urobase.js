@@ -464,7 +464,7 @@ var que = {
         arr[index]​.set("Que", value.field("Que")​+"0"​);
       }​);
     }​
-  }​
+  }, 
   reorder : function()​ {
     if(this.q.length > 0) {
       this.q.forEach(function (value, index, arr)​ {
