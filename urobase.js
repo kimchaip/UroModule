@@ -446,7 +446,7 @@ var que = {
   }, 
   findresult : function ()​ {
     if(this.fnd != "" &​& this.q.length > 0) {
-      this.q.find(function(ent) {
+      return this.q.find(function(ent) {
         return ent.field("Que")​ == this.fnd;
       }, this​);
     }​
