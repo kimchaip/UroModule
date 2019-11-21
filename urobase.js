@@ -469,7 +469,7 @@ var que = {
     if(this.q.length > 0) {
       this.q.forEach(function (value, index, arr)​ {
         arr[index]​.set("Que", this.mystring(index+1)​);
-      }​);
+      }, this);
     }​
   }​
 }​;
