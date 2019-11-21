@@ -460,7 +460,7 @@ function lastDJStamp(date)  {
         r=i;
       }
     }
-    if (last != null &​& orlinks[i].field("DJstent") != "off DJ") {
+    if (last != null &​& orlinks[r].field("DJstent") != "off DJ") {
       o = orlinks[r] ;
     }
   }
