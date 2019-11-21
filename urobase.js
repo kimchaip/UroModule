@@ -461,7 +461,7 @@ var que = {
   addzero : function()​ {
     if(this.q.length > 0) {
       this.q.forEach(function (value, index, arr)​ {
-        arr[index]​.set("Que", value.field("Que")​+"0")​);
+        arr[index]​.set("Que", value.field("Que")​+"0"​);
       }​);
     }​
   }​
