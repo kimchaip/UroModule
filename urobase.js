@@ -410,6 +410,69 @@ var old = {
     return this.a[17] ;
   }​
 } ;
+//--Que variable and function 
+var que = {
+  q : [],​
+  fnd : "", 
+  mystring : function (value)​ {
+    if(typeof (value)​ == "number")​ {
+      if(value>9) 
+        return String(value) ;
+      else 
+        return "0" + String(value);
+    }
+    else if(typeof (value)​ == "string" )​ {
+      if(value.length>1) 
+        return  value;
+      else 
+        return "0" + value ;
+    } 
+  }, 
+  set find(value)​ {
+    fnd = this.mystring(value)​;
+  },​
+  getque : function()​ {
+    let uro = lib().entries();
+    this.q = [] ;
+
+    for (let i in uro)​ {
+      if (i>150) {
+        break;
+      }​
+      else if (my.gdate(uro[i].field("Date")​) == my.gdate(e.field("Date"))  &​& uro[i].field("ORType") == "GA")​ {
+        this.q.push(uro[i]​)​;
+      }​
+    }​
+  }, 
+  findresult : function ()​ {
+    if(this.fnd != "" &​& this.q.length > 0) {
+      this.q.find(function(ent) {
+        return ent.field("Que")​ == this.fnd;
+      }​);
+    }​
+  }, 
+  sort : function()​ {
+    if(this.q.length > 0) {
+      this.q.sort(function(a, b) {
+        return a.field("Que")-b.field("Que");
+      })​;
+    }​
+  }, 
+  addzero : function()​ {
+    if(this.q.length > 0) {
+      this.q.forEach(function (value, index, arr)​ {
+        arr[index]​.set("Que", value.field("Que")​+"0")​);
+      }​);
+    }​
+  }​
+  reorder : function()​ {
+    if(this.q.length > 0) {
+      this.q.forEach(function (value, index, arr)​ {
+        arr[index]​.set("Que", this.mystring(index+1)​);
+      }​);
+    }​
+  }​
+}​;
 function setnewdate(trig) {
   let t = false ;
   if (trig=="update")​ 
