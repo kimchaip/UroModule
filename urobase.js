@@ -432,10 +432,7 @@ var que = {
     this.q = [] ;
 
     for (let i in uro)​ {
-      if (i>150) {
-        break;
-      }​
-      else if (my.gdate(uro[i].field("Date")​) == my.gdate(e.field("Date"))  &​& uro[i].field("ORType") == "GA" &​& uro[i].field("Status")​ != "Not")​ {
+      if (my.gdate(uro[i].field("Date")​) == my.gdate(e.field("Date"))  &​& uro[i].field("ORType") == "GA" &​& uro[i].field("Status")​ != "Not")​ {
         this.q.push(uro[i]​)​;
       }​
     }​
