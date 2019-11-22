@@ -437,10 +437,22 @@ var que = {
       }​
     }​
   }, 
+  max : function()​ {
+    let maxq = 0;
+    for(let i in this.q) {
+      if(this.q.field("Que")​ > maxq) {
+        maxq = this.q.field("Que")​;
+      }​
+    }​
+    return maxq;
+  }, 
   sort : function()​ {
     if(this.q.length > 0) {
       this.q.sort(function(a, b) {
-        return a.field("Que")-b.field("Que");
+        let diff = a.field("Que")-b.field("Que");
+        if (diff<0) return -​1;
+        else if (diff>0) return 1;
+        else return 0;
       })​;
     }​
   }, 
