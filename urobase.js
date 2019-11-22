@@ -410,67 +410,7 @@ var old = {
     return this.a[17] ;
   }​
 } ;
-//--Que variable and function 
-var que = {
-  q : [],​
-  string : function (value)​ {
-    if(typeof (value)​ == "number")​ {
-      if(value>9) 
-        return String(value) ;
-      else 
-        return "0" + String(value);
-    }
-    else if(typeof (value)​ == "string" )​ {
-      if(value.length>1) 
-        return  value;
-      else 
-        return "0" + value ;
-    } 
-  }, 
-  getstart : function()​ {
-    let uro = lib().entries();
-    this.q = [] ;
 
-    for (let i in uro)​ {
-      if (my.gdate(uro[i].field("Date")​) == my.gdate(e.field("Date"))  &​& uro[i].field("ORType") == "GA" &​& uro[i].field("Status")​ != "Not")​ {
-        this.q.push(uro[i]​)​;
-      }​
-    }​
-  }, 
-  max : function()​ {
-    let maxq = 0;
-    for(let i in this.q) {
-      if(this.q.field("Que")​ > maxq) {
-        maxq = this.q.field("Que")​;
-      }​
-    }​
-    return maxq;
-  }, 
-  sort : function()​ {
-    if(this.q.length > 0) {
-      this.q.sort(function(a, b) {
-        let diff = a.field("Que")-b.field("Que");
-        if (diff<0) return -​1;
-        else if (diff>0) return 1;
-        else return 0;
-      })​;
-    }​
-  }, 
-  shift : function(from, to) {
-    this.sort()​;
-    if (from < to )​ {
-      for (let i = from​; i<to​; i++)​ { 
-        this​.q[i-1].set("Que", this​.q[i].field("Que"));
-      }​
-    }​
-    else { // from​ > to 
-      for (let i = from​; i>to​; i--)​ { 
-        this​.q[i-1].set("Que", this​.q[i-2].field("Que"));
-      }​
-    }​
-    this​.q[to​-1].set("Que", this​.string(to​))​;
-  }
-}​;
 function setnewdate(trig) {
   let t = false ;
   if (trig=="update")​ 
