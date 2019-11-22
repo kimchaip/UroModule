@@ -413,8 +413,7 @@ var old = {
 //--Que variable and function 
 var que = {
   q : [],​
-  fnd : "", 
-  mystring : function (value)​ {
+  string : function (value)​ {
     if(typeof (value)​ == "number")​ {
       if(value>9) 
         return String(value) ;
@@ -428,10 +427,7 @@ var que = {
         return "0" + value ;
     } 
   }, 
-  set find(value)​ {
-    fnd = this.mystring(value)​;
-  },​
-  getque : function()​ {
+  getstart : function()​ {
     let uro = lib().entries();
     this.q = [] ;
 
@@ -444,13 +440,6 @@ var que = {
       }​
     }​
   }, 
-  findresult : function ()​ {
-    if(this.fnd != "" &​& this.q.length > 0) {
-      return this.q.find(function(ent) {
-        return ent.field("Que")​ == this.fnd;
-      }, this​);
-    }​
-  }, 
   sort : function()​ {
     if(this.q.length > 0) {
       this.q.sort(function(a, b) {
@@ -458,20 +447,20 @@ var que = {
       })​;
     }​
   }, 
-  addzero : function()​ {
-    if(this.q.length > 0) {
-      this.q.forEach(function (value, index, arr)​ {
-        arr[index]​.set("Que", value.field("Que")​+"0"​);
-      }​);
+  shift : function(from, to) {
+    this.sort()​;
+    if (from < to )​ {
+      for (let i = from​; i<to​; i++)​ { 
+        this​.q[i-1].set("Que", this​.q[i].field("Que"));
+      }​
     }​
-  }, 
-  reorder : function()​ {
-    if(this.q.length > 0) {
-      this.q.forEach(function (value, index, arr)​ {
-        arr[index]​.set("Que", this.mystring(index+1)​);
-      }, this);
+    else { // from​ > to 
+      for (let i = from​; i>to​; i--)​ { 
+        this​.q[i-1].set("Que", this​.q[i-2].field("Que"));
+      }​
     }​
-  }​
+    this​.q[to​-1].set("Que", this​.string(to​))​;
+  }
 }​;
 function setnewdate(trig) {
   let t = false ;
