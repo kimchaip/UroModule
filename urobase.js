@@ -410,7 +410,103 @@ var old = {
     return this.a[17] ;
   }​
 } ;
-
+var que = {
+  q : [],​
+  fq : 0, 
+  string : function (value)​ {
+    if(typeof (value)​ == "number")​ {
+      if(value>9) 
+        return String(value) ;
+      else 
+        return "0" + String(value);
+    }
+    else if(typeof (value)​ == "string" )​ {
+      if(value.length>1) 
+        return  value;
+      else 
+        return "0" + value ;
+    } 
+  }, 
+  getstart : function()​ {
+    let uro = lib().entries();
+    this.q = [] ;
+    for (let i in uro)​ {
+      if (my.gdate(uro[i].field("Date")​) == my.gdate(e.field("Date"))  &​& uro[i].field("ORType") == "GA" &​& uro[i].field("Status")​ != "Not")​ {
+        this.q.push(uro[i]​)​;
+      }​
+    }​
+  }, 
+  max : function()​ {
+    let maxq = 0;
+    for(let i in this.q) {
+      if(Number(this.q[i]​.field("Que"))​ > maxq) {
+        maxq = Number(this.q[i]​.field("Que"))​;
+      }​
+    }​
+    return maxq;
+  }, 
+  checkque : function (value)​ {
+    return Number(value.field("Que")​) == this.fq;
+  }, 
+  checkid : function (value)​ {
+    return value.id == e.id;
+  }, 
+  checkdup : function (value)​ {
+    return value.id != this.id &​& value.field("Que") == this.field("Que");
+  }, 
+  findque : function (value)​ {
+    this.fq = value;
+    return this.q.find(this.checkque, this);
+  }, 
+  findme : function()​ {
+    return this.q.find(this.checkid);
+  }, 
+  finddup : function (entry)​ {
+    return this.q.find(this.checkdup, entry);
+  }, 
+  findhole : function ()​ {
+    let m = this.max()+1;
+    for (let i = 1; i<m;  i++) {
+      let found = false;
+      for (let j in this.q) {
+        let nq = Number(this.q[j]​.field("Que"​))​;
+        if (nq==i)​ {
+          found = true;
+          break;
+        }​
+      }​
+      if (found==false)​ {
+        return i;
+      }​
+    }​
+    return 0;
+  }, 
+  sort : function()​ {
+    if(this.q.length > 0) {
+      this.q.sort(function(a, b) {
+        let diff = a.field("Que")-b.field("Que");
+        if (diff<0) return -​1;
+        else if (diff>0) return 1;
+        else return 0;
+      })​;
+    }​
+  }, 
+  reorder : function(from, to, diff) {
+    e.set("Que", this.string(from))​;
+    this.sort()​;
+    if (from < to )​ { //Rt shift
+      for (let i = to; i>from; i--)​ { 
+        this​.q[diff+i-1].set("Que", this.q[diff+i-2].field("Que"));
+      }​
+    }​
+    else { // from​ > to : Lt shift
+      for (let i = to; i<from​; i++)​ { 
+        this​.q[diff+i-1].set("Que", this.q[diff+i].field("Que"));
+      }​
+    }​
+    e.set("Que", this​.string(to​))​;
+  }
+}​;
 function setnewdate(trig) {
   let t = false ;
   if (trig=="update")​ 
