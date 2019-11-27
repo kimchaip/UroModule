@@ -13,7 +13,8 @@
 	createnew
 
 ### urobase​ : 
-	old(getstart, store) , que(getstart, max, findme, findque(que)​, findhole, finddup(entry)​, sort, reorder(from, to, diff))​
+	old(getstart, store) , 
+	que(getstart, max, findme, findque(que)​, findhole, finddup(entry)​, sort, reorder(from, to, diff))​
 
 	setnewdate, setvisitdate, 
 	lastDJStamp, setDJstent, 
