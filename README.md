@@ -4,7 +4,7 @@
 
 ### common​ : 
 	e, links, 
-	my, 
+	my(date, dateadd, dateminus, gdate) , 
 	today, ntoday
 
 	lastadmit, getmergeid, 
@@ -13,7 +13,7 @@
 	createnew
 
 ### urobase​ : 
-	old, que
+	old(getstart, store) , que(getstart, max, findme, findque(que)​, findhole, finddup(entry)​, sort, reorder(from, to, diff))​
 
 	setnewdate, setvisitdate, 
 	lastDJStamp, setDJstent, 
@@ -24,7 +24,7 @@
 
 ### common​ : 
 	e, links, 
-	my, 
+	my(date, dateadd, dateminus, gdate) , 
 	today, ntoday
 
 	lastadmit, getmergeid, 
@@ -33,7 +33,7 @@
 	createnew
 
 ### consult : 
-	old
+	old(getstart, store) 
 
 	setnewdate, setvisitdate, 
 	setptstatus
