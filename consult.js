@@ -290,7 +290,7 @@ function createnew (libto, libfrom)​ {
       ent​["Dx"] = e.field("Dx")​;
 
       if (libto == "uro" &​& libfrom == "uro") {
-        ent​["Op"] = e.field("Op")​;
+        ent​["Op"] = e.field("Operation")​;
         ent​["ORType"] = e.field("ORType")​;
         ent​["VisitType"] = e.field("VisitType")​;
         if (e.field("VisitType")​== "Admit")​
@@ -303,6 +303,7 @@ function createnew (libto, libfrom)​ {
         ent​["Ward"] = e.field("Ward")​;
         ent​["VisitType"] = "OPD";
         ent​["VisitDate"] = my.date(e.field("AppointDate")​);
+	ent​["Op"] = e.field("Operation")​;
       }​
       else if (libto == "uro" &​& libfrom == "consult" ) {​
         ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
