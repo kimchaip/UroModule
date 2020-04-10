@@ -303,11 +303,11 @@ function createnew (libto, libfrom)​ {
         ent​["Ward"] = e.field("Ward")​;
         ent​["VisitType"] = "OPD";
         ent​["VisitDate"] = my.date(e.field("AppointDate")​);
-	ent​["Op"] = e.field("Operation")​;
       }​
       else if (libto == "uro" &​& libfrom == "consult" ) {​
         ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
         ent​["RecordDate"] = today​;
+	ent​["Op"] = e.field("Operation")​;
         ent["Photo"] = e.field("Photo").join()​;
       }​
       else if (libto == "consult" &​& libfrom == "consult") {​
