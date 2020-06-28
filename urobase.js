@@ -283,7 +283,6 @@ function createnew (libto, libfrom)​ {
     if (!found) {
       let ent​ = new Object();
       ent​[field1] = my.date(e.field("AppointDate")​);
-      ent​["Patient"]​ = links[0].title;
       ent​["PastHx"] = e.field("PastHx")​;
       ent​["Inv"] = e.field("Inv").join()​;
       ent​["InvResult"] = e.field("InvResult");
@@ -316,6 +315,8 @@ function createnew (libto, libfrom)​ {
       }​
 
       lib.create(ent);
+      let last = lib.entries()[0];
+      last.link("Patient",links[0]);
       message("successfully created new Entry") ;
     }​
   }​
