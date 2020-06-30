@@ -16,8 +16,8 @@
 	old(getstart, store) , 
 	que(getstart, max, findme, findque(que)​, findhole, finddup(entry)​, sort, reorder(from, to, diff))​
 
-	alert(ent), 
-        setnewdate, setvisitdate, 
+	alert(ent),
+    setnewdate, setvisitdate, 
 	lastDJStamp, setDJstent, 
 	updateDJStamp, 
 	setptstatus
