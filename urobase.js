@@ -317,13 +317,44 @@ function createnew (libto, libfrom)​ {
       lib.create(ent);
       let last = lib.entries()[0];
       last.link("Patient",links[0]);
-      if(libto==uro)
-        alert(last) ;
+      alert(last, libto) ;
       message("successfully created new Entry") ;
     }​
   }​
   e.set("EntryMx", defau) ;
 }​;​
+function alert(ent, libcode)​ {
+  let linke = ent.field("Patient");
+  if(libcode=="uro") {
+    if (linke[0].field("Status")=="Active" || (ent.field("VisitType")=="OPD" &​& my.gdate(ent.field("VisitDate"))​== ntoday)​)​{
+
+      if (ent.field("Status")=="Done")
+        ent.set("Color", "#1D83D5"); 
+
+      else if (ent.field("Status")=="Plan")
+        ent.set("Color",​ "#2AC7DB"); 
+      else 
+        ent.set("Color", "#3B3B3B")​;
+
+    
+    }
+    else {
+      if (ent.field("Status")=="Done") ent.set("Color", "#0A2D49")​ ; 
+      else if (ent.field("Status")=="Plan")
+        ent.set("Color", "#005E6A")​ ;
+      else 
+        ent.set("Color", "#3B3B3B")​ ;
+    }
+  }
+  else if(libcode=="consult") {
+    if (linke[0].field("Status")=="Active" || (ent.field("VisitType")=="OPD" &​& my.gdate(ent.field("VisitDate"))​== ntoday)​)​{
+      ent.set("Color", "#1D83D5");
+    }​
+    else {
+      ent.set("Color", "#3B3B3B")​;
+    }
+  }​
+}​;
 
 //UroBase
 var old = {
@@ -509,28 +540,6 @@ var que = {
       }​
     }​
     e.set("Que", this​.string(to​))​;
-  }
-}​;
-function alert(ent)​ {
-  let linke = ent.field("Patient");
-  if (linke[0].field("Status")=="Active" || (ent.field("VisitType")=="OPD" &​& my.gdate(ent.field("VisitDate"))​== ntoday)​)​{
-
-    if (ent.field("Status")=="Done")
-      ent.set("Color", "#1D83D5"); 
-
-    else if (ent.field("Status")=="Plan")
-      ent.set("Color",​ "#2AC7DB"); 
-    else 
-      ent.set("Color", "#3B3B3B")​;
-
-    
-  }
-  else {
-    if (ent.field("Status")=="Done") ent.set("Color", "#0A2D49")​ ; 
-    else if (ent.field("Status")=="Plan")
-      ent.set("Color", "#005E6A")​ ;
-    else 
-      ent.set("Color", "#3B3B3B")​ ;
   }
 }​;
 function setnewdate(trig) {
