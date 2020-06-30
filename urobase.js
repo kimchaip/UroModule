@@ -317,6 +317,8 @@ function createnew (libto, libfrom)​ {
       lib.create(ent);
       let last = lib.entries()[0];
       last.link("Patient",links[0]);
+      if(libto==uro)
+        alert(last) ;
       message("successfully created new Entry") ;
     }​
   }​
