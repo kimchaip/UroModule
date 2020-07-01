@@ -10,14 +10,13 @@
 	lastadmit, getmergeid, 
 	mergelastadmit, posinmerge, mergeeffect, 
 	changeother, mlacancel, 
-	createnew
+	createnew, alert(ent, libcode)
 
 ### urobase​ : 
 	old(getstart, store) , 
 	que(getstart, max, findme, findque(que)​, findhole, finddup(entry)​, sort, reorder(from, to, diff))​
 
-	alert(ent),
-    setnewdate, setvisitdate, 
+	setnewdate, setvisitdate, 
 	lastDJStamp, setDJstent, 
 	updateDJStamp, 
 	setptstatus
@@ -32,7 +31,7 @@
 	lastadmit, getmergeid, 
 	mergelastadmit, posinmerge, mergeeffect, 
 	changeother, mlacancel, 
-	createnew
+	createnew, alert(ent, libcode)
 
 ### consult : 
 	old(getstart, store) 
