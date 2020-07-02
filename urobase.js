@@ -326,32 +326,66 @@ function createnew (libto, libfrom)​ {
 function alert(ent, libcode)​ {
   let linke = ent.field("Patient");
   if(libcode=="uro") {
-    if (linke[0].field("Status")=="Active" || (ent.field("VisitType")=="OPD" &​& my.gdate(ent.field("VisitDate"))​== ntoday)​)​{
-
-      if (ent.field("Status")=="Done")
-        ent.set("Color", "#1D83D5"); 
-
-      else if (ent.field("Status")=="Plan")
-        ent.set("Color",​ "#2AC7DB"); 
-      else 
-        ent.set("Color", "#3B3B3B")​;
-
-    
+    if(ent.field("Status")=="Not") {
+      ent.set("Color", "#5B5B5B")​;
+    } 
+    else if(ent.field("Status")=="Plan") {
+      if (linke[0].field("Status")=="Active" || (ent.field("VisitType")=="OPD" &​& my.gdate(ent.field("VisitDate"))​== ntoday)​)​{
+        if (ent.field("VisitType")=="OPD") {
+          ent.set("Color", "#A7FF87"); 
+        } 
+        else { // Admit
+          ent.set("Color",​ "#5CD3FF"); 
+        } 
+      } 
+      else // no Active
+        if (ent.field("VisitType")=="OPD")​{
+          ent.set("Color", "#ABC39A");
+        }​
+        else { // Admit
+          ent.set("Color", "#BDD7EE");
+        } 
+      } 
     }
-    else {
-      if (ent.field("Status")=="Done") ent.set("Color", "#0A2D49")​ ; 
-      else if (ent.field("Status")=="Plan")
-        ent.set("Color", "#005E6A")​ ;
-      else 
-        ent.set("Color", "#3B3B3B")​ ;
+    else if(ent.field("Status")=="Done") {
+      if (linke[0].field("Status")=="Active" || (ent.field("VisitType")=="OPD" &​& my.gdate(ent.field("VisitDate"))​== ntoday)​)​{
+        if (ent.field("VisitType")=="OPD") {
+          ent.set("Color", "#6EB73D"); 
+        } 
+        else { // Admit
+          ent.set("Color",​ "#00B0F0"); 
+        } 
+      } 
+      else // no Active
+        if (ent.field("VisitType")=="OPD")​{
+          ent.set("Color", "#577244");
+        }​
+        else { // Admit
+          ent.set("Color", "#3974AA");
+        } 
+      } 
     }
   }
+
   else if(libcode=="consult") {
-    if (linke[0].field("Status")=="Active" || (ent.field("VisitType")=="OPD" &​& my.gdate(ent.field("VisitDate"))​== ntoday)​)​{
-      ent.set("Color", "#1D83D5");
-    }​
-    else {
-      ent.set("Color", "#3B3B3B")​;
+    if(ent.field("EntryMx")=="Not") {
+      ent.set("Color", "#5B5B5B")​;
+    } 
+    else if(linke[0].field("Status")=="Active" || (ent.field("VisitType")=="OPD" &​& my.gdate(ent.field("VisitDate"))​== ntoday)​) {
+      if (ent.field("VisitType")=="OPD")​{
+        ent.set("Color", "#6EB73D");
+      }​
+      else { // Admit
+        ent.set("Color", "#00B0F0");
+      } 
+    } 
+    else { // not Active
+      if (ent.field("VisitType")=="OPD")​{
+        ent.set("Color", "#577244");
+      }​
+      else { // Admit
+        ent.set("Color", "#3974AA");
+      } 
     }
   }​
 }​;
