@@ -343,7 +343,7 @@ function alert(ent, libcode)​ {
           ent.set("Color", "#ABC39A");
         }​
         else { // Admit
-          ent.set("Color", "#BDD7EE");
+          ent.set("Color", "#66B2FF");
         } 
       } 
     }
