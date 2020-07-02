@@ -338,7 +338,7 @@ function alert(ent, libcode)​ {
           ent.set("Color",​ "#5CD3FF"); 
         } 
       } 
-      else // no Active
+      else { // no Active
         if (ent.field("VisitType")=="OPD")​{
           ent.set("Color", "#ABC39A");
         }​
@@ -356,7 +356,7 @@ function alert(ent, libcode)​ {
           ent.set("Color",​ "#00B0F0"); 
         } 
       } 
-      else // no Active
+      else { // no Active
         if (ent.field("VisitType")=="OPD")​{
           ent.set("Color", "#577244");
         }​
