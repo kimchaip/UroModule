@@ -186,7 +186,7 @@ function mergeeffect()  {
 function changeother(pos, mla, field) {
   for (let i in mla) {
     if(i != pos) {
-      let lib ="", id="" ;
+      let lib ="", id=0 ;
       if (mla[i]["lib"] == "or") {
 
         lib = "UroBase" ;
@@ -210,7 +210,7 @@ function mlacancel() {
   if(mid.length>0)​{
     for (let i in mid) {
 
-      let lib =null, id="" ;
+      let lib =null, id=0 ;
 
       if (mid[i]["lib"]=="or") {
         lib = libByName("UroBase")​ ;
