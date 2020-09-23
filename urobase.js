@@ -211,7 +211,7 @@ function mlacancel() {
   if(mid.length>0)​{
     for (let i in mid) {
 
-      let lib =null, id="" ;
+      let lib =null, id=0 ;
 
       if (mid[i]["lib"]=="or") {
         lib = libByName("UroBase")​ ;
