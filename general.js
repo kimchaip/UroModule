@@ -228,7 +228,8 @@ function mlacancel() {
         let toent = libByName(lib).findById(id) ;
         if (toent != null) {
           toent.set("MergeID" , "") ;
-          if(i!=0)​ toent.set("VisitDate" , my.dateminus(toent.field("Date"), 1))​;
+          toent.set("Merge", false)​;
+          if(i!=0 &​& mid[i]["lib"]=="or"​)​ toent.set("VisitDate" , my.dateminus(toent.field("Date"), 1))​;
         }​
 
       }
