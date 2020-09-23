@@ -207,33 +207,34 @@ function changeother(pos, mla, field) {
   } 
 } ;​
 function mlacancel() {
-  let mid = getmergeid(e)​;
-  if(mid.length>0)​{
-    for (let i in mid) {
+  let mpos = posinmerge()​;
+  if(mpos["found"]​==true)​{
+    let k = mpos["pos"];
+    let mid = mpos["mar"];
 
-      let lib =null, id=0 ;
-
-      if (mid[i]["lib"]=="or") {
-        lib = libByName("UroBase")​ ;
-        id = mid[i]["id"] ;
-
-      }
-
-      else if (mid[i]["lib"]=="cs" ) {
-        lib = libByName("Consult")​ ;
-        id = mid[i]["id"] ;
-
-      }
-
-      if (lib != null)​ {
-        let toent = libByName(lib).findById(id) ;
-        if (toent != null) {
-          toent.set("MergeID" , "") ;
-          toent.set("Merge", false)​;
-          if(i!=0 &​& mid[i]["lib"]=="or"​)​ toent.set("VisitDate" , my.dateminus(toent.field("Date"), 1))​;
-        }​
-
-      }
+    if (mid.length>2)​ {
+      let tid=[]​;
+      for(let i=k+1; i<mid.length; i++)​ {
+        tid.push(mid.pop()​)​;
+      }​
+      mid.pop()​;
+      for(let i=0; i<tid.length; i++)​ {
+        mid.push(tid.pop()​)​;
+      }​
+      let str = "" ;​
+      for(let i=0; i<mid.length; i++)​ {
+        str+=mid[i]​["lib"]​;
+        str+=",";
+        str+=mid[i]​["id"]​;
+        if (i<mid.length-1)
+          str+=",";
+      }​
+      e.set("MergeID", str)​;​
+      changeother(k, mid, "MergeID")​;
+    else if (mid.length>1) {
+      e.set("MergeID", "")​;​
+      changeother(k, mid, "Merge")​;
+      changeother(k, mid, "MergeID")​;
     }​
   } 
 } ;​
