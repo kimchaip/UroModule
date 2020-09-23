@@ -232,6 +232,7 @@ function mlacancel() {
       e.set("MergeID", str)​;​
       changeother(k, mpos["mar"], "MergeID")​;
       e.set("MergeID", "")​;​
+    {
     else if (mid.length>1) {
       e.set("MergeID", "")​;​
       changeother(k, mid, "Merge")​;
