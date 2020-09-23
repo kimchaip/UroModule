@@ -187,7 +187,7 @@ function mergeeffect()  {
 function changeother(pos, mla, field) {
   for (let i in mla) {
     if(i != pos) {
-      let lib ="", id="" ;
+      let lib ="", id=0 ;
       if (mla[i]["lib"] == "or") {
 
         lib = "UroBase" ;
