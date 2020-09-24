@@ -245,7 +245,10 @@ function mlacancel() {
       e.set("MergeID", str)​;​
       changeother(mid.length, mid, "MergeID")​;
       e.set("MergeID", "");
-      if (k>0) e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1)​)​;​
+      if (k>0) {
+        e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1)​)​;​
+        e.set("Ward", "Uro" ​)​ ;
+      }​
     }​
     else if (mid.length>1) {
       e.set("MergeID", "")​;​
@@ -271,6 +274,7 @@ function mlacancel() {
             toent.set("VisitDate", my.dateminus(toent.field("Date"), 1)​)​ ;
           else if(lib=="Consult")​
             toent.set("VisitDate", my.dateminus(toent.field("ConsultDate"), 1)​)​ ;
+
           toent.set("Ward", "Uro")​;
         }​
       }​
