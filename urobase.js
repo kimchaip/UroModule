@@ -238,8 +238,7 @@ function mlacancel() {
       changeother(k, mid, "Merge")​;
       changeother(k, mid, "MergeID")​;
     }​
-    if (k>0) e.set("VisitDate", my.dateminus(e.field("
-Date"), 1)​)​;
+    if (k>0) e.set("VisitDate", my.dateminus(e.field("Date"), 1)​)​;
   } 
 } ;​
 function createnew (libto, libfrom)​ {
