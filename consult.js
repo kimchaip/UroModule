@@ -214,14 +214,27 @@ function mlacancel() {
 
     if (mid.length>2)​ {
       let tid=[]​;
-      for(let i=k+1; i<mid.length; i++)​ {
-        tid.push(mid.pop()​)​;
-      }​
-      mid.pop()​;
-      for(let i=0; i<tid.length; i++)​ {
-        mid.push(tid.pop()​)​;
-      }​
       let str = "" ;​
+      for(let i=mid.length-1; i>k; i--)​ {
+        let o = new Object()​;
+        o["lib"]​=mid[i]["lib"];
+        o["id"]​=mid[i]["id"];​
+        tid.push(​o)​;
+        mid.pop();​
+      }​
+      str="k=" + k + " : mid move=" + mid.length;
+      mid.pop()​;
+      str+=" : mid delete​=" + mid.length + " : tid get=" + tid.length;
+      for(let i=0; i<tid.length; i++)​ {
+        let o = new Object()​;
+        o["lib"]​=tid[i]["lib"];
+        o["id"]​=tid[i]["id"];​
+        mid.push(o​)​;
+        tid.pop();
+      }​
+      str+=" : mid get​=" + mid.length + " : tid move=" + tid.length;
+      e.set("Output", str)​;​​
+      str = "" ;​
       for(let i=0; i<mid.length; i++)​ {
         str+=mid[i]​["lib"]​;
         str+=",";
@@ -230,13 +243,37 @@ function mlacancel() {
           str+=",";
       }​
       e.set("MergeID", str)​;​
-      changeother(k, mpos["mar"], "MergeID")​;
-      e.set("MergeID", "")​;​
+      changeother(mid.length, mid, "MergeID")​;
+      e.set("MergeID", "");
+      if (k>0) e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1)​)​;​
     }​
     else if (mid.length>1) {
       e.set("MergeID", "")​;​
       changeother(k, mid, "Merge")​;
       changeother(k, mid, "MergeID")​;
+      if (k>0) {
+        e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1)​)​;​
+        e.set("Ward", "Uro" ​)​ ;
+      }​
+      else { //this entry is parent -​> change child as usual
+        let lib ="", id="" ;​
+        if (mid[1]["lib"] == "or") {
+          lib = "UroBase" ;
+          id = mid[1]["id"] ;
+        }
+        else if (mid[1]["lib"] == "cs") {
+          lib = "Consult" ;
+          id = mid[1]["id"] ;
+        }
+        let toent = libByName(lib).findById(id) ;
+        if (toent != null) {
+          if(lib=="UroBase")​
+            toent.set("VisitDate", my.dateminus(toent.field("Date"), 1)​)​ ;
+          else if(lib=="Consult")​
+            toent.set("VisitDate", my.dateminus(toent.field("ConsultDate"), 1)​)​ ;
+          toent.set("Ward", "Uro")​;
+        }​
+      }​
     }​
   } 
 } ;​​
