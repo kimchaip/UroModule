@@ -214,14 +214,19 @@ function mlacancel() {
 
     if (mid.length>2)​ {
       let tid=[]​;
+      let str = "" ;​
       for(let i=k+1; i<mid.length; i++)​ {
         tid.push(mid.pop()​)​;
       }​
+      str="mid move=" + mid.length;
       mid.pop()​;
+      str+=" : mid delete​=" + mid.length + " : tid get=" + tid.length;
       for(let i=0; i<tid.length; i++)​ {
         mid.push(tid.pop()​)​;
       }​
-      let str = "" ;​
+      str+=" : mid get​=" + mid.length + " : tid move=" + tid.length;
+      e.set("Output", str)​;​​
+      str = "" ;​
       for(let i=0; i<mid.length; i++)​ {
         str+=mid[i]​["lib"]​;
         str+=",";
@@ -232,7 +237,6 @@ function mlacancel() {
       e.set("MergeID", str)​;​
       changeother(mid.length, mid, "MergeID")​;
       e.set("MergeID", "");
-      e.set("Output", "mid=" + mid.length + ", mar=" + mpos["mar"].length)​;​
       if (k>0) e.set("VisitDate", my.dateminus(e.field("Date"), 1)​)​;​
     }​
     else if (mid.length>1) {
