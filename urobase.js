@@ -231,7 +231,8 @@ function mlacancel() {
       }​
       e.set("MergeID", str)​;​
       changeother(mid.length, mid, "MergeID")​;
-      e.set("MergeID", "")​;​
+      e.set("MergeID", "");
+      e.set("Output", "mid=" + mid.length + ", mar=" + mpos["mar"].length)​;​
       if (k>0) e.set("VisitDate", my.dateminus(e.field("Date"), 1)​)​;​
     }​
     else if (mid.length>1) {
