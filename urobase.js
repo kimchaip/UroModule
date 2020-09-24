@@ -210,8 +210,7 @@ function mlacancel() {
   let mpos = posinmerge()​;
   if(mpos["found"]​==true)​{
     let k = mpos["pos"];
-    let mid = []​;
-    mid = mpos["mar"];
+    let mid = mpos["mar"];
 
     if (mid.length>2)​ {
       let tid=[]​;
@@ -231,7 +230,7 @@ function mlacancel() {
           str+=",";
       }​
       e.set("MergeID", str)​;​
-      changeother(k, mpos["mar"], "MergeID")​;
+      changeother(mid.length, mid, "MergeID")​;
       e.set("MergeID", "")​;​
       if (k>0) e.set("VisitDate", my.dateminus(e.field("Date"), 1)​)​;​
     }​
