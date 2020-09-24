@@ -218,7 +218,7 @@ function mlacancel() {
       for(let i=k+1; i<mid.length; i++)​ {
         tid.push(mid.pop()​)​;
       }​
-      str="mid move=" + mid.length;
+      str="k=" + k + "mid move=" + mid.length;
       mid.pop()​;
       str+=" : mid delete​=" + mid.length + " : tid get=" + tid.length;
       for(let i=0; i<tid.length; i++)​ {
