@@ -217,15 +217,15 @@ function mlacancel() {
       let str = "" ;​
       for(let i=k+1; i<mid.length; i++)​ {
         let o = new Object()​;
-        o=mid.pop()
+        o=mid.pop();
         tid.push(​o)​;
       }​
-      str="k=" + k + "mid move=" + mid.length;
+      str="k=" + k + " : mid move=" + mid.length;
       mid.pop()​;
       str+=" : mid delete​=" + mid.length + " : tid get=" + tid.length;
       for(let i=0; i<tid.length; i++)​ {
         let o = new Object()​;
-        o=tid.pop()
+        o=tid.pop();
         mid.push(o​)​;
       }​
       str+=" : mid get​=" + mid.length + " : tid move=" + tid.length;
