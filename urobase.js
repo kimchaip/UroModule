@@ -216,13 +216,17 @@ function mlacancel() {
       let tid=[]​;
       let str = "" ;​
       for(let i=k+1; i<mid.length; i++)​ {
-        tid.push(mid.pop()​)​;
+        let o = new Object()​;
+        o=mid.pop()
+        tid.push(​o)​;
       }​
       str="k=" + k + "mid move=" + mid.length;
       mid.pop()​;
       str+=" : mid delete​=" + mid.length + " : tid get=" + tid.length;
       for(let i=0; i<tid.length; i++)​ {
-        mid.push(tid.pop()​)​;
+        let o = new Object()​;
+        o=tid.pop()
+        mid.push(o​)​;
       }​
       str+=" : mid get​=" + mid.length + " : tid move=" + tid.length;
       e.set("Output", str)​;​​
