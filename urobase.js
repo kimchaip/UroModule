@@ -210,7 +210,8 @@ function mlacancel() {
   let mpos = posinmerge()​;
   if(mpos["found"]​==true)​{
     let k = mpos["pos"];
-    let mid = mpos["mar"];
+    let mid = []​;
+    mid = mpos["mar"];
 
     if (mid.length>2)​ {
       let tid=[]​;
