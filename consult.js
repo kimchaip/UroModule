@@ -214,7 +214,6 @@ function mlacancel() {
 
     if (mid.length>2)​ {
       let tid=[]​;
-      let str = "" ;​
       for(let i=mid.length-1; i>k; i--)​ {
         let o = new Object()​;
         o["lib"]​=mid[i]["lib"];
@@ -222,9 +221,7 @@ function mlacancel() {
         tid.push(​o)​;
         mid.pop();​
       }​
-      str="k=" + k + " : mid move=" + mid.length;
       mid.pop()​;
-      str+=" : mid delete​=" + mid.length + " : tid get=" + tid.length;
       for(let i=0; i<tid.length; i++)​ {
         let o = new Object()​;
         o["lib"]​=tid[i]["lib"];
@@ -232,9 +229,7 @@ function mlacancel() {
         mid.push(o​)​;
         tid.pop();
       }​
-      str+=" : mid get​=" + mid.length + " : tid move=" + tid.length;
-      e.set("Output", str)​;​​
-      str = "" ;​
+      let str = "" ;​
       for(let i=0; i<mid.length; i++)​ {
         str+=mid[i]​["lib"]​;
         str+=",";
