@@ -222,7 +222,7 @@ function mlacancel() {
         mid.pop();​
       }​
       mid.pop()​;
-      for(let i=tid.length-1; i>0; i--)​ {
+      for(let i=tid.length-1; i>=0; i--)​ {
         let o = new Object()​;
         o["lib"]​=tid[i]["lib"];
         o["id"]​=tid[i]["id"];​
