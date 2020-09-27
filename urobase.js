@@ -521,7 +521,7 @@ var old = {
   }​,
   get result() {
     return this.a[17] ;
-  }​
+  }, 
   get track() {
     return this.a[18] ;
   }​
