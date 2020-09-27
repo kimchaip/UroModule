@@ -181,7 +181,10 @@ function mergeeffect()  {
     }
     if(old.vstype != e.field("VisitType") ) {
       e.set("VisitType", old.vstype);
-    } 
+    }
+    if(old.track != e.field("Track") ) {
+      changeother(mpos["pos"], mpos["mar"], "Track" ) ;
+    }
   } 
 } ;​
 function changeother(pos, mla, field) {
@@ -456,6 +459,7 @@ var old = {
     this.a.push(e.field("Dx"));             //​15
     this.a.push(e.field("Op"));             //​16
     this.a.push(e.field("OpResult"));       //​17
+    this.a.push(e.field("Track"));          //​18
   
     e.set("Previous", this.a.join());
   }, 
@@ -517,6 +521,9 @@ var old = {
   }​,
   get result() {
     return this.a[17] ;
+  }​
+  get track() {
+    return this.a[18] ;
   }​
 } ;
 var que = {
