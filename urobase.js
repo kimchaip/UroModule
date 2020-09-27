@@ -182,9 +182,7 @@ function mergeeffect()  {
     if(old.vstype != e.field("VisitType") ) {
       e.set("VisitType", old.vstype);
     }
-    if(old.track != e.field("Track") ) {
-      changeother(mpos["pos"], mpos["mar"], "Track" ) ;
-    }
+    changeother(mpos["pos"], mpos["mar"], "Track" ) ;
   } 
 } ;​
 function changeother(pos, mla, field) {
