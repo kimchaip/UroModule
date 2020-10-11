@@ -68,7 +68,7 @@ var old = {
   store : function (e)​ {
     this.a = [] ;​
     if (lib().title=="UroBase")​ {
-      this.a.push(e.field("Date"));	       //0
+      this.a.push(e.field("Date")​)​;	       //0
       this.a.push(links[0].title);             //​1
       this.a.push(e.field("ORType"));          //​2
       this.a.push(e.field("Que"));             //​3
