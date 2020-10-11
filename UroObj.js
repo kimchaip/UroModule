@@ -46,6 +46,16 @@ var my = {
       this.nd = 0;
       return this.nd;
     }
+  }, 
+  gday : function (value)  {
+    if (value != null) {
+      this.nd = value.getDay() ;
+      return this.nd;
+    }
+    else {
+      this.nd = 0;
+      return this.d;
+    }
   }
 }​;​
 var today = my.date(new Date())​;
@@ -967,7 +977,7 @@ var uro = {
     }​
   }, 
   setopextra : function (e) {
-    if (e.field("Date").getDay()==6) {
+    if (my.gday(e.field("Date"))==6) {
       e.set("OpExtra", true);
     }​
     else {
