@@ -68,7 +68,11 @@ var old = {
   store : function (e)​ {
     this.a = [] ;​
     if (lib().title=="Urobase")​ {
-      this.a.push(e.field("Date"));	        //0
+      field1 = "Date​" ;
+      field2 = "Status​" ;
+      field3 = "Op​" ;
+      field4 = "OpResult​" ;
+      this.a.push(e.field(field1));	        //0
       this.a.push(links[0].title);             //​1
       this.a.push(e.field("ORType"));          //​2
       this.a.push(e.field("Que"));             //​3
@@ -78,29 +82,33 @@ var old = {
       this.a.push(e.field("DischargeDate"));   //​7
       this.a.push(e.field("EntryMx"));         //​8
       this.a.push(e.field("AppointDate"));     //​9
-      this.a.push(e.field("Status"));         //​10 
+      this.a.push(e.field(field2));           //​10 
       this.a.push(e.field("DJstent"));        //​11
       this.a.push(e.field("OpExtra"));        //​12
       this.a.push(e.field("Bonus"));          //​13
       this.a.push(e.field("RecordDate"));     //​14
       this.a.push(e.field("Dx"));             //​15
-      this.a.push(e.field("Op"));             //​16
-      this.a.push(e.field("OpResult"));       //​17
+      this.a.push(e.field(field3));           //​16
+      this.a.push(e.field(field4));           //​17
       this.a.push(e.field("Track"));          //​18
     }​
     else { //Consult
-      this.a.push(e.field("ConsultDate"));	    //0
+      field1 = "ConsultDate​" ;
+      field2 = "EntryMx​" ;
+      field3 = "Rx​" ;
+      field4 = "Note​" ;
+      this.a.push(e.field(field1));	       //0
       this.a.push(e.field("Patient")[0].title);//​1
       this.a.push(e.field("VisitType"));       //​2
       this.a.push(e.field("Ward"));            //​3
       this.a.push(e.field("VisitDate"));       //​4
       this.a.push(e.field("DischargeDate"));   //​5
-      this.a.push(e.field("EntryMx"));         //​6
+      this.a.push(e.field(field2));            //​6
       this.a.push(e.field("AppointDate"));     //​7
       this.a.push(e.field("Dx"));              //​8
-      this.a.push(e.field("Rx"));              //​9
-      this.a.push(e.field("Note"));           //​10
-      this.a.push(e.field("Track"));          //​11
+      this.a.push(e.field(field3));            //​9
+      this.a.push(e.field(field4));            //​10
+      this.a.push(e.field("Track"));           //​11
     }​
     e.set("Previous", this.a.join());
   }, 
