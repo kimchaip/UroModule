@@ -67,9 +67,11 @@ var old = {
   },
   store : function (e)​ {
     this.a = [] ;​
+    let links = e.field("Patient");
     if (lib().title=="UroBase")​ {
       this.a.push(e.field("Date")​)​;	       //0
-      this.a.push(e.field("Patient")​[0].title);             //​1
+      if (links.length>0) 
+        this.a.push(links​[0].title);           //​1
       this.a.push(e.field("ORType"));          //​2
       this.a.push(e.field("Que"));             //​3
       this.a.push(e.field("VisitType"));       //​4
@@ -90,7 +92,8 @@ var old = {
     }​
     else { //Consult 
       this.a.push(e.field("ConsultDate"));     //0
-      this.a.push(e.field("Patient")[0].title);//​1
+      if (links.length>0) {
+        this.a.push(links[0].title);           //​1
       this.a.push(e.field("VisitType"));       //​2
       this.a.push(e.field("Ward"));            //​3
       this.a.push(e.field("VisitDate"));       //​4
