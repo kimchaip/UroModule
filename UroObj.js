@@ -752,7 +752,7 @@ e.field(field1​) != "Not")​ {
           let str = "" ;
           if (e.field("Dx")!="")​
             str = e.field("Dx");
-          if (e.field()!=field2)​ {
+          if (e.field(field2)!="")​ {
             if (str!="" )
               str += " -​> " ;
             str += e.field(field2);
@@ -768,7 +768,7 @@ e.field(field1​) != "Not")​ {
           if (e.field(field2)!="")​ {
             if (str!="")
               str += " -​> " ;
-            str += e.field("Rx");
+            str += e.field(field2);
           }​
           if (e.field(field3)!="")​ {
             if (str!="")
@@ -792,7 +792,7 @@ e.field(field1​) != "Not")​ {
         if (e.field(field2)!="")​ {
           if (str!="")
             str += " -​> " ;
-          str += e.field("Rx");
+          str += e.field(field2);
         }​
         if (e.field(field3)!="")​ {
           if (str!="")
