@@ -67,7 +67,7 @@ var old = {
   },
   store : function (e)​ {
     this.a = [] ;​
-    if (lib().title=="Urobase")​ {
+    if (lib().title=="UroBase")​ {
       field1 = "Date​" ;
       field2 = "Status​" ;
       field3 = "Op​" ;
@@ -130,19 +130,19 @@ var old = {
     return this.a[3] ;
   }​,
   get vstype() {
-    if (lib().title=="Urobase")​
+    if (lib().title=="UroBase")​
       return this.a[4] ;
     else
       return this.a[2] ;
   }​,
   get ward() {
-    if (lib().title=="Urobase")​
+    if (lib().title=="UroBase")​
       return this.a[5] ;
     else
       return this.a[3] ;
   }​,
   get vsdate() {
-    if (lib().title=="Urobase")​ {
+    if (lib().title=="UroBase")​ {
       if (this.a[6]!​="" )​ return new Date(this.a[6])​ ;
       else return null;​
     }​
@@ -152,7 +152,7 @@ var old = {
     }​
   }​,
   get dcdate() {
-    if (lib().title=="Urobase")​ {
+    if (lib().title=="UroBase")​ {
       if (this.a[7]!​="" )​ return new Date(this.a[7])​ ;
       else return null;​
     }​
@@ -162,13 +162,13 @@ var old = {
     }​
   }​,
   get emx() {
-    if (lib().title=="Urobase")​ 
+    if (lib().title=="UroBase")​ 
       return this.a[8] ;
     else
       return this.a[6] ;
   }​,
   get apdate() {
-    if (lib().title=="Urobase")​ {
+    if (lib().title=="UroBase")​ {
       if (this.a[9]!​="" )​ return new Date(this.a[9])​ ;
       else return null;​
     }​
@@ -194,7 +194,7 @@ var old = {
     else return null;​
   }​,
   get dx() {
-    if (lib().title=="Urobase")​ {
+    if (lib().title=="UroBase")​ {
       return this.a[15] ;
     }​
     else {
@@ -214,7 +214,7 @@ var old = {
     return this.a[17] ;
   }, 
   get track() {
-    if (lib().title=="Urobase")​ {
+    if (lib().title=="UroBase")​ {
       return this.a[18] ;
     }​
     else {
@@ -280,7 +280,7 @@ var mer = {
     let mid = this.getmergeid(e) ;
     if (mid.length == 0) {
       let thislib​="" ;
-      if (lib().title=="Urobase") thislib = "or" ;
+      if (lib().title=="UroBase") thislib = "or" ;
       else  thislib = "cs" ;
       let lao = this.linklastadmit(e, my.dateminus(e.field("VisitDate"), 1));
       let l = lao["lib"], m = lao["ent"] ;
@@ -383,7 +383,7 @@ var mer = {
       let mid = mpos["mar"];
       if (mid.length>2)​ {
         let tid=[]​;
-        if (lib().title=="Urobase") {
+        if (lib().title=="UroBase") {
           field1 = "Date" ;
         }​
         else {
@@ -565,13 +565,13 @@ var emx = {
     let libname = "", field1 = "";
     let libfrom = lib().title;
     let min = 0,​ defau = "" ;
-    if (libto == "uro" &​& libfrom == "Urobase") {
+    if (libto == "uro" &​& libfrom == "UroBase") {
       libname = "UroBase";
       field1 = "Date" ;
       min = 1;
       defau = "<Default>";
     }​
-    else if (libto == "consult" &​& libfrom == "Urobase")​ {​
+    else if (libto == "consult" &​& libfrom == "UroBase")​ {​
       libname = "Consult";
       field1 = "ConsultDate" ;
       min = 0;
@@ -610,7 +610,7 @@ var emx = {
         ent​["Inv"] = e.field("Inv").join()​;
         ent​["InvResult"] = e.field("InvResult");
         ent​["Dx"] = e.field("Dx")​;
-        if (libto == "uro" &​& libfrom == "uro") {
+        if (libto == "uro" &​& libfrom == "UroBase") {
           ent​["Op"] = e.field("Operation")​;
           ent​["ORType"] = e.field("ORType")​;
           ent​["VisitType"] = e.field("VisitType")​;
@@ -620,18 +620,18 @@ var emx = {
             ent​["VisitDate"] = my.date(e.field("AppointDate"))​;
             ent​["RecordDate"] = today​;
         }​
-        else if (libto == "consult" &​& libfrom == "uro") {
+        else if (libto == "consult" &​& libfrom == "UroBase") {
           ent​["Ward"] = e.field("Ward")​;
           ent​["VisitType"] = "OPD";
           ent​["VisitDate"] = my.date(e.field("AppointDate")​);
         }​
-        else if (libto == "uro" &​& libfrom == "consult" ) {​
+        else if (libto == "uro" &​& libfrom == "Consult" ) {​
           ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
           ent​["RecordDate"] = today​;
 	      ent​["Op"] = e.field("Operation")​;
           ent["Photo"] = e.field("Photo").join()​;
         }​
-        else if (libto == "consult" &​& libfrom == "consult") {​
+        else if (libto == "consult" &​& libfrom == "Consult") {​
           ent["VisitType"]​ = "OPD" ;
           ent["VisitDate"]​ = my.date(e.field("AppointDate"));
         }​
@@ -665,7 +665,7 @@ var emx = {
 }​;
 var fill = {
   track​ : function (e) {
-    if (lib().title=="Urobase") {
+    if (lib().title=="UroBase") {
       field1 = "Status" ;
     }​
     else {
@@ -737,7 +737,7 @@ var fill = {
         links[0].set("WardStamp",null);
       }​
       //--set pt.status, pt.ward, wardStamp and Description
-      if (lib().title=="Urobase") {
+      if (lib().title=="UroBase") {
         field1 = "Status" ;
         field2 = "Op" ;
         field3 = "OpResult" ;
