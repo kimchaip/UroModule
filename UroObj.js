@@ -1,5 +1,3 @@
-var today = my.date(new Date())​;
-var ntoday = my.gdate(today);​
 var pt = libByName("Patient") ;​
 var or = libByName("UroBase") ;​
 var cs = libByName("Consult") ;
@@ -50,6 +48,8 @@ var my = {
     }
   }
 }​;​
+var today = my.date(new Date())​;
+var ntoday = my.gdate(today);​
 var old = {
   a : [],​
   getstart : function (e)​ {
