@@ -476,11 +476,11 @@ var que = {
     } 
   }, 
   getstart : function(e)​ {
-    let uro = lib().entries();
+    let all = lib().entries();
     this.q = [] ;
-    for (let i in uro)​ {
-      if (my.gdate(uro[i].field("Date")​) == my.gdate(e.field("Date"))  &​& uro[i].field("ORType") == "GA" &​& uro[i].field("Status")​ != "Not")​ {
-        this.q.push(uro[i]​)​;
+    for (let i in all)​ {
+      if (my.gdate(all[i].field("Date")​) == my.gdate(e.field("Date"))  &​& all[i].field("ORType") == "GA" &​& all[i].field("Status")​ != "Not")​ {
+        this.q.push(all[i]​)​;
       }​
     }​
   }, 
