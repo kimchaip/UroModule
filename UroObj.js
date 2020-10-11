@@ -497,7 +497,7 @@ var que = {
     return Number(value.field("Que")​) == this.fq;
   }, 
   checkid : function (value)​ {
-    return value.id == e.id;
+    return value.id == this.id;
   }, 
   checkdup : function (value)​ {
     return value.id != this.id &​& value.field("Que") == this.field("Que");
@@ -506,8 +506,8 @@ var que = {
     this.fq = value;
     return this.q.find(this.checkque, this);
   }, 
-  findme : function()​ {
-    return this.q.find(this.checkid);
+  findme : function(entry)​ {
+    return this.q.find(this.checkid, entry);
   }, 
   finddup : function (entry)​ {
     return this.q.find(this.checkdup, entry);
@@ -539,7 +539,7 @@ var que = {
       })​;
     }​
   }, 
-  reorder : function(from, to, diff) {
+  reorder : function(e, from, to, diff) {
     e.set("Que", this.string(from))​;
     this.sort()​;
     if (from < to )​ { //Rt shift
@@ -1055,7 +1055,7 @@ var uro = {
         e.set("Que", que.string(newq))​;
       }​
       else if (newq < maxq)​ { // 0 < newq < maxq
-        let q = que.findme()​; //find current entry in array 
+        let q = que.findme(e)​; //find current entry in array 
         q.set("Que", que.string(maxq))​;
         oldq = maxq;
         que.reorder(oldq, newq, diff) ;
