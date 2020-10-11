@@ -1217,7 +1217,7 @@ var uro = {
         e.set("Bonus", find.field("PriceExtra")​)​;
       }​
     }​
-  },
+  }​,
   updateDJStamp : function (e) {
     let links = e.field("patient")​;
     if (links.length>0) {
