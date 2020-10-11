@@ -88,7 +88,7 @@ var old = {
       this.a.push(e.field("OpResult"));       //​17
       this.a.push(e.field("Track"));          //​18
     }​
-    else { //Consult
+    else { //Consult 
       this.a.push(e.field("ConsultDate"));     //0
       this.a.push(e.field("Patient")[0].title);//​1
       this.a.push(e.field("VisitType"));       //​2
