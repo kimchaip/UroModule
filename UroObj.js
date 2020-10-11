@@ -106,7 +106,7 @@ var old = {
       this.a.push(e.field("Track"));          //​11
     }​
     e.set("Previous", this.a.join());
-  }, 
+  },
   get opdate() {
     if (this.a[0]!​="" )​ return new Date(this.a[0])​;
     else return null;
