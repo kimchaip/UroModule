@@ -188,7 +188,7 @@ var old = {
   }​,
   get note() {
     return this.a[10] ;
-  },
+  }​,
   get op() {
     return this.a[16] ;
   }​,
@@ -203,7 +203,7 @@ var old = {
       return this.a[11] ;
     }​
   }​
-} ;
+};
 
 var mer = {
   lastadmit : function (e, date)  {
