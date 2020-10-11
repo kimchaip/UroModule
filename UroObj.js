@@ -1011,7 +1011,7 @@ var uro = {
       let oldq = Number​(e.field("Que"))​;
       let newq = maxq;
       if (oldq > 0 &​& oldq < maxq)​ { // 0 < oldq < maxq
-        que.reorder(oldq, newq, diff) ;
+        que.reorder(e, oldq, newq, diff) ;
       }​
       e.set("Que", "00") ;
     }​
@@ -1032,7 +1032,7 @@ var uro = {
         e.set("Que", que.string(maxq))​;
         que.q.push(e)​;
         oldq = maxq;
-        que.reorder(oldq, newq, diff) ;
+        que.reorder(e, oldq, newq, diff) ;
       }​
     }​ 
     else if (old.que == "00"  && e.field("Que")​ == "00")​ { //update, que 0->0
@@ -1058,7 +1058,7 @@ var uro = {
         let q = que.findme(e)​; //find current entry in array 
         q.set("Que", que.string(maxq))​;
         oldq = maxq;
-        que.reorder(oldq, newq, diff) ;
+        que.reorder(e, oldq, newq, diff) ;
       }​
     }​
     else if (old.que != "00" &​& old.que != e.field("Que")​)​ { //update, que n->m
@@ -1077,7 +1077,7 @@ var uro = {
       else if (newq == 0)​ {
         newq = 1;
       }​
-      que.reorder(oldq, newq, diff);
+      que.reorder(e, oldq, newq, diff);
     }​
   }, 
   runq : function (e) {
