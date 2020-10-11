@@ -188,7 +188,7 @@ var old = {
   }​,
   get note() {
     return this.a[10] ;
-  }​
+  },
   get op() {
     return this.a[16] ;
   }​,
