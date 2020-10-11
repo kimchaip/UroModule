@@ -92,7 +92,7 @@ var old = {
     }​
     else { //Consult 
       this.a.push(e.field("ConsultDate"));     //0
-      if (links.length>0) {
+      if (links.length>0)
         this.a.push(links[0].title);           //​1
       this.a.push(e.field("VisitType"));       //​2
       this.a.push(e.field("Ward"));            //​3
