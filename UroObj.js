@@ -1234,7 +1234,7 @@ var uro = {
   updateDJStamp : function (e) {
     let links = e.field("patient")​;
     if (links.length>0) {
-      let d = this.lastDJStamp(e, today) ;
+      let d = this.lastDJStamp(links[0], today) ;
       if (d==null) { // not found
         links[0].set("DJStamp",null);
         links[0].set("DJstent","");
