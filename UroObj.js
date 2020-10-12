@@ -461,6 +461,7 @@ var mer = {
 var que = {
   q : [],​
   fq : 0, 
+  id : "", 
   string : function (value)​ {
     if(typeof (value)​ == "number")​ {
       if(value>9) 
@@ -506,8 +507,9 @@ var que = {
     this.fq = value;
     return this.q.find(this.checkque, this);
   }, 
-  findme : function(entry)​ {
-    return this.q.find(this.checkid, entry);
+  findme : function(value)​ {
+    this.id = value.id;
+    return this.q.find(this.checkid, this);
   }, 
   finddup : function (entry)​ {
     return this.q.find(this.checkdup, entry);
