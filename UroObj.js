@@ -68,44 +68,44 @@ var old = {
   store : function (e)​ {
     this.a = [] ;​
     let links = e.field("Patient");
-    if (lib().title=="UroBase")​ {
-      this.a.push(e.field("Date")​)​;	       //0
-      if (links.length>0) 
-        this.a.push(links​[0].title);           //​1
-      this.a.push(e.field("ORType"));          //​2
-      this.a.push(e.field("Que"));             //​3
-      this.a.push(e.field("VisitType"));       //​4
-      this.a.push(e.field("Ward"));            //​5
-      this.a.push(e.field("VisitDate"));       //​6
-      this.a.push(e.field("DischargeDate"));   //​7
-      this.a.push(e.field("EntryMx"));         //​8
-      this.a.push(e.field("AppointDate"));     //​9
-      this.a.push(e.field("Status"));         //​10 
-      this.a.push(e.field("DJstent"));        //​11
-      this.a.push(e.field("OpExtra"));        //​12
-      this.a.push(e.field("Bonus"));          //​13
-      this.a.push(e.field("RecordDate"));     //​14
-      this.a.push(e.field("Dx"));             //​15
-      this.a.push(e.field("Op"));             //​16
-      this.a.push(e.field("OpResult"));       //​17
-      this.a.push(e.field("Track"));          //​18
+    if (links.length>0) ​{
+      if (lib().title=="UroBase")​ {
+        this.a.push(e.field("Date")​)​;	       //0
+        this.a.push(links​[0].title);             //​1
+        this.a.push(e.field("ORType"));          //​2
+        this.a.push(e.field("Que"));             //​3
+        this.a.push(e.field("VisitType"));       //​4
+        this.a.push(e.field("Ward"));            //​5
+        this.a.push(e.field("VisitDate"));       //​6
+        this.a.push(e.field("DischargeDate"));   //​7
+        this.a.push(e.field("EntryMx"));         //​8
+        this.a.push(e.field("AppointDate"));     //​9
+        this.a.push(e.field("Status"));         //​10 
+        this.a.push(e.field("DJstent"));        //​11
+        this.a.push(e.field("OpExtra"));        //​12
+        this.a.push(e.field("Bonus"));          //​13
+        this.a.push(e.field("RecordDate"));     //​14
+        this.a.push(e.field("Dx"));             //​15
+        this.a.push(e.field("Op"));             //​16
+        this.a.push(e.field("OpResult"));       //​17
+        this.a.push(e.field("Track"));          //​18
+      }​
+      else { //Consult 
+        this.a.push(e.field("ConsultDate"));     //0
+        this.a.push(links[0].title);             //​1
+        this.a.push(e.field("VisitType"));       //​2
+        this.a.push(e.field("Ward"));            //​3
+        this.a.push(e.field("VisitDate"));       //​4
+        this.a.push(e.field("DischargeDate"));   //​5
+        this.a.push(e.field("EntryMx"));         //​6
+        this.a.push(e.field("AppointDate"));     //​7
+        this.a.push(e.field("Dx"));              //​8
+        this.a.push(e.field("Rx"));              //​9
+        this.a.push(e.field("Note"));           //​10
+        this.a.push(e.field("Track"));          //​11
+      }​
+      e.set("Previous", this.a.join());
     }​
-    else { //Consult 
-      this.a.push(e.field("ConsultDate"));     //0
-      if (links.length>0)
-        this.a.push(links[0].title);           //​1
-      this.a.push(e.field("VisitType"));       //​2
-      this.a.push(e.field("Ward"));            //​3
-      this.a.push(e.field("VisitDate"));       //​4
-      this.a.push(e.field("DischargeDate"));   //​5
-      this.a.push(e.field("EntryMx"));         //​6
-      this.a.push(e.field("AppointDate"));     //​7
-      this.a.push(e.field("Dx"));              //​8
-      this.a.push(e.field("Rx"));              //​9
-      this.a.push(e.field("Note"));           //​10
-      this.a.push(e.field("Track"));          //​11
-    }​
-    e.set("Previous", this.a.join());
   },
   get opdate() {
     if (this.a[0]!​="" )​ return new Date(this.a[0])​;
@@ -346,7 +346,11 @@ var mer = {
       if(my.gdate(old.dcdate) != my.gdate(e.field("DischargeDate")) ) {
         this.changeother(e, mpos["pos"], mpos["mar"], "DischargeDate" ) ;
       }
-      if(old.vstype != e.field("VisitType") ) {
+      if (old.vstype == undefined || e.field("VisitType") == undefined) {
+        e.set("VisitType", "Admit");
+        this.changeother(e, mpos["pos"], mpos["mar"], "VisitType" ) ;
+      }​
+      else if(old.vstype != e.field("VisitType") ) {
         e.set("VisitType", old.vstype);
       }
       this.changeother(e, mpos["pos"], mpos["mar"], "Track" ) ;
