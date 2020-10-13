@@ -1317,25 +1317,26 @@ var trig = {
   }, 
   UroBeforeEdit : function (e, value)​ {
     if (value=="create")
-	  uro.setnewdate(e, true)​;
-	else if (value=="update")​
-	  uro.setnewdate(e, false)​;
-	uro.setopextra(e)​;
-	uro.setvisitdate(e)​;
-	fill.track​(e)​;
-	if (value=="create")
-	  mer.merge(e, false)​;
-	else if (value=="update")​
-	  mer.merge(e, true)​;
-	uro.setq(e)​;
-	uro.setDJstent(e)​;
-	uro.createoplist(e)​;
-	fill.underlying(e)​;
-	fill.los(e)​;
+      uro.setnewdate(e, true)​;
+    else if (value=="update")​
+      old.getstart(e)​;
+    uro.setnewdate(e, false)​;
+    uro.setopextra(e)​;
+    uro.setvisitdate(e)​;
+    fill.track​(e)​;
+    if (value=="create")
+      mer.merge(e, false)​;
+    else if (value=="update")​
+      mer.merge(e, true)​;
+    uro.setq(e)​;
+    uro.setDJstent(e)​;
+    uro.createoplist(e)​;
+    fill.underlying(e)​;
+    fill.los(e)​;
   }, 
   UroAfterEdit : function (e, value) {
     if (value=="update")​
-	  old.getstart(e)​;
+      old.getstart(e)​;
     fill.ptstatus(e)​;
     fill.color(e, "uro")​;
     emx.flu(e)​;
