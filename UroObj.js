@@ -971,6 +971,12 @@ var pto = {
   }
 }​;
 var uro = {
+  checkop : function (value)​ {
+    return value.field("OpFill") == this.field("Op");
+  }, ​
+  findop : function (arr, entry)​ {
+    return arr.find(this.checkop, entry) ;
+  }, 
   setnewdate : function (e, value) {
     //---if Date change : set new date
     if (value || my.gdate(old.opdate) != my.gdate(​e.field("Date"))​) {
@@ -1228,7 +1234,7 @@ var uro = {
       let finds = oplib.find(e.field("Op"));
       let find = null;
       if (finds.length > 0) {
-        find = findop(finds, e) ;
+        find = this.findop(finds, e) ;
       }​
       if (find == null)​ {
         let op = new Object()​;
