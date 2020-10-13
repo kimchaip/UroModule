@@ -1318,9 +1318,10 @@ var trig = {
   UroBeforeEdit : function (e, value)​ {
     if (value=="create")
       uro.setnewdate(e, true)​;
-    else if (value=="update")​
+    else if (value=="update")​{
       old.getstart(e)​;
-    uro.setnewdate(e, false)​;
+      uro.setnewdate(e, false)​;
+    }​
     uro.setopextra(e)​;
     uro.setvisitdate(e)​;
     fill.track​(e)​;
@@ -1355,17 +1356,19 @@ var trig = {
   }, 
   ConsultBeforeEdit : function (e, value)​ {
     if (value=="create")
-	  cso.setnewdate(e, true)​;
-	else if (value=="update")​
-	  cso.setnewdate(e, false)​;
-	cso.setvisitdate(e)​;
-	fill.track​(e)​;
-	if (value=="create")
-	  mer.merge(e, false)​;
-	else if (value=="update")​
-	  mer.merge(e, true)​;
-	fill.underlying(e)​;
-	fill.los(e)​;
+      cso.setnewdate(e, true)​;
+    else if (value=="update")​ {
+      old.getstart(e)​;
+      cso.setnewdate(e, false)​;
+    }​
+    cso.setvisitdate(e)​;
+    fill.track​(e)​;
+    if (value=="create")
+      mer.merge(e, false)​;
+    else if (value=="update")​
+      mer.merge(e, true)​;
+    fill.underlying(e)​;
+    fill.los(e)​;
   }, 
   ConsultAfterEdit : function (e, value) {
     if (value=="update")​
