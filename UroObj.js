@@ -1231,18 +1231,19 @@ var uro = {
     }​
     else if (e.field("Op") != "" &​& e.field("Op") != null &​& e.field("OpExtra")​ == true)​ {
       let oplib = libByName("OperationList")​;
-      let finds = oplib.find(e.field("Op"));
+      let finds = oplib.find(e.field("Op").trim());
       let find = null;
       if (finds.length > 0) {
         find = this.findop(finds, e) ;
       }​
       if (find == null)​ {
         let op = new Object()​;
-        op["OpFill"] = e.field("Op")​;
+        op["OpFill"] = e.field("Op").trim()​;
         op["PriceExtra"] = e.field("Bonus")​;
         oplib.create(op);
       }
       else {
+        e.set("Op", find.field("OpFill")​)​;​
         e.set("Bonus", find.field("PriceExtra")​)​;
       }​
     }​
