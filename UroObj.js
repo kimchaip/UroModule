@@ -1372,7 +1372,7 @@ var trig = {
   }, 
   ConsultAfterEdit : function (e, value) {
     if (value=="update")​
-	  old.getstart(e)​;
+      old.getstart(e)​;
     fill.ptstatus(e)​;
     fill.color(e, "consult")​;
     emx.flu(e)​;
