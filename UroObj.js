@@ -220,8 +220,8 @@ var old = {
 
 var mer = {
   lastadmit : function (e, date)  {
-    let orlinks = or.linksTo(e) ;
-    let cslinks = cs.linksTo(e) ;
+    let orlinks = e.linksFrom("UroBase", "Patient") ;
+    let cslinks = e.linksFrom("Consult", "Patient") ;
     let o = new Object()​ ;
     if (orlinks.length+cslinks.length>0) {
       let last = null, s=null, r=null;
@@ -593,7 +593,7 @@ var emx = {
     if (links.length > 0) {
       let lib = libByName(libname)​;
       let ptent = pt.findById(links[0].id);
-      let entlinks = lib.linksTo(ptent);
+      let entlinks = ptent.linksFrom(libname, "Patient");
       let found = false;
       if (entlinks.length > min) {
         for (let i in entlinks) {
@@ -1185,7 +1185,8 @@ var uro = {
           e.set("DJstent", old.dj) ;
       }​
       else if (my.gdate(e.field("Date")) == my.gdate(links[0].field("DJStamp")))​ {// entry update DJStamp
-        let d = this.lastDJStamp(links[0], my.dateminus(e.field("Date"), 1)) ;
+        let ptent = pt.findById(links[0].id) ;
+        let d = this.lastDJStamp(ptent, my.dateminus(e.field("Date"), 1)) ;
         if (d == null) { // off -​> none, on
           if (e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ") 
             e.set("DJstent" , "<none>") ;
@@ -1198,8 +1199,7 @@ var uro = {
     }​
   }, 
   lastDJStamp : function (e, date)  {
-    let ptent = pt.findById(e.id) ;
-    let orlinks = or.linksTo(ptent) ;
+    let orlinks = e.linksFrom("UroBase", "Patient") ;
     let o = null ;
     if (orlinks.length>0) {
       let last = null, r = null;
@@ -1244,7 +1244,8 @@ var uro = {
   updateDJStamp : function (e) {
     let links = e.field("patient")​;
     if (links.length>0) {
-      let d = this.lastDJStamp(links[0], today) ;
+      let ptent = pt.findById(links​[0].id) ;
+      let d = this.lastDJStamp(ptent, today) ;
       if (d==null) { // not found
         links[0].set("DJStamp",null);
         links[0].set("DJstent","");
