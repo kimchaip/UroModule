@@ -700,7 +700,7 @@ var fill = {
         }
       }​
       else {
-        if (e.field("DischargeDate"))​ == null) {
+        if (e.field("DischargeDate")​ == null) {
           if (e.field("Track") != 0)
             e.set("Track", 0) ;
         }​
