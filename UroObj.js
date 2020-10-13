@@ -353,6 +353,7 @@ var mer = {
       else if(old.vstype != e.field("VisitType") ) {
         e.set("VisitType", old.vstype);
       }
+      this.changeother(e, mpos["pos"], mpos["mar"], "Summary" ) ;
       this.changeother(e, mpos["pos"], mpos["mar"], "Track" ) ;
     } 
   }, 
@@ -699,8 +700,13 @@ var fill = {
         }
       }​
       else {
-        if (e.field("Track") == 0) {
-          e.set("Track", 1) ;
+        if (e.field("DischargeDate"))​ == null) {
+          if (e.field("Track") != 0)
+            e.set("Track", 0) ;
+        }​
+        else {
+          if (e.field("Track") == 0)
+            e.set("Track", 1) ;
         }​
       }​
     }​
