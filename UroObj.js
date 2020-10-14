@@ -996,11 +996,13 @@ var uro = {
     }​
   }, 
   setopextra : function (e) {
-    if (my.gdate(old.opdate) != my.gdate(​e.field("Date"))​ &​& my.gday(e.field("Date"))==6) {
-      e.set("OpExtra", true);
-    }​
-    else {
-      e.set("OpExtra", false);
+    if (my.gdate(old.opdate) != my.gdate(​e.field("Date"))) {
+      if (my.gday(e.field("Date"))==6) {
+        e.set("OpExtra", true);
+      }​
+      else {
+        e.set("OpExtra", false);
+      }
     }​
   }, 
   setvisitdate ​: function (e)​ {
