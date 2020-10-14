@@ -1262,6 +1262,7 @@ var uro = {
         else {
           e.set("Bonus", find.field("Price")​)​;
         }​
+        find.set("Weight", find.field("Weight")+1​)​;​
       }​
     }​
   }​,
