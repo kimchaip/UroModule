@@ -996,7 +996,7 @@ var uro = {
     }​
   }, 
   setopextra : function (e) {
-    if (my.gday(e.field("Date"))==6) {
+    if (my.gdate(old.opdate) != my.gdate(​e.field("Date"))​ &​& my.gday(e.field("Date"))==6) {
       e.set("OpExtra", true);
     }​
     else {
@@ -1222,29 +1222,44 @@ var uro = {
     return o ;
   }, 
   createoplist : function (e) {
-    if (e.field("Status")​ == "Not")​{
+    if (e.field("Status")​ == "Not")​{ // Not set
       e.set("OpExtra",false)​;
       e.set("Bonus", 0)​;
     }​
-    else if (e.field("OpExtra")​ == false)​{
+    else if (e.field("OpExtra")​ == false)​{ // set regular op
       e.set("Bonus", 0)​;
     }​
-    else if (e.field("Op") != "" &​& e.field("Op") != null &​& e.field("OpExtra")​ == true)​ {
+    else if (e.field("Op") != "" &​& e.field("Op") != null)​ { // set extra op
       let oplib = libByName("OperationList")​;
       let finds = oplib.find(e.field("Op").trim());
       let find = null;
       if (finds.length > 0) {
         find = this.findop(finds, e) ;
       }​
-      if (find == null)​ {
+      if (find == null)​ { // set extra op never ever before
         let op = new Object()​;
         op["OpFill"] = e.field("Op").trim()​;
-        op["PriceExtra"] = e.field("Bonus")​;
+        if (e.field("x1.5")​==true) {
+          op["Rate"] = "Extra"​;
+          op["Price"] = Math.floor(e.field("Bonus")/3*2)​;
+          op["PriceExtra"] = e.field("Bonus")​;
+        }​
+        else {
+          op["Rate"] = "Normal"​;
+          op["Price"] = e.field("Bonus")​;
+          op["PriceExtra"] = Math.floor(e.field("Bonus")/2*3)​;
+        }​
         oplib.create(op);
+        message("Create new OpList Successfully​")​;
       }
-      else {
+      else { // set extra op ever before​
         e.set("Op", find.field("OpFill")​)​;​
-        e.set("Bonus", find.field("PriceExtra")​)​;
+        if (e.field("x1.5")​==true) {
+          e.set("Bonus", find.field("PriceExtra")​)​;
+        }​
+        else {
+          e.set("Bonus", find.field("Price")​)​;
+        }​
       }​
     }​
   }​,
