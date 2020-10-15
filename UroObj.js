@@ -971,6 +971,12 @@ var pto = {
   }
 }​;
 var uro = {
+  checkdx : function (value)​ {
+    return value.field("Dx") == this.field("Dx") &​& value.field("Op") == this.field("Op");
+  }, ​
+  finddx : function (arr, entry)​ {
+    return arr.find(this.checkdx, entry) ;
+  }, 
   checkop : function (value)​ {
     return value.field("OpFill") == this.field("Op");
   }, ​
@@ -1222,7 +1228,30 @@ var uro = {
       }
     }
     return o ;
-  }, 
+  },
+  createautofill : function (e) {
+    if (old.dx != e.field("Dx").trim() &​& e.field("Dx").trim()​ != "" &​& e.field("Dx") != null
+     &​& old.op != e.field("Op").trim() &​& e.field("Op").trim()​ != "" &​& e.field("Op") != null)​ { // fill dx and op
+      let af = libByName("AutoFill");
+      let afs = af.entries()​;
+      let find = null;
+      if (afs.length > 0) {
+        find = this.finddx(afs, e) ;
+      }​
+      if (find == null)​ { // dx and op never ever before
+        let o = new Object()​;
+        o["Dx"] = e.field("Dx").trim()​;
+        o["Op"] = e.field("Op").trim()​;​
+        af.create(o);
+        message("Create new AutoFill Successfully​")​;
+      }
+      else { // dx and op ever before​
+        e.set("Dx", find.field("Dx")​)​;​
+        e.set("Op", find.field("Op")​)​;​
+        find.set("Count", find.field("Count")+1​)​;​
+      }​
+    }​
+  }​,​
   createoplist : function (e) {
     if (e.field("Status")​ == "Not")​{ // Not set
       e.set("OpExtra",false)​;
@@ -1231,29 +1260,29 @@ var uro = {
     else if (e.field("OpExtra")​ == false)​{ // set regular op
       e.set("Bonus", 0)​;
     }​
-    else if (e.field("Op") != "" &​& e.field("Op") != null)​ { // set extra op
-      let oplib = libByName("OperationList")​;
-      let finds = oplib.find(e.field("Op").trim());
+    else if (e.field("Op").trim() != "" &​& e.field("Op") != null)​ { // set extra op
+      let op = libByName("OperationList")​;
+      let ops = op.entries;
       let find = null;
-      if (finds.length > 0) {
-        find = this.findop(finds, e) ;
+      if (ops.length > 0) {
+        find = this.findop(ops, e) ;
       }​
       if (find == null)​ { // set extra op never ever before
-        let op = new Object()​;
+        let o = new Object()​;
         op["OpFill"] = e.field("Op").trim()​;
         if (e.field("x1.5")​==true) {
-          op["Rate"] = "Extra"​;
-          op["Price"] = Math.floor(e.field("Bonus")/3*2)​;
-          op["PriceExtra"] = e.field("Bonus")​;
-          op["WRate"] = 0​;
+          o["Rate"] = "Extra"​;
+          o["Price"] = Math.floor(e.field("Bonus")/3*2)​;
+          o["PriceExtra"] = e.field("Bonus")​;
+          o["WRate"] = 0​;
         }​
         else {
-          op["Rate"] = "Normal"​;
-          op["Price"] = e.field("Bonus")​;
-          op["PriceExtra"] = Math.floor(e.field("Bonus")/2*3)​;
-          op["WRate"] = -​1;
+          o["Rate"] = "Normal"​;
+          o["Price"] = e.field("Bonus")​;
+          o["PriceExtra"] = Math.floor(e.field("Bonus")/2*3)​;
+          o["WRate"] = -​1;
         }​
-        oplib.create(op);
+        op.create(o);
         message("Create new OpList Successfully​")​;
       }
       else { // set extra op ever before​
@@ -1375,6 +1404,7 @@ var trig = {
       mer.merge(e, true)​;
     uro.setq(e)​;
     uro.setDJstent(e)​;
+    uro.createautofill​(e)​;
     uro.createoplist(e)​;
     fill.underlying(e)​;
     fill.los(e)​;
