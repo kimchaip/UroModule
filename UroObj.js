@@ -1272,9 +1272,9 @@ var uro = {
         }​
         find.set("Weight", find.field("Weight")+1​)​;​
         if (find.field("WRate")>=0)
-          find.set("Rate", true)​;​
+          find.set("Rate", "Extra")​;​
         else
-          find.set("Rate", false)​;​
+          find.set("Rate", "Normal")​;​
       }​
     }​
   }​,
