@@ -972,13 +972,13 @@ var pto = {
 }​;
 var uro = {
   checkdx : function (value)​ {
-    return value.field("Dx") == this.field("Dx") &​& value.field("Op") == this.field("Op");
+    return value.field("Dx") == this.field("Dx").trim() &​& value.field("Op") == this.field("Op").trim();
   }, ​
   finddx : function (arr, entry)​ {
     return arr.find(this.checkdx, entry) ;
   }, 
   checkop : function (value)​ {
-    return value.field("OpFill") == this.field("Op");
+    return value.field("OpFill") == this.field("Op").trim();
   }, ​
   findop : function (arr, entry)​ {
     return arr.find(this.checkop, entry) ;
@@ -1269,7 +1269,7 @@ var uro = {
       }​
       if (find == null)​ { // set extra op never ever before
         let o = new Object()​;
-        op["OpFill"] = e.field("Op").trim()​;
+        o["OpFill"] = e.field("Op").trim()​;
         if (e.field("x1.5")​==true) {
           o["Rate"] = "Extra"​;
           o["Price"] = Math.floor(e.field("Bonus")/3*2)​;
