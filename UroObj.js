@@ -1261,10 +1261,14 @@ var uro = {
         if (e.field("x1.5")​==true) {
           e.set("Bonus", find.field("PriceExtra")​)​;
           find.set("WRate", find.field("WRate")+1​)​;​
+          if (find.field("WRate")>4)​
+            find.set("WRate", 4​)​;​
         }​
         else {
           e.set("Bonus", find.field("Price")​)​;
           find.set("WRate", find.field("WRate")-1​)​;​
+          if (find.field("WRate")<-5)​
+            find.set("WRate", -5)​;​
         }​
         find.set("Weight", find.field("Weight")+1​)​;​
         if (find.field("WRate")>=0)
