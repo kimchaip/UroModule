@@ -1236,11 +1236,11 @@ var uro = {
       e.set("Op", e.field("Op").trim()​)​;
       let af = libByName("DxAutoFill");
       let afs = af.find(e.field("Dx"))​;
-      let find = null;
+      let find = undefined;
       if (afs.length > 0) {
         find = this.finddx(afs, e) ;
       }​
-      if (find == null)​ { // dx and op never ever before
+      if (find == undefined)​ { // dx and op never ever before
         let o = new Object()​;
         o["Dx"] = e.field("Dx");
         o["Op"] = e.field("Op")​;​
@@ -1265,11 +1265,11 @@ var uro = {
     else if (e.field("Op")​ != "" &​& e.field("Op") != null)​ { // set extra op
       let op = libByName("OperationList")​;
       let ops = op.find(e.field("Op"));
-      let find = null;
+      let find = undefined;
       if (ops.length > 0) {
         find = this.findop(ops, e) ;
       }​
-      if (find == null)​ { // set extra op never ever before
+      if (find == undefined)​ { // set extra op never ever before
         let o = new Object()​;
         o["OpFill"] = e.field("Op");
         if (e.field("x1.5")​==true) {
