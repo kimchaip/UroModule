@@ -1234,7 +1234,7 @@ var uro = {
      &​& old.op != e.field("Op") &​& e.field("Op").trim() != "" &​& e.field("Op") != null)​ { // fill dx and op
       e.set("Dx", e.field("Dx").trim()​)​;
       e.set("Op", e.field("Op").trim()​)​;
-      let af = libByName("AutoFill");
+      let af = libByName("DxAutoFill");
       let afs = af.find(e.field("Dx"))​;
       let find = null;
       if (afs.length > 0) {
