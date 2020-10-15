@@ -972,13 +972,13 @@ var pto = {
 }​;
 var uro = {
   checkdx : function (value)​ {
-    return value.field("Dx") == this.field("Dx").trim() &​& value.field("Op") == this.field("Op").trim();
+    return value.field("Dx") == this.field("Dx") &​& value.field("Op") == this.field("Op");
   }, ​
   finddx : function (arr, entry)​ {
     return arr.find(this.checkdx, entry) ;
   }, 
   checkop : function (value)​ {
-    return value.field("OpFill") == this.field("Op").trim();
+    return value.field("OpFill") == this.field("Op");
   }, ​
   findop : function (arr, entry)​ {
     return arr.find(this.checkop, entry) ;
@@ -1230,8 +1230,10 @@ var uro = {
     return o ;
   },
   createautofill : function (e) {
-    if (old.dx != e.field("Dx").trim() &​& e.field("Dx").trim()​ != "" &​& e.field("Dx") != null
-     &​& old.op != e.field("Op").trim() &​& e.field("Op").trim()​ != "" &​& e.field("Op") != null)​ { // fill dx and op
+    if (old.dx != e.field("Dx") &​& e.field("Dx").trim()​ != "" &​& e.field("Dx") != null
+     &​& old.op != e.field("Op") &​& e.field("Op").trim() != "" &​& e.field("Op") != null)​ { // fill dx and op
+      e.set("Dx", e.field("Dx").trim()​)​;
+      e.set("Op", e.field("Op").trim()​)​;
       let af = libByName("AutoFill");
       let afs = af.entries()​;
       let find = null;
@@ -1240,8 +1242,8 @@ var uro = {
       }​
       if (find == null)​ { // dx and op never ever before
         let o = new Object()​;
-        o["Dx"] = e.field("Dx").trim()​;
-        o["Op"] = e.field("Op").trim()​;​
+        o["Dx"] = e.field("Dx");
+        o["Op"] = e.field("Op")​;​
         af.create(o);
         message("Create new AutoFill Successfully​")​;
       }
@@ -1260,7 +1262,7 @@ var uro = {
     else if (e.field("OpExtra")​ == false)​{ // set regular op
       e.set("Bonus", 0)​;
     }​
-    else if (e.field("Op").trim() != "" &​& e.field("Op") != null)​ { // set extra op
+    else if (e.field("Op")​ != "" &​& e.field("Op") != null)​ { // set extra op
       let op = libByName("OperationList")​;
       let ops = op.entries;
       let find = null;
@@ -1269,7 +1271,7 @@ var uro = {
       }​
       if (find == null)​ { // set extra op never ever before
         let o = new Object()​;
-        o["OpFill"] = e.field("Op").trim()​;
+        o["OpFill"] = e.field("Op");
         if (e.field("x1.5")​==true) {
           o["Rate"] = "Extra"​;
           o["Price"] = Math.floor(e.field("Bonus")/3*2)​;
