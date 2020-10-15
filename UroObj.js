@@ -974,15 +974,9 @@ var uro = {
   checkdx : function (value)​ {
     return value.field("Dx")+value.field("Op") == this.field("Dx") + this.field("Op");
   }, ​
-  finddx : function (arr, entry)​ {
-    return arr.find(this.checkdx, entry) ;
-  }, 
   checkop : function (value)​ {
     return value.field("OpFill") == this.field("Op");
   }, ​
-  findop : function (arr, entry)​ {
-    return arr.find(this.checkop, entry) ;
-  }, 
   setnewdate : function (e, value) {
     //---if Date change : set new date
     if (value || my.gdate(old.opdate) != my.gdate(​e.field("Date"))​) {
@@ -1238,9 +1232,9 @@ var uro = {
       let afs = af.find(e.field("Dx"))​;
       let find = undefined;
       if (afs.length > 0) {
-        find = this.finddx(afs, e) ;
+        find = afs.find(this.checkdx,e) ;
       }​
-      if (find == undefined)​ { // dx and op never ever before
+      if (find == undefined) { // dx and op never ever before
         let o = new Object()​;
         o["Dx"] = e.field("Dx");
         o["Op"] = e.field("Op")​;​
@@ -1267,9 +1261,9 @@ var uro = {
       let ops = op.find(e.field("Op"));
       let find = undefined;
       if (ops.length > 0) {
-        find = this.findop(ops, e) ;
+        find = ops.find(this.checkop, e);
       }​
-      if (find == undefined)​ { // set extra op never ever before
+      if (find == undefined) { // set extra op never ever before
         let o = new Object()​;
         o["OpFill"] = e.field("Op");
         if (e.field("x1.5")​==true) {
