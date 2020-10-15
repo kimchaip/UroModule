@@ -1245,11 +1245,13 @@ var uro = {
           op["Rate"] = "Extra"​;
           op["Price"] = Math.floor(e.field("Bonus")/3*2)​;
           op["PriceExtra"] = e.field("Bonus")​;
+          op["WRate"] = 0​;
         }​
         else {
           op["Rate"] = "Normal"​;
           op["Price"] = e.field("Bonus")​;
           op["PriceExtra"] = Math.floor(e.field("Bonus")/2*3)​;
+          op["WRate"] = -​1;
         }​
         oplib.create(op);
         message("Create new OpList Successfully​")​;
@@ -1258,11 +1260,17 @@ var uro = {
         e.set("Op", find.field("OpFill")​)​;​
         if (e.field("x1.5")​==true) {
           e.set("Bonus", find.field("PriceExtra")​)​;
+          find.set("WRate", find.field("WRate")+1​)​;​
         }​
         else {
           e.set("Bonus", find.field("Price")​)​;
+          find.set("WRate", find.field("WRate")-1​)​;​
         }​
         find.set("Weight", find.field("Weight")+1​)​;​
+        if (find.field("WRate")>=0)
+          find.set("Rate", true)​;​
+        else
+          find.set("Rate", false)​;​
       }​
     }​
   }​,
