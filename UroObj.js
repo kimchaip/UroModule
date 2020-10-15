@@ -1235,7 +1235,7 @@ var uro = {
       e.set("Dx", e.field("Dx").trim()​)​;
       e.set("Op", e.field("Op").trim()​)​;
       let af = libByName("AutoFill");
-      let afs = af.entries()​;
+      let afs = af.find(e.field("Dx"))​;
       let find = null;
       if (afs.length > 0) {
         find = this.finddx(afs, e) ;
@@ -1264,7 +1264,7 @@ var uro = {
     }​
     else if (e.field("Op")​ != "" &​& e.field("Op") != null)​ { // set extra op
       let op = libByName("OperationList")​;
-      let ops = op.entries;
+      let ops = op.find(e.field("Op"));
       let find = null;
       if (ops.length > 0) {
         find = this.findop(ops, e) ;
