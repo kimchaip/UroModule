@@ -1225,7 +1225,7 @@ var uro = {
   },
   createautofill : function (e) {
     if (old.dx != e.field("Dx") &​& e.field("Dx").trim()​ != "" &​& e.field("Dx") != null
-     &​& old.op != e.field("Op") &​& e.field("Op").trim() != "" &​& e.field("Op") != null)​ { // fill dx and op
+    &​& e.field("Op").trim() != "" &​& e.field("Op") != null)​ { // fill dx and op
       e.set("Dx", e.field("Dx").trim()​)​;
       e.set("Op", e.field("Op").trim()​)​;
       let af = libByName("DxAutoFill");
