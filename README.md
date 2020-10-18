@@ -1,8 +1,7 @@
-# Urobase Object :
+# Urobase Object
 ## Library
 	pt, or, cs
-## Date
-### my {}​
+## my {}​
 	date
 	dateadd
 	dateminus
@@ -80,7 +79,7 @@
 	setnewdate
 	setvisitdate
 	resetcolor
-## trig {}​
+# trig {}​
 	PatientBeforeEdit
 	PatientBeforeViewCard 
 	PatientBeforeOpenLib
