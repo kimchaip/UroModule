@@ -1349,9 +1349,8 @@ var cso = {
     if (e.field("EntryMx")​== "Pending" &​& e.field("VisitDate") == null) {
       if (e.field("VisitType") == "Admit")​
         e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1));
-    }​
-    else ​{
-      e.set("VisitDate", e.field("ConsultDate")​)​;
+      else
+        e.set("VisitDate", e.field("ConsultDate")​)​;
     }​
   }, 
   resetcolor : function(all) {
@@ -1361,7 +1360,6 @@ var cso = {
         fill.color(all[i]​, "consult")​;
       }
     } 
-
   }​
 }​;
 
