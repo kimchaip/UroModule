@@ -8,16 +8,19 @@
 	dateminus
 	gdate
 	gday
-### today, ntoday
+
+	today, ntoday
 ## old {}​
 	getstart
 	store
 	get :
-		opdate, csdate, patient, optype, 
-		que, vstype, ward, vsdate, dcdate, 
-		emx, apdate, status, dj, opext, 
-		bonus, rcdate, dx, rx, note, op, 
-		result, track
+	opdate, csdate, patient, 
+	optype, que, vstype, 
+	ward, vsdate, dcdate, 
+	emx, apdate, status, 
+	dj, opext, bonus, 
+	rcdate, dx, rx, 
+	note, op, result, track
 ## mer {}​
 	lastadmit
 	linklastadmit
