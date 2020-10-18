@@ -2,17 +2,18 @@
 ## Library
 	pt, or, cs
 ## my {}​
-	date
-	dateadd
-	dateminus
-	gdate
-	gday
+	- date
+	- dateadd
+	- dateminus
+	- gdate
+	- gday
 
+## Date
 	today, ntoday
 ## old {}​
-	getstart
-	store
-	get :
+	- getstart
+	- store
+	- get :
 	opdate, csdate, patient, 
 	optype, que, vstype, 
 	ward, vsdate, dcdate, 
@@ -21,75 +22,75 @@
 	rcdate, dx, rx, 
 	note, op, result, track
 ## mer {}​
-	lastadmit
-	linklastadmit
-	getmergeid
-	mergelastadmit
-	posinmerge
-	mergeeffect
-	changeother
-	mlacancel
-	merge
+	- lastadmit
+	- linklastadmit
+	- getmergeid
+	- mergelastadmit
+	- posinmerge
+	- mergeeffect
+	- changeother
+	- mlacancel
+	- merge
 ## que {}​
-	string
-	getstart
-	max
-	checkque
-	checkid
-	checkdup
-	findque
-	findme
-	finddup
-	findhole
-	sort
-	reorder
+	- string
+	- getstart
+	- max
+	- checkque
+	- checkid
+	- checkdup
+	- findque
+	- findme
+	- finddup
+	- findhole
+	- sort
+	- reorder
 ## emx {}​
-	createnew
-	flu
-	setor
+	- createnew
+	- flu
+	- setor
 ## fill {}​
-	track
-	underlying
-	los
-	ptstatus
-	color
+	- track
+	- underlying
+	- los
+	- ptstatus
+	- color
 ## pto {}​
-	agetext
-	uniqueHN
-	age
-	status
-	dj
-	donesettrack
-	resetdone
+	- agetext
+	- uniqueHN
+	- age
+	- status
+	- dj
+	- donesettrack
+	- resetdone
 ## uro {}​
-	checkdx
-	checkop
-	setnewdate
-	setopextra
-	setvisitdate
-	setq
-	runq
-	setDJstent
-	lastDJStamp
-	createautofill
-	createoplist
-	updateDJStamp
-	resetcolor
+	- checkdx
+	- checkop
+	- setnewdate
+	- setopextra
+	- setvisitdate
+	- setq
+	- runq
+	- setDJstent
+	- lastDJStamp
+	- createautofill
+	- createoplist
+	- updateDJStamp
+	- resetcolor
 ## cso {}​
-	setnewdate
-	setvisitdate
-	resetcolor
+	- setnewdate
+	- setvisitdate
+	- resetcolor
 # trig {}​
-	PatientBeforeEdit
-	PatientBeforeViewCard 
-	PatientBeforeOpenLib
-	UroOpenEdit
-	UroBeforeEdit
-	UroAfterEdit
-	UroBeforeViewCard
-	UroBeforeOpenLib
-	ConsultOpenEdit
-	ConsultBeforeEdit
-	ConsultAfterEdit
-	ConsultBeforeViewCard 
-	ConsultBeforeOpenLib
+	* PatientBeforeEdit
+	* PatientBeforeViewCard 
+	* PatientBeforeOpenLib
+	* UroOpenEdit
+	* UroBeforeEdit
+	* UroAfterEdit
+	* UroBeforeViewCard
+	* UroBeforeOpenLib
+	* ConsultOpenEdit
+	* ConsultBeforeEdit
+	* ConsultAfterEdit
+	* ConsultBeforeViewCard 
+	* ConsultBeforeOpenLib
