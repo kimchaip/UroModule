@@ -972,7 +972,7 @@ var pto = {
 }​;
 var uro = {
   checkdx : function (value)​ {
-    return value.field("Dx")+value.field("Op") == this.field("Dx") + this.field("Op");
+    return value.field("Dx") == this.field("Dx") &​& value.field("Op") ​== this.field("Op");
   }, ​
   checkop : function (value)​ {
     return value.field("OpFill") == this.field("Op");
