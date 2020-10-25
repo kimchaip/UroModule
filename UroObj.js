@@ -1251,7 +1251,12 @@ var uro = {
       else { // dx and op ever before​
         e.set("Dx", find.field("Dx")​)​;​
         e.set("Op", find.field("Op")​)​;​
-        find.set("Count", find.field("Count")+1​)​;​
+        let ors = or.entries()​;
+        let i = 0;
+        for(i in ors) {
+          ors[i].field("Dx") == find.field("Dx") &​& ors[i].field("Op") ​== find.field("Op");
+        }​
+        find.set("Count", i​)​;​
       }​
     }​
   }​,​
