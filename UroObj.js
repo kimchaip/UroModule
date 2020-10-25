@@ -618,22 +618,29 @@ var emx = {
             ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
           else  
             ent​["VisitDate"] = my.date(e.field("AppointDate"))​;
-            ent​["RecordDate"] = today​;
+          ent​["RecordDate"] = today​;
+          if (e.field("Photo").length>0)​
+            ent["Photo"] = e.field("Photo").join()​;
         }​
         else if (libto == "consult" &​& libfrom == "UroBase") {
           ent​["Ward"] = e.field("Ward")​;
           ent​["VisitType"] = "OPD";
           ent​["VisitDate"] = my.date(e.field("AppointDate")​);
+          if (e.field("Photo").length>0)​
+            ent["Photo"] = e.field("Photo").join()​;
         }​
         else if (libto == "uro" &​& libfrom == "Consult" ) {​
           ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
           ent​["RecordDate"] = today​;
-	      ent​["Op"] = e.field("Operation")​;
-          ent["Photo"] = e.field("Photo").join()​;
+	  ent​["Op"] = e.field("Operation")​;
+          if (e.field("Photo").length>0)​
+            ent["Photo"] = e.field("Photo").join()​;
         }​
         else if (libto == "consult" &​& libfrom == "Consult") {​
           ent["VisitType"]​ = "OPD" ;
           ent["VisitDate"]​ = my.date(e.field("AppointDate"));
+          if (e.field("Photo").length>0)​
+            ent["Photo"] = e.field("Photo").join()​;
         }​
         lib.create(ent);
         let last = lib.entries()[0];
