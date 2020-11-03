@@ -1004,7 +1004,7 @@ var uro = {
   }, 
   setopextra : function (e) {
     if (my.gdate(old.opdate) != my.gdate(​e.field("Date"))) {
-      if (my.gday(e.field("Date"))==6) {
+      if (my.gday(e.field("Date"))=6 || my.gday(e.field("Date"))=0) {
         e.set("OpExtra", true);
       }​
       else {
