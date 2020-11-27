@@ -1431,6 +1431,10 @@ var trig = {
   UroBeforeOpenLib : function (all) {
     uro.resetcolor(all)​;
   }, 
+  UroUpdatingField : function (e) {
+    uro.setvisitdate(e)​;
+    uro.setq(e)​;
+  }, 
   ConsultOpenEdit : function (e)​ {
     old.store(e)​;
   }, 
