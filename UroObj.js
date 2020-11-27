@@ -1433,8 +1433,8 @@ var trig = {
   }, 
   UroUpdatingField : function (e) {
     uro.setvisitdate(e)​;
+    uro.runq(e)​;​
     fill.track​(e)​;
-    uro.setq(e)​;
     fill.ptstatus(e)​;
     fill.color(e, "uro")​;
   }, 
