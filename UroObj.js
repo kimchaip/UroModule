@@ -1432,11 +1432,13 @@ var trig = {
     uro.resetcolor(all)​;
   }, 
   UroUpdatingField : function (e) {
-    uro.setvisitdate(e)​;
-    uro.runq(e)​;​
-    fill.track​(e)​;
-    fill.ptstatus(e)​;
-    fill.color(e, "uro")​;
+    if(e.length>0) {
+      uro.setvisitdate(e)​;
+      uro.runq(e)​;​
+      fill.track​(e)​;
+      fill.ptstatus(e)​;
+      fill.color(e, "uro")​;
+    }​
   }, 
   ConsultOpenEdit : function (e)​ {
     old.store(e)​;
