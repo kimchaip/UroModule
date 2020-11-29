@@ -1111,8 +1111,10 @@ var uro = {
     let lenq = que.q.length;
     let newq = 0;
     let eq = Number(e.field("Que")​)​;
+    let qstr = "," + e.field("Que")​ + "," ;
     //---Status assign Que---//
     if (e.field("Status") == "Not" || e.field("ORType")​ == "LA" ) {
+      e.set("Previous", e.field("Previous").replace(qstr, ",00,"))​;
       e.set("Que", "00") ;
       let hole = que.findhole()​;
       let near = null;
@@ -1121,6 +1123,8 @@ var uro = {
         for (let i = hole+1 ; i<maxq; i++)​ {
           near = que.findque(i);
           if (near != null)​{
+            qstr = "," + que.string(i) + "," ;
+            near.set("Previous", near.field("Previous").replace(qstr, "," + que.string(hole) ​+ ","))​;
             near.set("Que", que.string(hole)​);
             break;
           }​
@@ -1137,6 +1141,7 @@ var uro = {
       else {
         newq = hole;
       }​
+      e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(newq) ​+ ","))​;
       e.set("Que", que.string(newq)​)​;
     }​ 
     else if (eq <= maxq)​ { //update, que 0<nn<max
@@ -1156,9 +1161,13 @@ var uro = {
           let i = Number(dup.field("Que"))​+skip;
           near = que.findque(i);
           if (near != null)​{ //found next que
+            qstr = "," + dup.field("Que")​+ "," ;
+            dup.set("Previous", dup.field("Previous").replace(qstr, "," + near.field("Que") ​+ ","))​;
             dup.set("Que", near.field("Que"));
           }​
           else { //found hole
+            qstr = "," + dup.field("Que") + "," ;
+            dup.set("Previous", dup.field("Previous").replace(qstr, "," + que.string(i) ​+ ","))​;
             dup.set("Que", que.string(i))​;
             break;
           }​
@@ -1170,9 +1179,13 @@ var uro = {
           let i = Number(dup.field("Que"))​+1 ;
           near = que.findque(i);
           if (near != null)​{ //found next que
+            qstr = "," + dup.field("Que")​+ "," ;
+            dup.set("Previous", dup.field("Previous").replace(qstr, "," + near.field("Que") ​+ ","))​;
             dup.set("Que", near.field("Que"));
           }​
           else { //found maxq
+            qstr = "," + dup.field("Que")​+ "," ;
+            dup.set("Previous", dup.field("Previous").replace(qstr, "," + que.string(i)​ ​+ ","))​;
             dup.set("Que", que.string(i))​;
             break;
           }​
@@ -1180,6 +1193,7 @@ var uro = {
         }    
       } 
       else if (dup == null &​& hole != 0)​ { // no dup, found hole
+        e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(hole)​ ​+ ","))​;
         e.set("Que", que.string(hole))​;
       }​
     }​
