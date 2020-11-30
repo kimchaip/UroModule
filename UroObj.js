@@ -1440,7 +1440,6 @@ var trig = {
   }, 
   UroBeforeViewCard ​: function (e) {​
     fill.color(e, "uro")​;
-    uro.runq(e)​;
   }, 
   UroBeforeOpenLib : function (all) {
     uro.resetcolor(all)​;
