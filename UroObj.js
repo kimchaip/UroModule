@@ -1399,8 +1399,15 @@ var trig = {
 	pto.status(e)​;
 	pto.dj(e)​;
   }, 
-  PatientUpdatingField ​: function (e) {
-    pto.donesettrack(e)​;
+  PatientUpdatingField ​: function (all) {
+    let e = entry()​;
+    for(let i in all) {
+      // update track
+      if(all[i].id==e.id &​& all[i].field("Done")​==true) {
+        pto.donesettrack(all[i])​;
+        break;
+      }​
+    }​
   }, 
   PatientBeforeOpenLib : function (all) {
     pto.resetdone(all)​;
