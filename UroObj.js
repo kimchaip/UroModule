@@ -1399,7 +1399,7 @@ var trig = {
 	pto.status(e)​;
 	pto.dj(e)​;
   }, 
-  PatientBeforeViewCard ​: function (e) {
+  PatientUpdatingField ​: function (e) {
     pto.donesettrack(e)​;
   }, 
   PatientBeforeOpenLib : function (all) {
@@ -1444,14 +1444,16 @@ var trig = {
   UroBeforeOpenLib : function (all) {
     uro.resetcolor(all)​;
   }, 
-  UroUpdatingField : function (e) {
-    if(e.length>0) {
-      uro.setvisitdate(e)​;
-      uro.runq(e)​;​
-      fill.track​(e)​;
-      fill.ptstatus(e)​;
-      fill.color(e, "uro")​;
-    }​
+  UroUpdatingField : function (all) {
+    for(let i in all) {
+      // update que
+      old.getstart(all[i]​)​;
+      if(all[i].field("Que")​!=old.que &​& all[i].field("ORType")​=="GA"& all[i].field("Status")!="Not" && old.que!=undefined) {
+        all[i].set("Previous",  all[i].field("Previous").replace("," + old.que + ",", "," + all[i].field("Que")​ + ","));
+        uro.runq(all[i]​)​; 
+        break;
+      }​
+    }
   }, 
   ConsultOpenEdit : function (e)​ {
     old.store(e)​;
