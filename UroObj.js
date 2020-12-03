@@ -1279,8 +1279,28 @@ var uro = {
       e.set("OpExtra",false)​;
       e.set("Bonus", 0)​;
     }​
-    else if (e.field("OpExtra")​ == false)​{ // set regular op
+    else if (e.field("OpExtra")​ == false &​& e.field("Op")​ != "" &​& e.field("Op") != null​)​{ // set regular op
       e.set("Bonus", 0)​;
+      let op = libByName("OperationList")​;
+      let ops = op.find(e.field("Op"));
+      let find = undefined;
+      if (ops.length > 0) {
+        find = ops.find(this.checkop, e);
+      }​
+      if (find == undefined) { // set op never ever before
+        let o = new Object()​;
+        o["OpFill"] = e.field("Op");
+        o["Rate"] = "Normal"​;
+        o["Price"] = e.field("Bonus")​;
+        o["PriceExtra"] = Math.floor(e.field("Bonus")/2*3)​;
+        o["WRate"] = -​1;
+
+        op.create(o);
+        message("Create new OpList Successfully​")​;
+      }
+      else { // set op ever before​
+        e.set("Op", find.field("OpFill")​)​;​
+      }​
     }​
     else if (e.field("Op")​ != "" &​& e.field("Op") != null)​ { // set extra op
       let op = libByName("OperationList")​;
