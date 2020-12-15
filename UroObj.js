@@ -1356,7 +1356,7 @@ var uro = {
       let d = this.lastDJStamp(ptent, today) ;
       if (d==null) { // not found
         links[0].set("DJStamp",null);
-        links[0].set("DJstent","");
+        links[0].set("DJstent",''​);
       } 
       else { // found
         links[0].set("DJStamp", d.field("Date")) ;
