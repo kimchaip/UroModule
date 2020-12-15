@@ -1210,7 +1210,7 @@ var uro = {
            e.set("DJstent", "<none>")​ ;
       }​
       else if (e.field("Date") < links[0].field("DJStamp"))​  {// the past
-        if (old.dj != null)​
+        if (old.dj != null &​& old.dj != "")​
           e.set("DJstent", old.dj) ;
       }​
       else if (my.gdate(e.field("Date")) == my.gdate(links[0].field("DJStamp")))​ {// entry update DJStamp
