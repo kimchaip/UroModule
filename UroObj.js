@@ -289,7 +289,7 @@ var mer = {
     if (mid.length == 0) {
       let thislib​="" ;
       if (lib().title=="UroBase") thislib = "or" ;
-      else if (lib().title=="Backup") thislib = "bu");
+      else if (lib().title=="Backup") thislib = "bu";
       else thislib = "cs" ;
       let lao = this.linklastadmit(e, my.dateminus(e.field("VisitDate"), 1));
       let l = lao["lib"], m = lao["ent"] ;
