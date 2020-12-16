@@ -1432,10 +1432,10 @@ var uro = {
     }
   }, 
   resetcolor : function(all) {
-    let lib;
+    let lib="" ;
     if (lib().title=="UroBase")
       lib = "uro" ;
-    else if (lib().title=="Backup")
+    else
       lib = "backup" ;
     for (let i in all)​ {
       let d=Math.floor((ntoday-my.gdate(all[i]​.lastModifiedTime))​/86400000​)
