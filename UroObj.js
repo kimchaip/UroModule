@@ -176,7 +176,8 @@ var old = {
     return this.a[10] ;
   }​,
   get dj() {
-    return this.a[11] ;
+    if (this.a[11]!​="" )​ return this.a[11];
+    else return "<none>" ;​
   }​,
   get opext() {
     return this.a[12] ;
@@ -1210,7 +1211,7 @@ var uro = {
            e.set("DJstent", "<none>")​ ;
       }​
       else if (e.field("Date") < links[0].field("DJStamp"))​  {// the past
-        if (old.dj != null &​& old.dj != "")​
+        if (old.dj != null)​
           e.set("DJstent", old.dj) ;
       }​
       else if (my.gdate(e.field("Date")) == my.gdate(links[0].field("DJStamp")))​ {// entry update DJStamp
@@ -1356,7 +1357,6 @@ var uro = {
       let d = this.lastDJStamp(ptent, today) ;
       if (d==null) { // not found
         links[0].set("DJStamp",null);
-        e.set("Output",links[0].field("DJstent")​=="")​;
         links[0].set("DJstent","");
       } 
       else { // found
