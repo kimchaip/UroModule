@@ -235,9 +235,9 @@ var mer = {
         }
       }
     }​
-    else if (bulinks.length​>0) {
+    if (bulinks.length​>0) {
       for (let i in bulinks) {
-        if (bulinks[i].field("VisitType")=="Admit" && bulinks[i].field("VisitDate") > last && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​) {
+        if (bulinks[i].field("VisitType")=="Admit" && bulinks[i].field("VisitDate") > last && my.gdate(​bulinks[i].field("VisitDate"))​ <= my.gdate(​date)​) {
           last = bulinks[i].field("VisitDate");
           u=i;
         }
@@ -252,11 +252,11 @@ var mer = {
       }
     }​
     if (last != null) {
-      if (r!=null) {
+      if (r!=null &​& u==null &​& s==null) {
         o["lib"] = "or" ;
         o["ent"] = orlinks[r] ;
       }
-      else if (u!=null) {
+      else if (u!=null &​& s==​null)​ {
         o["lib"] = "bu" ;
         o["ent"] = bulinks[u] ;
       }
