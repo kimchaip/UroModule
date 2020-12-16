@@ -1432,15 +1432,15 @@ var uro = {
     }
   }, 
   resetcolor : function(all) {
-    let lib="" ;
+    let thislib = "" ;
     if (lib().title=="UroBase")
-      lib = "uro" ;
+      thislib = "uro" ;
     else
-      lib = "backup" ;
+      thislib = "backup" ;
     for (let i in all)​ {
       let d=Math.floor((ntoday-my.gdate(all[i]​.lastModifiedTime))​/86400000​)
       if (d>=0 &​& d<3) {
-        fill.color(all[i]​, lib)​;
+        fill.color(all[i]​, thislib)​;
       }
     } 
 
