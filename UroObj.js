@@ -1,6 +1,7 @@
 var pt = libByName("Patient") ;​
 var or = libByName("UroBase") ;​
 var cs = libByName("Consult") ;
+var bu = libByName("Backup") ;
 
 var my = {
   d : null, 
@@ -69,7 +70,7 @@ var old = {
     this.a = [] ;​
     let links = e.field("Patient");
     if (links.length>0) ​{
-      if (lib().title=="UroBase")​ {
+      if (lib().title=="UroBase" || lib().title=="Backup"​)​ {
         this.a.push(e.field("Date")​)​;	       //0
         this.a.push(links​[0].title);             //​1
         this.a.push(e.field("ORType"));          //​2
@@ -125,19 +126,19 @@ var old = {
     return this.a[3] ;
   }​,
   get vstype() {
-    if (lib().title=="UroBase")​
+    if (lib().title=="UroBase" || lib().title=="Backup")​
       return this.a[4] ;
     else
       return this.a[2] ;
   }​,
   get ward() {
-    if (lib().title=="UroBase")​
+    if (lib().title=="UroBase" || lib().title=="Backup")​
       return this.a[5] ;
     else
       return this.a[3] ;
   }​,
   get vsdate() {
-    if (lib().title=="UroBase")​ {
+    if (lib().title=="UroBase" || lib().title=="Backup")​ {
       if (this.a[6]!​="" )​ return new Date(this.a[6])​ ;
       else return null;​
     }​
@@ -147,7 +148,7 @@ var old = {
     }​
   }​,
   get dcdate() {
-    if (lib().title=="UroBase")​ {
+    if (lib().title=="UroBase" || lib().title=="Backup")​ {
       if (this.a[7]!​="" )​ return new Date(this.a[7])​ ;
       else return null;​
     }​
@@ -157,13 +158,13 @@ var old = {
     }​
   }​,
   get emx() {
-    if (lib().title=="UroBase")​ 
+    if (lib().title=="UroBase" || lib().title=="Backup")​ 
       return this.a[8] ;
     else
       return this.a[6] ;
   }​,
   get apdate() {
-    if (lib().title=="UroBase")​ {
+    if (lib().title=="UroBase" || lib().title=="Backup")​ {
       if (this.a[9]!​="" )​ return new Date(this.a[9])​ ;
       else return null;​
     }​
@@ -176,7 +177,7 @@ var old = {
     return this.a[10] ;
   }​,
   get dj() {
-    if (this.a[11]!​="" )​ return this.a[11];
+    if (this.a[11]!​="")​ return this.a[11];
     else return "<none>" ;​
   }​,
   get opext() {
@@ -186,11 +187,11 @@ var old = {
     return this.a[13] ;
   }, 
   get rcdate() {
-    if (this.a[14]!​="" )​ return new Date(this.a[14])​ ;
+    if (this.a[14]!​="")​ return new Date(this.a[14])​ ;
     else return null;​
   }​,
   get dx() {
-    if (lib().title=="UroBase")​ {
+    if (lib().title=="UroBase" || lib().title=="Backup")​ {
       return this.a[15] ;
     }​
     else {
@@ -210,7 +211,7 @@ var old = {
     return this.a[17] ;
   }, 
   get track() {
-    if (lib().title=="UroBase")​ {
+    if (lib().title=="UroBase" || lib().title=="Backup")​ {
       return this.a[18] ;
     }​
     else {
@@ -222,14 +223,21 @@ var old = {
 var mer = {
   lastadmit : function (e, date)  {
     let orlinks = e.linksFrom("UroBase", "Patient") ;
+    let bulinks = e.linksFrom("Backup", "Patient") ;
     let cslinks = e.linksFrom("Consult", "Patient") ;
     let o = new Object()​ ;
-    if (orlinks.length+cslinks.length>0) {
-      let last = null, s=null, r=null;
+    if (orlinks.length+bulinks.length​+cslinks.length>0) {
+      let last = null, s=null, r=null, u=null​;
       for (let i in orlinks) {
         if (orlinks[i].field("VisitType")=="Admit" && orlinks[i].field("VisitDate") > last && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​) {
           last = orlinks[i].field("VisitDate");
           r=i;
+        }
+      }
+      for (let i in bulinks) {
+        if (bulinks[i].field("VisitType")=="Admit" && bulinks[i].field("VisitDate") > last && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​) {
+          last = bulinks[i].field("VisitDate");
+          u=i;
         }
       }
       for (let i in cslinks) {
@@ -242,6 +250,10 @@ var mer = {
         if (s==null) {
           o["lib"] = "or" ;
           o["ent"] = orlinks[r] ;
+        }
+        else if (u==null) {
+          o["lib"] = "bu" ;
+          o["ent"] = bulinks[u] ;
         }
         else {
           o["lib"] = "cs" ;
@@ -277,7 +289,8 @@ var mer = {
     if (mid.length == 0) {
       let thislib​="" ;
       if (lib().title=="UroBase") thislib = "or" ;
-      else  thislib = "cs" ;
+      else if (lib().title=="Backup") thislib = "bu")
+      else thislib = "cs" ;
       let lao = this.linklastadmit(e, my.dateminus(e.field("VisitDate"), 1));
       let l = lao["lib"], m = lao["ent"] ;
       if(m != null) {
@@ -321,6 +334,10 @@ var mer = {
           lib = "UroBase" ;
           id = mid[i]["id"] ;
         }
+        else if (mid[i]​["lib"]=="bu") {
+          lib = "Backup" ;
+          id = mid[i]["id"] ;
+        }​
         else if (mid[i]​["lib"]=="cs") {
           lib = "Consult" ;
           id = mid[i]["id"] ;
@@ -366,6 +383,10 @@ var mer = {
           lib = "UroBase" ;
           id = mla[i]["id"] ;
         }
+        else if (mla[i]["lib"] == "bu") {
+          lib = "Backup" ;
+          id = mla[i]["id"] ;
+        }
         else if (mla[i]["lib"] == "cs") {
           lib = "Consult" ;
           id = mla[i]["id"] ;
@@ -384,7 +405,7 @@ var mer = {
       let mid = mpos["mar"];
       if (mid.length>2)​ {
         let tid=[]​;
-        if (lib().title=="UroBase") {
+        if (lib().title=="UroBase" || lib().title=="Backup") {
           field1 = "Date" ;
         }​
         else {
@@ -435,13 +456,17 @@ var mer = {
             lib = "UroBase" ;
             id = mid[1]["id"] ;
           }
+          else if (mid[1]["lib"] == "bu") {
+            lib = "Backup" ;
+            id = mid[1]["id"] ;
+          }
           else if (mid[1]["lib"] == "cs") {
             lib = "Consult" ;
             id = mid[1]["id"] ;
           }
           let toent = libByName(lib).findById(id) ;
           if (toent != null) {
-            if(lib=="UroBase")​
+            if(lib=="UroBase" || lib=="Backup")​
               toent.set("VisitDate", my.dateminus(toent.field("Date"), 1)​)​ ;
             else if(lib=="Consult")​
               toent.set("VisitDate", my.dateminus(toent.field("ConsultDate"), 1)​)​ ;
@@ -578,6 +603,18 @@ var emx = {
       min = 0;
       defau = "<Default>";
     }​
+    else if (libto == "uro" &​& libfrom == "Backup") {
+      libname = "UroBase";
+      field1 = "Date" ;
+      min = 0;
+      defau = "<Default>";
+    }​
+    else if (libto == "consult" &​& libfrom == "Backup")​ {​
+      libname = "Consult";
+      field1 = "ConsultDate" ;
+      min = 0;
+      defau = "<Default>";
+    }​
     else if (libto == "uro" &​& libfrom == "Consult" ) {​
       libname = "UroBase";
       field1 = "Date" ;
@@ -598,7 +635,7 @@ var emx = {
       let found = false;
       if (entlinks.length > min) {
         for (let i in entlinks) {
-          if (my.gdate(entlinks[i].field(field1))​ == my.gdate(e.field("AppointDate")))​ {
+          if (my.gdate(entlinks[i].field(field1))​ == my.gdate(e.field("AppointDate")) &​& entlinks[i].id!=e.id)​{
             found = true;
             break ;
           }
@@ -624,7 +661,24 @@ var emx = {
             ent["Photo"] = e.field("Photo").join()​;
         }​
         else if (libto == "consult" &​& libfrom == "UroBase") {
-          ent​["Ward"] = e.field("Ward")​;
+          ent​["VisitType"] = "OPD";
+          ent​["VisitDate"] = my.date(e.field("AppointDate")​);
+          if (e.field("Photo").length>0)​
+            ent["Photo"] = e.field("Photo").join()​;
+        }​
+        else if (libto == "uro" &​& libfrom == "Backup") {
+          ent​["Op"] = e.field("Operation")​;
+          ent​["ORType"] = e.field("ORType")​;
+          ent​["VisitType"] = e.field("VisitType")​;
+          if (e.field("VisitType")​== "Admit")​
+            ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
+          else  
+            ent​["VisitDate"] = my.date(e.field("AppointDate"))​;
+          ent​["RecordDate"] = today​;
+          if (e.field("Photo").length>0)​
+            ent["Photo"] = e.field("Photo").join()​;
+        }​
+        else if (libto == "consult" &​& libfrom == "Backup") {
           ent​["VisitType"] = "OPD";
           ent​["VisitDate"] = my.date(e.field("AppointDate")​);
           if (e.field("Photo").length>0)​
@@ -646,6 +700,8 @@ var emx = {
         lib.create(ent);
         let last = lib.entries()[0];
         last.link("Patient", links[0]);
+        fill.track(last)​;
+        fill.underlying(last)​;
         fill.color(last, libto) ;
         message("successfully created new Entry") ;
       }​
@@ -673,7 +729,7 @@ var emx = {
 }​;
 var fill = {
   track​ : function (e) {
-    if (lib().title=="UroBase") {
+    if (lib().title=="UroBase" || lib().title=="Backup") {
       field1 = "Status" ;
     }​
     else {
@@ -750,7 +806,7 @@ var fill = {
         links[0].set("WardStamp",null);
       }​
       //--set pt.status, pt.ward, wardStamp and Description
-      if (lib().title=="UroBase") {
+      if (lib().title=="UroBase" || lib().title=="Backup") {
         field1 = "Status" ;
         field2 = "Op" ;
         field3 = "OpResult" ;
@@ -824,7 +880,7 @@ e.field(field1​) != "Not")​ {
   color : function (e, lib)​ {
     let links = e.field("Patient");
     if (links.length>0) {
-      if(lib=="uro") {
+      if(lib=="uro" || lib=="backup") {
         if(e.field("Status")=="Not") {
           e.set("Color", "#5B5B5B")​;
         } 
@@ -953,7 +1009,7 @@ var pto = {
     if (linkedFrom != null)​ {
       let toEnt = linkedFrom["ent"]​ ;
       let statusf;
-      if (linkedFrom["lib"]=="or")​
+      if (linkedFrom["lib"]=="or"  || linkedFrom["lib"]​=="bu")​
         statusf = "Status";
       else
         statusf = "EntryMx";
@@ -1230,17 +1286,27 @@ var uro = {
   }, 
   lastDJStamp : function (e, date)  {
     let orlinks = e.linksFrom("UroBase", "Patient") ;
+    let bulinks = e.linksFrom("Backup", "Patient") ;
     let o = null ;
-    if (orlinks.length>0) {
-      let last = null, r = null;
+    if (orlinks.length+bulinks.length>0) {
+      let last = null, r = null, u = null;
       for (let i in orlinks) {
         if (orlinks[i].field("DJstent") != "<none>"​ && orlinks[i].field("Date") > last && my.gdate(orlinks[i].field("Date")) <= my.gdate(date)​) {
           last = orlinks[i].field("Date");
           r=i;
         }
       }
-      if (last != null &​& orlinks[r].field("DJstent") != "off DJ") {
-        o = orlinks[r] ;
+      for (let i in bulinks) {
+        if (bulinks[i].field("DJstent") != "<none>"​ && bulinks[i].field("Date") > last && my.gdate(bulinks[i].field("Date")) <= my.gdate(date)​) {
+          last = bulinks[i].field("Date");
+          u=i;
+        }
+      }
+      if (last != null)​{
+        if (u==null &​& orlinks[r].field("DJstent") != "off DJ")
+          o = orlinks[r] ;
+        else if (u!=null && bulinks[u].field("DJstent") != "off DJ")​
+          o = bulinks[u] ;
       }
     }
     return o ;
@@ -1366,10 +1432,15 @@ var uro = {
     }
   }, 
   resetcolor : function(all) {
+    let lib;
+    if (lib().title=="UroBase")
+      lib = "uro" ;
+    else if (lib().title=="Backup")
+      lib = "backup" ;
     for (let i in all)​ {
       let d=Math.floor((ntoday-my.gdate(all[i]​.lastModifiedTime))​/86400000​)
       if (d>=0 &​& d<3) {
-        fill.color(all[i]​, "uro")​;
+        fill.color(all[i]​, lib)​;
       }
     } 
 
@@ -1473,6 +1544,56 @@ var trig = {
     uro.resetcolor(all)​;
   }, 
   UroUpdatingField : function (all) {
+    for(let i in all) {
+      // update que
+      old.getstart(all[i]​)​;
+      if(all[i].field("Que")​!=old.que &​& all[i].field("ORType")​=="GA"& all[i].field("Status")!="Not" && old.que!=undefined) {
+        all[i].set("Previous",  all[i].field("Previous").replace("," + old.que + ",", "," + all[i].field("Que")​ + ","));
+        uro.runq(all[i]​)​; 
+        break;
+      }​
+    }
+  }, 
+  BackupOpenEdit : function (e)​ {
+    old.store(e)​;
+  }, 
+  BackupBeforeEdit : function (e, value)​ {
+    if (value=="create")
+      uro.setnewdate(e, true)​;
+    else if (value=="update")​{
+      old.getstart(e)​;
+      uro.setnewdate(e, false)​;
+    }​
+    uro.setopextra(e)​;
+    uro.setvisitdate(e)​;
+    fill.track​(e)​;
+    if (value=="create")
+      mer.merge(e, false)​;
+    else if (value=="update")​
+      mer.merge(e, true)​;
+    uro.setq(e)​;
+    uro.setDJstent(e)​;
+    uro.createautofill​(e)​;
+    uro.createoplist(e)​;
+    fill.underlying(e)​;
+    fill.los(e)​;
+  }, 
+  BackupAfterEdit : function (e, value) {
+    if (value=="update")​
+      old.getstart(e)​;
+    fill.ptstatus(e)​;
+    fill.color(e, "uro")​;
+    emx.flu(e)​;
+    emx.setor(e)​;
+    uro.updateDJStamp(e)​;
+  }, 
+  BackupBeforeViewCard ​: function (e) {​
+    fill.color(e, "uro")​;
+  }, 
+  BackupBeforeOpenLib : function (all) {
+    uro.resetcolor(all)​;
+  }, 
+  BackupUpdatingField : function (all) {
     for(let i in all) {
       // update que
       old.getstart(all[i]​)​;
