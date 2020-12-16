@@ -1,6 +1,6 @@
 # Urobase Object
 ## Library
-	pt, or, cs
+	pt, or, cs, bu
 ## my {}​
 	- date
 	- dateadd
@@ -89,6 +89,11 @@
 	* UroAfterEdit
 	* UroBeforeViewCard
 	* UroBeforeOpenLib
+        * BackupOpenEdit
+        * BackupBeforeEdit
+        * BackupAfterEdit
+        * BackupBeforeViewCard
+        * BackupBeforeOpenLib
 	* ConsultOpenEdit
 	* ConsultBeforeEdit
 	* ConsultAfterEdit
