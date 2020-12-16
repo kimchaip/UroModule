@@ -226,39 +226,44 @@ var mer = {
     let bulinks = e.linksFrom("Backup", "Patient") ;
     let cslinks = e.linksFrom("Consult", "Patient") ;
     let o = new Object()​ ;
-    if (orlinks.length+bulinks.length​+cslinks.length>0) {
-      let last = null, s=null, r=null, u=null​;
+    let last = null, s=null, r=null, u=null​;​
+    if (orlinks.length>0) {
       for (let i in orlinks) {
         if (orlinks[i].field("VisitType")=="Admit" && orlinks[i].field("VisitDate") > last && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​) {
           last = orlinks[i].field("VisitDate");
           r=i;
         }
       }
+    }​
+    else if (bulinks.length​>0) {
       for (let i in bulinks) {
         if (bulinks[i].field("VisitType")=="Admit" && bulinks[i].field("VisitDate") > last && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​) {
           last = bulinks[i].field("VisitDate");
           u=i;
         }
       }
+    }​
+    else if (cslinks.length>0) {
       for (let i in cslinks) {
         if (cslinks[i].field("VisitType")=="Admit" && cslinks[i].field("VisitDate") > last && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) ) {
           last = cslinks[i].field("VisitDate");
           s=i;
         }
       }
-      if (last != null)
-        if (s==null) {
-          o["lib"] = "or" ;
-          o["ent"] = orlinks[r] ;
-        }
-        else if (u==null) {
-          o["lib"] = "bu" ;
-          o["ent"] = bulinks[u] ;
-        }
-        else {
-          o["lib"] = "cs" ;
-          o["ent"] = cslinks[s] ;
-        }
+    }​
+    if (last != null) {
+      if (r!=null) {
+        o["lib"] = "or" ;
+        o["ent"] = orlinks[r] ;
+      }
+      else if (u!=null) {
+        o["lib"] = "bu" ;
+        o["ent"] = bulinks[u] ;
+      }
+      else if (s!=null) {​
+        o["lib"] = "cs" ;
+        o["ent"] = cslinks[s] ;
+      }
     }
     return o ;
   }, 
@@ -1288,26 +1293,28 @@ var uro = {
     let orlinks = e.linksFrom("UroBase", "Patient") ;
     let bulinks = e.linksFrom("Backup", "Patient") ;
     let o = null ;
-    if (orlinks.length+bulinks.length>0) {
-      let last = null, r = null, u = null;
+    let last = null, r = null, u = null;
+    if (orlinks.length>0) {
       for (let i in orlinks) {
         if (orlinks[i].field("DJstent") != "<none>"​ && orlinks[i].field("Date") > last && my.gdate(orlinks[i].field("Date")) <= my.gdate(date)​) {
           last = orlinks[i].field("Date");
           r=i;
         }
       }
+    }​
+    else if (bulinks.length>0)​ {
       for (let i in bulinks) {
         if (bulinks[i].field("DJstent") != "<none>"​ && bulinks[i].field("Date") > last && my.gdate(bulinks[i].field("Date")) <= my.gdate(date)​) {
           last = bulinks[i].field("Date");
           u=i;
         }
       }
-      if (last != null)​{
-        if (u==null &​& orlinks[r].field("DJstent") != "off DJ")
-          o = orlinks[r] ;
-        else if (u!=null && bulinks[u].field("DJstent") != "off DJ")​
-          o = bulinks[u] ;
-      }
+    }​
+    if (last != null)​{
+      if (u==null &​& orlinks[r].field("DJstent") != "off DJ")
+        o = orlinks[r] ;
+      else if (u!=null && bulinks[u].field("DJstent") != "off DJ")​
+        o = bulinks[u] ;
     }
     return o ;
   },
