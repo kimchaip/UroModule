@@ -1302,7 +1302,7 @@ var uro = {
         }
       }
     }​
-    else if (bulinks.length>0)​ {
+    if (bulinks.length>0)​ {
       for (let i in bulinks) {
         if (bulinks[i].field("DJstent") != "<none>"​ && bulinks[i].field("Date") > last && my.gdate(bulinks[i].field("Date")) <= my.gdate(date)​) {
           last = bulinks[i].field("Date");
