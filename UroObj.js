@@ -378,7 +378,6 @@ var mer = {
       }
       this.changeother(e, mpos["pos"], mpos["mar"], "Summary" ) ;
       this.changeother(e, mpos["pos"], mpos["mar"], "Track" ) ;
-
     } 
   }, 
   changeother : function (e, pos, mla, field) {
@@ -402,7 +401,8 @@ var mer = {
         }
         let toent = libByName(lib).findById(id) ;
         if (toent != null) {
-          toent.set(field, e.field(field)) ;  
+          toent.set(field, e.field(field)) ; 
+          fill.los(toent)​;​
           fill.color(toent, libcolor)​;
         }
       } 
@@ -1026,6 +1026,7 @@ var pto = {
       if (e.field("Done") == true &​& toEnt.field("Track") == 1) {
         if (toEnt.field(statusf​) != "Not" && toEnt.field("VisitType") == "Admit" && (toEnt.field("DischargeDate") == null || my.gdate(toEnt.field("DischargeDate"))​ > ntoday)​)​ { // Admit
           toEnt.set("Track", 2);
+          mer.merge(toEnt, true)​;
         }​
       }​
     }​
@@ -1634,7 +1635,7 @@ var trig = {
       mer.merge(e, true)​;
     fill.underlying(e)​;
     fill.los(e)​;
-  }, 
+  },
   ConsultAfterEdit : function (e, value) {
     if (value=="update")​
       old.getstart(e)​;
