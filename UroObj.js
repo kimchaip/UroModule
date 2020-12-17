@@ -357,7 +357,7 @@ var mer = {
     }​
     return o;
   }​, 
-  mergeeffect : function (e)  {
+  effect : function (e)  {
     let mpos = this.posinmerge(e)​;
     if(mpos["found"]​ == true ) { //parent or child
       if(my.gdate(old.vsdate) != my.gdate(e.field("VisitDate"))) {
@@ -376,8 +376,16 @@ var mer = {
       else if(old.vstype != e.field("VisitType") ) {
         e.set("VisitType", old.vstype);
       }
+    } 
+  }, 
+  other : function (e)  {
+    let mpos = this.posinmerge(e)​;
+    if(mpos["found"]​ == true ) { //parent or child
       this.changeother(e, mpos["pos"], mpos["mar"], "Summary" ) ;
       this.changeother(e, mpos["pos"], mpos["mar"], "Track" ) ;
+      this.changeother(e, mpos["pos"], mpos["mar"], "Underlying" ) ;
+      this.changeother(e, mpos["pos"], mpos["mar"], "LOS" ) ;
+      this.changeother(e, mpos["pos"], mpos["mar"], "Color" ) ;
     } 
   }, 
   changeother : function (e, pos, mla, field) {
@@ -401,9 +409,12 @@ var mer = {
         }
         let toent = libByName(lib).findById(id) ;
         if (toent != null) {
-          toent.set(field, e.field(field)) ; 
-          fill.los(toent)​;​
-          fill.color(toent, libcolor)​;
+          if (field=="Color")​{
+            fill.color(toent, libcolor)​;
+          }​
+          else {
+            toent.set(field, e.field(field)) ;
+          }​ 
         }
       } 
     } 
@@ -495,7 +506,7 @@ var mer = {
       mer.mlacancel(e)​;
     }​
     if (mergedone==false &​& value)​ {
-      mer.mergeeffect(e)​;
+      mer.effect(e)​;
     }​
   }
 }​;
@@ -1026,7 +1037,7 @@ var pto = {
       if (e.field("Done") == true &​& toEnt.field("Track") == 1) {
         if (toEnt.field(statusf​) != "Not" && toEnt.field("VisitType") == "Admit" && (toEnt.field("DischargeDate") == null || my.gdate(toEnt.field("DischargeDate"))​ > ntoday)​)​ { // Admit
           toEnt.set("Track", 2);
-          mer.merge(toEnt, true)​;
+          mer.other(toEnt)​;
         }​
       }​
     }​
@@ -1546,6 +1557,7 @@ var trig = {
       old.getstart(e)​;
     fill.ptstatus(e)​;
     fill.color(e, "uro")​;
+    mer.other(e)​;
     emx.flu(e)​;
     emx.setor(e)​;
     uro.updateDJStamp(e)​;
@@ -1596,6 +1608,7 @@ var trig = {
       old.getstart(e)​;
     fill.ptstatus(e)​;
     fill.color(e, "uro")​;
+    mer.other(e)​;
     emx.flu(e)​;
     emx.setor(e)​;
     uro.updateDJStamp(e)​;
@@ -1641,6 +1654,7 @@ var trig = {
       old.getstart(e)​;
     fill.ptstatus(e)​;
     fill.color(e, "consult")​;
+    mer.other(e)​;
     emx.flu(e)​;
     emx.setor(e)​;
   }, 
