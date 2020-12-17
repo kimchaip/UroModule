@@ -331,23 +331,9 @@ var mer = {
     let o = new Object()​;
     o["found"]​= false;
     if (mid.length>0) {
-      let thislib = lib().title ;
       let thisid = e.id ;
       for(let i in mid) {
-        let tlib ="", tid="" ;
-        if (mid[i]​["lib"]=="or") {
-          tlib = "UroBase" ;
-          tid = mid[i]["id"] ;
-        }
-        else if (mid[i]​["lib"]=="bu") {
-          tlib = "Backup" ;
-          tid = mid[i]["id"] ;
-        }​
-        else if (mid[i]​["lib"]=="cs") {
-          tlib = "Consult" ;
-          tid = mid[i]["id"] ;
-        }
-        if ((tlib==thislib)​&&(tid==thisid)​) {
+        if (mid[i]["id"]==thisid) {
           o["found"] = true ;
           o["pos"]​ = i ;
           o["mar"] ​= mid;
@@ -1038,11 +1024,6 @@ var pto = {
         if (toEnt.field(statusf​) != "Not" && toEnt.field("VisitType") == "Admit" && (toEnt.field("DischargeDate") == null || my.gdate(toEnt.field("DischargeDate"))​ > ntoday)​)​ { // Admit
           toEnt.set("Track", 2);
           mer.other(toEnt)​;
-          let m = mer.getmergeid(toEnt)​;
-          if(m.length>0)​
-            toEnt.set("Output",toEnt.id==m[1]["id"]+":"+m[1]["lib"]==or)​;
-          else
-            toEnt.set("Output","getmergeid==0")​;
         }​
       }​
     }​
