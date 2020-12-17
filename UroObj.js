@@ -1039,7 +1039,10 @@ var pto = {
           toEnt.set("Track", 2);
           mer.other(toEnt)​;
           let m = mer.posinmerge(toEnt)​;
-          toEnt.set("Output",m["found"]+":"+m["pos"]​+":"+m["mar"].length)​;
+          if(m["found"]==true)​
+            toEnt.set("Output",m["pos"]​+":"+m["mar"].length)​;
+          else
+            toEnt.set("Output","not found")​;
         }​
       }​
     }​
