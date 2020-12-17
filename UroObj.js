@@ -1038,11 +1038,11 @@ var pto = {
         if (toEnt.field(statusf​) != "Not" && toEnt.field("VisitType") == "Admit" && (toEnt.field("DischargeDate") == null || my.gdate(toEnt.field("DischargeDate"))​ > ntoday)​)​ { // Admit
           toEnt.set("Track", 2);
           mer.other(toEnt)​;
-          let m = mer.posinmerge(toEnt)​;
-          if(m["found"]​==true​)​
-            toEnt.set("Output",m["pos"]​+":"+m["mar"].length)​;
+          let m = mer.getmergeid(toEnt)​;
+          if(m.length>0)​
+            toEnt.set("Output",toEnt.id==m[1]["id"]+":"+m[1]["lib"]==or)​;
           else
-            toEnt.set("Output","no posinmerge")​;
+            toEnt.set("Output","getmergeid==0")​;
         }​
       }​
     }​
