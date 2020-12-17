@@ -1038,6 +1038,8 @@ var pto = {
         if (toEnt.field(statusf​) != "Not" && toEnt.field("VisitType") == "Admit" && (toEnt.field("DischargeDate") == null || my.gdate(toEnt.field("DischargeDate"))​ > ntoday)​)​ { // Admit
           toEnt.set("Track", 2);
           mer.other(toEnt)​;
+          let m = mer.posinmerge(toEnt)​;
+          toEnt.set("Output",m["found"]+":"+m["pos"]​+":"+m["mar"].length)​;
         }​
       }​
     }​
