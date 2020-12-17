@@ -1039,7 +1039,7 @@ var pto = {
           toEnt.set("Track", 2);
           mer.other(toEnt)​;
           let m = mer.getmergeid(toEnt)​;
-          if(m.length>==0)​
+          if(m.length>0)​
             toEnt.set("Output",m.length)​;
           else
             toEnt.set("Output","not found")​;
