@@ -1038,9 +1038,9 @@ var pto = {
         if (toEnt.field(statusf​) != "Not" && toEnt.field("VisitType") == "Admit" && (toEnt.field("DischargeDate") == null || my.gdate(toEnt.field("DischargeDate"))​ > ntoday)​)​ { // Admit
           toEnt.set("Track", 2);
           mer.other(toEnt)​;
-          let m = mer.posinmerge(toEnt)​;
-          if(m["found"]==true)​
-            toEnt.set("Output",m["pos"]​+":"+m["mar"].length)​;
+          let m = mer.getmergeid(toEnt)​;
+          if(m.length>==0)​
+            toEnt.set("Output",m.length)​;
           else
             toEnt.set("Output","not found")​;
         }​
