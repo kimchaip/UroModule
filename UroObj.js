@@ -334,20 +334,20 @@ var mer = {
       let thislib = lib().title ;
       let thisid = e.id ;
       for(let i in mid) {
-        let lib ="", id="" ;
+        let tlib ="", tid="" ;
         if (mid[i]​["lib"]=="or") {
-          lib = "UroBase" ;
-          id = mid[i]["id"] ;
+          tlib = "UroBase" ;
+          tid = mid[i]["id"] ;
         }
         else if (mid[i]​["lib"]=="bu") {
-          lib = "Backup" ;
-          id = mid[i]["id"] ;
+          tlib = "Backup" ;
+          tid = mid[i]["id"] ;
         }​
         else if (mid[i]​["lib"]=="cs") {
-          lib = "Consult" ;
-          id = mid[i]["id"] ;
+          tlib = "Consult" ;
+          tid = mid[i]["id"] ;
         }
-        if ((lib==thislib)​&&(id==thisid)​) {
+        if ((tlib==thislib)​&&(tid==thisid)​) {
           o["found"] = true ;
           o["pos"]​ = i ;
           o["mar"] ​= mid;
@@ -1038,11 +1038,11 @@ var pto = {
         if (toEnt.field(statusf​) != "Not" && toEnt.field("VisitType") == "Admit" && (toEnt.field("DischargeDate") == null || my.gdate(toEnt.field("DischargeDate"))​ > ntoday)​)​ { // Admit
           toEnt.set("Track", 2);
           mer.other(toEnt)​;
-          let m = mer.getmergeid(toEnt)​;
-          if(m.length>0​)​
-            toEnt.set("Output",toEnt.id+":"+m[0]["lib"]+":"+m[0]["id"]+":"+m[1]["lib"]+":"+m[1]["id"]​)​;
+          let m = mer.posinmerge(toEnt)​;
+          if(m["found"]​==true​)​
+            toEnt.set("Output",m["pos"]​+":"+m["mar"].length)​;
           else
-            toEnt.set("Output","not found")​;
+            toEnt.set("Output","no posinmerge")​;
         }​
       }​
     }​
