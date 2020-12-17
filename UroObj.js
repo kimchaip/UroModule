@@ -378,27 +378,32 @@ var mer = {
       }
       this.changeother(e, mpos["pos"], mpos["mar"], "Summary" ) ;
       this.changeother(e, mpos["pos"], mpos["mar"], "Track" ) ;
+
     } 
   }, 
   changeother : function (e, pos, mla, field) {
     for (let i in mla) {
       if(i != pos) {
-        let lib ="", id="" ;
+        let lib ="", id="", libcolor="" ;
         if (mla[i]["lib"] == "or") {
           lib = "UroBase" ;
           id = mla[i]["id"] ;
+          libcolor = "uro" ;
         }
         else if (mla[i]["lib"] == "bu") {
           lib = "Backup" ;
           id = mla[i]["id"] ;
+          libcolor = "backup" ;
         }
         else if (mla[i]["lib"] == "cs") {
           lib = "Consult" ;
           id = mla[i]["id"] ;
+          libcolor = "consult" ;
         }
         let toent = libByName(lib).findById(id) ;
         if (toent != null) {
-          toent.set(field, e.field(field)) ;    
+          toent.set(field, e.field(field)) ;  
+          fill.color(toent, libcolor)​;
         }
       } 
     } 
