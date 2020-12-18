@@ -1514,6 +1514,9 @@ var trig = {
   PatientBeforeOpenLib : function (all) {
     pto.resetdone(all)​;
   }, 
+  PatientBeforeLink : function (e)​ {
+    pto.age(e)​;
+  }, 
   UroOpenEdit : function (e)​ {
     old.store(e)​;
   }, 
