@@ -958,7 +958,7 @@ var pto = {
       e.set("Age", Math.floor(diff/365.2425) + " ปี")​;
     }​
     else if (diff>30)​{
-      e.set("Age", Math.floor(diff/30) + " เดือน")​;
+      e.set("Age", Math.floor(diff/30.4375) + " เดือน")​;
     }​
     else {
       e.set("Age" , diff + " วัน")​;
@@ -990,7 +990,7 @@ var pto = {
     else {
       let d = 0;
       if (e.field("Birthday") == null &​& e.field("YY") > 0)​ {
-        d = Math.floor(e.field("YY")*365.2425 + e.field("MM")*30 + e.field("DD"));
+        d = Math.floor(e.field("YY")*365.2425 + e.field("MM")*30.4375 + e.field("DD"));
         e.set("Birthday", my.dateminus(today, d)​);
         e.set("Age", e.field("YY")​ + " ปี")​;
       }​
