@@ -995,7 +995,7 @@ var pto = {
         e.set("Age", e.field("YY")​ + " ปี")​;
       }​
       else if (e.field("Birthday")​ != null)​ {
-        d = Math.Floor((ntoday-my.gdate(e.field("Birthday"))​)/86400000);
+        d = Math.floor((ntoday-my.gdate(e.field("Birthday"))​)/86400000);
         this.agetext(e, d)​;
       }​
     }​
