@@ -990,12 +990,12 @@ var pto = {
     else {
       let d = 0;
       if (e.field("Birthday") == null &​& e.field("YY") > 0)​ {
-        d = Math.floor((e.field("YY")*365.2425 + e.field("MM")*30 + e.field("DD"))*86400000)​;
+        d = Math.floor(e.field("YY")*365.2425 + e.field("MM")*30 + e.field("DD"));
         e.set("Birthday", my.dateminus(today, d)​);
         e.set("Age", e.field("YY")​ + " ปี")​;
       }​
       else if (e.field("Birthday")​ != null)​ {
-        d = (ntoday-my.gdate(e.field("Birthday"))​)/86400000;
+        d = Math.Floor((ntoday-my.gdate(e.field("Birthday"))​)/86400000/365);
         this.agetext(e, d)​;
       }​
     }​
