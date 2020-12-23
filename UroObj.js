@@ -684,6 +684,10 @@ var emx = {
           ent​["RecordDate"] = today​;
           if (e.field("Photo").length>0)​
             ent["Photo"] = e.field("Photo").join()​;
+          if(my.gdate(e.field("Date"))​>ntoday​)​
+            ent​["Future"] = ​Math.floor((my.gdate(e.field("Date"))​-ntoday)​/86400000);
+          else
+            ent​["Future"] = null;
         }​
         else if (libto == "consult" &​& libfrom == "Backup") {
           ent​["VisitType"] = "OPD";
@@ -697,6 +701,10 @@ var emx = {
 	  ent​["Op"] = e.field("Operation")​;
           if (e.field("Photo").length>0)​
             ent["Photo"] = e.field("Photo").join()​;
+          if(my.gdate(e.field("Date"))​>ntoday​)​
+            ent​["Future"] = ​Math.floor((my.gdate(e.field("Date"))​-ntoday)​/86400000);
+          else
+            ent​["Future"] = null;
         }​
         else if (libto == "consult" &​& libfrom == "Consult") {​
           ent["VisitType"]​ = "OPD" ;
@@ -1454,6 +1462,12 @@ var uro = {
       }
     } 
 
+  }, 
+  setfuture : function(e)​{
+    if(my.gdate(e.field("Date"))>ntoday​)​
+      e.set("Future", Math.floor((my.gdate(e.field("Date")-ntoday)​/86400000))​;
+else
+      e.set("Future", null)​;
   }​
 }​;
 
@@ -1527,6 +1541,7 @@ var trig = {
       old.getstart(e)​;
       uro.setnewdate(e, false)​;
     }​
+    uro.setfuture(e)​;
     uro.setopextra(e)​;
     uro.setvisitdate(e)​;
     fill.track​(e)​;
@@ -1578,6 +1593,7 @@ var trig = {
       old.getstart(e)​;
       uro.setnewdate(e, false)​;
     }​
+    uro.setfuture(e)​;
     uro.setopextra(e)​;
     uro.setvisitdate(e)​;
     fill.track​(e)​;
