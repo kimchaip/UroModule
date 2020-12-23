@@ -1465,7 +1465,7 @@ var uro = {
   }, 
   setfuture : function(e)​{
     if(my.gdate(e.field("Date"))>ntoday​)​
-      e.set("Future", Math.floor((my.gdate(e.field("Date")-ntoday)​/86400000))​;
+      e.set("Future", Math.floor((my.gdate(e.field("Date")​)-ntoday)​/86400000))​;
 else
       e.set("Future", null)​;
   }​
