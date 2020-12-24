@@ -684,8 +684,8 @@ var emx = {
           ent​["RecordDate"] = today​;
           if (e.field("Photo").length>0)​
             ent["Photo"] = e.field("Photo").join()​;
-          if(my.gdate(e.field("Date"))​>ntoday​)​
-            ent​["Future"] = ​Math.floor((my.gdate(e.field("Date"))​-ntoday)​/86400000);
+          if(my.gdate(ent​[field1])​>ntoday​)​
+            ent​["Future"] = ​Math.floor((my.gdate(ent​[field1])​-ntoday)​/86400000);
           else
             ent​["Future"] = null;
         }​
@@ -701,8 +701,8 @@ var emx = {
 	  ent​["Op"] = e.field("Operation")​;
           if (e.field("Photo").length>0)​
             ent["Photo"] = e.field("Photo").join()​;
-          if(my.gdate(e.field("Date"))​>ntoday​)​
-            ent​["Future"] = ​Math.floor((my.gdate(e.field("Date"))​-ntoday)​/86400000);
+          if(my.gdate(ent​[field1])​>ntoday​)​
+            ent​["Future"] = ​Math.floor((my.gdate(ent​[field1])​-ntoday)​/86400000);
           else
             ent​["Future"] = null;
         }​
