@@ -595,6 +595,7 @@ var que = {
 }​;
 var emx = {
   createnew : function  (e, libto)​ {
+    let ob = {}​;
     let libname = "", field1 = "";
     let libfrom = lib().title;
     let min = 0,​ defau = "" ;
@@ -719,12 +720,13 @@ var emx = {
         fill.underlying(last)​;
         fill.color(last, libto) ;
         message("successfully created new Entry") ;
-        if (libto == "uro")​{
-          last.show()​;
-        {
+        if (libto == "uro") ​{
+          ob=last​;
+        }​
       }​
     }​
     e.set("EntryMx", defau) ;
+    return ob;
   }, 
   flu : function (e)​ {
     if (e.field("EntryMx")​== "F/U" &&  e.field("AppointDate")!= null) {
@@ -737,7 +739,7 @@ var emx = {
   }, 
   setor : function (e)​ {
     if (e.field("EntryMx")​== "set OR" &&  e.field("AppointDate")!= null) {
-      this.createnew(e, "uro")​;
+      this.createnew(e, "uro").show()​;
     }​
     else if (e.field("EntryMx")​=="set OR")​ {
       message("Appoint date must not leave blank")​;
