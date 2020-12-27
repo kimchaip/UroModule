@@ -719,6 +719,9 @@ var emx = {
         fill.underlying(last)​;
         fill.color(last, libto) ;
         message("successfully created new Entry") ;
+        if (libto == "uro")​{
+          last.show()​;
+        {
       }​
     }​
     e.set("EntryMx", defau) ;
