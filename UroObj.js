@@ -800,7 +800,7 @@ var fill = {
     }​
   }, 
   underlying : function (e) {
-    let links = e.field("patient")​;
+    let links = e.field("Patient")​;
     if (links.length>0) {
       if (links[0].field("Underlying").length>0) {
         e.set("Underlying", ":" + links[0].field("Underlying").join());
@@ -820,7 +820,7 @@ var fill = {
     }​
   }, 
   ptstatus : function (e) {
-    let links = e.field("patient")​;
+    let links = e.field("Patient")​;
     if (links.length>0) {
       let m = mer.linklastadmit(e, today)​["ent"];
       if (m != null)​{
@@ -1281,7 +1281,7 @@ var uro = {
     }​
   }, 
   setDJstent : function (e) {
-    let links = e.field("patient")​;
+    let links = e.field("Patient")​;
     if (links.length>0) {
       if (links[0].field("DJStamp") == null) {
         if(e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ")​
@@ -1444,7 +1444,7 @@ var uro = {
     }​
   }​,
   updateDJStamp : function (e) {
-    let links = e.field("patient")​;
+    let links = e.field("Patient")​;
     if (links.length>0) {
       let ptent = pt.findById(links​[0].id) ;
       let d = this.lastDJStamp(ptent, today) ;
