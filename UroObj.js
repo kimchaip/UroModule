@@ -1448,6 +1448,7 @@ var uro = {
     if (links.length>0) {
       let ptent = pt.findById(links​[0].id) ;
       let d = this.lastDJStamp(ptent, today) ;
+      e.set("Output", d)​;
       if (d==null) { // not found
         links[0].set("DJStamp", null);
         links[0].set("DJstent", " ");
