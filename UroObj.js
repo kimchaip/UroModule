@@ -1448,14 +1448,14 @@ var uro = {
     if (links.length>0) {
       let ptent = pt.findById(links​[0].id) ;
       let d = this.lastDJStamp(ptent, today) ;
-      e.set("Output", d==null)​;
       if (d==null) { // not found
-        links[0].set("DJStamp", null);
         links[0].set("DJstent", " ");
+        links[0].set("DJStamp", null)​;
+        message("d==null")​;
       } 
       else { // found
-        links[0].set("DJStamp", d.field("Date")) ;
         links[0].set("DJstent", "on DJ");
+        links[0].set("DJStamp", d.field("Date"));
       }
     }
   }, 
