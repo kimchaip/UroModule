@@ -1024,7 +1024,7 @@ var pto = {
   }, 
   //DJ stent
   dj : function (e) {
-    if (e.field("DJstent").trim()​ == "")​ {
+    if (e.field("DJstent") == "<none>")​ {
       e.set("DJStamp", null);
     }
   }, 
@@ -1449,7 +1449,7 @@ var uro = {
       let ptent = pt.findById(links​[0].id) ;
       let d = this.lastDJStamp(ptent, today) ;
       if (d==null) { // not found
-        links[0].set("DJstent", "");
+        links[0].set("DJstent", "<none>");
         links[0].set("DJStamp", null)​;
       } 
       else { // found
