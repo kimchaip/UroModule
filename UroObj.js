@@ -1283,28 +1283,42 @@ var uro = {
   setDJstent : function (e) {
     let links = e.field("Patient")​;
     if (links.length>0) {
-      if (links[0].field("DJStamp") == null) {
+      if (links[0].field("DJStamp") == null) { // never ever DJStamp
         if(e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ")​
           e.set("DJstent", "<none>")​;
       }​
-      else if (e.field("Date") > links[0].field("DJStamp") && my.gdate(e.field("Date")) <= ntoday) { // DJStamp not null 
-        if (e.field("DJstent") == "on DJ")​
-           e.set("DJstent", "<none>")​ ;
+      else if (e.field("Date") > links[0].field("DJStamp") && my.gdate(e.field("Date")) > ntoday) { // ever DJStamp, future entry
+        if (e.field("DJstent") != "<none>")​
+          e.set("DJstent", "<none>")​ ;
       }​
-      else if (e.field("Date") < links[0].field("DJStamp"))​  {// the past
+      else if (e.field("Date") > links[0].field("DJStamp") && my.gdate(e.field("Date")) <= ntoday) { // ever DJStamp, after Stamp but not future entry
+        if (links[0].field("DJstent") == "<none>")​ {// ever off DJ, get only on DJ
+          if (e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ")​
+            e.set("DJstent", "<none>")​ ;
+        }​
+        else { // ever on DJ or change DJ, get off or change DJ
+          if (e.field("DJstent") == "on DJ")​
+            e.set("DJstent", "<none>")​ ;
+        }​
+      }​
+      else if (e.field("Date") < links[0].field("DJStamp"))​  {// edit entry before last DJStamp, can't edit
         if (old.dj != null)​
           e.set("DJstent", old.dj) ;
       }​
-      else if (my.gdate(e.field("Date")) == my.gdate(links[0].field("DJStamp")))​ {// entry update DJStamp
-        let ptent = pt.findById(links[0].id) ;
-        let d = this.lastDJStamp(ptent, my.dateminus(e.field("Date"), 1)) ;
-        if (d == null) { // off -​> none, on
-          if (e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ") 
-            e.set("DJstent" , "<none>") ;
-        }
-        else { // on,change -> none,change,off
-          if (e.field("DJstent") == "on DJ") 
-            e.set("DJstent", "<none>") ;
+      else if (my.gdate(e.field("Date")) == my.gdate(links[0].field("DJStamp")))​ {// this entry is last DJStamp
+        if (links[0].field("DJstent") == "<none>")​ {// this entry is off DJ, get only off or changeDJ​
+        }​
+        else { // this entry is on DJ, must check last DJStamp before
+          let ptent = pt.findById(links[0].id) ;
+          let d = this.lastDJStamp(ptent, my.dateminus(e.field("Date"), 1)) ;
+          if (d != null &​& d.field("DJstent")​ != "off DJ"​) { // ever on or change DJ before -​> get only off or change DJ
+            if (e.field("DJstent") == "on DJ") 
+              e.set("DJstent", "<none>") ;
+          }​ 
+          else { // never on DJ or ever off DJ before -​> get only on DJ
+            if (e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ") 
+              e.set("DJstent" , "<none>") ;
+          }​
         } 
       }​
     }​
@@ -1331,9 +1345,9 @@ var uro = {
       }
     }​
     if (last != null)​{
-      if (u==null &​& orlinks[r].field("DJstent") != "off DJ")
-        o = orlinks[r] ;
-      else if (u!=null && bulinks[u].field("DJstent") != "off DJ")​
+      if (u==null)
+        o ​= orlinks[r] ;
+      else if (u!=null)​
         o = bulinks[u] ;
     }
     return o ;
@@ -1452,9 +1466,15 @@ var uro = {
         links[0].set("DJstent", "<none>");
         links[0].set("DJStamp", null)​;
       } 
-      else { // found
-        links[0].set("DJstent", "on DJ");
-        links[0].set("DJStamp", d.field("Date"));
+      else { // found off, on, change DJ before
+        if (d.field("DJstent") == "off DJ") ​{
+          links[0].set("DJstent", "<none>");
+          links[0].set("DJStamp", d.field("Date"));
+        }​
+        else ​{
+          links[0].set("DJstent", "on DJ");
+          links[0].set("DJStamp", d.field("Date"));
+        }​
       }
     }
   }, 
