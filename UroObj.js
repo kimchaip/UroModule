@@ -410,6 +410,7 @@ var mer = {
     if(mpos["found"]​==true)​{
       let k = mpos["pos"];
       let mid = mpos["mar"];
+      let field1 = "" ;
       if (mid.length>2)​ {
         let tid=[]​;
         if (lib().title=="UroBase" || lib().title=="Backup") {
@@ -753,6 +754,7 @@ var emx = {
 }​;
 var fill = {
   track​ : function (e) {
+    let field1 = "" ;
     if (lib().title=="UroBase" || lib().title=="Backup") {
       field1 = "Status" ;
     }​
@@ -821,6 +823,7 @@ var fill = {
   }, 
   ptstatus : function (e) {
     let links = e.field("Patient")​;
+    let field1 = "" ;
     if (links.length>0) {
       let m = mer.linklastadmit(e, today)​["ent"];
       if (m != null)​{
