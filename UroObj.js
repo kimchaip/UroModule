@@ -721,7 +721,7 @@ var emx = {
         lib.create(ent);
         let last = lib.entries()[0];
         last.link("Patient", links[0]);
-        fill.track(last)​;
+        fill.track(last, libto)​;
         fill.underlying(last)​;
         fill.color(last, libto) ;
         message("successfully created new Entry") ;
@@ -753,9 +753,9 @@ var emx = {
   }​
 }​;
 var fill = {
-  track​ : function (e) {
+  track​ : function (e, lib) {
     let field1 = "" ;
-    if (lib().title=="UroBase" || lib().title=="Backup") {
+    if(lib=="uro" || lib=="backup") {
       field1 = "Status" ;
     }​
     else {
@@ -1576,7 +1576,7 @@ var trig = {
     uro.setfuture(e)​;
     uro.setopextra(e)​;
     uro.setvisitdate(e)​;
-    fill.track​(e)​;
+    fill.track​(e, "uro")​;
     if (value=="create")
       mer.merge(e, false)​;
     else if (value=="update")​
@@ -1628,7 +1628,7 @@ var trig = {
     uro.setfuture(e)​;
     uro.setopextra(e)​;
     uro.setvisitdate(e)​;
-    fill.track​(e)​;
+    fill.track​(e, "backup")​;
     if (value=="create")
       mer.merge(e, false)​;
     else if (value=="update")​
@@ -1678,7 +1678,7 @@ var trig = {
       cso.setnewdate(e, false)​;
     }​
     cso.setvisitdate(e)​;
-    fill.track​(e)​;
+    fill.track​(e, "consult")​;
     if (value=="create")
       mer.merge(e, false)​;
     else if (value=="update")​
