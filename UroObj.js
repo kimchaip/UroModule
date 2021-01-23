@@ -1088,22 +1088,24 @@ var uro = {
     }​
   }, 
   setopextra : function (e) {
-    if (my.gdate(old.opdate) != my.gdate(​e.field("Date"))) {
-      let hd = libByName("Holidays")​;
-      let hds = hd.entries()​;
-      let found = false;
-      for(let i in hds)​ {
-        if(my.gdate(hds[i].field("Date"))==my.gdate(e.field("Date"))​ &​& hds[i].field("Holiday") == true)​{
-          found = true;
-        }​
+    let hd = libByName("Holidays")​;
+    let hds = hd.entries()​;
+    let holiday = false;
+    let timeout = false;
+    if(e.field("TimeIn")!=null)​
+      if(e.field("TimeIn").getHours()<8 || e.field("TimeIn").getHours()>=16)​
+        timeout = true;
+    for(let i in hds)​ {
+      if(my.gdate(hds[i].field("Date"))==my.gdate(e.field("Date"))​ &​& hds[i].field("Holiday") == true)​{
+        holiday = true;
       }​
-      if (found || my.gday(e.field("Date"))==6 || my.gday(e.field("Date"))==0) {
-        e.set("OpExtra", true);
-      }​
-      else {
-        e.set("OpExtra", false);
-      }
     }​
+    if (holiday || timeout || my.gday(e.field("Date"))==6 || my.gday(e.field("Date"))==0) {
+      e.set("OpExtra", true);
+    }​
+    else {
+      e.set("OpExtra", false);
+    }
   }, 
   setvisitdate ​: function (e)​ {
     if (e.field("EntryMx")​== "<Default>" &​& e.field("VisitDate") == null) {
@@ -1395,7 +1397,6 @@ var uro = {
   }​,​
   createoplist : function (e) {
     if (e.field("Status")​ == "Not")​{ // Not set
-      e.set("OpExtra",false)​;
       e.set("Bonus", 0)​;
     }​
     else if (e.field("OpExtra")​ == false &​& e.field("Op")​ != "" &​& e.field("Op") != null​)​{ // set regular op
