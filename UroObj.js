@@ -1089,7 +1089,15 @@ var uro = {
   }, 
   setopextra : function (e) {
     if (my.gdate(old.opdate) != my.gdate(​e.field("Date"))) {
-      if (my.gday(e.field("Date"))==6 || my.gday(e.field("Date"))==0) {
+      let hd = libByName("Holidays")​;
+      let hds = hd.entries()​;
+      let found = false;
+      for(let i in hds)​ {
+        if(my.gdate(hds[i].field("Date"))==my.gdate(e.field("Date"))​ &​& hds[i].field("Holiday") == true)​{
+          found = true;
+        }​
+      }​
+      if (found || my.gday(e.field("Date"))==6 || my.gday(e.field("Date"))==0) {
         e.set("OpExtra", true);
       }​
       else {
