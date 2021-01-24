@@ -1387,12 +1387,17 @@ var uro = {
         e.set("Dx", find.field("Dx")​)​;​
         e.set("Op", find.field("Op")​)​;​
         let ors = or.entries()​;
+        let bus = bu.entries()​;
         let c = 0;
         for(let i in ors) {
-          if(ors[i].field("Dx") == find.field("Dx") &​& ors[i].field("Op") ​== find.field("Op"))​
+          if(ors[i].field("Dx") == find.field("Dx") &​& ors[i].field("Op") ​== find.field("Op")
             c++;
         }​
-        find.set("Count", c​)​;​
+        for(let i in bus) {
+          if(bus[i].field("Dx") == find.field("Dx") &​& bus[i].field("Op") ​== find.field("Op")
+            c++;
+        }​
+        find.set("Count", c)​;​
       }​
     }​
   }​,​
