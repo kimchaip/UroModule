@@ -1386,6 +1386,7 @@ var uro = {
       else { // dx and op ever before​
         e.set("Dx", find.field("Dx")​)​;​
         e.set("Op", find.field("Op")​)​;​
+
         let ors = or.entries()​;
         let bus = bu.entries()​;
         let c = 0;
@@ -1401,6 +1402,27 @@ var uro = {
       }​
     }​
   }​,​
+  setx15 : function (e) {
+    let str = e.field("Dx")​;
+    let isstone = false;
+    let isorextra = false;
+    
+    if (str.match(/stone/i ) || str.match(/uc/i )​ || str.match(/rc/i )​ || str.match(/vc/i )​ || str.match(/calculi/i )​)  // match stone
+      isstone = true;
+      
+    if ((my.gday(e.field("Date")​)​==6 || my.gday(e.field("Date")​)​==0)​ )​
+      isorextra = true;
+    if (e.field("TimeIn") != null)​
+      if (e.field("TimeIn").getHours() < 8 || e.field("TimeIn").getHours() >= 16)​
+        isorextra = false;
+   
+    if(isstone &​& isorextra) {
+      e.set("x1.5", true)​ ;
+    }​
+    else {
+      e.set("x1.5", false)​ ;
+    }​
+  }, 
   createoplist : function (e) {
     if (e.field("Status")​ == "Not")​{ // Not set
       e.set("Bonus", 0)​;
@@ -1416,11 +1438,9 @@ var uro = {
       if (find == undefined) { // set op never ever before
         let o = new Object()​;
         o["OpFill"] = e.field("Op");
-        o["Rate"] = "Normal"​;
         o["Price"] = e.field("Bonus")​;
         o["PriceExtra"] = Math.floor(e.field("Bonus")/2*3)​;
-        o["WRate"] = -​1;
-
+        
         op.create(o);
         message("Create new OpList Successfully​")​;
       }
@@ -1437,18 +1457,14 @@ var uro = {
       }​
       if (find == undefined) { // set extra op never ever before
         let o = new Object()​;
-        o["OpFill"] = e.field("Op");
+        o["OpFill"] = e.field("Op"); 
         if (e.field("x1.5")​==true) {
-          o["Rate"] = "Extra"​;
           o["Price"] = Math.floor(e.field("Bonus")/3*2)​;
           o["PriceExtra"] = e.field("Bonus")​;
-          o["WRate"] = 0​;
         }​
-        else {
-          o["Rate"] = "Normal"​;
+        else {       
           o["Price"] = e.field("Bonus")​;
-          o["PriceExtra"] = Math.floor(e.field("Bonus")/2*3)​;
-          o["WRate"] = -​1;
+          o["PriceExtra"] = Math.floor(e.field("Bonus")/2*3)​;        
         }​
         op.create(o);
         message("Create new OpList Successfully​")​;
@@ -1457,21 +1473,10 @@ var uro = {
         e.set("Op", find.field("OpFill")​)​;​
         if (e.field("x1.5")​==true) {
           e.set("Bonus", find.field("PriceExtra")​)​;
-          find.set("WRate", find.field("WRate")+1​)​;​
-          if (find.field("WRate")>4)​
-            find.set("WRate", 4​)​;​
         }​
         else {
           e.set("Bonus", find.field("Price")​)​;
-          find.set("WRate", find.field("WRate")-1​)​;​
-          if (find.field("WRate")<-5)​
-            find.set("WRate", -5)​;​
         }​
-        find.set("Weight", find.field("Weight")+1​)​;​
-        if (find.field("WRate")>=0)
-          find.set("Rate", "Extra")​;​
-        else
-          find.set("Rate", "Normal")​;​
       }​
     }​
   }​,
@@ -1599,6 +1604,7 @@ var trig = {
     uro.setq(e)​;
     uro.setDJstent(e)​;
     uro.createautofill​(e)​;
+    uro.setx15(e)​;
     uro.createoplist(e)​;
     fill.underlying(e)​;
     fill.los(e)​;
@@ -1651,6 +1657,7 @@ var trig = {
     uro.setq(e)​;
     uro.setDJstent(e)​;
     uro.createautofill​(e)​;
+    uro.setx15(e)​;
     uro.createoplist(e)​;
     fill.underlying(e)​;
     fill.los(e)​;
