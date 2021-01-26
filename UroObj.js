@@ -1371,15 +1371,15 @@ var uro = {
       e.set("Dx", e.field("Dx").trim()​)​;
       e.set("Op", e.field("Op").trim()​)​;
       let af = libByName("DxAutoFill");
-      let afs = af.find(e.field("Dx").trim()​)​;
+      let afs = af.find(e.field("Dx"))​;
       let find = undefined;
       if (afs.length > 0) {
         find = afs.find(this.checkdx,e) ;
       }​
       if (find == undefined) { // dx and op never ever before
         let o = new Object()​;
-        o["Dx"] = e.field("Dx").trim();
-        o["Op"] = e.field("Op")​.trim();​
+        o["Dx"] = e.field("Dx");
+        o["Op"] = e.field("Op")​;​
         af.create(o);
         message("Create new AutoFill Successfully​")​;
       }
@@ -1428,16 +1428,17 @@ var uro = {
       e.set("Bonus", 0)​;
     }​
     else if (e.field("OpExtra")​ == false &​& e.field("Op").trim()​ != "" &​& e.field("Op") != null​)​{ // set regular op
+      e.set("Op", e.field("Op").trim()​)​;
       e.set("Bonus", 0)​;
       let op = libByName("OperationList")​;
-      let ops = op.find(e.field("Op").trim()​);
+      let ops = op.find(e.field("Op")​);
       let find = undefined;
       if (ops.length > 0) {
         find = ops.find(this.checkop, e);
       }​
       if (find == undefined) { // set op never ever before
         let o = new Object()​;
-        o["OpFill"] = e.field("Op").trim();
+        o["OpFill"] = e.field("Op");
         o["Price"] = e.field("Bonus")​;
         o["PriceExtra"] = Math.floor(e.field("Bonus")/2*3)​;
         
@@ -1462,15 +1463,16 @@ var uro = {
       find.set("Count", c)​;​
     }​
     else if (e.field("Op").trim()​ != "" &​& e.field("Op") != null)​ { // set extra op
+      e.set("Op", e.field("Op").trim()​)​;
       let op = libByName("OperationList")​;
-      let ops = op.find(e.field("Op").trim());
+      let ops = op.find(e.field("Op"));
       let find = undefined;
       if (ops.length > 0) {
         find = ops.find(this.checkop, e);
       }​
       if (find == undefined) { // set extra op never ever before
         let o = new Object()​;
-        o["OpFill"] = e.field("Op").trim(); 
+        o["OpFill"] = e.field("Op")​; 
         if (e.field("x1.5")​==true) {
           o["Price"] = Math.floor(e.field("Bonus")/3*2)​;
           o["PriceExtra"] = e.field("Bonus")​;
