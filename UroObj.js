@@ -1371,35 +1371,35 @@ var uro = {
       e.set("Dx", e.field("Dx").trim()​)​;
       e.set("Op", e.field("Op").trim()​)​;
       let af = libByName("DxAutoFill");
-      let afs = af.find(e.field("Dx"))​;
+      let afs = af.find(e.field("Dx").trim()​)​;
       let find = undefined;
       if (afs.length > 0) {
         find = afs.find(this.checkdx,e) ;
       }​
       if (find == undefined) { // dx and op never ever before
         let o = new Object()​;
-        o["Dx"] = e.field("Dx");
-        o["Op"] = e.field("Op")​;​
+        o["Dx"] = e.field("Dx").trim();
+        o["Op"] = e.field("Op")​.trim();​
         af.create(o);
         message("Create new AutoFill Successfully​")​;
       }
       else { // dx and op ever before​
         e.set("Dx", find.field("Dx")​)​;​
         e.set("Op", find.field("Op")​)​;​
-
-        let ors = or.entries()​;
-        let bus = bu.entries()​;
-        let c = 0;
-        for(let i in ors) {
-          if(ors[i].field("Dx") == find.field("Dx") &​& ors[i].field("Op") ​== find.field("Op"))​
-            c++;
-        }​
-        for(let i in bus) {
-          if(bus[i].field("Dx") == find.field("Dx") &​& bus[i].field("Op") ​== find.field("Op"))​
-            c++;
-        }​
-        find.set("Count", c)​;​
       }​
+
+      let ors = or.entries()​;
+      let bus = bu.entries()​;
+      let c = 0;
+      for(let i in ors) {
+        if(ors[i].field("Dx") == find.field("Dx") &​& ors[i].field("Op") ​== find.field("Op"))​
+          c++;
+      }​
+      for(let i in bus) {
+        if(bus[i].field("Dx") == find.field("Dx") &​& bus[i].field("Op") ​== find.field("Op"))​
+          c++;
+      }​
+      find.set("Count", c)​;​
     }​
   }​,​
   setx15 : function (e) {
@@ -1427,17 +1427,17 @@ var uro = {
     if (e.field("Status")​ == "Not")​{ // Not set
       e.set("Bonus", 0)​;
     }​
-    else if (e.field("OpExtra")​ == false &​& e.field("Op")​ != "" &​& e.field("Op") != null​)​{ // set regular op
+    else if (e.field("OpExtra")​ == false &​& e.field("Op").trim()​ != "" &​& e.field("Op") != null​)​{ // set regular op
       e.set("Bonus", 0)​;
       let op = libByName("OperationList")​;
-      let ops = op.find(e.field("Op"));
+      let ops = op.find(e.field("Op").trim()​);
       let find = undefined;
       if (ops.length > 0) {
         find = ops.find(this.checkop, e);
       }​
       if (find == undefined) { // set op never ever before
         let o = new Object()​;
-        o["OpFill"] = e.field("Op");
+        o["OpFill"] = e.field("Op").trim();
         o["Price"] = e.field("Bonus")​;
         o["PriceExtra"] = Math.floor(e.field("Bonus")/2*3)​;
         
@@ -1447,17 +1447,30 @@ var uro = {
       else { // set op ever before​
         e.set("Op", find.field("OpFill")​)​;​
       }​
+
+      let ors = or.entries()​;
+      let bus = bu.entries()​;
+      let c = 0;
+      for(let i in ors) {
+        if(ors[i].field("Op") == find.field("OpFill"))​
+          c++;
+      }​
+      for(let i in bus) {
+        if(bus[i].field("Op") == find.field("OpFill"))​
+          c++;
+      }​
+      find.set("Count", c)​;​
     }​
-    else if (e.field("Op")​ != "" &​& e.field("Op") != null)​ { // set extra op
+    else if (e.field("Op").trim()​ != "" &​& e.field("Op") != null)​ { // set extra op
       let op = libByName("OperationList")​;
-      let ops = op.find(e.field("Op"));
+      let ops = op.find(e.field("Op").trim());
       let find = undefined;
       if (ops.length > 0) {
         find = ops.find(this.checkop, e);
       }​
       if (find == undefined) { // set extra op never ever before
         let o = new Object()​;
-        o["OpFill"] = e.field("Op"); 
+        o["OpFill"] = e.field("Op").trim(); 
         if (e.field("x1.5")​==true) {
           o["Price"] = Math.floor(e.field("Bonus")/3*2)​;
           o["PriceExtra"] = e.field("Bonus")​;
@@ -1466,6 +1479,7 @@ var uro = {
           o["Price"] = e.field("Bonus")​;
           o["PriceExtra"] = Math.floor(e.field("Bonus")/2*3)​;        
         }​
+
         op.create(o);
         message("Create new OpList Successfully​")​;
       }
@@ -1477,7 +1491,20 @@ var uro = {
         else {
           e.set("Bonus", find.field("Price")​)​;
         }​
+      }
+
+      let ors = or.entries()​;
+      let bus = bu.entries()​;
+      let c = 0;
+      for(let i in ors) {
+        if(ors[i].field("Op") == find.field("OpFill"))​
+          c++;
       }​
+      for(let i in bus) {
+        if(bus[i].field("Op") == find.field("OpFill"))​
+          c++;
+      }​
+      find.set("Count", c)​;​
     }​
   }​,
   updateDJStamp : function (e) {
