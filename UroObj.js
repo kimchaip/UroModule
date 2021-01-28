@@ -1382,24 +1382,27 @@ var uro = {
         o["Op"] = e.field("Op")​;​
         af.create(o);
         message("Create new AutoFill Successfully​")​;
+        let Last = af.entries()[0];
+        Last.set("Count", 1)​;​​
       }
       else { // dx and op ever before​
         e.set("Dx", find.field("Dx")​)​;​
         e.set("Op", find.field("Op")​)​;​
-      }​
 
-      let ors = or.entries()​;
-      let bus = bu.entries()​;
-      let c = 0;
-      for(let i in ors) {
-        if(ors[i].field("Dx") == find.field("Dx") &​& ors[i].field("Op") ​== find.field("Op"))​
-          c++;
+        let ors = or.entries()​;
+        let bus = bu.entries()​;
+        
+        let c = 0;
+        for(let i in ors) {
+          if(ors[i].field("Dx") == find.field("Dx") &​& ors[i].field("Op") ​== find.field("Op"))​
+            c++;
+        }​
+        for(let i in bus) {
+          if(bus[i].field("Dx") == find.field("Dx") &​& bus[i].field("Op") ​== find.field("Op"))​
+            c++;
+        }​
+        find.set("Count", c)​;​​
       }​
-      for(let i in bus) {
-        if(bus[i].field("Dx") == find.field("Dx") &​& bus[i].field("Op") ​== find.field("Op"))​
-          c++;
-      }​
-      find.set("Count", c)​;​
     }​
   }​,​
   setx15 : function (e) {
