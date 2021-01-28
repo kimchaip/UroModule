@@ -1382,6 +1382,7 @@ var uro = {
         o["Op"] = e.field("Op")​;​
         af.create(o);
         message("Create new AutoFill Successfully​")​;
+
         let Last = af.entries()[0];
         Last.set("Count", 1)​;​​
       }
@@ -1447,23 +1448,26 @@ var uro = {
         
         op.create(o);
         message("Create new OpList Successfully​")​;
+
+        let Last = op.entries()[0];
+        Last.set("Count", 1)​;​
       }
       else { // set op ever before​
         e.set("Op", find.field("OpFill")​)​;​
-      }​
 
-      let ors = or.entries()​;
-      let bus = bu.entries()​;
-      let c = 0;
-      for(let i in ors) {
-        if(ors[i].field("Op") == find.field("OpFill"))​
-          c++;
+        let ors = or.entries()​;
+        let bus = bu.entries()​;
+        let c = 0;
+        for(let i in ors) {
+          if(ors[i].field("Op") == find.field("OpFill"))​
+            c++;
+        }​
+        for(let i in bus) {
+          if(bus[i].field("Op") == find.field("OpFill"))​
+            c++;
+        }​
+        find.set("Count", c)​;​
       }​
-      for(let i in bus) {
-        if(bus[i].field("Op") == find.field("OpFill"))​
-          c++;
-      }​
-      find.set("Count", c)​;​
     }​
     else if (e.field("Op").trim()​ != "" &​& e.field("Op") != null)​ { // set extra op
       e.set("Op", e.field("Op").trim()​)​;
@@ -1487,6 +1491,9 @@ var uro = {
 
         op.create(o);
         message("Create new OpList Successfully​")​;
+
+        let Last = op.entries()[0];
+        Last.set("Count", 1)​;​
       }
       else { // set extra op ever before​
         e.set("Op", find.field("OpFill")​)​;​
@@ -1496,20 +1503,20 @@ var uro = {
         else {
           e.set("Bonus", find.field("Price")​)​;
         }​
-      }
 
-      let ors = or.entries()​;
-      let bus = bu.entries()​;
-      let c = 0;
-      for(let i in ors) {
-        if(ors[i].field("Op") == find.field("OpFill"))​
-          c++;
+        let ors = or.entries()​;
+        let bus = bu.entries()​;
+        let c = 0;
+        for(let i in ors) {
+          if(ors[i].field("Op") == find.field("OpFill"))​
+            c++;
+        }​
+        for(let i in bus) {
+          if(bus[i].field("Op") == find.field("OpFill"))​
+            c++;
+        }​
+        find.set("Count", c)​;​
       }​
-      for(let i in bus) {
-        if(bus[i].field("Op") == find.field("OpFill"))​
-          c++;
-      }​
-      find.set("Count", c)​;​
     }​
   }​,
   updateDJStamp : function (e) {
