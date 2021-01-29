@@ -411,14 +411,14 @@ var mer = {
       let k = mpos["pos"];
       let mid = mpos["mar"];
       let field1 = "" ;
+      if (lib().title=="UroBase" || lib().title=="Backup") {
+        field1 = "Date" ;
+      }​
+      else {
+        field1 = "ConsultDate" ;
+      }​
       if (mid.length>2)​ {
         let tid=[]​;
-        if (lib().title=="UroBase" || lib().title=="Backup") {
-          field1 = "Date" ;
-        }​
-        else {
-          field1 = "ConsultDate" ;
-        }​
         for(let i=mid.length-1; i>k; i--)​ {
           let o = new Object()​;
           o["lib"]​=mid[i]["lib"];
