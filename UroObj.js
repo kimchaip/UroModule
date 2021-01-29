@@ -229,7 +229,7 @@ var mer = {
     let last = null, s=null, r=null, u=null​;​
     if (orlinks.length>0) {
       for (let i in orlinks) {
-        if (orlinks[i].field("VisitType")=="Admit" && orlinks[i].field("VisitDate") > last && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​) {
+        if (orlinks[i].field("VisitType")=="Admit" && my.gdate(orlinks[i].field("VisitDate"))​ > my.gdate(last)​ && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​) {
           last = orlinks[i].field("VisitDate");
           r=i;
         }
@@ -237,7 +237,7 @@ var mer = {
     }​
     if (bulinks.length​>0) {
       for (let i in bulinks) {
-        if (bulinks[i].field("VisitType")=="Admit" && bulinks[i].field("VisitDate") > last && my.gdate(​bulinks[i].field("VisitDate"))​ <= my.gdate(​date)​) {
+        if (bulinks[i].field("VisitType")=="Admit" && my.gdate(bulinks[i].field("VisitDate"))​ > my.gdate(​last)​ && my.gdate(​bulinks[i].field("VisitDate"))​ <= my.gdate(​date)​) {
           last = bulinks[i].field("VisitDate");
           u=i;
         }
@@ -245,7 +245,7 @@ var mer = {
     }​
     else if (cslinks.length>0) {
       for (let i in cslinks) {
-        if (cslinks[i].field("VisitType")=="Admit" && cslinks[i].field("VisitDate") > last && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) ) {
+        if (cslinks[i].field("VisitType")=="Admit" && my.gdate(cslinks[i].field("VisitDate"))​ > my.gdate(last)​ && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) ) {
           last = cslinks[i].field("VisitDate");
           s=i;
         }
