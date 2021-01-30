@@ -1552,10 +1552,10 @@ var uro = {
         fill.color(all[i]​, thislib)​;
       }
       if (my.gdate(all[i]​.lastModifiedTime)​ < ntoday) {
-        if(my.gdate(e.field("Date"))>ntoday​)​
-          e.set("Future", Math.floor((my.gdate(e.field("Date")​)-ntoday)​/86400000))​;
+        if(my.gdate(all[i].field("Date"))>ntoday​)​
+          all[i].set("Future", Math.floor((my.gdate(all[i].field("Date")​)-ntoday)​/86400000))​;
         else
-          e.set("Future", null)​;
+          all[i].set("Future", null)​;
       }​
     } 
   }, 
