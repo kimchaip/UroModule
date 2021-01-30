@@ -1551,9 +1551,13 @@ var uro = {
       if (d>=0 &​& d<3) {
         fill.color(all[i]​, thislib)​;
       }
-      this.setfuture(all[i])​;
+      if (my.gdate(all[i]​.lastModifiedTime)​ < ntoday) {
+        if(my.gdate(e.field("Date"))>ntoday​)​
+          e.set("Future", Math.floor((my.gdate(e.field("Date")​)-ntoday)​/86400000))​;
+        else
+          e.set("Future", null)​;
+      }​
     } 
-
   }, 
   setfuture : function(e)​{
     if(my.gdate(e.field("Date"))>ntoday​)​
