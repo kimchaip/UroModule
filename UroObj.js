@@ -1451,7 +1451,15 @@ var uro = {
 
         let Last = op.entries()[0];
         Last.set("Count", 1)​;​
-        e.link("OperationList", Last);
+
+        let links = e.field("OperationList");
+        if(links.length == 0)​
+          e.link("OperationList", Last);
+        else ​{
+          for(let i in links)​
+            e.unlink("OperationList", links[i]​);
+          e.link("OperationList", Last);
+        }​
       }
       else { // set op ever before​
         e.set("Op", find.field("OpFill")​)​;​
@@ -1468,7 +1476,15 @@ var uro = {
             c++;
         }​
         find.set("Count", c)​;​
-        e.link("OperationList", find);
+
+        let links = e.field("OperationList");
+        if(links.length == 0)​
+          e.link("OperationList", find);
+        else {
+          for(let i in links)​
+            e.unlink("OperationList", links[i]​);
+          e.link("OperationList", find);
+        }​
       }​
     }​
     else if (e.field("Op").trim()​ != "" &​& e.field("Op") != null)​ { // set extra op
@@ -1496,7 +1512,15 @@ var uro = {
 
         let Last = op.entries()[0];
         Last.set("Count", 1)​;​
-        e.link("OperationList", Last);
+
+        let links = e.field("OperationList");
+        if(links.length == 0)​
+          e.link("OperationList", Last);
+        else ​{
+          for(let i in links)​
+            e.unlink("OperationList", links[i]​);
+          e.link("OperationList", Last);
+        }​
       }
       else { // set extra op ever before​
         e.set("Op", find.field("OpFill")​)​;​
@@ -1519,7 +1543,15 @@ var uro = {
             c++;
         }​
         find.set("Count", c)​;​
-        e.link("OperationList", find);
+
+        let links = e.field("OperationList");
+        if(links.length == 0)​
+          e.link("OperationList", find);
+        else {
+          for(let i in links)​
+            e.unlink("OperationList", links[i]​);
+          e.link("OperationList", find);
+        }​
       }​
     }​
   }​,
