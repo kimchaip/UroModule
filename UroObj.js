@@ -1451,6 +1451,7 @@ var uro = {
 
         let Last = op.entries()[0];
         Last.set("Count", 1)​;​
+        e.link("OperationList", Last.title);
       }
       else { // set op ever before​
         e.set("Op", find.field("OpFill")​)​;​
@@ -1467,6 +1468,7 @@ var uro = {
             c++;
         }​
         find.set("Count", c)​;​
+        e.link("OperationList", find.title);
       }​
     }​
     else if (e.field("Op").trim()​ != "" &​& e.field("Op") != null)​ { // set extra op
@@ -1494,6 +1496,7 @@ var uro = {
 
         let Last = op.entries()[0];
         Last.set("Count", 1)​;​
+        e.link("OperationList", Last.title);
       }
       else { // set extra op ever before​
         e.set("Op", find.field("OpFill")​)​;​
@@ -1516,6 +1519,7 @@ var uro = {
             c++;
         }​
         find.set("Count", c)​;​
+        e.link("OperationList", find.title);
       }​
     }​
   }​,
