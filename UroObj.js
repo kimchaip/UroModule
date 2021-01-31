@@ -1410,7 +1410,7 @@ var uro = {
     }​
     if(old.dx != e.field("Dx")​)​ { //update old dx in dxautofill
       let dx = libByName("DxAutoFill")​;
-      let dxs = dx.find(e.field(old.dx)​);
+      let dxs = dx.find(old.dx);
       let find = undefined;
       if (dxs.length > 0) {
         find = dxs.find(this.checkdx, e);
@@ -1559,7 +1559,7 @@ var uro = {
     }​
     if(old.op != e.field("Op")​)​ { //update old op in oplist
       let op = libByName("OperationList")​;
-      let ops = op.find(e.field(old.op)​);
+      let ops = op.find(old.op);
       let find = undefined;
       if (ops.length > 0) {
         find = ops.find(this.checkop, e);
