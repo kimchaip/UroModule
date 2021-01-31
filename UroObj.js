@@ -1410,7 +1410,7 @@ var uro = {
     }​
     if(old.dx != e.field("Dx")​)​ { //update old dx in dxautofill
       let dx = libByName("DxAutoFill")​;
-      let dxs = dx.find(e.field(old.op)​);
+      let dxs = dx.find(e.field(old.dx)​);
       let find = undefined;
       if (dxs.length > 0) {
         find = dxs.find(this.checkdx, e);
