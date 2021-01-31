@@ -1408,7 +1408,7 @@ var uro = {
         this.setlink​(e, "DxAutoFill", find)​;
       }​
     }​
-    if(old.dx != e.field("Dx")​)​ { //update old dx in dxautofill
+    if(old.dx != e.field("Dx")​ &​& old.dx != "" &​& old.dx != null)​ { //update old dx in dxautofill
       let dx = libByName("DxAutoFill")​;
       let dxs = dx.find(old.dx);
       let find = undefined;
@@ -1557,7 +1557,7 @@ var uro = {
         this.setlink​(e, "OperationList", find)​;
       }​
     }​
-    if(old.op != e.field("Op")​)​ { //update old op in oplist
+    if(old.op != e.field("Op")​ &​& old.op != ​"" &​& old.op != null)​ { //update old op in oplist
       let op = libByName("OperationList")​;
       let ops = op.find(old.op);
       let find = undefined;
