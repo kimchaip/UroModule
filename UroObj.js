@@ -1370,21 +1370,31 @@ var uro = {
     &​& e.field("Op").trim() != "" &​& e.field("Op") != null)​ { // fill dx and op
       e.set("Dx", e.field("Dx").trim()​)​;
       e.set("Op", e.field("Op").trim()​)​;
-      let af = libByName("DxAutoFill");
-      let afs = af.find(e.field("Dx"))​;
+
+      let dx = libByName("DxAutoFill");
+      let dxs = dx.find(e.field("Dx"))​;
       let find = undefined;
-      if (afs.length > 0) {
-        find = afs.find(this.checkdx,e) ;
+      if (dxs.length > 0) {
+        find = dxs.find(this.checkdx,e) ;
       }​
       if (find == undefined) { // dx and op never ever before
         let o = new Object()​;
-        o["Dx"] = e.field("Dx");
+        o["Dx"] = e.field("Dx");
         o["Op"] = e.field("Op")​;​
-        af.create(o);
+        dx.create(o);
         message("Create new AutoFill Successfully​")​;
 
-        let Last = af.entries()[0];
+        let Last = dx.entries()[0];
         Last.set("Count", 1)​;​​
+        
+        let links = e.field("DxAutoFill");
+        if(links.length == 0)​
+          e.link("DxAutoFill", Last);
+        else {
+          for(let i in links)​
+            e.unlink("DxAutoFill", links[i]​);
+          e.link("DxAutoFill", Last);
+        }​
       }
       else { // dx and op ever before​
         e.set("Dx", find.field("Dx")​)​;​
@@ -1403,6 +1413,15 @@ var uro = {
             c++;
         }​
         find.set("Count", c)​;​​
+        
+        let links = e.field("DxAutoFill");
+        if(links.length == 0)​
+          e.link("DxAutoFill", find);
+        else {
+          for(let i in links)​
+            e.unlink("DxAutoFill", links[i]​);
+          e.link("DxAutoFill", find);
+        }​
       }​
     }​
   }​,​
