@@ -1698,14 +1698,14 @@ var trig = {
     uro.createautofill​(e)​;
     uro.setx15(e)​;
     uro.createoplist(e)​;
+    uro.updatedxop​(e, "dx")​;
+    uro.updatedxop​(e, "op")​;
     fill.underlying(e)​;
     fill.los(e)​;
   }, 
   UroAfterEdit : function (e, value) {
     if (value=="update")​
       old.getstart(e)​;
-    uro.updatedxop​(e, "dx")​;
-    uro.updatedxop​(e, "op")​;
     fill.ptstatus(e)​;
     fill.color(e, "uro")​;
     mer.other(e)​;
@@ -1753,14 +1753,14 @@ var trig = {
     uro.createautofill​(e)​;
     uro.setx15(e)​;
     uro.createoplist(e)​;
+    uro.updatedxop​(e, "dx")​;
+    uro.updatedxop​(e, "op")​;
     fill.underlying(e)​;
     fill.los(e)​;
   }, 
   BackupAfterEdit : function (e, value) {
     if (value=="update")​
       old.getstart(e)​;
-    uro.updatedxop​(e, "dx")​;
-    uro.updatedxop​(e, "op")​;
     fill.ptstatus(e)​;
     fill.color(e, "uro")​;
     mer.other(e)​;
