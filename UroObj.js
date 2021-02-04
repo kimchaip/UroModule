@@ -1366,7 +1366,7 @@ var uro = {
     return o ;
   },
   createautofill : function (e) {
-    if (old.dx != e.field("Dx") &​& e.field("Dx").trim()​ != "" &​& e.field("Dx") != null
+    if ( e.field("Dx").trim()​ != "" &​& e.field("Dx") != null
     &​& e.field("Op").trim() != "" &​& e.field("Op") != null)​ { // fill dx and op
       e.set("Dx", e.field("Dx").trim()​)​;
       e.set("Op", e.field("Op").trim()​)​;
@@ -1383,51 +1383,10 @@ var uro = {
         o["Op"] = e.field("Op")​;​
         dx.create(o);
         message("Create new AutoFill Successfully​")​;
-
-        let Last = dx.entries()[0];
-        Last.set("Count", 1)​;​​
-        this.setlink​(e, "DxAutoFill", Last)​;
       }
       else { // dx and op ever before​
         e.set("Dx", find.field("Dx")​)​;​
         e.set("Op", find.field("Op")​)​;​
-
-        let ors = or.entries()​;
-        let bus = bu.entries()​;
-        
-        let c = 0;
-        for(let i in ors) {
-          if(ors[i].field("Dx") == find.field("Dx") &​& ors[i].field("Op") ​== find.field("Op"))​
-            c++;
-        }​
-        for(let i in bus) {
-          if(bus[i].field("Dx") == find.field("Dx") &​& bus[i].field("Op") ​== find.field("Op"))​
-            c++;
-        }​
-        find.set("Count", c)​;​​
-        this.setlink​(e, "DxAutoFill", find)​;
-      }​
-    }​
-    if(old.dx != e.field("Dx")​ &​& old.dx != "" &​& old.dx != null)​ { //update old dx in dxautofill
-      let dx = libByName("DxAutoFill")​;
-      let dxs = dx.find(old.dx);
-      let find = undefined;
-      if (dxs.length > 0) {
-        find = dxs.find(this.checkdx, e);
-      }​
-      if (find != undefined)​ { // found old dx -​> update count in dxautofill
-        let ors = or.entries()​;
-        let bus = bu.entries()​;
-        let c = 0;
-        for(let i in ors) {
-          if(ors[i].field("Dx") == find.field("Dx") &​& ors[i].field("Op") ​== find.field("Op"))​
-            c++;
-        }​
-        for(let i in bus) {
-          if(bus[i].field("Dx") == find.field("Dx") &​& bus[i].field("Op") ​== find.field("Op"))​
-            c++;
-        }​
-        find.set("Count", c)​;​
       }​
     }​
   }​,​
@@ -1451,17 +1410,7 @@ var uro = {
     else {
       e.set("x1.5", false)​ ;
     }​
-  }, 
-  setlink : function (e, fname, linke)​ {
-    let links = e.field(fname​);
-    if(links.length == 0)​
-      e.link(fname, linke);
-    else ​{
-      for(let i in links)​
-        e.unlink(fname, links[i]​);
-      e.link(fname, linke);
-    }​
-  }, 
+  },
   createoplist : function (e) {
     if (e.field("Status")​ == "Not")​{ // Not set
       e.set("Bonus", 0)​;
@@ -1483,27 +1432,9 @@ var uro = {
         
         op.create(o);
         message("Create new OpList Successfully​")​;
-
-        let Last = op.entries()[0];
-        Last.set("Count", 1)​;​
-        this.setlink​(e, "OperationList", Last)​;
       }
       else { // set op ever before​
         e.set("Op", find.field("OpFill")​)​;​
-
-        let ors = or.entries()​;
-        let bus = bu.entries()​;
-        let c = 0;
-        for(let i in ors) {
-          if(ors[i].field("Op") == find.field("OpFill"))​
-            c++;
-        }​
-        for(let i in bus) {
-          if(bus[i].field("Op") == find.field("OpFill"))​
-            c++;
-        }​
-        find.set("Count", c)​;​
-        this.setlink​(e, "OperationList", find)​;
       }​
     }​
     else if (e.field("Op").trim()​ != "" &​& e.field("Op") != null)​ { // set extra op
@@ -1528,10 +1459,6 @@ var uro = {
 
         op.create(o);
         message("Create new OpList Successfully​")​;
-
-        let Last = op.entries()[0];
-        Last.set("Count", 1)​;​
-        this.setlink​(e, "OperationList", Last)​;
       }
       else { // set extra op ever before​
         e.set("Op", find.field("OpFill")​)​;​
@@ -1541,45 +1468,107 @@ var uro = {
         else {
           e.set("Bonus", find.field("Price")​)​;
         }​
-
-        let ors = or.entries()​;
-        let bus = bu.entries()​;
-        let c = 0;
-        for(let i in ors) {
-          if(ors[i].field("Op") == find.field("OpFill"))​
-            c++;
-        }​
-        for(let i in bus) {
-          if(bus[i].field("Op") == find.field("OpFill"))​
-            c++;
-        }​
-        find.set("Count", c)​;​
-        this.setlink​(e, "OperationList", find)​;
-      }​
-    }​
-    if(old.op != e.field("Op")​ &​& old.op != ​"" &​& old.op != null)​ { //update old op in oplist
-      let op = libByName("OperationList")​;
-      let ops = op.find(old.op);
-      let find = undefined;
-      if (ops.length > 0) {
-        find = ops.find(this.checkop, e);
-      }​
-      if (find != undefined)​ { // found old op -​> update count in oplist
-        let ors = or.entries()​;
-        let bus = bu.entries()​;
-        let c = 0;
-        for(let i in ors) {
-          if(ors[i].field("Op") == find.field("OpFill"))​
-            c++;
-        }​
-        for(let i in bus) {
-          if(bus[i].field("Op") == find.field("OpFill"))​
-            c++;
-        }​
-        find.set("Count", c)​;​
       }​
     }​
   }​,
+  setlink : function (e, fname, linke)​ {
+    let links = e.field(fname​);
+    if(links.length == 0)​
+      e.link(fname, linke);
+    else ​{
+      for(let i in links)​
+        e.unlink(fname, links[i]​);
+      e.link(fname, linke);
+    }​
+  }, 
+  updatedxop : function (e, type)​ {​
+    if (type=="dx")​{
+      this.setlink​(e, "OperationList", find)​;
+        
+      let dx = libByName("DxAutoFill")​;
+      let dxs = dx.find(e.field("Dx"))​;
+      let find = undefined;
+      if (dxs.length > 0) {
+        find = dxs.find(this.checkdx,e) ;​
+      }
+      if(find!=undefined)​{
+        let ors = or.entries()​;
+        let bus = bu.entries()​;
+        let c = 0;
+        for(let i in ors) {
+          if(ors[i].field("Dx") == find.field("Dx") &​& ors[i].field("Op") ​== find.field("Op"))​
+            c++;
+        }​
+        for(let i in bus) {
+          if(bus[i].field("Dx") == find.field("Dx") &​& bus[i].field("Op") ​== find.field("Op"))​
+            c++;
+        }​
+        find.set("Count", c)​;​​​​
+      }​
+        
+      if(old.dx != e.field("Dx")​ &​& old.dx != "" &​& old.dx != null)​ { //update old dx in dxautofill
+        dxs = dx.find(old.dx);
+        if (dxs.length > 0) {
+          find = dxs.find(this.checkdx, e);
+        }​
+        if (find != undefined)​ { // found old dx -​> update count in dxautofill
+          c = 0;
+          for(let i in ors) {
+            if(ors[i].field("Dx") == find.field("Dx") &​& ors[i].field("Op") ​== find.field("Op"))​
+              c++;
+          }​
+          for(let i in bus) {
+            if(bus[i].field("Dx") == find.field("Dx") &​& bus[i].field("Op") ​== find.field("Op"))​
+              c++;
+          }​
+          find.set("Count", c)​;​
+        }​
+      }
+    }​
+    else { //type=="op"
+      this.setlink​(e, "OperationList", find)​;
+        
+      let op = libByName("OperationList")​;
+      let ops = op.find(e.field("Op"))​;
+      let find = undefined;
+      if (ops.length > 0) {
+        find = ops.find(this.checkop,e) ;​
+      }
+      if(find!=undefined)​{
+        let ors = or.entries()​;
+        let bus = bu.entries()​;
+        let c = 0;
+        for(let i in ors) {
+          if(ors[i].field("Op") == find.field("OpFill"))​
+            c++;
+        }​
+        for(let i in bus) {
+          if(bus[i].field("Op") == find.field("OpFill"))​
+            c++;
+        }​
+        find.set("Count", c)​;​​​​
+      }​
+        
+      if(old.op != e.field("Op")​ &​& old.op != "" &​& old.op != null)​ { //update old op in oplist
+        ops = op.find(old.op);
+        if (ops.length > 0) {
+          find = ops.find(this.checkop, e);
+        }​
+        if (find != undefined)​ { // found old op -​> update count in oplist
+          c = 0;
+          for(let i in ors) {
+            if(ors[i].field("Op") == find.field("OpFill"))​
+              c++;
+          }​
+          for(let i in bus) {
+            if(bus[i].field("Op") == find.field("OpFill"))​
+              c++;
+          }​
+          find.set("Count", c)​;​
+        }​
+      }​
+    }​
+  }, 
   updateDJStamp : function (e) {
     let links = e.field("Patient")​;
     if (links.length>0) {
@@ -1717,6 +1706,8 @@ var trig = {
   UroAfterEdit : function (e, value) {
     if (value=="update")​
       old.getstart(e)​;
+    uro.updatedxop​(e, "dx")​;
+    uro.updatedxop​(e, "op")​;
     fill.ptstatus(e)​;
     fill.color(e, "uro")​;
     mer.other(e)​;
@@ -1770,6 +1761,8 @@ var trig = {
   BackupAfterEdit : function (e, value) {
     if (value=="update")​
       old.getstart(e)​;
+    uro.updatedxop​(e, "dx")​;
+    uro.updatedxop​(e, "op")​;
     fill.ptstatus(e)​;
     fill.color(e, "uro")​;
     mer.other(e)​;
