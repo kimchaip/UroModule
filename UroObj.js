@@ -1473,12 +1473,14 @@ var uro = {
   }​,
   setlink : function (e, fname, linke)​ {
     let links = e.field(fname​);
-    if(links.length == 0)​
-      e.link(fname, linke);
-    else ​{
-      for(let i in links)​
-        e.unlink(fname, links[i]​);
-      e.link(fname, linke);
+    if(e!=null &​& linke!=null)​{
+      if(links.length == 0)​
+        e.link(fname, linke);
+      else ​{
+        for(let i in links)​
+          e.unlink(fname, links[i]​);
+        e.link(fname, linke);
+      }​
     }​
   }, 
   updatedxop : function (e, type)​ {​
