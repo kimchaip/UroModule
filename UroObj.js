@@ -1502,7 +1502,9 @@ var uro = {
           find = dxs.find(this.checkdx, e);
         }​
         if (find != undefined)​ { // found old dx -​> update count in dxautofill
-          c = 0;
+          let ors = or.entries()​;
+          let bus = bu.entries()​;
+          let c = 0;
           for(let i in ors) {
             if(ors[i].field("Dx") == find.field("Dx") &​& ors[i].field("Op") ​== find.field("Op"))​
               c++;
@@ -1544,7 +1546,9 @@ var uro = {
           find = ops.find(this.checkop, e);
         }​
         if (find != undefined)​ { // found old op -​> update count in oplist
-          c = 0;
+          let ors = or.entries()​;
+          let bus = bu.entries()​;
+          let c = 0;
           for(let i in ors) {
             if(ors[i].field("Op") == find.field("OpFill"))​
               c++;
