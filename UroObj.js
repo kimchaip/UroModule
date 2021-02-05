@@ -1471,16 +1471,7 @@ var uro = {
       }​
     }​
   }​,
-  setlink : function (e, fname, linke)​ {
-    let links = e.field(fname​);
-    if(links.length == 0)​
-      e.set(fname, linke.title);
-    else ​{
-      for(let i in links)​
-        e.unlink(fname, links[i]​);
-      e.link(fname, linke);
-    }​
-  }, 
+  
   updatedxop : function (e, type)​ {​
     if (type=="dx")​{
       let dx = libByName("DxAutoFill")​;
@@ -1502,7 +1493,7 @@ var uro = {
             c++;
         }​
         find.set("Count", c)​;​​​​
-        this.setlink​(e, "DxAutoFill", find)​;
+        e.set("DxAutoFill", find)​;
       }​
         
       if(old.dx != e.field("Dx")​ &​& old.dx != "" &​& old.dx != null)​ { //update old dx in dxautofill
@@ -1544,7 +1535,7 @@ var uro = {
             c++;
         }​
         find.set("Count", c)​;​​​​
-        this.setlink​(e, "OperationList", find)​;
+        e.set("OperationList", find)​;
       }​
         
       if(old.op != e.field("Op")​ &​& old.op != "" &​& old.op != null)​ { //update old op in oplist
