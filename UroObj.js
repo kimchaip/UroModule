@@ -1481,18 +1481,9 @@ var uro = {
         find = dxs.find(this.checkdx,e) ;​
       }
       if(find!=undefined)​{
-        let ors = or.entries()​;
-        let bus = bu.entries()​;
-        let c = 0;
-        for(let i in ors) {
-          if(ors[i].field("Dx") == find.field("Dx") &​& ors[i].field("Op") ​== find.field("Op"))​
-            c++;
-        }​
-        for(let i in bus) {
-          if(bus[i].field("Dx") == find.field("Dx") &​& bus[i].field("Op") ​== find.field("Op"))​
-            c++;
-        }​
-        find.set("Count", c)​;​​​​
+        let orlink = find.linksFrom("UroBase", "DxAutoFill");
+        let bulink = find.linksFrom("Backup", "DxAutoFill");​
+        find.set("Count", orlink.length+bulink.length)​;​​​​
         e.set("DxAutoFill", find)​;
       }​
         
@@ -1502,18 +1493,9 @@ var uro = {
           find = dxs.find(this.checkdx, e);
         }​
         if (find != undefined)​ { // found old dx -​> update count in dxautofill
-          let ors = or.entries()​;
-          let bus = bu.entries()​;
-          let c = 0;
-          for(let i in ors) {
-            if(ors[i].field("Dx") == find.field("Dx") &​& ors[i].field("Op") ​== find.field("Op"))​
-              c++;
-          }​
-          for(let i in bus) {
-            if(bus[i].field("Dx") == find.field("Dx") &​& bus[i].field("Op") ​== find.field("Op"))​
-              c++;
-          }​
-          find.set("Count", c)​;​
+          orlink = find.linksFrom("UroBase", "DxAutoFill");
+          bulink = find.linksFrom("Backup", "DxAutoFill");​
+          find.set("Count", orlink.length+bulink.length)​;​​​​
         }​
       }
     }​
@@ -1525,18 +1507,9 @@ var uro = {
         find = ops.find(this.checkop,e) ;​
       }
       if(find!=undefined)​{
-        let ors = or.entries()​;
-        let bus = bu.entries()​;
-        let c = 0;
-        for(let i in ors) {
-          if(ors[i].field("Op") == find.field("OpFill"))​
-            c++;
-        }​
-        for(let i in bus) {
-          if(bus[i].field("Op") == find.field("OpFill"))​
-            c++;
-        }​
-        find.set("Count", c)​;​​​​
+        let orlink = find.linksFrom("UroBase", "OperationList");
+        let bulink = find.linksFrom("Backup", "OperationList");​
+        find.set("Count", orlink.length+bulink.length)​;​​​​
         e.set("OperationList", find)​;
       }​
         
@@ -1546,18 +1519,9 @@ var uro = {
           find = ops.find(this.checkop, e);
         }​
         if (find != undefined)​ { // found old op -​> update count in oplist
-          let ors = or.entries()​;
-          let bus = bu.entries()​;
-          let c = 0;
-          for(let i in ors) {
-            if(ors[i].field("Op") == find.field("OpFill"))​
-              c++;
-          }​
-          for(let i in bus) {
-            if(bus[i].field("Op") == find.field("OpFill"))​
-              c++;
-          }​
-          find.set("Count", c)​;​
+          let orlink = find.linksFrom("UroBase", "OperationList");
+          let bulink = find.linksFrom("Backup", "OperationList");​
+          find.set("Count", orlink.length+bulink.length)​;​​​​
         }​
       }​
     }​
