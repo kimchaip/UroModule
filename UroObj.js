@@ -1495,8 +1495,8 @@ var uro = {
           find = dxs.find(this.checkdx, e);
         }​
         if (find != undefined)​ { // found old dx -​> update count in dxautofill
-          orlink = find.linksFrom("UroBase", "DxAutoFill");
-          bulink = find.linksFrom("Backup", "DxAutoFill");​
+          let orlink = find.linksFrom("UroBase", "DxAutoFill");
+          let bulink = find.linksFrom("Backup", "DxAutoFill");​
           find.set("Count", orlink.length+bulink.length)​;​​​​
         }​
       }
@@ -1685,6 +1685,33 @@ var trig = {
         break;
       }​
     }
+  }, 
+  UroAfterDelete : function (e)​ {
+    message(e.title)​;
+    //Dx
+    let dx = libByName("DxAutoFill")​;
+    let dxs = dx.find(e.field("Dx"))​;
+    let find = undefined;
+    if (dxs.length > 0) {
+      find = dxs.find(this.checkdx,e) ;​
+    }
+    if (find != undefined)​ { 
+      let orlink = find.linksFrom("UroBase", "DxAutoFill");
+      let bulink = find.linksFrom("Backup", "DxAutoFill");​
+      find.set("Count", orlink.length+bulink.length)​;​​​​
+    }​
+    //Op
+    let op = libByName("OperationList")​;
+    let ops = op.find(e.field("Op"))​;
+    let find = undefined;
+    if (ops.length > 0) {
+      find = ops.find(this.checkop,e) ;​
+    }
+    if (find != undefined)​ { 
+      let orlink = find.linksFrom("UroBase", "OperationList");
+      let bulink = find.linksFrom("Backup", "OperationList");​
+      find.set("Count", orlink.length+bulink.length)​;​​​​
+    }​
   }, 
   BackupOpenEdit : function (e)​ {
     old.store(e)​;
