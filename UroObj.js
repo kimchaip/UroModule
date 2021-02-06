@@ -1703,7 +1703,7 @@ var trig = {
     //Op
     let op = libByName("OperationList")​;
     let ops = op.find(e.field("Op"))​;
-    let find = undefined;
+    find = undefined;
     if (ops.length > 0) {
       find = ops.find(this.checkop,e) ;​
     }
