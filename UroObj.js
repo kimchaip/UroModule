@@ -726,6 +726,8 @@ var emx = {
         fill.color(last, libto) ;
         message("successfully created new Entry") ;
         if (libto == "uro") ​{
+          uro.createoplist(last)​;
+          uro.updatedxop​(last, "op")​;​
           ob=last​;
         }​
       }​
@@ -1558,12 +1560,7 @@ var uro = {
       if (d>=0 &​& d<3) {
         fill.color(all[i]​, thislib)​;
       }
-      if (all[i].field("Future")!=null) {
-        if(my.gdate(all[i].field("Date"))>ntoday)​
-          all[i].set("Future", Math.floor((my.gdate(all[i].field("Date")​)-ntoday)​/86400000))​;
-        else
-          all[i].set("Future", null)​;
-      }​
+      setfuture(all[i])​;​
     } 
   }, 
   setfuture : function(e)​{
