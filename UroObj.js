@@ -1687,7 +1687,7 @@ var trig = {
     }
   }, 
   UroAfterDelete : function (e)​ {
-    message(e.title)​;
+    message(e.field("Dx"))​;
     //Dx
     let dx = libByName("DxAutoFill")​;
     let dxs = dx.find(e.field("Dx"))​;
