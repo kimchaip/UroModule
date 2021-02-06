@@ -1690,7 +1690,7 @@ var trig = {
     message(e.field("Dx"))​;
     //Dx
     let dx = libByName("DxAutoFill")​;
-    let dxs = dx.entries()​;
+    let dxs = dx.find(e.field("Dx"))​;
     let find = undefined;
     if (dxs.length > 0) {
       find = dxs.find(this.checkdx,e) ;​
@@ -1703,7 +1703,6 @@ var trig = {
     //Op
     let op = libByName("OperationList")​;
     let ops = op.find(e.field("Op"))​;
-    find = undefined;
     if (ops.length > 0) {
       find = ops.find(this.checkop,e) ;​
     }
