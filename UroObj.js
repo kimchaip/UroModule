@@ -1708,7 +1708,7 @@ var trig = {
     find = undefined;
     if (ops.length > 0) {
       for(let i in ops)​{
-        if(ops[i]​.field("Op")​==e.field("Op")​)​
+        if(ops[i]​.field("OpFill")​==e.field("Op")​)​
           find = ops[i]​ ;​
       }​
     }
