@@ -1528,6 +1528,38 @@ var uro = {
       }​
     }​
   }, 
+  deletedxop : function (e)​{
+    //Dx
+    let dx = libByName("DxAutoFill")​;
+    let dxs = dx.find(e.field("Dx"))​;
+    let find = undefined;
+    if (dxs.length > 0) {
+      for(let i in dxs)​{
+        if(dxs[i]​.field("Dx")​==e.field("Dx")​&&dxs[i]​.field("Op")​==e.field("Op")​)​
+          find = dxs[i]​ ;​
+      }​
+    }
+    if (find != undefined)​ { 
+      let orlink = find.linksFrom("UroBase", "DxAutoFill");
+      let bulink = find.linksFrom("Backup", "DxAutoFill");​
+      find.set("Count", orlink.length+bulink.length)​;​​​​
+    }​
+    //Op
+    let op = libByName("OperationList")​;
+    let ops = op.find(e.field("Op"))​;
+    find = undefined;
+    if (ops.length > 0) {
+      for(let i in ops)​{
+        if(ops[i]​.field("OpFill")​==e.field("Op")​)​
+          find = ops[i]​ ;​
+      }​
+    }
+    if (find != undefined)​ { 
+      let orlink = find.linksFrom("UroBase", "OperationList");
+      let bulink = find.linksFrom("Backup", "OperationList");​
+      find.set("Count", orlink.length+bulink.length)​;​​​​
+    }​
+  }, 
   updateDJStamp : function (e) {
     let links = e.field("Patient")​;
     if (links.length>0) {
@@ -1687,36 +1719,7 @@ var trig = {
     }
   }, 
   UroAfterDelete : function (e)​ {
-    //Dx
-    let dx = libByName("DxAutoFill")​;
-    let dxs = dx.find(e.field("Dx"))​;
-    let find = undefined;
-    if (dxs.length > 0) {
-      for(let i in dxs)​{
-        if(dxs[i]​.field("Dx")​==e.field("Dx")​&&dxs[i]​.field("Op")​==e.field("Op")​)​
-          find = dxs[i]​ ;​
-      }​
-    }
-    if (find != undefined)​ { 
-      let orlink = find.linksFrom("UroBase", "DxAutoFill");
-      let bulink = find.linksFrom("Backup", "DxAutoFill");​
-      find.set("Count", orlink.length+bulink.length)​;​​​​
-    }​
-    //Op
-    let op = libByName("OperationList")​;
-    let ops = op.find(e.field("Op"))​;
-    find = undefined;
-    if (ops.length > 0) {
-      for(let i in ops)​{
-        if(ops[i]​.field("OpFill")​==e.field("Op")​)​
-          find = ops[i]​ ;​
-      }​
-    }
-    if (find != undefined)​ { 
-      let orlink = find.linksFrom("UroBase", "OperationList");
-      let bulink = find.linksFrom("Backup", "OperationList");​
-      find.set("Count", orlink.length+bulink.length)​;​​​​
-    }​
+    uro.deletedxop(e)​;
   }, 
   BackupOpenEdit : function (e)​ {
     old.store(e)​;
@@ -1772,6 +1775,9 @@ var trig = {
         break;
       }​
     }
+  }, 
+  BackupAfterDelete : function (e)​ {
+    uro.deletedxop(e)​;
   }, 
   ConsultOpenEdit : function (e)​ {
     old.store(e)​;
