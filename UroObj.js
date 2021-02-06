@@ -1687,13 +1687,15 @@ var trig = {
     }
   }, 
   UroAfterDelete : function (e)​ {
-    message(e.field("Dx"))​;
     //Dx
     let dx = libByName("DxAutoFill")​;
     let dxs = dx.find(e.field("Dx"))​;
     let find = undefined;
     if (dxs.length > 0) {
-      find = dxs.find(this.checkdx,e) ;​
+      for(let i in dxs)​{
+        if(dxs[i]​.field("Dx")​==e.field("Dx")​&&dxs[i]​.field("Op")​==e.field("Op")​)​
+          find = dxs[i]​ ;​
+      }​
     }
     if (find != undefined)​ { 
       let orlink = find.linksFrom("UroBase", "DxAutoFill");
@@ -1703,8 +1705,12 @@ var trig = {
     //Op
     let op = libByName("OperationList")​;
     let ops = op.find(e.field("Op"))​;
+    find = undefined;
     if (ops.length > 0) {
-      find = ops.find(this.checkop,e) ;​
+      for(let i in ops)​{
+        if(ops[i]​.field("Op")​==e.field("Op")​)​
+          find = ops[i]​ ;​
+      }​
     }
     if (find != undefined)​ { 
       let orlink = find.linksFrom("UroBase", "OperationList");
