@@ -1560,7 +1560,7 @@ var uro = {
       if (d>=0 &​& d<3) {
         fill.color(all[i]​, thislib)​;
       }
-      setfuture(all[i])​;​
+      this.setfuture(all[i])​;​
     } 
   }, 
   setfuture : function(e)​{
