@@ -1393,11 +1393,11 @@ var uro = {
     }​
   }​,​
   setx15 : function (e) {
-    let str = e.field("Dx")​;
+    let str = e.field("Dx").toLowerCase​()​;
     let isstone = false;
     let isorextra = false;
     
-    if (str.match(/stone/i ) || str.match(/uc/i )​ || str.match(/rc/i )​ || str.match(/vc/i )​ || str.match(/calculi/i )​)  // match stone
+    if ((str.indexOf("stone")!=-1 || str.indexOf("uc")!=-1​ || str.indexOf("rc")!=-1​ || str.indexOf("vc")!=-1 || str.indexOf("calculi")!=-1)​ &​& str.indexOf("orchi")==-1)  // match stone, not orchi
       isstone = true;
       
     if ((my.gday(e.field("Date")​)​==6 || my.gday(e.field("Date")​)​==0)​ )​
