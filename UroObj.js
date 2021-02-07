@@ -911,63 +911,63 @@ e.field(field1​) != "Not")​ {
     if (links.length>0) {
       if(lib=="uro" || lib=="backup") {
         if(e.field("Status")=="Not") {
-          e.set("Color", "#5B5B5B")​;
+          if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
         } 
         else if(e.field("Status")=="Plan") {
           if (links[0].field("Status")=="Active" || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​)​{
             if (e.field("VisitType")=="OPD") {
-              e.set("Color", "#A7FF87"); 
+              if(e.field("Color")​!="#A7FF87") e.set("Color", "#A7FF87"); 
             } 
             else { // Admit
-              e.set("Color",​ "#5CD3FF"); 
+              if(e.field("Color")​!="#5CD3FF") e.set("Color",​ "#5CD3FF"); 
             } 
           } 
           else { // no Active
             if (e.field("VisitType")=="OPD")​{
-              e.set("Color", "#ABC39A");
+              if(e.field("Color")​!="#ABC39A") e.set("Color", "#ABC39A");
             }​
             else { // Admit
-              e.set("Color", "#66B2FF");
+              if(e.field("Color")​!="#66B2FF") e.set("Color", "#66B2FF");
             } 
           } 
         }
         else if(e.field("Status")=="Done") {
           if (links[0].field("Status")=="Active" || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​)​{
             if (e.field("VisitType")=="OPD") {
-              e.set("Color", "#6EB73D"); 
+              if(e.field("Color")​!="#6EB73D") e.set("Color", "#6EB73D"); 
             } 
             else { // Admit
-              e.set("Color",​ "#00B0F0"); 
+              if(e.field("Color")​!="#00B0F0") e.set("Color",​ "#00B0F0"); 
             } 
           } 
           else { // no Active
             if (e.field("VisitType")=="OPD")​{
-              e.set("Color", "#577244");
+              if(e.field("Color")​!="#577244") e.set("Color", "#577244");
             }​
             else { // Admit
-              e.set("Color", "#3974AA");
+              if(e.field("Color")​!="#3974AA") e.set("Color", "#3974AA");
             } 
           } 
         }
       }
       else {
         if(e.field("EntryMx")=="Not") {
-          e.set("Color", "#5B5B5B")​;
+          if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
         } 
         else if(links[0].field("Status")=="Active" || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​) {
           if (e.field("VisitType")=="OPD")​{
-            e.set("Color", "#6EB73D");
+            if(e.field("Color")​!="#6EB73D") e.set("Color", "#6EB73D");
           }​
           else { // Admit
-            e.set("Color", "#00B0F0");
+            if(e.field("Color")​!="#00B0F0") e.set("Color", "#00B0F0");
           } 
         } 
         else { // not Active
           if (e.field("VisitType")=="OPD")​{
-            e.set("Color", "#577244");
+            if(e.field("Color")​!="#577244") e.set("Color", "#577244");
           }​
           else { // Admit
-            e.set("Color", "#3974AA");
+            if(e.field("Color")!="#3974AA") e.set("Color", "#3974AA");
           } 
         }
       }​
@@ -1630,7 +1630,7 @@ var cso = {
   resetcolor : function(all) {
     for (let i in all)​ {
       let d=Math.floor((ntoday-my.gdate(all[i]​.lastModifiedTime))​/86400000​)
-      if (d>=0 &​& d<3) {
+      if (d>0) {
         fill.color(all[i]​, "consult")​;
       }
     } 
