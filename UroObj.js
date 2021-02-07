@@ -1589,10 +1589,10 @@ var uro = {
       thislib = "backup" ;
     for (let i in all)​ {
       let d=Math.floor((ntoday-my.gdate(all[i]​.lastModifiedTime))​/86400000​)
-      if (d>=0 &​& d<3) {
+      if (d>0) {
         fill.color(all[i]​, thislib)​;
+        this.setfuture(all[i])​;​
       }
-      this.setfuture(all[i])​;​
     } 
   }, 
   setfuture : function(e)​{
