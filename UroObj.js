@@ -1588,7 +1588,7 @@ var uro = {
     else
       thislib = "backup" ;
     for (let i in all)​ {
-      let d=Math.floor((ntoday-my.gdate(my.gdate(all[i]​.lastModifiedTime)))​/86400000​)
+      let d=Math.floor((ntoday-my.gdate(my.date(all[i]​.lastModifiedTime)))​/86400000​)
       if (d>0) {
         fill.color(all[i]​, thislib)​;
         this.setfuture(all[i])​;​
@@ -1629,7 +1629,7 @@ var cso = {
   }, 
   resetcolor : function(all) {
     for (let i in all)​ {
-      let d=Math.floor((ntoday-my.gdate(my.gdate(all[i]​.lastModifiedTime)​))​/86400000​)
+      let d=Math.floor((ntoday-my.gdate(my.date(all[i]​.lastModifiedTime)​))​/86400000​)
       if (d>0) {
         fill.color(all[i]​, "consult")​;
       }
