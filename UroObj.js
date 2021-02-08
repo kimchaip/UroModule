@@ -1488,7 +1488,8 @@ var uro = {
         find.set("Count", orlink.length+bulink.length)​;​​​​
         e.set("DxAutoFill", find)​;
       }​
-      if(old.dx != e.field("Dx")​ &​& old.dx != "" &​& old.dx != null)​ { //update old dx in dxautofill
+      if((old.dx != e.field("Dx")​ &​& old.dx != "" &​& old.dx != null)​ || 
+          (old.op != e.field("Op")​ &​& old.op != "" &​& old.op != null)​)​ { //update old dx in dxautofill
         dxs = dx.find(old.dx);
         find = undefined;
         if (dxs.length > 0) {
