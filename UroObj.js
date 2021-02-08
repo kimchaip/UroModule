@@ -1497,11 +1497,12 @@ var uro = {
               find = dxs[i]​ ;​
           }​
         }​
-        message("Dx :" + typeof find)​;
         if (find != undefined)​ { // found old dx -​> update count in dxautofill
           let orlink = find.linksFrom("UroBase", "DxAutoFill");
           let bulink = find.linksFrom("Backup", "DxAutoFill");​
           find.set("Count", orlink.length+bulink.length)​;​​​​
+          if(find.field("Count")​==0)​
+            find.trash()​;
         }​
       }
     }​
@@ -1527,11 +1528,12 @@ var uro = {
               find = ops[i]​ ;​
           }
         }​
-        message("Op :" +typeof find)​;
         if (find != undefined)​ { // found old op -​> update count in oplist
           let orlink = find.linksFrom("UroBase", "OperationList");
           let bulink = find.linksFrom("Backup", "OperationList");​
           find.set("Count", orlink.length+bulink.length)​;​​​​
+          if(find.field("Count")​==0)​
+            find.trash()​;​
         }​
       }​
     }​
