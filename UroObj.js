@@ -1477,7 +1477,7 @@ var uro = {
   updatedxop : function (e, type)​ {​
     if (type=="dx")​{
       let dx = libByName("DxAutoFill")​;
-      let dxs = dx.find(e.field("Dx"))​;
+      let dxs = dx.entries()​;
       let find = undefined;
       if (dxs.length > 0) {
         find = dxs.find(this.checkdx,e) ;​
@@ -1490,7 +1490,7 @@ var uro = {
       }​
       if((old.dx != e.field("Dx")​ &​& old.dx != "" &​& old.dx != null)​ || 
           (old.op != e.field("Op")​ &​& old.op != "" &​& old.op != null)​)​ { //update old dx in dxautofill
-        dxs = dx.find(old.dx);
+        dxs = dx.entries()​;
         find = undefined;
         if (dxs.length > 0) {
           for(let i in dxs)​{
@@ -1509,7 +1509,7 @@ var uro = {
     }​
     else { //type=="op"
       let op = libByName("OperationList")​;
-      let ops = op.find(e.field("Op"))​;
+      let ops = op.entries()​;
       let find = undefined;
       if (ops.length > 0) {
         find = ops.find(this.checkop, e);​
@@ -1521,7 +1521,7 @@ var uro = {
         e.set("OperationList", find)​;
       }​
       if(old.op != e.field("Op")​ &​& old.op != "" &​& old.op != null)​ { //update old op in oplist
-        ops = op.find(old.op);
+        ops = op.entries();
         find = undefined;
         if (ops.length > 0) {
           for(let i in ops)​{
@@ -1542,7 +1542,7 @@ var uro = {
   deletedxop : function (e)​{
     //Dx
     let dx = libByName("DxAutoFill")​;
-    let dxs = dx.find(e.field("Dx"))​;
+    let dxs = dx.entries()​;
     let find = undefined;
     if (dxs.length > 0) {
       for(let i in dxs)​{
@@ -1557,7 +1557,7 @@ var uro = {
     }​
     //Op
     let op = libByName("OperationList")​;
-    let ops = op.find(e.field("Op"))​;
+    let ops = op.entries()​;
     find = undefined;
     if (ops.length > 0) {
       for(let i in ops)​{
