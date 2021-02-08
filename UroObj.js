@@ -1491,8 +1491,12 @@ var uro = {
         
       if(old.dx != e.field("Dx")​ &​& old.dx != "" &​& old.dx != null)​ { //update old dx in dxautofill
         dxs = dx.find(old.dx);
+        find = undefined;
         if (dxs.length > 0) {
-          find = dxs.find(this.checkdx, e);
+          for(let i in dxs)​{
+            if(dxs[i]​.field("Dx")​==old.dx ​&& dxs[i]​.field("Op")​==old.op​)​
+              find = dxs[i]​ ;​
+          }​
         }​
         if (find != undefined)​ { // found old dx -​> update count in dxautofill
           let orlink = find.linksFrom("UroBase", "DxAutoFill");
@@ -1506,7 +1510,7 @@ var uro = {
       let ops = op.find(e.field("Op"))​;
       let find = undefined;
       if (ops.length > 0) {
-        find = ops.find(this.checkop,e) ;​
+        find = ops.find(this.checkop, e);​
       }
       if(find!=undefined)​{
         let orlink = find.linksFrom("UroBase", "OperationList");
@@ -1517,8 +1521,12 @@ var uro = {
         
       if(old.op != e.field("Op")​ &​& old.op != "" &​& old.op != null)​ { //update old op in oplist
         ops = op.find(old.op);
+        find = undefined;
         if (ops.length > 0) {
-          find = ops.find(this.checkop, e);
+          for(let i in ops)​{
+            if(ops[i]​.field("OpFill")​==old.op​)​
+              find = ops[i]​ ;​
+          }
         }​
         if (find != undefined)​ { // found old op -​> update count in oplist
           let orlink = find.linksFrom("UroBase", "OperationList");
