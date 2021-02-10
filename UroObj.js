@@ -1385,12 +1385,15 @@ var uro = {
         o["Op"] = e.field("Op")​;​
         dx.create(o);
         message("Create new AutoFill Successfully​")​;
+        return dx.entries[0];
       }
       else { // dx and op ever before​
         e.set("Dx", find.field("Dx")​)​;​
         e.set("Op", find.field("Op")​)​;​
+        return find;
       }​
     }​
+    return undefined;
   }​,​
   setx15 : function (e) {
     let str = e.field("Dx").toLowerCase​()​;
@@ -1434,9 +1437,11 @@ var uro = {
         
         op.create(o);
         message("Create new OpList Successfully​")​;
+        return op.entries[0];
       }
       else { // set op ever before​
         e.set("Op", find.field("OpFill")​)​;​
+        return find;
       }​
     }​
     else if (e.field("Op").trim()​ != "" &​& e.field("Op") != null)​ { // set extra op
@@ -1461,6 +1466,7 @@ var uro = {
 
         op.create(o);
         message("Create new OpList Successfully​")​;
+        return op.entries[0];
       }
       else { // set extra op ever before​
         e.set("Op", find.field("OpFill")​)​;​
@@ -1470,28 +1476,24 @@ var uro = {
         else {
           e.set("Bonus", find.field("Price")​)​;
         }​
+        return find;
       }​
     }​
+    return undefined;
   }​,
-  
-  updatedxop : function (e, type)​ {​
+  updatedxop : function (e, type, dxop)​ {​
     if (type=="dx")​{
-      let dx = libByName("DxAutoFill")​;
-      let dxs = dx.entries()​;
-      let find = undefined;
-      if (dxs.length > 0) {
-        find = dxs.find(this.checkdx,e) ;​
-      }
-      if(find!=undefined)​{
-        let orlink = find.linksFrom("UroBase", "DxAutoFill");
-        let bulink = find.linksFrom("Backup", "DxAutoFill");​
-        find.set("Count", orlink.length+bulink.length)​;​​​​
-        e.set("DxAutoFill", find)​;
+      if(dxop!=undefined)​{
+        e.set("DxAutoFill", dxop)​;
+        
+        let orlink = dxop.linksFrom("UroBase", "DxAutoFill");
+        let bulink = dxop.linksFrom("Backup", "DxAutoFill");​
+        dxop.set("Count", orlink.length+bulink.length)​;​​​​
       }​
       if((old.dx != e.field("Dx")​ &​& old.dx != "" &​& old.dx != null)​ || 
           (old.op != e.field("Op")​ &​& old.op != "" &​& old.op != null)​)​ { //update old dx in dxautofill
-        dxs = dx.entries()​;
-        find = undefined;
+        let dxs = dx.find(old.dx)​;
+        let find = undefined;
         if (dxs.length > 0) {
           for(let i in dxs)​{
             if(dxs[i]​.field("Dx")​==old.dx ​&& dxs[i]​.field("Op")​==old.op​)​
@@ -1508,21 +1510,16 @@ var uro = {
       }
     }​
     else { //type=="op"
-      let op = libByName("OperationList")​;
-      let ops = op.entries()​;
-      let find = undefined;
-      if (ops.length > 0) {
-        find = ops.find(this.checkop, e);​
-      }
-      if(find!=undefined)​{
-        let orlink = find.linksFrom("UroBase", "OperationList");
-        let bulink = find.linksFrom("Backup", "OperationList");​
-        find.set("Count", orlink.length+bulink.length)​;​​​​
-        e.set("OperationList", find)​;
+      if(dxop!=undefined)​{
+        e.set("OperationList", dxop)​;​
+        
+        let orlink = dxop.linksFrom("UroBase", "OperationList");
+        let bulink = dxop.linksFrom("Backup", "OperationList");​
+        dxop.set("Count", orlink.length+bulink.length)​;​​​​
       }​
       if(old.op != e.field("Op")​ &​& old.op != "" &​& old.op != null)​ { //update old op in oplist
-        ops = op.entries();
-        find = undefined;
+        let ops = op.find(old.op)​;
+        let find = undefined;
         if (ops.length > 0) {
           for(let i in ops)​{
             if(ops[i]​.field("OpFill")​==old.op​)​
@@ -1692,11 +1689,13 @@ var trig = {
       mer.merge(e, true)​;
     uro.setq(e)​;
     uro.setDJstent(e)​;
-    uro.createautofill​(e)​;
+    let dxe = uro.createautofill​(e)​;
     uro.setx15(e)​;
-    uro.createoplist(e)​;
-    uro.updatedxop​(e, "dx")​;
-    uro.updatedxop​(e, "op")​;
+    let ope = uro.createoplist(e)​;
+    if(dxe!=undefined)​
+      uro.updatedxop​(e, "dx", dxe)​;
+    if(ope!=undefined)​
+      uro.updatedxop​(e, "op", ope)​;
     fill.underlying(e)​;
     fill.los(e)​;
   }, 
@@ -1750,11 +1749,13 @@ var trig = {
       mer.merge(e, true)​;
     uro.setq(e)​;
     uro.setDJstent(e)​;
-    uro.createautofill​(e)​;
+    let dxe = uro.createautofill​(e)​;
     uro.setx15(e)​;
-    uro.createoplist(e)​;
-    uro.updatedxop​(e, "dx")​;
-    uro.updatedxop​(e, "op")​;
+    let ope = uro.createoplist(e)​;
+    if(dxe!=undefined)​
+      uro.updatedxop​(e, "dx", dxe)​;
+    if(ope!=undefined)​
+      uro.updatedxop​(e, "op", ope)​;
     fill.underlying(e)​;
     fill.los(e)​;
   }, 
