@@ -1385,7 +1385,7 @@ var uro = {
         o["Op"] = e.field("Op")​;​
         dx.create(o);
         message("Create new AutoFill Successfully​")​;
-        return dx.entries[0];
+        return dx.entries()[0];
       }
       else { // dx and op ever before​
         e.set("Dx", find.field("Dx")​)​;​
@@ -1437,7 +1437,7 @@ var uro = {
         
         op.create(o);
         message("Create new OpList Successfully​")​;
-        return op.entries[0];
+        return op.entries()[0];
       }
       else { // set op ever before​
         e.set("Op", find.field("OpFill")​)​;​
@@ -1466,7 +1466,7 @@ var uro = {
 
         op.create(o);
         message("Create new OpList Successfully​")​;
-        return op.entries[0];
+        return op.entries()[0];
       }
       else { // set extra op ever before​
         e.set("Op", find.field("OpFill")​)​;​
