@@ -1689,7 +1689,7 @@ var trig = {
       mer.merge(e, false)​;
     else if (value=="update")​
       mer.merge(e, true)​;
-    uro.setq(e)​;
+    uro.runq(e)​;
     uro.setDJstent(e)​;
     let dxe = uro.createautofill​(e)​;
     uro.setx15(e)​;
@@ -1749,7 +1749,7 @@ var trig = {
       mer.merge(e, false)​;
     else if (value=="update")​
       mer.merge(e, true)​;
-    uro.setq(e)​;
+    uro.runq(e)​;
     uro.setDJstent(e)​;
     let dxe = uro.createautofill​(e)​;
     uro.setx15(e)​;
