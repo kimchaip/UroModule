@@ -1492,6 +1492,7 @@ var uro = {
       }​
       if((old.dx != e.field("Dx")​ &​& old.dx != "" &​& old.dx != null)​ || 
           (old.op != e.field("Op")​ &​& old.op != "" &​& old.op != null)​)​ { //update old dx in dxautofill
+        let dx = libByName("DxAutoFill");
         let dxs = dx.find(old.dx)​;
         let find = undefined;
         if (dxs.length > 0) {
@@ -1518,6 +1519,7 @@ var uro = {
         dxop.set("Count", orlink.length+bulink.length)​;​​​​
       }​
       if(old.op != e.field("Op")​ &​& old.op != "" &​& old.op != null)​ { //update old op in oplist
+        let op = libByName("OperationList")​;
         let ops = op.find(old.op)​;
         let find = undefined;
         if (ops.length > 0) {
