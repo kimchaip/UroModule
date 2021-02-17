@@ -1553,6 +1553,8 @@ var uro = {
       let orlink = find.linksFrom("UroBase", "DxAutoFill");
       let bulink = find.linksFrom("Backup", "DxAutoFill");​
       find.set("Count", orlink.length+bulink.length)​;​​​​
+      if(find.field("Count")​==0)​
+            find.trash()​;
     }​
     //Op
     let op = libByName("OperationList")​;
@@ -1569,6 +1571,20 @@ var uro = {
       let bulink = find.linksFrom("Backup", "OperationList");​
       find.set("Count", orlink.length+bulink.length)​;​​​​
     }​
+  }, 
+  deletept : function (e)​{
+    //Pt
+    let ptlks = e.field("Patient")​;
+    message("pt links count = " + ptlks.length)​;
+    if (ptlks.length>0) {
+      let ptent = pt.findById(ptlks[0].id) ;
+      let orlinks = ptent.linksFrom("UroBase", "Patient") ;
+      let bulinks = ptent.linksFrom("Backup", "Patient") ;
+      let cslinks = ptent.linksFrom("Consult", "Patient") ;
+      if(orlinks.length+bulinks.length+cslinks.length>=0)​{
+        message("pt links from =" + orlinks.length+bulinks.length+cslinks.length);
+      }​
+    }
   }, 
   updateDJStamp : function (e) {
     let links = e.field("Patient")​;
@@ -1730,6 +1746,7 @@ var trig = {
   }, 
   UroAfterDelete : function (e)​ {
     uro.deletedxop(e)​;
+    uro.deletept(e)​;
   }, 
   BackupOpenEdit : function (e)​ {
     old.store(e)​;
@@ -1790,6 +1807,7 @@ var trig = {
   }, 
   BackupAfterDelete : function (e)​ {
     uro.deletedxop(e)​;
+    uro.deletept(e)​;
   }, 
   ConsultOpenEdit : function (e)​ {
     old.store(e)​;
@@ -1825,4 +1843,8 @@ var trig = {
   ConsultBeforeOpenLib : function (all) {
     cso.resetcolor(all)​;
   }, 
+  ConsultAfterDelete : function (e)​ {
+    uro.deletedxop(e)​;
+    uro.deletept(e)​;
+  }
 }​;
