@@ -1844,7 +1844,6 @@ var trig = {
     cso.resetcolor(all)​;
   }, 
   ConsultAfterDelete : function (e)​ {
-    uro.deletedxop(e)​;
     uro.deletept(e)​;
   }
 }​;
