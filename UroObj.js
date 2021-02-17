@@ -1546,7 +1546,7 @@ var uro = {
       let dxent = dx.findById(dxlks[0].id) ;
       let orlinks = dxent.linksFrom("UroBase", "DxAutoFill") ;
       let bulinks = dxent.linksFrom("Backup", "DxAutoFill") ;
-      dxent.set("Count", orlink.length+bulink.length)​;​​​​
+      dxent.set("Count", orlinks.length+bulinks.length)​;​​​​
       if(dxent.field("Count")​==0)​
             dxent.trash()​;
     }​
@@ -1557,7 +1557,7 @@ var uro = {
       let opent = op.findById(oplks[0].id) ;
       let orlinks = opent.linksFrom("UroBase", "OperationList") ;
       let bulinks = opent.linksFrom("Backup", "OperationList") ;
-      opent.set("Count", orlink.length+bulink.length)​;​​​​
+      opent.set("Count", orlinks.length+bulinks.length)​;​​​​
     }​
   }, 
   deletept : function (e)​{
