@@ -1539,17 +1539,6 @@ var uro = {
     }​
   }, 
   deletedxop : function (e)​{
-    let ptlks = e.field("Patient")​;
-    message("pt links count = " + ptlks.length)​;
-    if (ptlks.length>0) {
-      let ptent = pt.findById(ptlks[0].id) ;
-      let orlinks = ptent.linksFrom("UroBase", "Patient") ;
-      let bulinks = ptent.linksFrom("Backup", "Patient") ;
-      let cslinks = ptent.linksFrom("Consult", "Patient") ;
-      if(orlinks.length+bulinks.length+cslinks.length==0)​{
-        ptent.trash()​;
-      }​
-    }
     //Dx
     let dx = libByName("DxAutoFill")​;
     let dxlks = e.field("DxAutoFill")​;
