@@ -1539,41 +1539,6 @@ var uro = {
     }​
   }, 
   deletedxop : function (e)​{
-    //Dx
-    let dx = libByName("DxAutoFill")​;
-    let dxs = dx.entries()​;
-    let find = undefined;
-    if (dxs.length > 0) {
-      for(let i in dxs)​{
-        if(dxs[i]​.field("Dx")​==e.field("Dx")​&&dxs[i]​.field("Op")​==e.field("Op")​)​
-          find = dxs[i]​ ;​
-      }​
-    }
-    if (find != undefined)​ { 
-      let orlink = find.linksFrom("UroBase", "DxAutoFill");
-      let bulink = find.linksFrom("Backup", "DxAutoFill");​
-      find.set("Count", orlink.length+bulink.length)​;​​​​
-      if(find.field("Count")​==0)​
-            find.trash()​;
-    }​
-    //Op
-    let op = libByName("OperationList")​;
-    let ops = op.entries()​;
-    find = undefined;
-    if (ops.length > 0) {
-      for(let i in ops)​{
-        if(ops[i]​.field("OpFill")​==e.field("Op")​)​
-          find = ops[i]​ ;​
-      }​
-    }
-    if (find != undefined)​ { 
-      let orlink = find.linksFrom("UroBase", "OperationList");
-      let bulink = find.linksFrom("Backup", "OperationList");​
-      find.set("Count", orlink.length+bulink.length)​;​​​​
-    }​
-  }, 
-  deletept : function (e)​{
-    //Pt
     let ptlks = e.field("Patient")​;
     message("pt links count = " + ptlks.length)​;
     if (ptlks.length>0) {
@@ -1581,8 +1546,41 @@ var uro = {
       let orlinks = ptent.linksFrom("UroBase", "Patient") ;
       let bulinks = ptent.linksFrom("Backup", "Patient") ;
       let cslinks = ptent.linksFrom("Consult", "Patient") ;
-      if(orlinks.length+bulinks.length+cslinks.length>=0)​{
-        message("pt links from =" + orlinks.length+bulinks.length+cslinks.length);
+      if(orlinks.length+bulinks.length+cslinks.length==0)​{
+        ptent.trash()​;
+      }​
+    }
+    //Dx
+    let dx = libByName("DxAutoFill")​;
+    let dxlks = e.field("DxAutoFill")​;
+    if (dxlks.length>0) {
+      let dxent = dx.findById(dxlks[0].id) ;
+      let orlinks = dxent.linksFrom("UroBase", "DxAutoFill") ;
+      let bulinks = dxent.linksFrom("Backup", "DxAutoFill") ;
+      dxent.set("Count", orlink.length+bulink.length)​;​​​​
+      if(dxent.field("Count")​==0)​
+            dxent.trash()​;
+    }​
+    //Op
+    let op = libByName("OperationList")​;
+    let oplks = e.field("OperationList")​;
+    if (oplks.length>0) {
+      let opent = op.findById(oplks[0].id) ;
+      let orlinks = opent.linksFrom("UroBase", "OperationList") ;
+      let bulinks = opent.linksFrom("Backup", "OperationList") ;
+      opent.set("Count", orlink.length+bulink.length)​;​​​​
+    }​
+  }, 
+  deletept : function (e)​{
+    //Pt
+    let ptlks = e.field("Patient")​;
+    if (ptlks.length>0) {
+      let ptent = pt.findById(ptlks[0].id) ;
+      let orlinks = ptent.linksFrom("UroBase", "Patient") ;
+      let bulinks = ptent.linksFrom("Backup", "Patient") ;
+      let cslinks = ptent.linksFrom("Consult", "Patient") ;
+      if(orlinks.length+bulinks.length+cslinks.length==0)​{
+        ptent.trash()​;
       }​
     }
   }, 
