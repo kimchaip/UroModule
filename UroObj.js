@@ -2,6 +2,7 @@ var pt = libByName("Patient") ;​
 var or = libByName("UroBase") ;​
 var cs = libByName("Consult") ;
 var bu = libByName("Backup") ;
+var rp = libByName("Report")​;
 
 var my = {
   d : null, 
@@ -1098,9 +1099,9 @@ var uro = {
     let eq = Number(e.field("Que")​)​;
     let qstr = "," + e.field("Que")​ + "," ;
     //---Status assign Que---//
-    if (e.field("Status") == "Not" || e.field("ORType")​ == "LA" ) {
+    if (e.field("Status") == "Not" || e.field("ORType")​ == "LA" ) {
       e.set("Previous", e.field("Previous").replace(qstr, ",00,"))​;
-      e.set("Que", "00") ;
+      e.set("Que", "00") ;
       let hole = que.findhole()​;
       let near = null;
       while ( hole != 0​)​ { // found hole
@@ -1116,7 +1117,7 @@ var uro = {
         }​
         hole = que.findhole();
       }​   
-    }​
+    }​
     else if (eq == 0)​ { //update, que 00
       let hole = que.findhole()​;
       maxq += 1;
@@ -1535,7 +1536,91 @@ var cso = {
     } 
   }​
 }​;
-
+var rpo = {
+  setreport : function (e) {
+    let rps = rp.entries()​;
+    let found = false;
+    let wd = my.gday(e.field("Date")​)​ ;
+    let wdt = "" ;
+    if (wd==0)​ wdt = "Sun" ;
+    else if (wd==1)​ wdt = "Mon" ;
+    else if (wd==2)​ wdt = "Tue" ;
+    else if (wd==3)​ wdt = "Wed" ;
+    else if (wd==4)​ wdt = "Thu" ;
+    else if (wd==5)​ wdt = "Fri" ;
+    else if (wd==6)​ wdt = "Sat" ;
+    
+    for (let r in rps)​{
+      if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(e.field("Date"))​ &​& rps[r].field("Patient").length > 0 &​& e.field("Patient").length > 0 &​& rps[r].field("Patient")[0].id ==​ e.field("Patient")[0].id)​{
+        found = true;
+        break;
+      }​
+    }​
+    if(found)​{ //edit 
+      //---Date, Patient, Dx, Op, OpType, Extra, LOS
+      rps[r]​.set("Dx", e.field("Dx"));
+      rps[r]​.set("Op", e.field("Op"));
+      rps[r]​.set("OpType", e.field("OpType"));
+      rps[r]​.set("Extra", e.field("OpExtra"));
+      rps[r]​.set("LOS", e.field("LOS"));
+      //---OpGroup, Organ
+      if (e.field("OperationList").length>0)​{
+        rps[r]​.set("OpGroup", e.field("OperationList")[0].field("OpList"));
+        rps[r]​.set("Organ", e.field("OperationList")[0].field("OpGroup").join(" ")​);
+      }​
+      //---OpLength
+      if (e.field("TimeOut") > e.field("TimeIn"))​ {
+        rps[r]​.set("OpLength", e.field("TimeOut")-e.field("TimeIn"))​;
+      }​
+      else if (e.field("TimeIn") > e.field("TimeOut"))​ {
+        rps[r]​.set("OpLength", 86400000-(e.field("TimeIn")-e.field("TimeOut"))​);
+      }​
+      else {
+        rps[r]​.set("OpLength", null)​;
+      }​
+      //---WeekDay
+      rps[r]​.set("WeekDay", wdt)​;
+      //---Dead
+      if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
+        rps[r].set("Dead","Dead");
+      else
+        rps[r]​.set("Dead","Alive");
+    }​
+    else { // not found, create new
+      let ent = new Object()​;
+      //---Date, Patient, Dx, Op, OpType, Extra, LOS
+      ent["OpDate"] = e.field("Date");
+      ent["Patient"]​ = e.field("Patient")​[0];
+      ent["Dx"]​ = e.field("Dx");
+      ent["Op"]​ = e.field("Op");
+      ent["Extra"]​ = e.field("OpExtra");
+      ent["LOS"]​ = e.field("LOS");
+      //---OpGroup, Organ
+      if (e.field("OperationList").length>0)​{
+        ent["OpGroup"] = e.field("OperationList")[0].field("OpList"));
+        ent["Organ"]​ = e.field("OperationList")[0].field("OpGroup").join(" ")​);
+      }​
+      //---OpLength
+      if (e.field("TimeOut") > e.field("TimeIn"))​ {
+        ent["OpLength"]​ =  e.field("TimeOut")-e.field("TimeIn");
+      }​
+      else if (e.field("TimeIn") > e.field("TimeOut"))​ {
+        ent["OpLength"]​ = 86400000-(e.field("TimeIn")-e.field("TimeOut"))​;
+      }​
+      else {
+        ent["OpLength"]​ =  null;
+      }​
+      //---WeekDay
+      ent["WeekDay"]​ =  wdt;
+      //---Dead
+      if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
+        ent["Dead"]​ = "Dead";
+      else
+        ent["Dead"]​ = "Alive";
+      rp.create(ent)​;
+    }​
+  }​
+}​;
 var trig = {
   PatientBeforeEdit : function (e, value)​ {
     if (value=="create")
@@ -1601,6 +1686,7 @@ var trig = {
     emx.flu(e)​;
     emx.setor(e)​;
     uro.updateDJStamp(e)​;
+    rpo.setreport(e)​;
   }, 
   UroBeforeViewCard ​: function (e) {​
     fill.color(e, "uro")​;
@@ -1662,6 +1748,7 @@ var trig = {
     emx.flu(e)​;
     emx.setor(e)​;
     uro.updateDJStamp(e)​;
+    rpo.setreport(e)​;
   }, 
   BackupBeforeViewCard ​: function (e) {​
     fill.color(e, "uro")​;
