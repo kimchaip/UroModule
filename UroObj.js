@@ -1540,6 +1540,7 @@ var rpo = {
   setreport : function (e) {
     let rps = rp.entries()​;
     let found = false;
+    let rpt = undefined;
     let wd = my.gday(e.field("Date")​)​ ;
     let wdt = "" ;
     if (wd==0)​ wdt = "Sun" ;
@@ -1551,40 +1552,41 @@ var rpo = {
     else if (wd==6)​ wdt = "Sat" ;
     
     for (let r in rps)​{
-      if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(e.field("Date"))​ &​& rps[r].field("Patient").length > 0 &​& e.field("Patient").length > 0 &​& rps[r].field("Patient")[0].id ==​ e.field("Patient")[0].id)​{
+      if (my.gdate(rps[r]​.field("OpDate"))​ == my.gdate(e.field("Date"))​ &​& rps[r].field("Patient").length > 0 &​& e.field("Patient").length > 0 &​& rps[r].field("Patient")[0].id ==​ e.field("Patient")[0].id)​{
         found = true;
+        rpt = rps[r]​;
         break;
       }​
     }​
     if(found)​{ //edit 
       //---Date, Patient, Dx, Op, OpType, Extra, LOS
-      rps[r]​.set("Dx", e.field("Dx"));
-      rps[r]​.set("Op", e.field("Op"));
-      rps[r]​.set("OpType", e.field("OpType"));
-      rps[r]​.set("Extra", e.field("OpExtra"));
-      rps[r]​.set("LOS", e.field("LOS"));
+      rpt.set("Dx", e.field("Dx"));
+      rpt.set("Op", e.field("Op"));
+      rpt.set("OpType", e.field("OpType"));
+      rpt.set("Extra", e.field("OpExtra"));
+      rpt.set("LOS", e.field("LOS"));
       //---OpGroup, Organ
       if (e.field("OperationList").length>0)​{
-        rps[r]​.set("OpGroup", e.field("OperationList")[0].field("OpList"));
-        rps[r]​.set("Organ", e.field("OperationList")[0].field("OpGroup").join(" ")​);
+        rpt.set("OpGroup", e.field("OperationList")[0].field("OpList"));
+        rpt.set("Organ", e.field("OperationList")[0].field("OpGroup").join(" ")​);
       }​
       //---OpLength
       if (e.field("TimeOut") > e.field("TimeIn"))​ {
-        rps[r]​.set("OpLength", e.field("TimeOut")-e.field("TimeIn"))​;
+        rpt.set("OpLength", e.field("TimeOut")-e.field("TimeIn"))​;
       }​
       else if (e.field("TimeIn") > e.field("TimeOut"))​ {
-        rps[r]​.set("OpLength", 86400000-(e.field("TimeIn")-e.field("TimeOut"))​);
+        rpt.set("OpLength", 86400000-(e.field("TimeIn")-e.field("TimeOut"))​);
       }​
       else {
-        rps[r]​.set("OpLength", null)​;
+        rpt.set("OpLength", null)​;
       }​
       //---WeekDay
-      rps[r]​.set("WeekDay", wdt)​;
+      rpt.set("WeekDay", wdt)​;
       //---Dead
       if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
         rps[r].set("Dead","Dead");
       else
-        rps[r]​.set("Dead","Alive");
+        rpt.set("Dead","Alive");
     }​
     else { // not found, create new
       let ent = new Object()​;
