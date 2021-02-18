@@ -1316,7 +1316,7 @@ var uro = {
         let orlinks = opent.linksFrom("UroBase", "OperationList") ;
         let bulinks = opent.linksFrom("Backup", "OperationList") ;
         opent.set("Count", orlinks.length+bulinks.length)​;​​​​
-      }
+      }​
       e.set("Bonus", 0)​;
     }​
     else if (e.field("OpExtra")​ == false &​& e.field("Op").trim()​ != "" &​& e.field("Op") != null​)​{ // set regular op
@@ -1595,7 +1595,7 @@ var rpo = {
         rpt.set("WeekDay", wdt)​;
         //---Dead
         if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
-          rps[r].set("Dead","Dead");
+          rpt.set("Dead","Dead");
         else
           rpt.set("Dead","Alive");
       }​
