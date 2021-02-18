@@ -1597,8 +1597,8 @@ var rpo = {
       ent["LOS"]​ = e.field("LOS");
       //---OpGroup, Organ
       if (e.field("OperationList").length>0)​{
-        ent["OpGroup"] = e.field("OperationList")[0].field("OpList"));
-        ent["Organ"]​ = e.field("OperationList")[0].field("OpGroup").join(" ")​);
+        ent["OpGroup"] = e.field("OperationList")[0].field("OpList");
+        ent["Organ"]​ = e.field("OperationList")[0].field("OpGroup").join(" ")​;
       }​
       //---OpLength
       if (e.field("TimeOut") > e.field("TimeIn"))​ {
