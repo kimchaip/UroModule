@@ -1563,7 +1563,7 @@ var rpo = {
       else if (wd==6)​ wdt = "Sat" ;
     
       for (let r in rps)​{
-        if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(e.field("Date"))​ &​& rps[r].field("Patient").length > 0 &​& e.field("Patient").length > 0 &​& rps[r].field("Patient")[0].id ==​ e.field("Patient")[0].id &​& rps[r].field("Dx") ==​ e.field("Dx")​)​{
+        if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(e.field("Date"))​ &​& rps[r].field("Patient").length > 0 &​& e.field("Patient").length > 0 &​& rps[r].field("Patient")[0].id ==​ e.field("Patient")[0].id &​& rps[r].field("Dx") ==​ e.field("Dx") &​& rps[r].field("Op") ==​ e.field("Op")​)​{
           found = true;
           rpt = rps[r]​;
           break;
