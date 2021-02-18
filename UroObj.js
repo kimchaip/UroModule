@@ -535,18 +535,12 @@ var que = {
   checkque : function (value)​ {
     return Number(value.field("Que")​) == this.fq;
   }, 
-  checkid : function (value)​ {
-    return value.id == this.id;
-  }, 
   checkdup : function (value)​ {
     return value.id != this.id &​& value.field("Que") == this.field("Que");
   }, 
   findque : function (value)​ {
     this.fq = value;
     return this.q.find(this.checkque, this);
-  }, 
-  findme : function(entry)​ {
-    return this.q.find(this.checkid, entry);
   }, 
   finddup : function (entry)​ {
     return this.q.find(this.checkdup, entry);
@@ -567,31 +561,6 @@ var que = {
       }​
     }​
     return 0;
-  }, 
-  sort : function()​ {
-    if(this.q.length > 0) {
-      this.q.sort(function(a, b) {
-        let diff = a.field("Que")-b.field("Que");
-        if (diff<0) return -​1;
-        else if (diff>0) return 1;
-        else return 0;
-      })​;
-    }​
-  }, 
-  reorder : function(e, from, to, diff) {
-    e.set("Que", this.string(from))​;
-    this.sort()​;
-    if (from < to )​ { //Rt shift
-      for (let i = to; i>from; i--)​ { 
-        this​.q[diff+i-1].set("Que", this.q[diff+i-2].field("Que"));
-      }​
-    }​
-    else { // from​ > to : Lt shift
-      for (let i = to; i<from​; i++)​ { 
-        this​.q[diff+i-1].set("Que", this.q[diff+i].field("Que"));
-      }​
-    }​
-    e.set("Que", this​.string(to​))​;
   }
 }​;
 var emx = {
@@ -1120,87 +1089,6 @@ var uro = {
         e.set("VisitDate", my.date(e.field("Date")))​;
       }​
     }
-  }, 
-  setq : function (e) {
-    if (e.field("Status") == "Not" || e.field("ORType")​ == "LA" ) {
-      que.getstart(e);
-      let maxq = ​que.max() ;
-      let lenq = que.q.length;
-      let diff = 0;
-      if (maxq<lenq)​ {
-        diff = lenq-maxq;
-      }​
-      let oldq = Number​(e.field("Que"))​;
-      let newq = maxq;
-      if (oldq > 0 &​& oldq < maxq)​ { // 0 < oldq < maxq
-        que.reorder(e, oldq, newq, diff) ;
-      }​
-      e.set("Que", "00") ;
-    }​
-    else if (old.que == null )​ { //new create
-      que.getstart(e)​;
-      let lenq = que.q.length+1;
-      let maxq = que.max()​+1;
-      let diff = 0;
-      if (maxq<lenq)​ {
-        diff = lenq-maxq;
-      }​
-      let oldq = 0;
-      let newq = Number​(e.field("Que")​)​ ;
-      if (newq > maxq || newq == 0)​ {
-        e.set("Que", que.string(maxq))​;
-      }​
-      else { // 0 < newq < maxq
-        e.set("Que", que.string(maxq))​;
-        que.q.push(e)​;
-        oldq = maxq;
-        que.reorder(e, oldq, newq, diff) ;
-      }​
-    }​ 
-    else if (old.que == "00"  && e.field("Que")​ == "00")​ { //update, que 0->0
-      que.getstart(e)​;
-      let maxq = que.max()​+1;
-      e.set("Que", que.string(maxq)​)​;
-    }​ 
-    else if (old.que == "00"  && e.field("Que")​ != "00")​ { //update, que 0->n
-      que.getstart(e);
-      let oldq = 0;
-      let newq = Number​(e.field("Que")​)​ ;
-      let lenq = que.q.length;
-      let maxq = que.max()​+1;
-      let diff = 0;
-      if (maxq<lenq)​ {
-        diff = lenq-maxq;
-      }​
-      if (newq > maxq)​ {
-        newq = maxq;
-        e.set("Que", que.string(newq))​;
-      }​
-      else if (newq < maxq)​ { // 0 < newq < maxq
-        let q = que.findme(e)​; //find current entry in array 
-        q.set("Que", que.string(maxq))​;
-        oldq = maxq;
-        que.reorder(e, oldq, newq, diff) ;
-      }​
-    }​
-    else if (old.que != "00" &​& old.que != e.field("Que")​)​ { //update, que n->m
-      que.getstart(e);
-      let oldq = Number(old.que)​;
-      let newq = Number(e.field("Que"))​;
-      let lenq = que.q.length;
-      let maxq = que.max()​;
-      let diff = 0;
-      if (maxq<lenq)​ {
-        diff = lenq-maxq;
-      }​
-      if (newq > maxq)​ {
-        newq = maxq;
-      }​
-      else if (newq == 0)​ {
-        newq = 1;
-      }​
-      que.reorder(e, oldq, newq, diff);
-    }​
   }, 
   runq : function (e) {
     que.getstart(e)​;
