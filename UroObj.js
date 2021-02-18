@@ -1559,10 +1559,10 @@ var rpo = {
       }​
     }​
     if(found)​{ //edit 
-      //---Date, Patient, Dx, Op, OpType, Extra, LOS
+      //---Date, Patient, Dx, Op, ORType, Extra, LOS
       rpt.set("Dx", e.field("Dx"));
       rpt.set("Op", e.field("Op"));
-      rpt.set("OpType", e.field("OpType"));
+      rpt.set("ORType", e.field("ORType"));
       rpt.set("Extra", e.field("OpExtra"));
       rpt.set("LOS", e.field("LOS"));
       //---OpGroup, Organ
@@ -1590,11 +1590,12 @@ var rpo = {
     }​
     else { // not found, create new
       let ent = new Object()​;
-      //---Date, Patient, Dx, Op, OpType, Extra, LOS
+      //---Date, Patient, Dx, Op, ORType, Extra, LOS
       ent["OpDate"] = e.field("Date");
       ent["Patient"]​ = e.field("Patient")​[0];
       ent["Dx"]​ = e.field("Dx");
       ent["Op"]​ = e.field("Op");
+      ent["ORType"]​ = e.field("ORType");
       ent["Extra"]​ = e.field("OpExtra");
       ent["LOS"]​ = e.field("LOS");
       //---OpGroup, Organ
