@@ -1461,8 +1461,8 @@ var uro = {
   }, 
   deletept : function (e)​{
     //Pt
-    let ptlks = e.field("Patient")​;
-    if (ptlks.length>0) {
+    let ptlks = e.field("Patient");
+    if (ptlks.length>0)​ {
       let ptent = pt.findById(ptlks[0].id) ;
       let orlinks = ptent.linksFrom("UroBase", "Patient") ;
       let bulinks = ptent.linksFrom("Backup", "Patient") ;
@@ -1823,6 +1823,6 @@ var trig = {
     cso.resetcolor(all)​;
   }, 
   ConsultAfterDelete : function (e)​ {
-    uro.deletept(e)​;
+    uro.deletept(e);
   }
 }​;
