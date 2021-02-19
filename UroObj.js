@@ -1104,14 +1104,14 @@ var uro = {
       e.set("Previous", e.field("Previous").replace(qstr, ",00,"))​;
       e.set("Que", "00") ;
       let hole = que.findhole()​;
-      let near = null;
+      let near;
       maxq += 1;​​
       while ( hole != 0​)​ { // found hole
         for (let i = hole+1 ; i<maxq; i++)​ {
           near = que.findque(i);
-          message(near != undefined)​​;
+          str+="near" +typeof near;
           if (near != undefined)​{
-            str+= hole+":" +near.field("Que")​+"\n" ;
+            str+= ":h:" + que.string(hole)​ +":nearq:" +near.field("Que")​+"\n" ;
             qstr = "," + que.string(i) + "," ;
             near.set("Previous", near.field("Previous").replace(qstr, "," + que.string(hole) ​+ ","))​;
             near.set("Que", que.string(hole)​);
@@ -1120,7 +1120,7 @@ var uro = {
         }​
         hole = que.findhole();
       }​
-      message(str)​;
+      e.set("Output", str)​;
     }​
     else if (eq == 0)​ { //update, que 00
       let hole = que.findhole()​;
