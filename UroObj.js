@@ -1104,8 +1104,8 @@ var uro = {
       e.set("Que", "00") ;
       let hole = que.findhole()​;
       let near = null;
+      maxq += 1;​​
       while ( hole != 0​)​ { // found hole
-        maxq = que.max()+1;
         for (let i = hole+1 ; i<maxq; i++)​ {
           near = que.findque(i);
           if (near != null)​{
