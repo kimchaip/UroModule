@@ -1109,6 +1109,7 @@ var uro = {
       while ( hole != 0​)​ { // found hole
         for (let i = hole+1 ; i<maxq; i++)​ {
           near = que.findque(i);
+          message(near != null)​​;
           if (near != null)​{
             str+= hole+":" +near.field("Que")​+"\n" ;
             qstr = "," + que.string(i) + "," ;
