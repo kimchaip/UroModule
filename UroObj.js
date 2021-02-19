@@ -1102,8 +1102,9 @@ var uro = {
     if (e.field("Status") == "Not" || e.field("ORType")​ == "LA" ) {
       e.set("Previous", e.field("Previous").replace(qstr, ",00,"))​;
       e.set("Que", "00") ;
+      let near = que.findque(eq)​;
+      near.set("Que", "00")​;
       let hole = que.findhole()​;
-      let near;
       maxq += 1;​​
       while ( hole != 0​)​ { // found hole
         for (let i = hole+1 ; i<maxq; i++)​ {
