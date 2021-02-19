@@ -1715,7 +1715,7 @@ var trig = {
     for(let i in all) {
       // update que
       old.getstart(all[i]​)​;
-      if(all[i].field("Que")​!=old.que &​& all[i].field("ORType")​=="GA" && all[i].field("Status")!="Not" && old.que!=undefined) {
+      if(all[i].field("Que")​!=old.que &​& all[i].field("ORType")​=="GA" && old.que!=undefined) {
         all[i].set("Previous",  all[i].field("Previous").replace("," + old.que + ",", "," + all[i].field("Que")​ + ","));
         uro.runq(all[i]​)​; 
         break;
@@ -1777,7 +1777,7 @@ var trig = {
     for(let i in all) {
       // update que
       old.getstart(all[i]​)​;
-      if(all[i].field("Que")​!=old.que &​& all[i].field("ORType")​=="GA" &​& all[i].field("Status")!="Not" && old.que!=undefined) {
+      if(all[i].field("Que")​!=old.que &​& all[i].field("ORType")​=="GA" && old.que!=undefined) {
         all[i].set("Previous",  all[i].field("Previous").replace("," + old.que + ",", "," + all[i].field("Que")​ + ","));
         uro.runq(all[i]​)​; 
         break;
