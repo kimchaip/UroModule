@@ -1093,7 +1093,6 @@ var uro = {
   }, 
   runq : function (e) {
     que.getstart(e)​;
-    let str = "" ;
     let maxq = que.max()​;
     let lenq = que.q.length;
     let newq = 0;
@@ -1109,9 +1108,7 @@ var uro = {
       while ( hole != 0​)​ { // found hole
         for (let i = hole+1 ; i<maxq; i++)​ {
           near = que.findque(i);
-          str+="near" +typeof near;
           if (near != undefined)​{
-            str+= ":h:" + que.string(hole)​ +":nearq:" +near.field("Que")​+"\n" ;
             qstr = "," + que.string(i) + "," ;
             near.set("Previous", near.field("Previous").replace(qstr, "," + que.string(hole) ​+ ","))​;
             near.set("Que", que.string(hole)​);
@@ -1120,7 +1117,6 @@ var uro = {
         }​
         hole = que.findhole();
       }​
-      e.set("Output", str)​;
     }​
     else if (eq == 0)​ { //update, que 00
       let hole = que.findhole()​;
@@ -1686,7 +1682,6 @@ var trig = {
       mer.merge(e, false)​;
     else if (value=="update")​
       mer.merge(e, true)​;
-    uro.runq(e)​;
     uro.setDJstent(e)​;
     let dxe = uro.createautofill​(e)​;
     uro.setx15(e)​;
@@ -1695,6 +1690,7 @@ var trig = {
       uro.updatedxop​(e, "dx", dxe)​;
     if(ope!=undefined)​
       uro.updatedxop​(e, "op", ope)​;
+    uro.runq(e)​;
     fill.underlying(e)​;
     fill.los(e)​;
   }, 
@@ -1748,7 +1744,6 @@ var trig = {
       mer.merge(e, false)​;
     else if (value=="update")​
       mer.merge(e, true)​;
-    uro.runq(e)​;
     uro.setDJstent(e)​;
     let dxe = uro.createautofill​(e)​;
     uro.setx15(e)​;
@@ -1757,6 +1752,7 @@ var trig = {
       uro.updatedxop​(e, "dx", dxe)​;
     if(ope!=undefined)​
       uro.updatedxop​(e, "op", ope)​;
+    uro.runq(e)​;
     fill.underlying(e)​;
     fill.los(e)​;
   }, 
