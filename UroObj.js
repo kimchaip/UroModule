@@ -1632,6 +1632,11 @@ var rpo = {
       let ent = new Object();
       //---Date, Patient, Dx, Op, ORType, Extra, LOS
       ent["OpDate"] = e.field("Date");
+      let ptlks = e.field("Patient")​;
+      let ptarr = []​ ;
+      for(let i in ptlks)​
+        ptarr.push(ptlks[i].title)​;
+      ent["Patient"] = ptarr;
       ent["Dx"]​ = e.field("Dx");
       ent["Op"]​ = e.field("Op");
       ent["ORType"] = e.field("ORType");
@@ -1660,10 +1665,7 @@ var rpo = {
       else
         ent["Dead"]​ = "Alive";
       rp.create(ent);
-      let rplast = rp.entries()[0];
-      if(e.field("Patient").length>0)​ {
-        rplast.set("Patient", e.field("Patient")​[0].title)​;
-        message("create new "+ e.field("Patient")​[0].title)​;
+      message("create new "+ arr.join()​)​;
       }​
     }​
   }, 
