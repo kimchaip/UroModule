@@ -1665,7 +1665,7 @@ var rpo = {
       else
         ent["Dead"]​ = "Alive";
       rp.create(ent);
-      message("create new "+ arr.join()​)​;
+      message("create new "+ ptarr.join()​)​;
       }​
     }​
   }, 
