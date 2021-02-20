@@ -1636,7 +1636,7 @@ var rpo = {
       let ptarr = []​ ;
       for(let i in ptlks)​
         ptarr.push(ptlks[i].title)​;
-      ent["Patient"] = ptarr;
+      ent["Patient"] = ptarr.join()​;
       ent["Dx"]​ = e.field("Dx");
       ent["Op"]​ = e.field("Op");
       ent["ORType"] = e.field("ORType");
@@ -1665,8 +1665,7 @@ var rpo = {
       else
         ent["Dead"]​ = "Alive";
       rp.create(ent);
-      message("create new "+ ptarr.join()​)​;
-      }​
+      message("create new " + ptarr.join());
     }​
   }, 
   deleteold : function () {
