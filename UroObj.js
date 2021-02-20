@@ -1554,13 +1554,16 @@ var rpo = {
         if (e.field("Date") != old.opdate || (e.field("Patient").length>0 &​& e.field("Patient")[0].title != old.patient)​ || e.field("Dx") != old.dx || e.field("Op") != old.op) { //change Date, Pt, Dx, Op
           this.updatenew(e)​;
           this.deleteold()​;
+          message("update new and delete old")​;
         }​
         else { //unchange Date, Pt, Dx, Op
           this.updatenew(e)​;
+          message("update new")​;
         }​
       }​
       else { //status == "Not" 
         this.deleteold()​;
+        message("delete old")​;
       }​
     }​
     else { // unchange status
@@ -1568,6 +1571,7 @@ var rpo = {
         if (e.field("Date") != old.opdate || (e.field("Patient").length>0 &​& e.field("Patient")[0].title != old.patient)​ || e.field("Dx") != old.dx || e.field("Op") != old.op) { //change Date, Pt, Dx, Op
           this.updatenew(e)​;
           this.deleteold()​;
+          message("update new and delete old")​;
         }​
       }​
     }​
