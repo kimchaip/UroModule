@@ -1662,7 +1662,7 @@ var rpo = {
       rp.create(ent);
       let rplast = rp.entries()[0];
       if(e.field("Patient").length>0)​ {
-        rplast.link("Patient", e.field("Patient")​[0])​;
+        rplast.set("Patient", e.field("Patient")​[0].title)​;
         message("create new "+ e.field("Patient")​[0].title)​;
       }​
     }​
