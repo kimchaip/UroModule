@@ -1549,9 +1549,9 @@ var cso = {
 }​;
 var rpo = {
   setreport : function (e) {
-    if (e.field("Status") != old.status) {, //change status
-      if (e.field("Status") != "Not") {, //status <> "Not" 
-        if (e.field("Date") != old.opdate || e.field("Patient")[0].title != old.patient || e.field("Dx") != old.dx || e.field("Op") != old.op) {, //change Date, Pt, Dx, Op
+    if (e.field("Status") != old.status) { //change status
+      if (e.field("Status") != "Not") { //status <> "Not" 
+        if (e.field("Date") != old.opdate || e.field("Patient")[0].title != old.patient || e.field("Dx") != old.dx || e.field("Op") != old.op) { //change Date, Pt, Dx, Op
           this.updatenew(e)​;
           this.deleteold()​;
         }​
@@ -1564,8 +1564,8 @@ var rpo = {
       }​
     }​
     else { // unchange status
-      if (e.field("Status") != "Not") {, //status <> "Not" 
-        if (e.field("Date") != old.opdate || e.field("Patient")[0].title != old.patient || e.field("Dx") != old.dx || e.field("Op") != old.op) {, //change Date, Pt, Dx, Op
+      if (e.field("Status") != "Not") { //status <> "Not" 
+        if (e.field("Date") != old.opdate || e.field("Patient")[0].title != old.patient || e.field("Dx") != old.dx || e.field("Op") != old.op) { //change Date, Pt, Dx, Op
           this.updatenew(e)​;
           this.deleteold()​;
         }​
