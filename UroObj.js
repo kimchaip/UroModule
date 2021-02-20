@@ -1549,92 +1549,128 @@ var cso = {
 }​;
 var rpo = {
   setreport : function (e) {
-    if (e.field("Status")!="Not") {
-      let rps = rp.entries()​;
-      let found = false;
-      let rpt = undefined;
-      let wd = my.gday(e.field("Date")​)​ ;
-      let wdt = "" ;
-      if (wd==0)​ wdt = "Sun" ;
-      else if (wd==1)​ wdt = "Mon" ;
-      else if (wd==2)​ wdt = "Tue" ;
-      else if (wd==3)​ wdt = "Wed" ;
-      else if (wd==4)​ wdt = "Thu" ;
-      else if (wd==5)​ wdt = "Fri" ;
-      else if (wd==6)​ wdt = "Sat" ;
+    if (e.field("Status") != old.status) {, //change status
+      if (e.field("Status") != "Not") {, //status <> "Not" 
+        if (e.field("Date") != old.opdate || e.field("Patient")[0].title != old.patient || e.field("Dx") != old.dx || e.field("Op") != old.op) {, //change Date, Pt, Dx, Op
+          this.updatenew(e)​;
+          this.deleteold()​;
+        }​
+        else { //unchange Date, Pt, Dx, Op
+          this.updatenew(e)​;
+        }​
+      }​
+      else { //status == "Not" 
+        this.deleteold()​;
+      }​
+    }​
+    else { // unchange status
+      if (e.field("Status") != "Not") {, //status <> "Not" 
+        if (e.field("Date") != old.opdate || e.field("Patient")[0].title != old.patient || e.field("Dx") != old.dx || e.field("Op") != old.op) {, //change Date, Pt, Dx, Op
+          this.updatenew(e)​;
+          this.deleteold()​;
+        }​
+      }​
+    }​
+  }, 
+  updatenew : function (e) {
+    let rps = rp.entries()​;
+    let found = false;
+    let wd = my.gday(e.field("Date")​)​ ;
+    let wdt = "" ;
+    if (wd==0)​ wdt = "Sun" ;
+    else if (wd==1)​ wdt = "Mon" ;
+    else if (wd==2)​ wdt = "Tue" ;
+    else if (wd==3)​ wdt = "Wed" ;
+    else if (wd==4)​ wdt = "Thu" ;
+    else if (wd==5)​ wdt = "Fri" ;
+    else if (wd==6)​ wdt = "Sat" ;
     
-      for (let r in rps)​{
-        if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(e.field("Date"))​ &​& rps[r].field("Patient").length > 0 &​& e.field("Patient").length > 0 &​& rps[r].field("Patient")[0].id ==​ e.field("Patient")[0].id &​& rps[r].field("Dx") ==​ e.field("Dx") &​& rps[r].field("Op") ==​ e.field("Op")​)​{
+    let rpt = undefined;
+    for (let r in rps)​{
+      if(rps[r].field("Patient").length > 0 &​& e.field("Patient").length > 0 )​{
+        if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(e.field("Date"))​ &​& rps[r].field("Patient")[0].id ==​ e.field("Patient")[0].id &​& rps[r].field("Dx") ==​ e.field("Dx") &​& rps[r].field("Op") ==​ e.field("Op"))​{
           found = true;
           rpt = rps[r]​;
           break;
         }​
       }​
-      if(found)​{ //edit 
-        //---Date, Patient, Dx, Op, ORType, Extra, LOS
-        rpt.set("Dx", e.field("Dx"));
-        rpt.set("Op", e.field("Op"));
-        rpt.set("ORType", e.field("ORType"));
-        rpt.set("Extra", e.field("OpExtra"));
-        rpt.set("LOS", e.field("LOS"));
-        //---OpGroup, Organ
-        if (e.field("OperationList").length>0)​{
-          rpt.set("OpGroup", e.field("OperationList")[0].field("OpList"));
-          rpt.set("Organ", e.field("OperationList")[0].field("OpGroup").join(" ")​);
-        }​
-        //---OpLength
-        if (e.field("TimeOut") > e.field("TimeIn"))​ {
-          rpt.set("OpLength", e.field("TimeOut")-e.field("TimeIn"))​;
-        }​
-        else if (e.field("TimeIn") > e.field("TimeOut"))​ {
-          rpt.set("OpLength", 86400000-(e.field("TimeIn")-e.field("TimeOut"))​);
-        }​
-        else {
-          rpt.set("OpLength", null)​;
-        }​
-        //---WeekDay
-        rpt.set("WeekDay", wdt)​;
-        //---Dead
-        if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
-          rpt.set("Dead","Dead");
-        else
-          rpt.set("Dead","Alive");
+    }​
+    if(found)​{ //edit 
+      //---Date, Patient, Dx, Op, ORType, Extra, LOS
+      rpt.set("Dx", e.field("Dx"));
+      rpt.set("Op", e.field("Op"));
+      rpt.set("ORType", e.field("ORType"));
+      rpt.set("Extra", e.field("OpExtra"));
+      rpt.set("LOS", e.field("LOS"));
+      //---OpGroup, Organ
+      if (e.field("OperationList").length>0)​{
+        rpt.set("OpGroup", e.field("OperationList")[0].field("OpList"));
+        rpt.set("Organ", e.field("OperationList")[0].field("OpGroup").join(" ")​);
       }​
-      else { // not found, create new
-        let ent = new Object()​;
-        //---Date, Patient, Dx, Op, ORType, Extra, LOS
-        ent["OpDate"] = e.field("Date");
-        ent["Dx"]​ = e.field("Dx");
-        ent["Op"]​ = e.field("Op");
-        ent["ORType"] = e.field("ORType");
-        ent["Extra"]​ = e.field("OpExtra");
-        ent["LOS"]​ = e.field("LOS");
-        //---OpGroup, Organ
-        if (e.field("OperationList").length>0)​{
-          ent["OpGroup"] = e.field("OperationList")[0].field("OpList");
-          ent["Organ"]​ = e.field("OperationList")[0].field("OpGroup").join(" ")​;
+      //---OpLength
+      if (e.field("TimeOut") > e.field("TimeIn"))​ {
+        rpt.set("OpLength", e.field("TimeOut")-e.field("TimeIn"))​;
+      }​
+      else if (e.field("TimeIn") > e.field("TimeOut"))​ {
+        rpt.set("OpLength", 86400000-(e.field("TimeIn")-e.field("TimeOut"))​);
+      }​
+      else {
+        rpt.set("OpLength", null)​;
+      }​
+      //---WeekDay
+      rpt.set("WeekDay", wdt)​;
+      //---Dead
+      if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
+        rpt.set("Dead","Dead");
+      else
+        rpt.set("Dead","Alive");
+    }​
+    else { // not found, create new
+      let ent = new Object()​;
+      //---Date, Patient, Dx, Op, ORType, Extra, LOS
+      ent["OpDate"] = e.field("Date");
+      ent["Dx"]​ = e.field("Dx");
+      ent["Op"]​ = e.field("Op");
+      ent["ORType"] = e.field("ORType");
+      ent["Extra"]​ = e.field("OpExtra");
+      ent["LOS"]​ = e.field("LOS");
+      //---OpGroup, Organ
+      if (e.field("OperationList").length>0)​{
+        ent["OpGroup"] = e.field("OperationList")[0].field("OpList");
+        ent["Organ"]​ = e.field("OperationList")[0].field("OpGroup").join(" ")​;
+      }​
+      //---OpLength
+      if (e.field("TimeOut") > e.field("TimeIn"))​ {
+        ent["OpLength"]​ =  e.field("TimeOut")-e.field("TimeIn");
+      }​
+      else if (e.field("TimeIn") > e.field("TimeOut"))​ {
+        ent["OpLength"]​ = 86400000-(e.field("TimeIn")-e.field("TimeOut"))​;
+      }​
+      else {
+        ent["OpLength"]​ =  null;
+      }​
+      //---WeekDay
+      ent["WeekDay"]​ =  wdt;
+      //---Dead
+      if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
+        ent["Dead"]​ = "Dead";
+      else
+        ent["Dead"]​ = "Alive";
+      rp.create(ent)​;
+      let rplast = rp.entries()​[0];
+      if(e.field("Patient").length>0)​
+        rplast.set("Patient", e.field("Patient")​[0])​;
+    }​
+  }, 
+  deleteold : function () {
+    let rps = rp.entries()​;
+    
+    for (let r in rps)​{
+      if(rps[r].field("Patient").length > 0)​{
+        if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(old.opdate)​ &​& rps[r].field("Patient")[0].title ==​ old.patient &​& rps[r].field("Dx") ==​ old.dx &​& rps[r].field("Op") ==​ old.op)​{
+          rps[r].trash();
+          break;
         }​
-        //---OpLength
-        if (e.field("TimeOut") > e.field("TimeIn"))​ {
-          ent["OpLength"]​ =  e.field("TimeOut")-e.field("TimeIn");
-        }​
-        else if (e.field("TimeIn") > e.field("TimeOut"))​ {
-          ent["OpLength"]​ = 86400000-(e.field("TimeIn")-e.field("TimeOut"))​;
-        }​
-        else {
-          ent["OpLength"]​ =  null;
-        }​
-        //---WeekDay
-        ent["WeekDay"]​ =  wdt;
-        //---Dead
-        if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
-          ent["Dead"]​ = "Dead";
-        else
-          ent["Dead"]​ = "Alive";
-        rp.create(ent)​;
-        let rplast = rp.entries()​[0];
-        if(e.field("Patient").length>0)​
-          rplast.set("Patient", e.field("Patient")​[0])​;
       }​
     }​
   }​
