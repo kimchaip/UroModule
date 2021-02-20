@@ -1601,8 +1601,6 @@ var rpo = {
     }​
     if(found)​{ //edit 
       //---Date, Patient, Dx, Op, ORType, Extra, LOS
-      rpt.set("Dx", e.field("Dx"));
-      rpt.set("Op", e.field("Op"));
       rpt.set("ORType", e.field("ORType"));
       rpt.set("Extra", e.field("OpExtra"));
       rpt.set("LOS", e.field("LOS"));
@@ -1631,7 +1629,7 @@ var rpo = {
       message("update")​;
     }​
     else { // not found, create new
-      let ent = new Object()​;
+      let ent = new Object();
       //---Date, Patient, Dx, Op, ORType, Extra, LOS
       ent["OpDate"] = e.field("Date");
       ent["Dx"]​ = e.field("Dx");
@@ -1661,8 +1659,8 @@ var rpo = {
         ent["Dead"]​ = "Dead";
       else
         ent["Dead"]​ = "Alive";
-      rp.create(ent)​;
-      let rplast = rp.entries()​[0];
+      rp.create(ent);
+      let rplast = rp.entries()[0];
       if(e.field("Patient").length>0)​
         rplast.link("Patient", e.field("Patient")​[0])​;
       message("create new")​;
