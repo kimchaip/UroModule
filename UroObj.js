@@ -1626,7 +1626,7 @@ var rpo = {
         rpt.set("Dead","Dead");
       else
         rpt.set("Dead","Alive");
-      message("update")​;
+      message("update " + rpt.title)​;
     }​
     else { // not found, create new
       let ent = new Object();
@@ -1661,9 +1661,10 @@ var rpo = {
         ent["Dead"]​ = "Alive";
       rp.create(ent);
       let rplast = rp.entries()[0];
-      if(e.field("Patient").length>0)​
+      if(e.field("Patient").length>0)​ {
         rplast.link("Patient", e.field("Patient")​[0])​;
-      message("create new")​;
+        message("create new "+ e.field("Patient")​[0].title)​;
+      }​
     }​
   }, 
   deleteold : function () {
