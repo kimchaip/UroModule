@@ -1571,7 +1571,7 @@ var rpo = {
         }​
       }​
     }​
-  }, 
+  },
   updatenew : function (e) {
     let rps = rp.entries()​;
     let found = false;
