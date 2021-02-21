@@ -1551,27 +1551,23 @@ var rpo = {
   setreport : function (e) {
     if (e.field("Status") != old.status) { //change status
       if (e.field("Status") != "Not") { //status <> "Not" 
-        if (e.field("Date") != old.opdate || (e.field("Patient").length>0 &​& e.field("Patient")[0].title != old.patient)​ || e.field("Dx") != old.dx || e.field("Op") != old.op) { //change Date, Pt, Dx, Op
+        if (my.gdate(e.field("Date"))​ != my.gdate(old.opdate)​ || (e.field("Patient").length>0 &​& e.field("Patient")[0].title != old.patient)​ || e.field("Dx") != old.dx || e.field("Op") != old.op) { //change Date, Pt, Dx, Op
           this.updatenew(e)​;
           this.deleteold()​;
-          message("update new and delete old")​;
         }​
         else { //unchange Date, Pt, Dx, Op
           this.updatenew(e)​;
-          message("update new")​;
         }​
       }​
       else { //status == "Not" 
         this.deleteold()​;
-        message("delete old")​;
       }​
     }​
     else { // unchange status
       if (e.field("Status") != "Not") { //status <> "Not" 
-        if (e.field("Date") != old.opdate || (e.field("Patient").length>0 &​& e.field("Patient")[0].title != old.patient)​ || e.field("Dx") != old.dx || e.field("Op") != old.op) { //change Date, Pt, Dx, Op
+        if (my.gdate(e.field("Date"))​ != my.gdate(old.opdate)​ || (e.field("Patient").length>0 &​& e.field("Patient")[0].title != old.patient)​ || e.field("Dx") != old.dx || e.field("Op") != old.op) { //change Date, Pt, Dx, Op
           this.updatenew(e)​;
           this.deleteold()​;
-          message("update new and delete old")​;
         }​
       }​
     }​
@@ -1632,11 +1628,6 @@ var rpo = {
       let ent = new Object();
       //---Date, Patient, Dx, Op, ORType, Extra, LOS
       ent["OpDate"] = e.field("Date");
-      let ptlks = e.field("Patient")​;
-      let ptarr = []​ ;
-      for(let i in ptlks)​
-        ptarr.push(ptlks[i].title)​;
-      ent["Patient"] = ptarr.join()​;
       ent["Dx"]​ = e.field("Dx");
       ent["Op"]​ = e.field("Op");
       ent["ORType"] = e.field("ORType");
@@ -1665,7 +1656,11 @@ var rpo = {
       else
         ent["Dead"]​ = "Alive";
       rp.create(ent);
-      message("create new " + ptarr.join());
+      let rplast = rp.entries()​[0];
+      if(e.field("Patient").length>0){
+        rplast.link("Patient", e.field("Patient")​[0]);
+        message("create new " + rplast.title);
+      }​
     }​
   }, 
   deleteold : function () {
@@ -1674,6 +1669,7 @@ var rpo = {
     for (let r in rps)​{
       if(rps[r].field("Patient").length > 0)​{
         if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(old.opdate)​ &​& rps[r].field("Patient")[0].title ==​ old.patient &​& rps[r].field("Dx") ==​ old.dx &​& rps[r].field("Op") ==​ old.op)​{
+          message("delete " + rplast.title)​;​
           rps[r].trash();
           break;
         }​
