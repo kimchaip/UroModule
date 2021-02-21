@@ -1103,7 +1103,8 @@ var uro = {
       e.set("Previous", e.field("Previous").replace(qstr, ",00,"))​;
       e.set("Que", "00") ;
       let near = que.findque(eq)​;
-      near.set("Que", "00")​;
+      if(near != undefined)​
+        near.set("Que", "00")​;
       let hole = que.findhole()​;
       maxq += 1;​​
       while ( hole != 0​)​ { // found hole
