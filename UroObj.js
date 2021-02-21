@@ -1622,7 +1622,6 @@ var rpo = {
         rpt.set("Dead","Dead");
       else
         rpt.set("Dead","Alive");
-      message("update " + rpt.title)​;
     }​
     else { // not found, create new
       let ent = new Object();
@@ -1659,7 +1658,6 @@ var rpo = {
       let rplast = rp.entries()​[0];
       if(e.field("Patient").length>0){
         rplast.link("Patient", e.field("Patient")​[0]);
-        message("create new " + rplast.title);
       }​
     }​
   }, 
@@ -1668,8 +1666,7 @@ var rpo = {
     
     for (let r in rps)​{
       if(rps[r].field("Patient").length > 0)​{
-        if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(old.opdate)​ &​& rps[r].field("Patient")[0].title ==​ old.patient &​& rps[r].field("Dx") ==​ old.dx &​& rps[r].field("Op") ==​ old.op)​{
-          message("delete " + rps[r]​.title)​;​
+        if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(old.opdate)​ &​& rps[r].field("Patient")[0].title ==​ old.patient &​& rps[r].field("Dx") ==​ old.dx &​& rps[r].field("Op") ==​ old.op)​{​
           rps[r].trash();
           break;
         }​
