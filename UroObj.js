@@ -1669,7 +1669,7 @@ var rpo = {
     for (let r in rps)​{
       if(rps[r].field("Patient").length > 0)​{
         if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(old.opdate)​ &​& rps[r].field("Patient")[0].title ==​ old.patient &​& rps[r].field("Dx") ==​ old.dx &​& rps[r].field("Op") ==​ old.op)​{
-          message("delete " + rplast.title)​;​
+          message("delete " + rps[r]​.title)​;​
           rps[r].trash();
           break;
         }​
