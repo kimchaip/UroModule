@@ -638,7 +638,7 @@ var emx = {
           ent​["RecordDate"] = today​;
           if (e.field("Photo").length>0)​
             ent["Photo"] = e.field("Photo").join()​;
-          if(my.gdate(ent​[field1])​>ntoday​)​
+          if(my.gdate(ent​[field1])​>=ntoday​)​
             ent​["Future"] = ​Math.floor((my.gdate(ent​[field1])​-ntoday)​/86400000);
           else
             ent​["Future"] = null;
@@ -660,7 +660,7 @@ var emx = {
           ent​["RecordDate"] = today​;
           if (e.field("Photo").length>0)​
             ent["Photo"] = e.field("Photo").join()​;
-          if(my.gdate(ent​[field1])​>ntoday​)​
+          if(my.gdate(ent​[field1])​>=ntoday​)​
             ent​["Future"] = ​Math.floor((my.gdate(ent​[field1])​-ntoday)​/86400000);
           else
             ent​["Future"] = null;
@@ -677,7 +677,7 @@ var emx = {
 	  ent​["Op"] = e.field("Operation")​;
           if (e.field("Photo").length>0)​
             ent["Photo"] = e.field("Photo").join()​;
-          if(my.gdate(ent​[field1])​>ntoday​)​
+          if(my.gdate(ent​[field1])​>=ntoday​)​
             ent​["Future"] = ​Math.floor((my.gdate(ent​[field1])​-ntoday)​/86400000);
           else
             ent​["Future"] = null;
@@ -1509,7 +1509,7 @@ var uro = {
     } 
   }, 
   setfuture : function(e)​{
-    if(my.gdate(e.field("Date"))>ntoday​)​
+    if(my.gdate(e.field("Date"))>=ntoday​)​
       e.set("Future", Math.floor((my.gdate(e.field("Date")​)-ntoday)​/86400000))​;
     else
       e.set("Future", null)​;
