@@ -698,6 +698,7 @@ var emx = {
         if (libto == "uro") ​{
           uro.createoplist(last)​;
           uro.updatedxop​(last, "op")​;​
+          rpo.updatenew(last)​;
           ob=last​;
         }​
       }​
