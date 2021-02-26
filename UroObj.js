@@ -1684,8 +1684,9 @@ var rpo = {
     }​
   }, 
   deleteold : function () {
-    let ptent = pt.findByKey(old.patient)​;
-    if (ptent != null) {
+    let ptlks = pt.find(old.patient)​;
+    if (ptlks.length>0) {
+      let ptent = pt.findById(ptlks[0].id);
       message(ptent.title)​;
       let rps = ptent.linksFrom("Report", "Patient")​;
       if (rps.length>0) {
@@ -1697,7 +1698,7 @@ var rpo = {
         }​
       }​
     }​
-    else message("pteny==null")​;
+    else message("ptlinks == null")​;
   }​
 }​;
 var trig = {
