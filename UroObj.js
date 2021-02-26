@@ -1697,6 +1697,7 @@ var rpo = {
         }​
       }​
     }​
+    else message("pteny==null")​;
   }​
 }​;
 var trig = {
