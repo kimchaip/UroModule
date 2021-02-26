@@ -1686,6 +1686,7 @@ var rpo = {
   deleteold : function () {
     let ptent = pt.findByKey(old.patient)​;
     if (ptent != null) {
+      message(ptent.title)​;
       let rps = ptent.linksFrom("Report", "Patient")​;
       if (rps.length>0) {
         for (let r in rps)​{
