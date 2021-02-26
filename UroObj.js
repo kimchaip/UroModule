@@ -1575,8 +1575,6 @@ var rpo = {
     }​
   },
   updatenew : function (e) {
-    let rps = rp.entries()​;
-    let found = false;
     let wd = my.gday(e.field("Date")​)​ ;
     let wdt = "" ;
     if (wd==0)​ wdt = "Sun" ;
@@ -1587,13 +1585,19 @@ var rpo = {
     else if (wd==5)​ wdt = "Fri" ;
     else if (wd==6)​ wdt = "Sat" ;
     
+    let found = false;​
     let rpt = undefined;
-    for (let r in rps)​{
-      if(rps[r].field("Patient").length > 0 &​& e.field("Patient").length > 0 )​{
-        if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(e.field("Date"))​ &​& rps[r].field("Patient")[0].id ==​ e.field("Patient")[0].id &​& rps[r].field("Dx") ==​ e.field("Dx") &​& rps[r].field("Op") ==​ e.field("Op"))​{
-          found = true;
-          rpt = rps[r]​;
-          break;
+    let ptlks = e.field("Patient")​;
+    if (ptlks.length>0) {
+      let ptent = pt.findById(ptlks​[0].id) ;
+      let rps = ptent.linksFrom("Report", "Patient")​;
+      if (rps.length>0) {
+        for (let r in rps)​{
+          if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(e.field("Date"))​ &​& rps[r].field("Dx") ==​ e.field("Dx") &​& rps[r].field("Op") ==​ e.field("Op"))​{
+            found = true;
+            rpt = rps[r]​;
+            break;
+          }​
         }​
       }​
     }​
@@ -1664,13 +1668,15 @@ var rpo = {
     }​
   }, 
   deleteold : function () {
-    let rps = rp.entries()​;
-    
-    for (let r in rps)​{
-      if(rps[r].field("Patient").length > 0)​{
-        if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(old.opdate)​ &​& rps[r].field("Patient")[0].title ==​ old.patient &​& rps[r].field("Dx") ==​ old.dx &​& rps[r].field("Op") ==​ old.op)​{​
-          rps[r].trash();
-          break;
+    let ptent = pt.findByKey(old.patient)​;
+    if (ptent != null) {
+      let rps = ptent.linksFrom("Report", "Patient")​;
+      if (rps.length>0) {
+        for (let r in rps)​{
+          if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(old.opdate)​ &​& rps[r].field("Dx") ==​ old.dx &​& rps[r].field("Op") ==​ old.op)​{
+            rps[r].trash();
+            break;
+          }​
         }​
       }​
     }​
