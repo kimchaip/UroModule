@@ -1475,6 +1475,17 @@ var uro = {
       }​
     }
   }, 
+  deleterp : function (e)​{
+    //Report
+    let ptlks = e.field("Patient");
+    if (ptlks.length>0)​ {
+      let ptent = pt.findById(ptlks[0].id) ;
+      let rplinks = ptent.linksFrom("Report", "Patient") ;
+      if(rplinks.length>0)​{
+        rplinks.trash()​;
+      }​
+    }
+  }, 
   updateDJStamp : function (e) {
     let links = e.field("Patient")​;
     if (links.length>0) {
@@ -1768,6 +1779,7 @@ var trig = {
   }, 
   UroAfterDelete : function (e)​ {
     uro.deletedxop(e)​;
+    uro.deleterp(e)​;
     uro.deletept(e)​;
   }, 
   BackupOpenEdit : function (e)​ {
@@ -1830,6 +1842,7 @@ var trig = {
   }, 
   BackupAfterDelete : function (e)​ {
     uro.deletedxop(e)​;
+    uro.deleterp(e)​;
     uro.deletept(e)​;
   }, 
   ConsultOpenEdit : function (e)​ {
