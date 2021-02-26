@@ -1692,7 +1692,6 @@ var rpo = {
     let ptlks = pt.find(old.patient)​;
     if (ptlks.length>0) {
       let ptent = pt.findById(ptlks[0].id);
-      message(ptent.title)​;
       let rps = ptent.linksFrom("Report", "Patient")​;
       if (rps.length>0) {
         for (let r in rps)​{
@@ -1703,7 +1702,6 @@ var rpo = {
         }​
       }​
     }​
-    else message("ptlinks == null")​;
   }​
 }​;
 var trig = {
