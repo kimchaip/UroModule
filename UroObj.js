@@ -1482,7 +1482,12 @@ var uro = {
       let ptent = pt.findById(ptlks[0].id) ;
       let rplinks = ptent.linksFrom("Report", "Patient") ;
       if(rplinks.length>0)​{
-        rplinks.trash()​;
+        for (let r in rplinks)​{
+          if (my.gdate(rplinks[r].field("OpDate"))​ == my.gdate(e.field("Date"))​ &​& rplinks[r].field("Dx") ==​ e.field("Dx") &​& rplinks[r].field("Op") ==​ e.field("Op"))​{
+            rplinks[r].trash();
+            break;
+          }​
+        }​
       }​
     }
   }, 
