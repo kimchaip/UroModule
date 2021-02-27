@@ -1788,6 +1788,12 @@ var trig = {
       }​
     }
   }, 
+  UroBeforeDelete : function (e)​ {
+    if (e.field("Merge")​==true)​ {
+      e.set("Merge", false)​
+      mer.mlacancel(e)​;
+    }
+  }, 
   UroAfterDelete : function (e)​ {
     uro.deletedxop(e)​;
     uro.deleterp(e)​;
@@ -1851,6 +1857,12 @@ var trig = {
       }​
     }
   }, 
+  BackupBeforeDelete : function (e)​ {
+    if (e.field("Merge")​==true)​ {
+      e.set("Merge", false)​
+      mer.mlacancel(e)​;
+    }
+  }, 
   BackupAfterDelete : function (e)​ {
     uro.deletedxop(e)​;
     uro.deleterp(e)​;
@@ -1889,6 +1901,12 @@ var trig = {
   }, 
   ConsultBeforeOpenLib : function (all) {
     cso.resetcolor(all)​;
+  }, 
+  ConsultBeforeDelete : function (e)​ {
+    if (e.field("Merge")​==true)​ {
+      e.set("Merge", false)​
+      mer.mlacancel(e)​;
+    }
   }, 
   ConsultAfterDelete : function (e)​ {
     uro.deletept(e);
