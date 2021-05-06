@@ -783,7 +783,7 @@ var fill = {
     let links = e.field("Patient")​;
     if (links.length>0) {
       if (links[0].field("Underlying").length>0) {
-        e.set("Underlying", ":" + links[0].field("Underlying").join());
+        e.set("Underlying", links[0].field("Underlying").join());
       }​
       else {
         e.set("Underlying", "" );
