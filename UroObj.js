@@ -72,35 +72,35 @@ var old = {
     let links = e.field("Patient");
     if (links.length>0) ​{
       if (lib().title=="UroBase" || lib().title=="Backup"​)​ {
-        this.a.push(e.field("Date")​)​;	       //0
+        this.a.push(e.field("Date").toLocaleDateString())​;	       //0
         this.a.push(links​[0].title);             //​1
         this.a.push(e.field("ORType"));          //​2
         this.a.push(e.field("Que"));             //​3
         this.a.push(e.field("VisitType"));       //​4
         this.a.push(e.field("Ward"));            //​5
-        this.a.push(e.field("VisitDate"));       //​6
-        this.a.push(e.field("DischargeDate"));   //​7
+        this.a.push(e.field("VisitDate").toLocaleDateString());       //​6
+        this.a.push(e.field("DischargeDate").toLocaleDateString());   //​7
         this.a.push(e.field("EntryMx"));         //​8
-        this.a.push(e.field("AppointDate"));     //​9
+        this.a.push(e.field("AppointDate").toLocaleDateString()​);     //​9
         this.a.push(e.field("Status"));         //​10 
         this.a.push(e.field("DJstent"));        //​11
         this.a.push(e.field("OpExtra"));        //​12
         this.a.push(e.field("Bonus"));          //​13
-        this.a.push(e.field("RecordDate"));     //​14
+        this.a.push(e.field("RecordDate").toLocaleDateString());     //​14
         this.a.push(e.field("Dx"));             //​15
         this.a.push(e.field("Op"));             //​16
         this.a.push(e.field("OpResult"));       //​17
         this.a.push(e.field("Track"));          //​18
       }​
       else { //Consult 
-        this.a.push(e.field("ConsultDate"));     //0
+        this.a.push(e.field("ConsultDate").toLocaleDateString());     //0
         this.a.push(links[0].title);             //​1
         this.a.push(e.field("VisitType"));       //​2
         this.a.push(e.field("Ward"));            //​3
-        this.a.push(e.field("VisitDate"));       //​4
-        this.a.push(e.field("DischargeDate"));   //​5
+        this.a.push(e.field("VisitDate").toLocaleDateString());       //​4
+        this.a.push(e.field("DischargeDate").toLocaleDateString());   //​5
         this.a.push(e.field("EntryMx"));         //​6
-        this.a.push(e.field("AppointDate"));     //​7
+        this.a.push(e.field("AppointDate").toLocaleDateString());     //​7
         this.a.push(e.field("Dx"));              //​8
         this.a.push(e.field("Rx"));              //​9
         this.a.push(e.field("Note"));           //​10
