@@ -1265,7 +1265,19 @@ var uro = {
     return o ;
   },
   createautofill : function (e) {
-    if ( e.field("Dx").trim()​ != "" &​& e.field("Dx") != null
+    if (e.field("Status")​ == "Not")​{ // Not set
+      let dx = libByName("DxAutoFill")​;
+      let dxlks = e.field("DxAutoFill");
+      if(dxlks.length>0){
+        let dxent = op.findById(dxlks[0].id) ;
+        
+        e.set("DxAutoFill", null)​;
+        let orlinks = dxent.linksFrom("UroBase", "DxAutoFill") ;
+        let bulinks = dxent.linksFrom("Backup", "DxAutoFill") ;
+        dxent.set("Count", orlinks.length+bulinks.length)​;​​​​
+      }​
+    }​
+    else if ( e.field("Dx").trim()​ != "" &​& e.field("Dx") != null
     &​& e.field("Op").trim() != "" &​& e.field("Op") != null)​ { // fill dx and op
       e.set("Dx", e.field("Dx").trim()​)​;
       e.set("Op", e.field("Op").trim()​)​;
