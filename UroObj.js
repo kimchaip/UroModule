@@ -1275,6 +1275,9 @@ var uro = {
         let orlinks = dxent.linksFrom("UroBase", "DxAutoFill") ;
         let bulinks = dxent.linksFrom("Backup", "DxAutoFill") ;
         dxent.set("Count", orlinks.length+bulinks.length)​;​​​​
+        if(orlinks.length+bulinks.length==0)​{
+          dxent.trash()​;
+        }​
       }​
     }​
     else if ( e.field("Dx").trim()​ != "" &​& e.field("Dx") != null
