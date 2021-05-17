@@ -1269,7 +1269,7 @@ var uro = {
       let dx = libByName("DxAutoFill")​;
       let dxlks = e.field("DxAutoFill");
       if(dxlks.length>0){
-        let dxent = op.findById(dxlks[0].id) ;
+        let dxent = dx.findById(dxlks[0].id) ;
         
         e.set("DxAutoFill", null)​;
         let orlinks = dxent.linksFrom("UroBase", "DxAutoFill") ;
