@@ -1130,20 +1130,28 @@ var uro = {
     let opresult = e.field("OpResult").replace(/\s+/g, ' ').trim();
     e.set("OpResult", opresult);
     if(opresult != "" && old.result != e.field("OpResult")){
-      let ondj = opresult.match(/on|dj/ig);
-      let opon = e.field("Op").match(/t dj/ig);
+      let ondj = opresult.match(/dj/i);
+      ondj = ondj==null?0:ondj.length;
+      let opon = e.field("Op").match(/dj/i);
+      opon = opon==null?0:opon.length;
       let offdj = opresult.match(/off|dj/ig);
+      offdj = offdj==null?0:offdj.length;
       let opoff = e.field("Op").match(/off|dj/ig);
+      opoff = opoff==null?0:opoff.length;
       let changedj = opresult.match(/change|dj/ig);
+      changedj = changedj==null?0:changedj.length;
       let opchange = e.field("Op").match(/change|dj/ig);
+      opchange = opchange==null?0:opchange.length;
+
       if(e.field("Status")=="Plan")
         e.set("Status", "Done");
-      if((ondj!=null&&ondj.length>1)||(opon!=null&&opon.length>0))
-        e.set("DJstent", "on DJ");
-      else if((offdj!=null&&offdj.length>1)||(opoff!=null&&opoff.length>1))
-        e.set("DJstent", "off DJ");
-      else if((changedj!=null&&changedj.length>1)||(opchange!=null&&opchange.length>1))
+
+      if(changedj>1||opchange>1)
         e.set("DJstent", "change DJ");
+      else if(offdj>1||opoff>1)
+        e.set("DJstent", "off DJ");
+      else if(ondj>0||opon>0)
+        e.set("DJstent", "on DJ");
     }
   }, 
   runq : function (e) {
