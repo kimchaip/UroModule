@@ -954,7 +954,7 @@ var pto = {
   rearrangename : function(e) {
     e.set("PtName", e.field("PtName").replace(/s+/g, ' ').trim());
     if(e.field("PtName").search(/นาน/)==0){
-      e.set("PtName​", e.field("PtName").replace(/นาน/, "นาย"))
+      e.set("PtName", e.field("PtName").replace(/นาน/, "นาย"))
     }
   }, 
   agetext : function (e, diff) {
