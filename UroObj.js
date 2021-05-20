@@ -839,7 +839,13 @@ e.field(field1​) != "Not")​ {
           links[0].set("Descript", str);
         }
         else if (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ ) { // D/C
-          links[0].set("Status" ,"Still");
+          let dead = e.field("OpResult").match(/dead|death/ig)​;
+          if(dead!=null&&dead.length>0){
+            links[0].set("Status" ,"Dead");
+          }
+          else {
+            links[0].set("Status" ,"Still");
+          }
           links[0].set("Ward", "");
           let str = "" ;
           if (e.field("Dx")!="")​
@@ -862,7 +868,13 @@ e.field(field1​) != "Not")​ {
         }​
       }​
       else if (e.field(field1​) == "Not")​ {
-        links[0].set("Status" ,"Still");
+        let dead = e.field("OpResult").match(/dead|death/ig)​;
+        if(dead!=null&&dead.length>0){
+          links[0].set("Status" ,"Dead");
+        }
+        else {
+          links[0].set("Status" ,"Still");
+        }​
         links[0].set("Ward", "");
         links[0].set("WardStamp", e.field("VisitDate")​)​;
         let str = "" ;
@@ -1115,15 +1127,15 @@ var uro = {
     }
   }, 
   opresulteffect : function(e) {
-    let opresult = e.field("OpResult").trim();
+    let opresult = e.field("OpResult").replace(/\s+/g, ' ').trim();
     e.set("OpResult", opresult);
     if(opresult != "" && old.result != e.field("OpResult")){
       let ondj = opresult.match(/on|dj/ig)​;
       let opon = opresult.match(/t dj/ig)​;
       let offdj = opresult.match(/off|dj/ig)​;
       let opoff = opresult.match(/off|dj/ig)​;
-      let changedj = opresult.match(/change|dj/i)​;
-      let opchange = opresult.match(/change|dj/i)​;
+      let changedj = opresult.match(/change|dj/ig)​;
+      let opchange = opresult.match(/change|dj/ig)​;
       if(e.field("Status")=="Plan") e.set("Status", "Done")​;
       if(ondj!=null&&ondj.length>1||opon!=null&&opon.length>0) e.set("DJstent", "on DJ");
       else if(changedj!=null&&changedj.length>1​||opchange!=null&&opchange.length>1) e.set("DJstent", "change DJ");
@@ -1315,8 +1327,8 @@ var uro = {
     }​
     else if ( e.field("Dx").trim()​ != "" &​& e.field("Dx") != null
     &​& e.field("Op").trim() != "" &​& e.field("Op") != null)​ { // fill dx and op
-      e.set("Dx", e.field("Dx").trim()​)​;
-      e.set("Op", e.field("Op").trim()​)​;
+      e.set("Dx", e.field("Dx").replace(/\s+/g, ' ').trim()​);
+      e.set("Op", e.field("Op").replace(/\s+/g, ' ').trim()​);
 
       let dx = libByName("DxAutoFill");
       let dxs = dx.find(e.field("Dx"))​;
@@ -1375,8 +1387,8 @@ var uro = {
       }​
       e.set("Bonus", 0)​;
     }​
-    else if (e.field("OpExtra")​ == false &​& e.field("Op").trim()​ != "" &​& e.field("Op") != null​)​{ // set regular op
-      e.set("Op", e.field("Op").trim()​)​;
+    else if (e.field("OpExtra")​ == false &​& e.field("Op").trim() != "" &​& e.field("Op") != null​){ // set regular op
+      e.set("Op", e.field("Op").replace(/\s+/g, ' ').trim());
       e.set("Bonus", 0)​;
       let op = libByName("OperationList")​;
       let ops = op.find(e.field("Op")​);
@@ -1400,7 +1412,7 @@ var uro = {
       }​
     }​
     else if (e.field("Op").trim()​ != "" &​& e.field("Op") != null)​ { // set extra op
-      e.set("Op", e.field("Op").trim()​)​;
+      e.set("Op", e.field("Op").replace(/\s+/g, ' ').trim());
       let op = libByName("OperationList")​;
       let ops = op.find(e.field("Op"));
       let find = undefined;
