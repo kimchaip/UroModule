@@ -839,7 +839,7 @@ e.field(field1​) != "Not")​ {
           links[0].set("Descript", str);
         }
         else if (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ ) { // D/C
-          let dead = e.field("OpResult").match(/dead|death/ig)​;
+          let dead = e.field(field3).match(/dead|death/ig)​;
           if(dead!=null&&dead.length>0){
             links[0].set("Status" ,"Dead");
           }
@@ -868,7 +868,7 @@ e.field(field1​) != "Not")​ {
         }​
       }​
       else if (e.field(field1​) == "Not")​ {
-        let dead = e.field("OpResult").match(/dead|death/ig)​;
+        let dead = e.field(field3).match(/dead|death/ig)​;
         if(dead!=null&&dead.length>0){
           links[0].set("Status" ,"Dead");
         }
