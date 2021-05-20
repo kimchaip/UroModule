@@ -951,6 +951,12 @@ e.field(field1​) != "Not")​ {
   }​
 }​;
 var pto = {
+  rearrangename : function(e) {
+    e.set("PtName​", e.field("PtName").replace(/s+/g, ' ').trim());
+    if(e.field("PtName").search(/นาน/)==0){
+      e.set("PtName​", e.field("PtName").replace(/นาน/, "นาย"))
+    }
+  }, 
   agetext : function (e, diff) {
     if (diff>365)​{
       e.set("Age", Math.floor(diff/365.2425) + " ปี")​;
@@ -1095,6 +1101,16 @@ var uro = {
       else ​{
         e.set("VisitDate", my.date(e.field("Date")))​;
       }​
+    }
+    else if(old.optype!=e.field("ORType")){
+      if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) == my.gdate(e.field("Date"))){
+        if (e.field("VisitType") == "OPD")​
+          e.set("VisitType", "Admit")​;
+        e.set("VisitDate", my.dateminus(e.field("Date"), 1));
+      }
+      else ife.field("ORType") == "LA" &​& my.gdate(e.field("VisitDate")) == my.gdate(my.dateminus(e.field("Date"), 1))){
+        e.set("VisitDate", my.date(e.field("Date")))​;
+      }
     }
   }, 
   runq : function (e) {
@@ -1721,13 +1737,14 @@ var rpo = {
 }​;
 var trig = {
   PatientBeforeEdit : function (e, value)​ {
+    pto.rearrangename(e);
     if (value=="create")
-	  pto.uniqueHN(e, true)​;
-	else if (value=="update")​
-	  pto.uniqueHN(e, false)​;
-	pto.age(e)​;
-	pto.status(e)​;
-	pto.dj(e)​;
+      pto.uniqueHN(e, true)​;
+    else if (value=="update")​
+      pto.uniqueHN(e, false)​;
+    pto.age(e)​;
+    pto.status(e)​;
+    pto.dj(e)​;
   }, 
   PatientUpdatingField ​: function (all) {
     let e = entry()​;
