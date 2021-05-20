@@ -1119,7 +1119,7 @@ var uro = {
     e.set("OpResult", opresult);
     if(opresult != "" && old.result != e.field("OpResult")){
       let ondj = opresult.match(/on|dj/ig)​;
-      let opon = opresult.match(/on|dj/ig)​;
+      let opon = opresult.match(/t dj/ig)​;
       let offdj = opresult.match(/off|dj/ig)​;
       let opoff = opresult.match(/off|dj/ig)​;
       let changedj = opresult.match(/change|dj/i)​;
