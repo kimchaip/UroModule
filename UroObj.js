@@ -1149,7 +1149,7 @@ var uro = {
 
       if(notdone>0)​
         e.set("Status", "Not")​;
-      else if(e.field("Status")=="Plan")
+      else if(e.field("Status")!="Done")
         e.set("Status", "Done");
 
       if(changedj>1||opchange>1)
@@ -1158,6 +1158,11 @@ var uro = {
         e.set("DJstent", "off DJ");
       else if(ondj>0||opon>0)
         e.set("DJstent", "on DJ");
+      else
+        e.set("DJstent", "<none>");
+    }
+    else if(opresult=="" &​& old.result != e.field("OpResult")){
+      e.set("Status", "Plan");
     }
   }, 
   runq : function (e) {
