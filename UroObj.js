@@ -1114,6 +1114,16 @@ var uro = {
       }
     }
   }, 
+  opresulteffect : function(e) {
+    let opresult = e.field("OpResult").trim();
+    e.set("OpResult", opresult);
+    if(opresult != "" && old.result != e.field("OpResult")){
+      if(e.field("Status")=="Plan") e.set("Status", "Done")​;
+      if(opresult.search(/on dj/i)>-1) e.set("DJstent", "on DJ");
+      else if(opresult.search(/change dj/i)>-1) e.set("DJstent", "change DJ");
+      else if(opresult.search(/off dj/i)>-1||e.field("Op").search(/off dj/i)>-1) e.set("DJstent", "off DJ");
+    }
+  }, 
   runq : function (e) {
     que.getstart(e)​;
     let maxq = que.max()​;
@@ -1773,6 +1783,7 @@ var trig = {
       old.getstart(e)​;
       uro.setnewdate(e, false)​;
     }​
+    uro.opresulteffect(e);
     uro.setfuture(e)​;
     uro.setopextra(e)​;
     uro.setvisitdate(e)​;
@@ -1842,6 +1853,7 @@ var trig = {
       old.getstart(e)​;
       uro.setnewdate(e, false)​;
     }​
+    uro.opresulteffect(e);
     uro.setfuture(e)​;
     uro.setopextra(e)​;
     uro.setvisitdate(e)​;
