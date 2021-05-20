@@ -1125,9 +1125,9 @@ var uro = {
       let changedj = opresult.match(/change|dj/i)​;
       let opchange = opresult.match(/change|dj/i)​;
       if(e.field("Status")=="Plan") e.set("Status", "Done")​;
-      if(ondj.length>1||opon.length>0) e.set("DJstent", "on DJ");
-      else if(changedj.length>1​||opchange.length>1) e.set("DJstent", "change DJ");
-      else if(offdj.length>1||opoff.length>1) e.set("DJstent", "off DJ");
+      if(ondj!=null&&ondj.length>1||opon!=null&&opon.length>0) e.set("DJstent", "on DJ");
+      else if(changedj!=null&&changedj.length>1​||opchange!=null&&opchange.length>1) e.set("DJstent", "change DJ");
+      else if(offdj!=null&&offdj.length>1||opoff!=null&&opoff.length>1) e.set("DJstent", "off DJ");
     }
   }, 
   runq : function (e) {
