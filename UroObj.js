@@ -1131,11 +1131,11 @@ var uro = {
     e.set("OpResult", opresult);
     if(opresult != "" && old.result != e.field("OpResult")){
       let ondj = opresult.match(/on|dj/ig)​;
-      let opon = opresult.match(/t dj/ig)​;
+      let opon = e.field("Op").match(/t dj/ig)​;
       let offdj = opresult.match(/off|dj/ig)​;
-      let opoff = opresult.match(/off|dj/ig)​;
+      let opoff = e.field("Op").match(/off|dj/ig)​;
       let changedj = opresult.match(/change|dj/ig)​;
-      let opchange = opresult.match(/change|dj/ig)​;
+      let opchange = e.field("Op").match(/change|dj/ig)​;
       if(e.field("Status")=="Plan") e.set("Status", "Done")​;
       if(ondj!=null&&ondj.length>1||opon!=null&&opon.length>0) e.set("DJstent", "on DJ");
       else if(changedj!=null&&changedj.length>1​||opchange!=null&&opchange.length>1) e.set("DJstent", "change DJ");
