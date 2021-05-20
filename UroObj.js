@@ -1108,7 +1108,7 @@ var uro = {
           e.set("VisitType", "Admit")​;
         e.set("VisitDate", my.dateminus(e.field("Date"), 1));
       }
-      else ife.field("ORType") == "LA" &​& my.gdate(e.field("VisitDate")) == my.gdate(my.dateminus(e.field("Date"), 1))){
+      else if(e.field("ORType") == "LA" &​& my.gdate(e.field("VisitDate")) == my.gdate(my.dateminus(e.field("Date"), 1))){
         e.set("VisitDate", my.date(e.field("Date")))​;
       }
     }
