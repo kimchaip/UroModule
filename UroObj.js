@@ -1118,10 +1118,13 @@ var uro = {
     let opresult = e.field("OpResult").trim();
     e.set("OpResult", opresult);
     if(opresult != "" && old.result != e.field("OpResult")){
+      let ondj = opresult.match(/on|dj/ig)​;
+      let offdj = opresult.match(/off|dj/ig)​;
+      let changedj = opresult.match(/change|dj/i)​;
       if(e.field("Status")=="Plan") e.set("Status", "Done")​;
-      if(opresult.search(/on dj/i)>-1) e.set("DJstent", "on DJ");
-      else if(opresult.search(/change dj/i)>-1) e.set("DJstent", "change DJ");
-      else if(opresult.search(/off dj/i)>-1||e.field("Op").search(/off dj/i)>-1) e.set("DJstent", "off DJ");
+      if(ondj.length>1) e.set("DJstent", "on DJ");
+      else if(changedj.length>1​) e.set("DJstent", "change DJ");
+      else if(offdj.length>1||e.field("Op").search(/off dj/i)>-1) e.set("DJstent", "off DJ");
     }
   }, 
   runq : function (e) {
