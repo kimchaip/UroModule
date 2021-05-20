@@ -839,7 +839,7 @@ e.field(field1​) != "Not")​ {
           links[0].set("Descript", str);
         }
         else if (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ ) { // D/C
-          let dead = e.field(field3).match(/dead|death/ig)​;
+          let dead = e.field(field3).match(/dead|death/ig);
           if(dead!=null&&dead.length>0){
             links[0].set("Status" ,"Dead");
           }
@@ -868,7 +868,7 @@ e.field(field1​) != "Not")​ {
         }​
       }​
       else if (e.field(field1​) == "Not")​ {
-        let dead = e.field(field3).match(/dead|death/ig)​;
+        let dead = e.field(field3).match(/dead|death/ig);
         if(dead!=null&&dead.length>0){
           links[0].set("Status" ,"Dead");
         }
@@ -1130,12 +1130,12 @@ var uro = {
     let opresult = e.field("OpResult").replace(/\s+/g, ' ').trim();
     e.set("OpResult", opresult);
     if(opresult != "" && old.result != e.field("OpResult")){
-      let ondj = opresult.match(/on|dj/ig)​;
-      let opon = e.field("Op").match(/t dj/ig)​;
-      let offdj = opresult.match(/off|dj/ig)​;
-      let opoff = e.field("Op").match(/off|dj/ig)​;
-      let changedj = opresult.match(/change|dj/ig)​;
-      let opchange = e.field("Op").match(/change|dj/ig)​;
+      let ondj = opresult.match(/on|dj/ig);
+      let opon = e.field("Op").match(/t dj/ig);
+      let offdj = opresult.match(/off|dj/ig);
+      let opoff = e.field("Op").match(/off|dj/ig);
+      let changedj = opresult.match(/change|dj/ig);
+      let opchange = e.field("Op").match(/change|dj/ig);
       if(e.field("Status")=="Plan") e.set("Status", "Done")​;
       if((ondj!=null&&ondj.length>1)||(opon!=null&&opon.length>0)) e.set("DJstent", "on DJ");
       else if((offdj!=null&&offdj.length>1)||(opoff!=null&&opoff.length>1)) e.set("DJstent", "off DJ");
