@@ -1332,6 +1332,12 @@ var uro = {
     }
     return o ;
   },
+  setdxop : function(e){
+    if(old.dx!=e.field("Dx")&&e.field("Dx")!=''​)
+      e.set("Dx", e.field("Dx").replace(/-|#/g, '').replace(/\s+/g, ' ').trim()​);
+    if(old.op!=e.field("Op")&&e.field("Op")!=''​)​
+      e.set("Op", e.field("Op").replace(/-|#/g, '').replace(/\s+/g, ' ').trim()​);
+  }, 
   createautofill : function (e) {
     if (e.field("Status")​ == "Not")​{ // Not set
       let dx = libByName("DxAutoFill")​;
@@ -1350,8 +1356,8 @@ var uro = {
     }​
     else if ( e.field("Dx").trim()​ != "" &​& e.field("Dx") != null
     &​& e.field("Op").trim() != "" &​& e.field("Op") != null)​ { // fill dx and op
-      e.set("Dx", e.field("Dx").replace(/\s+/g, ' ').trim()​);
-      e.set("Op", e.field("Op").replace(/\s+/g, ' ').trim()​);
+      e.set("Dx", e.field("Dx"));
+      e.set("Op", e.field("Op"));
 
       let dx = libByName("DxAutoFill");
       let dxs = dx.find(e.field("Dx"))​;
@@ -1411,7 +1417,7 @@ var uro = {
       e.set("Bonus", 0)​;
     }​
     else if (e.field("OpExtra")​ == false &​& e.field("Op").trim() != "" &​& e.field("Op") != null​){ // set regular op
-      e.set("Op", e.field("Op").replace(/\s+/g, ' ').trim());
+      e.set("Op", e.field("Op"));
       e.set("Bonus", 0)​;
       let op = libByName("OperationList")​;
       let ops = op.find(e.field("Op")​);
@@ -1435,7 +1441,7 @@ var uro = {
       }​
     }​
     else if (e.field("Op").trim()​ != "" &​& e.field("Op") != null)​ { // set extra op
-      e.set("Op", e.field("Op").replace(/\s+/g, ' ').trim());
+      e.set("Op", e.field("Op"));
       let op = libByName("OperationList")​;
       let ops = op.find(e.field("Op"));
       let find = undefined;
@@ -1824,6 +1830,7 @@ var trig = {
       old.getstart(e)​;
       uro.setnewdate(e, false)​;
     }​
+    uro.setdxop​(e)​;
     uro.opresulteffect(e);
     uro.setfuture(e)​;
     uro.setopextra(e)​;
@@ -1894,6 +1901,7 @@ var trig = {
       old.getstart(e)​;
       uro.setnewdate(e, false)​;
     }​
+    uro.setdxop​(e)​;
     uro.opresulteffect(e);
     uro.setfuture(e)​;
     uro.setopextra(e)​;
