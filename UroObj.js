@@ -1131,7 +1131,8 @@ var uro = {
   opresulteffect : function(e) {
     let opresult = e.field("OpResult").replace(/\s+/g, ' ').trim();
     e.set("OpResult", opresult);
-    if(opresult != "" && old.result != e.field("OpResult")){
+    if(opresult != "" && old.result != e.field("OpResult")
+      ||e.field("Op")!= "" && old.op != e.field("Op")){
       let ondj = opresult.match(/dj/i);
       ondj = ondj==null?0:ondj.length;
       let opon = e.field("Op").match(/dj/i);
