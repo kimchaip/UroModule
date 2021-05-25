@@ -1147,7 +1147,7 @@ var uro = {
       opchange = opchange==null?0:opchange.length;
       let notdone = opresult.match(/งดผ่า|งดเพราะ|งดcase|ไม่มีคนเฝ้า|ผ่าแล้ว|ไม่พร่อม|นิ่วหลุด|ไม่มา|เลื่อน|ไม่อยาก|นัดผิด|ไม่ทำ|ไปผ่า/ig);
       notdone = notdone==null?0:notdone.length;
-
+      message("old result:"+typeof old.result+" , opresult:"+typeof opresult);
       if(notdone>0)​
         e.set("Status", "Not")​;
       else if(e.field("Status")!="Done")
