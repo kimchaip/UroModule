@@ -1131,7 +1131,7 @@ var uro = {
   opresulteffect : function(e) {
     let opresult = e.field("OpResult").replace(/\s+/g, ' ').trim();
     e.set("OpResult", opresult);
-    if(opresult != null && opresult != "" && old.result != e.field("OpResult")
+    if(old.result != undefined && opresult != "" && old.result != e.field("OpResult")
       ||e.field("Op")!= "" && old.op != e.field("Op")){
       let ondj = opresult.match(/dj/i);
       ondj = ondj==null?0:ondj.length;
@@ -1147,7 +1147,7 @@ var uro = {
       opchange = opchange==null?0:opchange.length;
       let notdone = opresult.match(/งดผ่า|งดเพราะ|งดcase|ไม่มีคนเฝ้า|ผ่าแล้ว|ไม่พร่อม|นิ่วหลุด|ไม่มา|เลื่อน|ไม่อยาก|นัดผิด|ไม่ทำ|ไปผ่า/ig);
       notdone = notdone==null?0:notdone.length;
-      message("old result:"+typeof old.result+" , opresult:"+typeof opresult);
+
       if(notdone>0)​
         e.set("Status", "Not")​;
       else if(e.field("Status")!="Done")
@@ -1162,7 +1162,7 @@ var uro = {
       else
         e.set("DJstent", "<none>");
     }
-    else if((opresult == null || opresult == "") &​& old.result != e.field("OpResult")){
+    else if(opresult == "" &​& old.result != e.field("OpResult")){
       e.set("Status", "Plan");
     }
   }, 
