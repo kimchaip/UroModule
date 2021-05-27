@@ -238,7 +238,6 @@ var oldPt = {
     this.a.push(e.field("Contact"));             //​7
 
     e.set("Previous", this.a.join());
-    }​
   },
   get ptname() {
     if (this.a[0])​ return this.a[0]​;
