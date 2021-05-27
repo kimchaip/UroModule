@@ -227,21 +227,24 @@ var oldPt = {
   },
   save : function (e)​ {
     this.a = [] ;​
-
-    this.a.push(e.field("PtName"));              //​0
-    this.a.push(e.field("YY"));                  //​1
-    this.a.push(e.field("MM"));                  //​2
-    this.a.push(e.field("DD"));                  //​3
-    this.a.push(e.field("Birthday")?e.field("Birthday").toDateString():null)​;	       //4
-    this.a.push(e.field("HN"));                  //​5
-    this.a.push(e.field("Phone"));               //​6
-    this.a.push(e.field("Contact"));             //​7
+    if(e) {
+      this.a.push(e.field("PtName"));              //​0
+      this.a.push(e.field("YY"));                  //​1
+      this.a.push(e.field("MM"));                  //​2
+      this.a.push(e.field("DD"));                  //​3
+      this.a.push(e.field("Birthday")?e.field("Birthday").toDateString():null)​;	       //4
+      this.a.push(e.field("HN"));                  //​5
+      this.a.push(e.field("Phone"));               //​6
+      this.a.push(e.field("Contact"));             //​7
+    }
+    else
+      a = [,,,,,,];
 
     e.set("Previous", this.a.join());
   },
   get ptname() {
     if (this.a[0])​ return this.a[0]​;
-    else null;
+    else return null;
   }​,
   get yy() {
     if (this.a[1])​ return this.a[1];
