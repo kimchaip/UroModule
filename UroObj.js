@@ -236,11 +236,9 @@ var oldPt = {
       this.a.push(e.field("HN"));                  //​5
       this.a.push(e.field("Phone"));               //​6
       this.a.push(e.field("Contact"));             //​7
-    }
-    else
-      a = [,,,,,,];
 
-    e.set("Previous", this.a.join());
+      e.set("Previous", this.a.join());
+    }
   },
   get ptname() {
     if (this.a[0])​ return this.a[0]​;
