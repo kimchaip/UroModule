@@ -1852,7 +1852,7 @@ var rpo = {
 var trig = {
   PatientOpenEdit : function(e) {
     oldPt.save(e);
-  }
+  },
   PatientBeforeEdit : function (e, value)​ {
     pto.rearrangename(e);
     oldPt.load(e);
