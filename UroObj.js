@@ -8,7 +8,7 @@ var my = {
   d : null, 
   nd : 0,
   date : function (value)  {
-    if (value != null) {
+    if (value) {
       this.d = new Date(value.getFullYear(), value.getMonth(),value.getDate(), 7) ;
       return this.d;
     }
@@ -18,7 +18,7 @@ var my = {
     }
   },
   dateadd : function (value, add)  {
-    if (value != null) {
+    if (value) {
       this.d = new Date(value.getTime() + (add*86400000))​;
       this.d = this.date(this.d) ;
       return this.d;
@@ -29,7 +29,7 @@ var my = {
     }
   },
   dateminus : function (value, minus)  {
-    if (value != null) {
+    if (value) {
       this.d = new Date(value.getTime() -​ (minus*86400000))​;
       this.d = this.date(this.d) ;
       return this.d;
@@ -40,7 +40,7 @@ var my = {
     }
   }, 
   gdate : function (value)  {
-    if (value != null) {
+    if (value) {
       this.nd = value.getTime()​;
       return this.nd;
     }
@@ -50,7 +50,7 @@ var my = {
     }
   }, 
   gday : function (value)  {
-    if (value != null) {
+    if (value) {
       this.nd = value.getDay() ;
       return this.nd;
     }
@@ -219,6 +219,59 @@ var old = {
       return this.a[11] ;
     }​
   }​
+};
+var oldPt = {
+  a : [],​
+  load : function (e)​ {
+    this.a = e.field("Previous").split(",");
+  },
+  save : function (e)​ {
+    this.a = [] ;​
+
+    this.a.push(e.field("PtName"));              //​0
+    this.a.push(e.field("YY"));                  //​1
+    this.a.push(e.field("MM"));                  //​2
+    this.a.push(e.field("DD"));                  //​3
+    this.a.push(e.field("Birthday")?e.field("Birthday").toDateString():null)​;	       //4
+    this.a.push(e.field("HN"));                  //​5
+    this.a.push(e.field("Phone"));               //​6
+    this.a.push(e.field("Contact"));             //​7
+
+    e.set("Previous", this.a.join());
+    }​
+  },
+  get ptname() {
+    if (this.a[0])​ return this.a[0]​;
+    else null;
+  }​,
+  get yy() {
+    if (this.a[1])​ return this.a[1];
+    else return null;
+  }​,
+  get mm() {
+    if (this.a[2])​ return this.a[2];
+    else return null;
+  }​,
+  get dd() {
+    if (this.a[3])​ return this.a[3];
+    else return null;
+  }​,
+  get birthday() {
+    if (this.a[4])​ return my.date(this.a[4])​ ;
+    else return null;​
+  }​,
+  get hn() {
+    if (this.a[5])​ return this.a[5];
+    else return null;
+  }​,
+  get phone() {
+    if (this.a[6])​ return this.a[6];
+    else return null;
+  }​,
+  get contact() {
+    if (this.a[7])​ return this.a[7];
+    else return null;
+  }​​
 };
 
 var mer = {
@@ -1006,17 +1059,20 @@ var pto = {
       message("MM must <= 12, DD <= 30") ;
       cancel() ;
     }​
-    else {
-      let d = 0;
-      if (e.field("Birthday") == null &​& e.field("YY") > 0)​ {
-        d = Math.round(e.field("YY")*365.2425 + e.field("MM")*30.4375 + e.field("DD"));
-        e.set("Birthday", my.dateminus(today, d)​);
-        e.set("Age", e.field("YY")​ + " ปี")​;
-      }​
-      else if (e.field("Birthday")​ != null)​ {
-        d = Math.floor((ntoday-my.gdate(e.field("Birthday"))​)/86400000);
-        this.agetext(e, d)​;
-      }​
+    
+    let d = 0;
+    if (oldPt.yy != e.field("YY") && e.field("YY") ||
+        oldPt.mm != e.field("MM") ||
+        oldPt.dd != e.field("DD"))​ {
+      let month = e.field("MM")?e.field("MM"):0;
+      let day = e.field("DD")?e.field("DD"):0;
+      d = Math.round(e.field("YY")*365.2425 + month*30.4375 + day);
+      e.set("Birthday", my.dateminus(today, d)​);
+      e.set("Age", e.field("YY")​ + " ปี")​;
+    }​
+    if (e.field("Birthday")​)​ {
+      d = Math.floor((ntoday-my.gdate(e.field("Birthday"))​)/86400000);
+      this.agetext(e, d)​;
     }​
   }, 
   //Status
@@ -1795,8 +1851,12 @@ var rpo = {
   }​
 }​;
 var trig = {
+  PatientOpenEdit : function(e) {
+    oldPt.save(e);
+  }
   PatientBeforeEdit : function (e, value)​ {
     pto.rearrangename(e);
+    oldPt.load(e);
     if (value=="create")
       pto.uniqueHN(e, true)​;
     else if (value=="update")​
@@ -1819,6 +1879,7 @@ var trig = {
     pto.resetdone(all)​;
   }, 
   PatientBeforeLink : function (e)​ {
+    oldPt.load(e);
     pto.age(e)​;
   }, 
   UroOpenEdit : function (e)​ {
