@@ -875,8 +875,7 @@ var fill = {
         field3 = "Note" ;
       }​
       if ((links[0].field("WardStamp")​ == null || my.gdate(e.field("VisitDate")​) >= my.gdate(links[0].field("WardStamp"))​) && 
-(links[0].field("Status")​ == "Still" || links[0].field("Status")​ == "Active")​​ &​&
-e.field(field1​) != "Not")​ {
+(links[0].field("Status")​ == "Still" || links[0].field("Status")​ == "Active")​​)​ {
         if (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) ) {//Admit
           links[0].set("Status" ,"Active");
           links[0].set("Ward",e.field("Ward"));
@@ -920,32 +919,6 @@ e.field(field1​) != "Not")​ {
           links[0].set("Status" ,"Still");
           links[0].set("Ward", "");
         }​
-      }​
-      else if (e.field(field1​) == "Not")​ {
-        let dead = e.field(field3).match(/dead|death/ig);
-        dead = dead==null?0:dead.length​;
-        if(dead>0){
-          links[0].set("Status" ,"Dead");
-        }
-        else {
-          links[0].set("Status" ,"Still");
-        }​
-        links[0].set("Ward", "");
-        links[0].set("WardStamp", e.field("VisitDate")​)​;
-        let str = "" ;
-        if (e.field("Dx")!="")​
-          str = e.field("Dx");
-        if (e.field(field2)!="")​ {
-          if (str!="")
-            str += " -​> " ;
-          str += e.field(field2);
-        }​
-        if (e.field(field3)!="")​ {
-          if (str!="")
-            str += " -​> " ;
-          str += e.field(field3);
-        }​       
-        links[0].set("Descript", str);
       }​
     }​
   }, 
