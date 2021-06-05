@@ -96,7 +96,7 @@ var oldUr = {
     }
   },
   get opdate() {
-    if (this.a[0])​ return my.date(this.a[0])​;
+    if (this.a[0])​ return my.date(new Date(this.a[0]))​;
     else return null;
   }​,
   get patient() {
@@ -120,11 +120,11 @@ var oldUr = {
     else return null;
   }​,
   get vsdate() {
-    if (this.a[6])​ return my.date(this.a[6])​ ;
+    if (this.a[6])​ return my.date(new Date(this.a[6]))​ ;
     else return null;​
   }​,
   get dcdate() {
-    if (this.a[7])​ return my.date(this.a[7])​ ;
+    if (this.a[7])​ return my.date(new Date(this.a[7]))​ ;
     else return null;​
   }​,
   get emx() {
@@ -132,7 +132,7 @@ var oldUr = {
     else return null;
   }​,
   get apdate() {
-    if (this.a[9])​ return my.date(this.a[9])​ ;
+    if (this.a[9])​ return my.date(new Date(this.a[9]))​ ;
     else return null;​
   }​,
   get status() {
@@ -152,7 +152,7 @@ var oldUr = {
     else return null;​
   }, 
   get rcdate() {
-    if (this.a[14])​ return my.date(this.a[14])​ ;
+    if (this.a[14])​ return my.date(new Date(this.a[14]))​ ;
     else return null;​
   }​,
   get dx() {
@@ -199,7 +199,7 @@ var oldCs = {
     }​
   },
   get csdate() {
-    if (this.a[0])​ return my.date(this.a[0])​;
+    if (this.a[0])​ return my.date(new Date(this.a[0]))​;
     else return null;
   }​,
   get patient() {
@@ -215,11 +215,11 @@ var oldCs = {
     else return null;
   }​,
   get vsdate() {
-    if (this.a[4])​ return my.date(this.a[4]) ;
+    if (this.a[4])​ return my.date(new Date(this.a[4])) ;
     else return null;
   }​,
   get dcdate() {
-    if (this.a[5])​ return my.date(this.a[5]) ;
+    if (this.a[5])​ return my.date(new Date(this.a[5])) ;
     else return null;
   }​,
   get emx() {
@@ -227,7 +227,7 @@ var oldCs = {
     else return null;
   }​,
   get apdate() {
-    if (this.a[7])​ return my.date(this.a[7]) ;
+    if (this.a[7])​ return my.date(new Date(this.a[7])) ;
     else return null;
   }​,
   get dx() {
@@ -284,7 +284,7 @@ var oldPt = {
     else return null;
   }​,
   get birthday() {
-    if (this.a[4])​ return my.date(this.a[4])​ ;
+    if (this.a[4])​ return my.date(new Date(this.a[4]))​ ;
     else return null;​
   }​,
   get hn() {
@@ -1140,7 +1140,7 @@ var uro = {
     if (value || my.gdate(​oldUr.apdate) != my.gdate(​e.field("AppointDate"))) {
       e.set("AppointDate", my.date(e.field("AppointDate")));
     }​
-    if (value || my.gdate(​old​Ur.rcdate) != my.gdate(​e.field("RecordDate"))​) {
+    if (value || my.gdate(​oldUr.rcdate) != my.gdate(​e.field("RecordDate"))​) {
       e.set("RecordDate", my.date(e.field("RecordDate")));
     }​
   }, 
