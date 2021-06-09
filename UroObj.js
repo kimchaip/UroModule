@@ -73,16 +73,16 @@ var oldUr = {
     if(e) {
       let links = e.field("Patient"); 
       this.a.push(e.field("Date")?e.field("Date").toDateString():null)​;	       //0
-      if (links.length>0) 
-        this.a.push(links​[0].title);           //​1
+      this.a.push(links.length>0?links​[0].title:null);           //​1
       this.a.push(e.field("ORType"));          //​2
       this.a.push(e.field("Que"));             //​3
       this.a.push(e.field("VisitType"));       //​4
       this.a.push(e.field("Ward"));            //​5
       this.a.push(e.field("VisitDate")?e.field("VisitDate").toDateString():null);       //​6
-      this.a.push(e.field("DischargeDate")?e.field("DischargeDate").toDateString():null);   //​7     this.a.push(e.field("EntryMx"));         //​8
+      this.a.push(e.field("DischargeDate")?e.field("DischargeDate").toDateString():null);   //​7
+      this.a.push(e.field("EntryMx"));         //​8
       this.a.push(e.field("AppointDate")?e.field("AppointDate").toDateString():null​);     //​9
-      this.a.push(e.field("Status"));         //​10 
+      this.a.push(e.field("Status"));         //​10
       this.a.push(e.field("DJstent"));        //​11
       this.a.push(e.field("OpExtra"));        //​12
       this.a.push(e.field("Bonus"));          //​13
@@ -182,8 +182,7 @@ var oldCs = {
     if(e) {
       let links = e.field("Patient"); 
       this.a.push(e.field("ConsultDate")?e.field("ConsultDate").toDateString():null)​;	       //0
-      if (links.length>0) 
-        this.a.push(links​[0].title);               //​1
+      this.a.push(links.length>0?links​[0].title:null);               //​1
       this.a.push(e.field("VisitType"));       //​2
       this.a.push(e.field("Ward"));            //​3
       this.a.push(e.field("VisitDate")?e.field("VisitDate").toDateString():null);       //​4
