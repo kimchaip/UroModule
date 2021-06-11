@@ -105,19 +105,19 @@ var oldUr = {
   }​, 
   get optype() {
     if (this.a[2])​ return this.a[2] ;
-    else return null;
+    else return "GA";
   }​,​
   get que() {
     if (this.a[3])​ return this.a[3] ;
-    else return null;
+    else return "00";
   }​,
   get vstype() {
     if (this.a[4])​ return this.a[4] ;
-    else return null;
+    else return "Admit";
   }​,
   get ward() {
     if (this.a[5])​ return this.a[5] ;
-    else return null;
+    else return "Uro";
   }​,
   get vsdate() {
     if (this.a[6])​ return my.date(new Date(this.a[6]))​ ;
@@ -129,7 +129,7 @@ var oldUr = {
   }​,
   get emx() {
     if (this.a[8])​ return this.a[8] ;
-    else return null;
+    else return "<Default>";
   }​,
   get apdate() {
     if (this.a[9])​ return my.date(new Date(this.a[9]))​ ;
@@ -137,19 +137,19 @@ var oldUr = {
   }​,
   get status() {
     if (this.a[10])​ return this.a[10] ;
-    else return null;​
+    else return "Plan";​
   }​,
   get dj() {
     if (this.a[11])​ return this.a[11];
-    else return null;​
+    else return "<none>";​
   }​,
   get opext() {
     if (this.a[12])​ return this.a[12] ;
-    else return null;​
+    else return false;​
   }​,
   get bonus() {
     if (this.a[13])​ return this.a[13] ;
-    else return null;​
+    else return 0;​
   }, 
   get rcdate() {
     if (this.a[14])​ return my.date(new Date(this.a[14]))​ ;
@@ -157,19 +157,19 @@ var oldUr = {
   }​,
   get dx() {
     if (this.a[15])​ return this.a[15] ;
-    else return null ;
+    else return "" ;
   }​,
   get op() {
     if (this.a[16])​ return this.a[16] ;
-    else return null ;
+    else return "" ;
   }​,
   get result() {
     if (this.a[17])​ return this.a[17] ;
-    else return null ;
+    else return "" ;
   }, 
   get track() {
     if (this.a[18])​ return this.a[18] ;
-    else return null ;
+    else return 0 ;
   }​
 };
 var oldCs = {
@@ -211,7 +211,7 @@ var oldCs = {
   }​,
   get ward() {
     if (this.a[3])​ return this.a[3] ;
-    else return null;
+    else return "Uro";
   }​,
   get vsdate() {
     if (this.a[4])​ return my.date(new Date(this.a[4])) ;
@@ -223,7 +223,7 @@ var oldCs = {
   }​,
   get emx() {
     if (this.a[6])​ return this.a[6] ;
-    else return null;
+    else return "<Default>";
   }​,
   get apdate() {
     if (this.a[7])​ return my.date(new Date(this.a[7])) ;
@@ -231,19 +231,19 @@ var oldCs = {
   }​,
   get dx() {
     if (this.a[8])​ return this.a[8] ;
-    else return null;
+    else return "";
   }​,
   get rx() {
     if (this.a[9])​ return this.a[9] ;
-    else return null;
+    else return "";
   }​,
   get note() {
     if (this.a[10])​ return this.a[10] ;
-    else return null;
+    else return "";
   }​,
   get track() {
     if (this.a[11])​ return this.a[11] ;
-    else return null;
+    else return 0;
   }​
 };
 var oldPt = {
@@ -1189,7 +1189,7 @@ var uro = {
     let opresult = e.field("OpResult").replace(/\s+/g, ' ').trim();
     e.set("OpResult", opresult);
     message(oldUr.result + ", " + opresult);
-    if(oldUr.result && opresult != "" && oldUr.result != opresult ) {
+    if(oldUr.result != "" && opresult != "" && oldUr.result != opresult ) {
       let ondj = opresult.match(/dj/i);
       ondj = ondj==null?0:ondj.length;
       let opon = e.field("Op").match(/dj/i);
@@ -1225,7 +1225,7 @@ var uro = {
       else
         e.set("DJstent", "<none>");
     }
-    else if(oldUr.result && opresult == "" &​& oldUr.result != opresult){
+    else if(oldUr.result != "" && opresult == "" &​& oldUr.result != opresult){
       e.set("Status", "Plan");
     }
   }, 
