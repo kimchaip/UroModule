@@ -1189,7 +1189,7 @@ var uro = {
     let opresult = e.field("OpResult").replace(/\s+/g, ' ').trim();
     e.set("OpResult", opresult);
     message(oldUr.result + ", " + opresult);
-    if(oldUr.result == "" && opresult != "" && oldUr.result != opresult ) {
+    if((opresult && oldUr.result != opresult ) {
       let ondj = opresult.match(/dj/i);
       ondj = ondj==null?0:ondj.length;
       let opon = e.field("Op").match(/dj/i);
@@ -1225,7 +1225,7 @@ var uro = {
       else
         e.set("DJstent", "<none>");
     }
-    else if(oldUr.result != "" && opresult == "" &​& oldUr.result != opresult){
+    else if(oldUr.result && opresult == "" &​& oldUr.result != opresult){
       e.set("Status", "Plan");
     }
   }, 
