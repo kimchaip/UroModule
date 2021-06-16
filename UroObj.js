@@ -1932,6 +1932,7 @@ var trig = {
     rpo.setreport(e)​;
   }, 
   UroBeforeViewCard ​: function (e) {​
+    oldUr.save(e)​;
     fill.color(e, "uro")​;
   }, 
   UroBeforeOpenLib : function (all) {
@@ -2002,6 +2003,7 @@ var trig = {
     rpo.setreport(e)​;
   }, 
   BackupBeforeViewCard ​: function (e) {​
+    oldUr.save(e)​;
     fill.color(e, "uro")​;
   }, 
   BackupBeforeOpenLib : function (all) {
@@ -2057,6 +2059,7 @@ var trig = {
     emx.setor(e)​;
   }, 
   ConsultBeforeViewCard ​: function (e) {​
+    oldCs.save(e)​;
     fill.color(e, "consult")​;
   }, 
   ConsultBeforeOpenLib : function (all) {
