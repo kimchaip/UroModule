@@ -1681,6 +1681,10 @@ var uro = {
         fill.color(all[i]​, thislib)​;
         this.setfuture(all[i])​;​
       }
+      oldUr.load(all[i]​)​;
+      if (all[i].field("Que")​!=oldUr.que) {
+        all[i].set("Previous",  all[i].field("Previous").replace("," + oldUr.que + ",", "," + all[i].field("Que")​ + ","));
+      }
     } 
   }, 
   setfuture : function(e)​{
@@ -2013,7 +2017,7 @@ var trig = {
     for(let i in all) {
       // update que
       oldUr.load(all[i]​)​;
-      if(all[i].field("Que")​!=oldUr.que &​& all[i].field("ORType")​=="GA" &​& all[i].field("Status") != "Not" && oldUr.que) {
+      if(all[i].field("Que")​!=oldUr.que &​& all[i].field("ORType")​=="GA" &​& all[i].field("Status") != "Not") {
         all[i].set("Previous",  all[i].field("Previous").replace("," + oldUr.que + ",", "," + all[i].field("Que")​ + ","));
         uro.runq(all[i]​)​; 
         break;
