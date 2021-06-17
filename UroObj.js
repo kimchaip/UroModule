@@ -1947,6 +1947,7 @@ var trig = {
       // update que
       oldUr.load(all[i]​)​;
       if(all[i].field("Que")​!=oldUr.que &​& all[i].field("ORType")​=="GA" &​& all[i].field("Status") != "Not") {
+        message("oldq:" + oldUr.que + "; eq:" + all[i].field("Que")​);
         uro.runq(all[i]​)​;
         break;
       }​
