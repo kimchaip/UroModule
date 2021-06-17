@@ -41,7 +41,7 @@ var my = {
   }, 
   gdate : function (value)  {
     if (value) {
-      this.nd = this.date(new Date(value)).getTime()​;
+      this.nd = value.getTime()​;
       return this.nd;
     }
     else {
@@ -1947,7 +1947,9 @@ var trig = {
       // update que
       oldUr.load(all[i]​)​;
       if(all[i].field("Que")​!=oldUr.que &​& all[i].field("ORType")​=="GA" &​& all[i].field("Status") != "Not") {
+        uro.setnewdate(all[i], false)​;
         uro.runq(all[i]​)​;
+        oldUr.save(all[i]);
         break;
       }​
     }
