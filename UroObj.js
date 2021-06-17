@@ -1274,7 +1274,7 @@ var uro = {
       let hole = que.findhole()​;
       let near = null;
       maxq += 1;
-      message("q.max:" + maxq-1 + "q.leng:" + lenq + "  dup:" + (dup != null) + "  hole:" + hole);
+      message("qmax:" + (maxq-1) + "qleng:" + lenq + "  dup:" + (dup != null) + "  hole:" + hole);
       if (dup != null &​& hole > 0) { //found dup, found hole
         let skip = 0;
         e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(eq) + ","))​;
