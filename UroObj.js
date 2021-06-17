@@ -1276,11 +1276,11 @@ var uro = {
       let hole = que.findhole()​;
       let near = null;
       maxq += 1;
-      message("dup:" + dup != null + "  hole:" + hole);
+      message("dup:" + (dup != null) + "  hole:" + hole);
       if (dup != null &​& hole > 0) { //found dup, found hole
         let skip = 0;
         e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(eq) + ","))​;
-        message("qstr:" + qstr + "  eq:," + que.string(eq) + ",");
+        message("found dup, found hole: qstr:" + qstr + "  eq:," + que.string(eq) + ",");
         if (Number(dup.field("Que"))<hole)​ { //wave to right
           skip = 1;
         }​
@@ -1306,7 +1306,7 @@ var uro = {
       }​
       else if (dup != null &​& hole == 0) { //found dup, no hole
         e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(eq) + ","))​;
-        message("qstr:" + qstr + "  eq:," + que.string(eq) + ",");
+        message("found dup, no hole: qstr:" + qstr + "  eq:," + que.string(eq) + ",");
         while (dup != null)​ {//found duplicate
           let i = Number(dup.field("Que"))​+1 ;
           near = que.findque(i);
