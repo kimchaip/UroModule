@@ -1320,8 +1320,14 @@ var uro = {
         }    
       } 
       else if (dup == null &​& hole != 0)​ { // no dup, found hole
-        e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(hole)​ ​+ ","))​;
-        e.set("Que", que.string(hole))​;
+        if (eq<hole) {
+          e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(eq)​ ​+ ","))​;
+          e.set("Que", que.string(eq))​;
+        }
+        else {
+          e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(hole)​ ​+ ","))​;
+          e.set("Que", que.string(hole))​;
+        }
       }​
     }​
   }, 
