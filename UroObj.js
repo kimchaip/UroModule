@@ -1237,6 +1237,7 @@ var uro = {
     let eq = Number(e.field("Que")​)​;
     let qstr = "," + oldUr.que​ + "," ;
     //---Status assign Que---//
+    message("qstr:" + oldUr.que​ + "  eq:" + que.string(eq));
     if (e.field("Status") == "Not" || e.field("ORType")​ == "LA" ) {
       e.set("Previous", e.field("Previous").replace(qstr, ",00,"))​;
       e.set("Que", "00") ;
@@ -1275,6 +1276,7 @@ var uro = {
       let hole = que.findhole()​;
       let near = null;
       maxq += 1;
+      message("dup:" + dup != null + "  hole:" + hole);
       if (dup != null &​& hole > 0) { //found dup, found hole
         let skip = 0;
         e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(eq) + ","))​;
