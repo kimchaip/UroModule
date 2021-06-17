@@ -1274,11 +1274,9 @@ var uro = {
       let hole = que.findhole()​;
       let near = null;
       maxq += 1;
-      message("qmax:" + (maxq-1) + "qleng:" + lenq + "  dup:" + (dup != null) + "  hole:" + hole);
       if (dup != null &​& hole > 0) { //found dup, found hole
         let skip = 0;
         e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(eq) + ","))​;
-        message("1: " + qstr + "->" + que.string(eq));
         if (Number(dup.field("Que"))<hole)​ { //wave to right
           skip = 1;
         }​
@@ -1304,7 +1302,6 @@ var uro = {
       }​
       else if (dup != null &​& hole == 0) { //found dup, no hole
         e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(eq) + ","))​;
-        message("2: " + qstr + "->" + que.string(eq));
         while (dup != null)​ {//found duplicate
           let i = Number(dup.field("Que"))​+1 ;
           near = que.findque(i);
@@ -2019,7 +2016,9 @@ var trig = {
       // update que
       oldUr.load(all[i]​)​;
       if(all[i].field("Que")​!=oldUr.que &​& all[i].field("ORType")​=="GA" &​& all[i].field("Status") != "Not") {
+        uro.setnewdate(all[i], false)​;
         uro.runq(all[i]​)​;
+        oldUr.save(all[i]);
         break;
       }​
     }
