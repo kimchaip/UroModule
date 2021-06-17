@@ -1235,7 +1235,7 @@ var uro = {
     let lenq = que.q.length;
     let newq = 0;
     let eq = Number(e.field("Que")​)​;
-    let qstr = "," + e.field("Que")​ + "," ;
+    let qstr = "," + oldUr.que​ + "," ;
     //---Status assign Que---//
     if (e.field("Status") == "Not" || e.field("ORType")​ == "LA" ) {
       e.set("Previous", e.field("Previous").replace(qstr, ",00,"))​;
@@ -1277,6 +1277,7 @@ var uro = {
       maxq += 1;
       if (dup != null &​& hole > 0) { //found dup, found hole
         let skip = 0;
+        e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(eq) + ","))​;
         if (Number(dup.field("Que"))<hole)​ { //wave to right
           skip = 1;
         }​
@@ -1301,6 +1302,7 @@ var uro = {
         }    
       }​
       else if (dup != null &​& hole == 0) { //found dup, no hole
+        e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(eq) + ","))​;
         while (dup != null)​ {//found duplicate
           let i = Number(dup.field("Que"))​+1 ;
           near = que.findque(i);
