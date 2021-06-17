@@ -1188,7 +1188,6 @@ var uro = {
   opresulteffect : function(e) {
     let opresult = e.field("OpResult").replace(/\s+/g, ' ').trim();
     e.set("OpResult", opresult);
-    //message(oldUr.result + ", " + opresult);
     if(opresult && oldUr.result != opresult ) {
       let ondj = opresult.match(/dj/i);
       ondj = ondj==null?0:ondj.length;
@@ -1275,7 +1274,7 @@ var uro = {
       let hole = que.findhole()​;
       let near = null;
       maxq += 1;
-      message("dup:" + (dup != null) + "  hole:" + hole);
+      message("q.max:" + maxq-1 + "q.leng:" + lenq + "  dup:" + (dup != null) + "  hole:" + hole);
       if (dup != null &​& hole > 0) { //found dup, found hole
         let skip = 0;
         e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(eq) + ","))​;
