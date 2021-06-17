@@ -1681,10 +1681,6 @@ var uro = {
         fill.color(all[i]​, thislib)​;
         this.setfuture(all[i])​;​
       }
-      oldUr.load(all[i]​)​;
-      if (all[i].field("Que")​!=oldUr.que) {
-        all[i].set("Previous",  all[i].field("Previous").replace("," + oldUr.que + ",", "," + all[i].field("Que")​ + ","));
-      }
     } 
   }, 
   setfuture : function(e)​{
@@ -1934,9 +1930,9 @@ var trig = {
     emx.setor(e)​;
     uro.updateDJStamp(e)​;
     rpo.setreport(e)​;
+    oldUr.save(e)​;
   }, 
   UroBeforeViewCard ​: function (e) {​
-    oldUr.save(e)​;
     fill.color(e, "uro")​;
   }, 
   UroBeforeOpenLib : function (all) {
@@ -1948,7 +1944,6 @@ var trig = {
       oldUr.load(all[i]​)​;
       if(all[i].field("Que")​!=oldUr.que &​& all[i].field("ORType")​=="GA" &​& all[i].field("Status") != "Not") {
         uro.runq(all[i]​)​;
-        all[i].set("Previous",  all[i].field("Previous").replace("," + oldUr.que + ",", "," + all[i].field("Que")​ + ","));
         break;
       }​
     }
@@ -1999,16 +1994,16 @@ var trig = {
   BackupAfterEdit : function (e, value) {
     oldUr.load(e)​;
     fill.ptstatus(e)​;
-    fill.color(e, "uro")​;
+    fill.color(e, "backup")​;
     mer.other(e)​;
     emx.flu(e)​;
     emx.setor(e)​;
     uro.updateDJStamp(e)​;
     rpo.setreport(e)​;
+    oldUr.save(e)​;
   }, 
   BackupBeforeViewCard ​: function (e) {​
-    oldUr.save(e)​;
-    fill.color(e, "uro")​;
+    fill.color(e, "backup")​;
   }, 
   BackupBeforeOpenLib : function (all) {
     uro.resetcolor(all)​;
@@ -2019,7 +2014,6 @@ var trig = {
       oldUr.load(all[i]​)​;
       if(all[i].field("Que")​!=oldUr.que &​& all[i].field("ORType")​=="GA" &​& all[i].field("Status") != "Not") {
         uro.runq(all[i]​)​;
-        all[i].set("Previous",  all[i].field("Previous").replace("," + oldUr.que + ",", "," + all[i].field("Que")​ + ","));
         break;
       }​
     }
@@ -2061,9 +2055,9 @@ var trig = {
     mer.other(e)​;
     emx.flu(e)​;
     emx.setor(e)​;
+    oldCs.save(e)​;
   }, 
   ConsultBeforeViewCard ​: function (e) {​
-    oldCs.save(e)​;
     fill.color(e, "consult")​;
   }, 
   ConsultBeforeOpenLib : function (all) {
