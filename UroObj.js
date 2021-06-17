@@ -41,7 +41,7 @@ var my = {
   }, 
   gdate : function (value)  {
     if (value) {
-      this.nd = value.getTime()​;
+      this.nd = this.date(value).getTime()​;
       return this.nd;
     }
     else {
