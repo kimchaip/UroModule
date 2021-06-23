@@ -1186,7 +1186,7 @@ var uro = {
     }
   }, 
   opresulteffect : function(e) {
-    let opresult = e.field("OpResult").replace(/\s+/g, ' ').trim();
+    let opresult = e.field("OpResult").replace(/ +/g, ' ').trim().replace(/\B +/g, '');
     e.set("OpResult", opresult);
     if(opresult && oldUr.result != opresult ) {
       let ondj = opresult.match(/dj/i);
