@@ -1345,7 +1345,6 @@ var uro = {
       }​
       else if (e.field("Date") > links[0].field("DJStamp") && my.gdate(e.field("Date")) <= ntoday) { // ever DJStamp, after Stamp but not future entry
         if (links[0].field("DJstent") == "")​ {// ever off DJ, get only on DJ
-          message("ever off DJ, get only on DJ");
           if (e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ")​
             e.set("DJstent", "")​ ;
         }​
@@ -1355,8 +1354,8 @@ var uro = {
         }​
       }​
       else if (e.field("Date") < links[0].field("DJStamp"))​  {// edit entry before last DJStamp, can't edit
-        if (oldUr.dj != null)​
-          e.set("DJstent", oldUr.dj) ;
+        message("old dj is '':" + oldUr.dj=="");
+        e.set("DJstent", oldUr.dj) ;
       }​
       else if (my.gdate(e.field("Date")) == my.gdate(links[0].field("DJStamp")))​ {// this entry is last DJStamp
         if (links[0].field("DJstent") == "")​ {// this entry is off DJ, get only off or changeDJ​
