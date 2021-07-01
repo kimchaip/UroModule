@@ -1358,6 +1358,8 @@ var uro = {
       }​
       else if (my.gdate(e.field("Date")) == my.gdate(links[0].field("DJStamp")))​ {// this entry is last DJStamp
         if (links[0].field("DJstent") == "")​ {// this entry is off DJ, get only off or changeDJ​
+          if (e.field("DJstent") == "on DJ") 
+              e.set("DJstent", "") ;
         }​
         else { // this entry is on DJ, must check last DJStamp before
           let ptent = pt.findById(links[0].id) ;
