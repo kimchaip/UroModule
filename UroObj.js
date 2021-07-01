@@ -140,7 +140,7 @@ var oldUr = {
     else return "Plan";​
   }​,
   get dj() {
-    if (this.a[11])​ return this.a[11];
+    if (this.a[11])​ return this.a[11] ;
     else return "";​
   }​,
   get opext() {
@@ -1354,7 +1354,7 @@ var uro = {
         }​
       }​
       else if (e.field("Date") < links[0].field("DJStamp"))​  {// edit entry before last DJStamp, can't edit
-        message(oldUr.dj +", "+ (typeof oldUr.dj));
+        message((oldUr.dj=="") +", "+ (oldUr.dj==null)+", "+ (oldUr.dj==undefined));
         e.set("DJstent", oldUr.dj) ;
       }​
       else if (my.gdate(e.field("Date")) == my.gdate(links[0].field("DJStamp")))​ {// this entry is last DJStamp
