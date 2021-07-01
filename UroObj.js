@@ -1334,7 +1334,7 @@ var uro = {
   setDJstent : function (e) {
     let links = e.field("Patient")​;
     if (links.length>0) {
-      message((links[0].field("DJStent")=="") +","+ (e.field("DJstent")==""));
+      message((links[0].field("DJStampt")) +","+ (e.field("DJstent")==""));
       if (links[0].field("DJStamp") == null) { // never ever DJStamp
         if(e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ")​
           e.set("DJstent", "")​;
@@ -1345,6 +1345,7 @@ var uro = {
       }​
       else if (e.field("Date") > links[0].field("DJStamp") && my.gdate(e.field("Date")) <= ntoday) { // ever DJStamp, after Stamp but not future entry
         if (links[0].field("DJstent") == "")​ {// ever off DJ, get only on DJ
+          message("ever off DJ, get only on DJ");
           if (e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ")​
             e.set("DJstent", "")​ ;
         }​
