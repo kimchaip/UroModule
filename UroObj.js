@@ -1354,8 +1354,10 @@ var uro = {
         }​
       }​
       else if (e.field("Date") < links[0].field("DJStamp"))​  {// edit entry before last DJStamp, can't edit
-        message((oldUr.dj=="") +", "+ (oldUr.dj==null)+", "+ (oldUr.dj==undefined));
-        e.set("DJstent", oldUr.dj) ;
+        if(oldUr.dj)
+          e.set("DJstent", oldUr.dj);
+        else
+          e.set("DJstent", "");
       }​
       else if (my.gdate(e.field("Date")) == my.gdate(links[0].field("DJStamp")))​ {// this entry is last DJStamp
         if (links[0].field("DJstent") == "")​ {// this entry is off DJ, get only off or changeDJ​
