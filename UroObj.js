@@ -1334,7 +1334,7 @@ var uro = {
   setDJstent : function (e) {
     let links = e.field("Patient")​;
     if (links.length>0) {
-      message((links[0].field("DJStent")=="") + (e.field("DJstent")==""));
+      message((links[0].field("DJStent")=="") +","+ (e.field("DJstent")==""));
       if (links[0].field("DJStamp") == null) { // never ever DJStamp
         if(e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ")​
           e.set("DJstent", "")​;
