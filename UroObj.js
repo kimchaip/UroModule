@@ -140,8 +140,8 @@ var oldUr = {
     else return "Plan";​
   }​,
   get dj() {
-    if (this.a[11].trim())​ return this.a[11] ;
-    else return " ";​
+    if (this.a[11])​ return this.a[11] ;
+    else return null;​
   }​,
   get opext() {
     if (this.a[12])​ return this.a[12] ;
@@ -1083,7 +1083,7 @@ var pto = {
   }, 
   //DJ stent
   dj : function (e) {
-    if (e.field("DJstent") == " ")​ {
+    if (!e.field("DJstent"))​ {
       e.set("DJStamp", null);
     }
   }, 
@@ -1222,7 +1222,7 @@ var uro = {
       else if(ondj>0||opon>0)
         e.set("DJstent", "on DJ");
       else
-        e.set("DJstent", " ");
+        e.set("DJstent", null);
     }
     else if(oldUr.result && opresult == "" &​& oldUr.result != opresult){
       e.set("Status", "Plan");
@@ -1336,40 +1336,40 @@ var uro = {
     if (links.length>0) {
       if (links[0].field("DJStamp") == null) { // never ever DJStamp
         if(e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ")​
-          e.set("DJstent", " ")​;
+          e.set("DJstent", null)​;
       }​
       else if (e.field("Date") > links[0].field("DJStamp") && my.gdate(e.field("Date")) > ntoday) { // ever DJStamp, future entry
-        if (e.field("DJstent") != " ")​
-          e.set("DJstent", " ")​ ;
+        if (e.field("DJstent"))​
+          e.set("DJstent", null)​ ;
       }​
       else if (e.field("Date") > links[0].field("DJStamp") && my.gdate(e.field("Date")) <= ntoday) { // ever DJStamp, after Stamp but not future entry
-        if (links[0].field("DJstent") == " ")​ {// ever off DJ, get only on DJ
+        if (!links[0].field("DJstent"))​ {// ever off DJ, get only on DJ
           if (e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ")​
-            e.set("DJstent", " ")​ ;
+            e.set("DJstent", null)​ ;
         }​
         else { // ever on DJ or change DJ, get off or change DJ
           if (e.field("DJstent") == "on DJ")​
-            e.set("DJstent", " ")​ ;
+            e.set("DJstent", null)​ ;
         }​
       }​
       else if (e.field("Date") < links[0].field("DJStamp"))​  {// edit entry before last DJStamp, can't edit
         e.set("DJstent", oldUr.dj);
       }​
       else if (my.gdate(e.field("Date")) == my.gdate(links[0].field("DJStamp")))​ {// this entry is last DJStamp
-        if (links[0].field("DJstent") == " ")​ {// this entry is off DJ, get only off or changeDJ​
+        if (!links[0].field("DJstent"))​ {// this entry is off DJ, get only off or changeDJ​
           if (e.field("DJstent") == "on DJ") 
-              e.set("DJstent", " ") ;
+              e.set("DJstent", null) ;
         }​
         else { // this entry is on DJ, must check last DJStamp before
           let ptent = pt.findById(links[0].id) ;
           let d = this.lastDJStamp(ptent, my.dateminus(e.field("Date"), 1)) ;
           if (d != null &​& d.field("DJstent")​ != "off DJ"​) { // ever on or change DJ before -​> get only off or change DJ
             if (e.field("DJstent") == "on DJ") 
-              e.set("DJstent", " ") ;
+              e.set("DJstent", null) ;
           }​ 
           else { // never on DJ or ever off DJ before -​> get only on DJ
             if (e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ") 
-              e.set("DJstent" , " ") ;
+              e.set("DJstent" , null) ;
           }​
         } 
       }​
@@ -1382,7 +1382,7 @@ var uro = {
     let last = null, r = null, u = null;
     if (orlinks.length>0) {
       for (let i in orlinks) {
-        if (orlinks[i].field("DJstent").trim() && orlinks[i].field("Date") > last && my.gdate(orlinks[i].field("Date")) <= my.gdate(date)​) {
+        if (orlinks[i].field("DJstent") && orlinks[i].field("Date") > last && my.gdate(orlinks[i].field("Date")) <= my.gdate(date)​) {
           last = orlinks[i].field("Date");
           r=i;
         }
@@ -1390,7 +1390,7 @@ var uro = {
     }​
     if (bulinks.length>0)​ {
       for (let i in bulinks) {
-        if (bulinks[i].field("DJstent").trim() && bulinks[i].field("Date") > last && my.gdate(bulinks[i].field("Date")) <= my.gdate(date)​) {
+        if (bulinks[i].field("DJstent") && bulinks[i].field("Date") > last && my.gdate(bulinks[i].field("Date")) <= my.gdate(date)​) {
           last = bulinks[i].field("Date");
           u=i;
         }
@@ -1662,14 +1662,13 @@ var uro = {
     if (links.length>0) {
       let ptent = pt.findById(links​[0].id) ;
       let d = this.lastDJStamp(ptent, today) ;
-      let space = " ";
       if (!d) { // not found
-        ptent.set("DJstent", space);
+        ptent.set("DJstent", null);
         ptent.set("DJStamp", null)​;
       } 
       else { // found off, on, change DJ before
         if (d.field("DJstent") == "off DJ") ​{
-          ptent.set("DJstent", space);
+          ptent.set("DJstent", null);
           ptent.set("DJStamp", d.field("Date"));
         }​
         else ​{
