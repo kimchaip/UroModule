@@ -1664,17 +1664,17 @@ var uro = {
       let d = this.lastDJStamp(ptent, today) ;
       let space = " ";
       if (!d) { // not found
-        links[0].set("DJstent", space);
-        links[0].set("DJStamp", null)​;
+        ptent.set("DJstent", space);
+        ptent.set("DJStamp", null)​;
       } 
       else { // found off, on, change DJ before
         if (d.field("DJstent") == "off DJ") ​{
-          links[0].set("DJstent", space);
-          links[0].set("DJStamp", d.field("Date"));
+          ptent.set("DJstent", space);
+          ptent.set("DJStamp", d.field("Date"));
         }​
         else ​{
-          links[0].set("DJstent", "on DJ");
-          links[0].set("DJStamp", d.field("Date"));
+          ptent.set("DJstent", "on DJ");
+          ptent.set("DJStamp", d.field("Date"));
         }​
       }
     }
