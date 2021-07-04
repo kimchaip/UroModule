@@ -1662,11 +1662,11 @@ var uro = {
     if (links.length>0) {
       let ptent = pt.findById(links​[0].id) ;
       let d = this.lastDJStamp(ptent, today) ;
-      let str = d?("found "+d.field("DJstent")):"not found";
-      message(str);
       if (!d) { // not found
         links[0].set("DJstent", " ");
         links[0].set("DJStamp", null)​;
+        let str = links[0].field("DJstent");
+        message(str);
       } 
       else { // found off, on, change DJ before
         if (d.field("DJstent") == "off DJ") ​{
@@ -1677,6 +1677,8 @@ var uro = {
           links[0].set("DJstent", "on DJ");
           links[0].set("DJStamp", d.field("Date"));
         }​
+        let str = links[0].field("DJstent");
+        message(str);
       }
     }
   }, 
