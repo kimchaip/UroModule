@@ -1665,7 +1665,7 @@ var uro = {
       if (!d) { // not found
         links[0].set("DJstent", " ");
         links[0].set("DJStamp", null)​;
-        let str = links[0].field("DJstent");
+        let str = "not found " + links[0].field("DJstent");
         message(str);
       } 
       else { // found off, on, change DJ before
@@ -1677,7 +1677,7 @@ var uro = {
           links[0].set("DJstent", "on DJ");
           links[0].set("DJStamp", d.field("Date"));
         }​
-        let str = links[0].field("DJstent");
+        let str = "found" + links[0].field("DJstent");
         message(str);
       }
     }
