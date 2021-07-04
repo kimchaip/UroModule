@@ -140,7 +140,7 @@ var oldUr = {
     else return "Plan";​
   }​,
   get dj() {
-    if (this.a[11]!=" ")​ return this.a[11] ;
+    if (this.a[11].trim())​ return this.a[11] ;
     else return " ";​
   }​,
   get opext() {
@@ -1662,23 +1662,20 @@ var uro = {
     if (links.length>0) {
       let ptent = pt.findById(links​[0].id) ;
       let d = this.lastDJStamp(ptent, today) ;
+      let space = " ";
       if (!d) { // not found
-        links[0].set("DJstent", " ");
+        links[0].set("DJstent", space);
         links[0].set("DJStamp", null)​;
-        let str = "not found " + links[0].field("DJstent");
-        message(str);
       } 
       else { // found off, on, change DJ before
         if (d.field("DJstent") == "off DJ") ​{
-          links[0].set("DJstent", " ");
+          links[0].set("DJstent", space);
           links[0].set("DJStamp", d.field("Date"));
         }​
         else ​{
           links[0].set("DJstent", "on DJ");
           links[0].set("DJStamp", d.field("Date"));
         }​
-        let str = "found" + links[0].field("DJstent");
-        message(str);
       }
     }
   }, 
