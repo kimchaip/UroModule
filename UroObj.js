@@ -1174,7 +1174,7 @@ var uro = {
         e.set("VisitDate", my.date(e.field("Date")))​;
       }​
     }
-    else if(oldUr.optype!=e.field("ORType")){
+    else if(oldUr.optype!=e.field("ORType") || my.gdate(oldUr.opdate)!=my.gdate(e.field("Date"))){
       if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) == my.gdate(e.field("Date"))){
         if (e.field("VisitType") == "OPD")​
           e.set("VisitType", "Admit")​;
