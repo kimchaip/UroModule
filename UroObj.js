@@ -1226,6 +1226,10 @@ var uro = {
     }
     else if(oldUr.result && opresult == "" &​& oldUr.result != opresult){
       e.set("Status", "Plan");
+      if (e.field("ORType") == "GA") {
+        if (e.field("VisitType") == "OPD")​
+          e.set("VisitType", "Admit")​;
+      }​
     }
   }, 
   runq : function (e) {
