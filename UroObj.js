@@ -1201,9 +1201,9 @@ var uro = {
       changedj = changedj==null?0:changedj.length;
       let opchange = e.field("Op").match(/change|dj/ig);
       opchange = opchange==null?0:opchange.length;
-      let notonly = opresult.match(/งดผ่า|งดเพราะ|งดcase/ig);
+      let notonly = opresult.match(/งดเพราะ/ig);
       notonly = notonly==null?0:notonly.length;
-      let notdone = opresult.match(/ไม่มีคนเฝ้า|ผ่าแล้ว|ไม่พร้อม|นิ่วหลุด|ไม่มา|เลื่อน|ไม่อยาก|นัดผิด|ไม่ทำ|ไปผ่า/ig);
+      let notdone = opresult.match(/ไม่ทำเพราะ/ig);
       notdone = notdone==null?0:notdone.length;
 
       if(notdone>0)​ {
