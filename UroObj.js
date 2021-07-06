@@ -1175,12 +1175,12 @@ var uro = {
       }​
     }
     else if(oldUr.optype!=e.field("ORType") || my.gdate(oldUr.opdate)!=my.gdate(e.field("Date"))){
-      if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) == my.gdate(e.field("Date"))){
+      if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) != my.gdate(my.dateminus(e.field("Date"), 1))){
         if (e.field("VisitType") == "OPD")​
           e.set("VisitType", "Admit")​;
         e.set("VisitDate", my.dateminus(e.field("Date"), 1));
       }
-      else if(e.field("ORType") == "LA" &​& my.gdate(e.field("VisitDate")) == my.gdate(my.dateminus(e.field("Date"), 1))){
+      else if(e.field("ORType") == "LA" &​& my.gdate(e.field("VisitDate")) != my.gdate(e.field("Date"))){
         e.set("VisitDate", my.date(e.field("Date")))​;
       }
     }
