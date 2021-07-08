@@ -1156,11 +1156,13 @@ var uro = {
         holiday = true;
       }​
     }​
-    if (holiday || timeout || my.gday(e.field("Date"))==6 || my.gday(e.field("Date"))==0) {
-      e.set("OpExtra", true);
-    }​
-    else {
-      e.set("OpExtra", false);
+    if(e.field("AutoOpExtra"))
+      if (holiday || timeout || my.gday(e.field("Date"))==6 || my.gday(e.field("Date"))==0) {
+        e.set("OpExtra", true);
+      }​
+      else {
+        e.set("OpExtra", false);
+      }
     }
   }, 
   setvisitdate ​: function (e)​ {
