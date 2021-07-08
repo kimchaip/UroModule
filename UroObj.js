@@ -951,70 +951,67 @@ var fill = {
     }​
   }, 
   color : function (e, lib)​ {
-    let links = e.field("Patient");
-    if (links.length>0) {
-      if(lib=="uro" || lib=="backup") {
-        if(e.field("Status")=="Not") {
-          if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
+    if(lib=="uro" || lib=="backup") {
+      if(e.field("Status")=="Not") {
+        if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
+      } 
+      else if(e.field("Status")=="Plan") {
+        if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​)​{
+          if (e.field("VisitType")=="OPD") {
+            if(e.field("Color")​!="#A7FF87") e.set("Color", "#A7FF87"); 
+          } 
+          else { // Admit
+            if(e.field("Color")​!="#5CD3FF") e.set("Color",​ "#5CD3FF"); 
+          } 
         } 
-        else if(e.field("Status")=="Plan") {
-          if (links[0].field("Status")=="Active" || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​)​{
-            if (e.field("VisitType")=="OPD") {
-              if(e.field("Color")​!="#A7FF87") e.set("Color", "#A7FF87"); 
-            } 
-            else { // Admit
-              if(e.field("Color")​!="#5CD3FF") e.set("Color",​ "#5CD3FF"); 
-            } 
-          } 
-          else { // no Active
-            if (e.field("VisitType")=="OPD")​{
-              if(e.field("Color")​!="#ABC39A") e.set("Color", "#ABC39A");
-            }​
-            else { // Admit
-              if(e.field("Color")​!="#66B2FF") e.set("Color", "#66B2FF");
-            } 
-          } 
-        }
-        else if(e.field("Status")=="Done") {
-          if (links[0].field("Status")=="Active" || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​)​{
-            if (e.field("VisitType")=="OPD") {
-              if(e.field("Color")​!="#6EB73D") e.set("Color", "#6EB73D"); 
-            } 
-            else { // Admit
-              if(e.field("Color")​!="#00B0F0") e.set("Color",​ "#00B0F0"); 
-            } 
-          } 
-          else { // no Active
-            if (e.field("VisitType")=="OPD")​{
-              if(e.field("Color")​!="#577244") e.set("Color", "#577244");
-            }​
-            else { // Admit
-              if(e.field("Color")​!="#3974AA") e.set("Color", "#3974AA");
-            } 
-          } 
-        }
-      }
-      else {
-        if(e.field("EntryMx")=="Not") {
-          if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
-        } 
-        else if(links[0].field("Status")=="Active" || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​) {
+        else { // no Active
           if (e.field("VisitType")=="OPD")​{
-            if(e.field("Color")​!="#6EB73D") e.set("Color", "#6EB73D");
+            if(e.field("Color")​!="#ABC39A") e.set("Color", "#ABC39A");
           }​
           else { // Admit
-            if(e.field("Color")​!="#00B0F0") e.set("Color", "#00B0F0");
+            if(e.field("Color")​!="#66B2FF") e.set("Color", "#66B2FF");
           } 
         } 
-        else { // not Active
+      }
+      else if(e.field("Status")=="Done") {
+        if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​)​{
+          if (e.field("VisitType")=="OPD") {
+            if(e.field("Color")​!="#6EB73D") e.set("Color", "#6EB73D"); 
+          } 
+          else { // Admit
+            if(e.field("Color")​!="#00B0F0") e.set("Color",​ "#00B0F0"); 
+          } 
+        } 
+        else { // no Active
           if (e.field("VisitType")=="OPD")​{
             if(e.field("Color")​!="#577244") e.set("Color", "#577244");
           }​
           else { // Admit
-            if(e.field("Color")!="#3974AA") e.set("Color", "#3974AA");
+            if(e.field("Color")​!="#3974AA") e.set("Color", "#3974AA");
           } 
-        }
-      }​
+        } 
+      }
+    }
+    else { // lib == consult
+      if(e.field("EntryMx")=="Not") {
+        if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
+      } 
+      else if((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​) {
+        if (e.field("VisitType")=="OPD")​{
+          if(e.field("Color")​!="#6EB73D") e.set("Color", "#6EB73D");
+        }​
+        else { // Admit
+          if(e.field("Color")​!="#00B0F0") e.set("Color", "#00B0F0");
+        } 
+      } 
+      else { // not Active
+        if (e.field("VisitType")=="OPD")​{
+          if(e.field("Color")​!="#577244") e.set("Color", "#577244");
+        }​
+        else { // Admit
+          if(e.field("Color")!="#3974AA") e.set("Color", "#3974AA");
+        } 
+      }
     }​
   }​
 }​;
