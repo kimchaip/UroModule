@@ -956,7 +956,7 @@ var fill = {
         if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
       } 
       else if(e.field("Status")=="Plan") {
-        if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​)​{
+        if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​)​{
           if (e.field("VisitType")=="OPD") {
             if(e.field("Color")​!="#A7FF87") e.set("Color", "#A7FF87"); 
           } 
@@ -974,7 +974,7 @@ var fill = {
         } 
       }
       else if(e.field("Status")=="Done") {
-        if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​)​{
+        if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​)​{
           if (e.field("VisitType")=="OPD") {
             if(e.field("Color")​!="#6EB73D") e.set("Color", "#6EB73D"); 
           } 
@@ -996,7 +996,7 @@ var fill = {
       if(e.field("EntryMx")=="Not") {
         if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
       } 
-      else if((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​) {
+      else if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​)​{
         if (e.field("VisitType")=="OPD")​{
           if(e.field("Color")​!="#6EB73D") e.set("Color", "#6EB73D");
         }​
