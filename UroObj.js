@@ -1156,7 +1156,7 @@ var uro = {
         holiday = true;
       }​
     }​
-    if(e.field("AutoOpExtra"))
+    if(e.field("AutoOpExtra")){
       if (holiday || timeout || my.gday(e.field("Date"))==6 || my.gday(e.field("Date"))==0) {
         e.set("OpExtra", true);
       }​
