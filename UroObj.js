@@ -71,9 +71,12 @@ var oldUr = {
   save : function (e)​ {
     this.a = [] ;​
     if(e) {
-      let links = e.field("Patient"); 
+      let links = e.field("Patient");
       this.a.push(e.field("Date")?e.field("Date").toDateString():null)​;	       //0
-      this.a.push(links.length>0?links​[0].title:null);           //​1
+      if(links.length)
+        this.a.push(links​[0].title);           //​1
+      else
+        this.a.push(null);                     //​1
       this.a.push(e.field("ORType"));          //​2
       this.a.push(e.field("Que"));             //​3
       this.a.push(e.field("VisitType"));       //​4
@@ -182,7 +185,10 @@ var oldCs = {
     if(e) {
       let links = e.field("Patient"); 
       this.a.push(e.field("ConsultDate")?e.field("ConsultDate").toDateString():null)​;	       //0
-      this.a.push(links.length>0?links​[0].title:null);               //​1
+      if(links.length)
+        this.a.push(links​[0].title);           //​1
+      else
+        this.a.push(null);                     //​1
       this.a.push(e.field("VisitType"));       //​2
       this.a.push(e.field("Ward"));            //​3
       this.a.push(e.field("VisitDate")?e.field("VisitDate").toDateString():null);       //​4
