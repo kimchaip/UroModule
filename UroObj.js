@@ -774,8 +774,8 @@ var emx = {
 }​;
 var fill = {
   sumpasthx : function (e, date) {
-    let orlinks = ptent.linksFrom("UroBase", "Patient");
-    let bulinks = ptent.linksFrom("Backup", "Patient");
+    let orlinks = e.linksFrom("UroBase", "Patient");
+    let bulinks = e.linksFrom("Backup", "Patient");
     let list = [] ;
     let str = "";
     if (orlinks.length>0) {
