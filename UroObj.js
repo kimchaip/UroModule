@@ -663,6 +663,7 @@ var emx = {
       if (!found) {
         let ent​ = new Object();
         ent​[field1] = my.date(e.field("AppointDate")​);
+        
         ent​["PastHx"] = e.field("PastHx")​;
         ent​["Inv"] = e.field("Inv").join()​;
         ent​["InvResult"] = e.field("InvResult");
@@ -736,6 +737,7 @@ var emx = {
         fill.color(last, libto) ;
         message("successfully created new Entry") ;
         if (libto == "uro") ​{
+          fill.pasthx(last);
           let dxe = uro.createautofill​(last)​;
           uro.setx15(last)​;
           let ope = uro.createoplist(last)​;
@@ -771,6 +773,46 @@ var emx = {
   }​
 }​;
 var fill = {
+  sumpasthx : function (e, date) {
+    let orlinks = ptent.linksFrom("UroBase", "Patient");
+    let bulinks = ptent.linksFrom("Backup", "Patient");
+    let list = [] ;
+    let str = "";
+    if (orlinks.length>0) {
+      for (let i in orlinks) {
+        if (orlinks[i].field("Status")=="Done" && my.gdate(orlinks[i].field("Date")) <= my.gdate(date)) {
+          list.push(orlinks[i]);
+        }
+      }
+    }​
+    if (bulinks.length>0)​ {
+      for (let i in bulinks) {
+        if (bulinks[i].field("Status")=="Done"  && my.gdate(bulinks[i].field("Date")) <= my.gdate(date)) {
+          list.push(bulinks[i]);
+        }
+      }
+    }​
+    list = list.sort((a, b) => {
+      if(a.field("Date")<b.field("Date"))
+        return -1;
+      else if(a.field("Date")>b.field("Date"))
+        return 1;
+      else
+        return 0;
+    });
+    for(let i in list){
+      if(str) str += "\n";
+      str += list[i].field("Dx") + ">" + o.field("Op") + " ") + o.field("Date").toDateString();
+    }
+    return str;
+  },
+  pasthx : function(e) {
+    let links = e.field("Patient");
+    if(links.length && !e.field("PastHx")){
+      let ptent = pt.findById(links[0].id) ;
+      e.set("PastHx", this.sumpasthx(ptent, my.dateminus(e.field("Date"), 1)));
+    }
+  }, 
   track​ : function (e, lib) {
     let field1 = "" ;
     if(lib=="uro" || lib=="backup") {
@@ -1874,6 +1916,7 @@ var trig = {
     uro.setfuture(e)​;
     uro.setopextra(e)​;
     uro.setvisitdate(e)​;
+    fill.pasthx(e);
     fill.track​(e, "uro")​;
     if (value=="create")
       mer.merge(e, false)​;
@@ -1946,6 +1989,7 @@ var trig = {
     uro.setfuture(e)​;
     uro.setopextra(e)​;
     uro.setvisitdate(e)​;
+    fill.pasthx(e);
     fill.track​(e, "backup")​;
     if (value=="create")
       mer.merge(e, false)​;
@@ -2014,6 +2058,7 @@ var trig = {
       cso.setnewdate(e, false)​;
     }​
     cso.setvisitdate(e)​;
+    fill.pasthx(e);
     fill.track​(e, "consult")​;
     if (value=="create")
       mer.merge(e, false)​;
