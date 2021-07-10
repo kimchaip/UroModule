@@ -83,14 +83,16 @@
 	- setvisitdate
 	- resetcolor
 # trig {}​
+	* PatientOpenEdit
 	* PatientBeforeEdit
+        * PatientAfterEdit
 	* PatientBeforeViewCard 
 	* PatientBeforeOpenLib
 	* UroOpenEdit
 	* UroBeforeEdit
 	* UroAfterEdit
 	* UroBeforeViewCard
-	* UroBeforeOpenLib
+        * UroBeforeOpenLib
         * BackupOpenEdit
         * BackupBeforeEdit
         * BackupAfterEdit
