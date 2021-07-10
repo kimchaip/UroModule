@@ -802,7 +802,7 @@ var fill = {
     });
     for(let i in list){
       if(str) str += "\n";
-      str += list[i].field("Dx") + ">" + o.field("Op") + " ") + o.field("Date").toDateString();
+      str += list[i].field("Dx") + ">" + list[i].field("Op") + " " + list[i].field("Date").toDateString();
     }
     return str;
   },
