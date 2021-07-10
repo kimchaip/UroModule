@@ -202,10 +202,22 @@ var oldPt = {
     this.a = [] ;​
     if(e.id) {
       this.a.push(e.field("PtName"));              //​0
-      this.a.push(e.field("YY"));                  //​1
-      this.a.push(e.field("MM"));                  //​2
-      this.a.push(e.field("DD"));                  //​3
-      this.a.push(e.field("Birthday")?e.field("Birthday").toDateString():null)​;	       //4
+      if(e.field("YY"))
+        this.a.push(e.field("YY"));                //​1
+      else
+        this.a.push(null);
+      if(e.field("MM"))
+        this.a.push(e.field("MM"));                //​2
+      else
+        this.a.push(null);
+      if(e.field("DD"))
+        this.a.push(e.field("DD"));                  //​3
+      else
+        this.a.push(null);
+      if(e.field("Birthday"))
+        this.a.push(e.field("Birthday").toDateString());                //​4
+      else
+        this.a.push(null);
       this.a.push(e.field("HN"));                  //​5
       this.a.push(e.field("Phone"));               //​6
       this.a.push(e.field("Contact"));             //​7
