@@ -1,4 +1,4 @@
-# Date Object
+# MyDate Object
 ## my {}​
 	- date
 	- dateadd
@@ -12,9 +12,9 @@
 # Urobase Object
 ## Library
 	pt, or, cs, bu
-## old {}​
-	- getstart
-	- store
+## oldUr, oldCs, oldPt {}​
+	- save
+	- load
 	- get :
 		opdate, csdate, patient, 
 		optype, que, vstype, 
