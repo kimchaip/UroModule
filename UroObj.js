@@ -200,11 +200,8 @@ var oldPt = {
   },
   save : function (e)​ {
     this.a = [] ;​
-    if(e) {
-      if(e.id)
-        this.a.push(e.field("PtName"));            //​0
-      else
-        this.a.push(null);                         //0
+    if(e.id) {
+      this.a.push(e.field("PtName"));              //​0
       this.a.push(e.field("YY"));                  //​1
       this.a.push(e.field("MM"));                  //​2
       this.a.push(e.field("DD"));                  //​3
