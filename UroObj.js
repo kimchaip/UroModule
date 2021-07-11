@@ -667,9 +667,10 @@ var emx = {
         ent​["PastHx"] = e.field("PastHx")​;
         ent​["Inv"] = e.field("Inv").join()​;
         ent​["InvResult"] = e.field("InvResult");
-        ent​["Dx"] = e.field("Dx")​;
         if (libto == "uro" &​& libfrom == "UroBase") {
           ent​["Op"] = e.field("Operation")​;
+          let newdx = fill.mostdxbyop(e.field("Operation"));
+          ent["Dx"] = newdx?newdx:e.field("Dx")​;
           ent​["ORType"] = e.field("ORType")​;
           ent​["VisitType"] = e.field("VisitType")​;
           if (e.field("VisitType")​== "Admit")​
@@ -685,6 +686,7 @@ var emx = {
             ent​["Future"] = null;
         }​
         else if (libto == "consult" &​& libfrom == "UroBase") {
+          ent​["Dx"] = e.field("Dx")​;
           ent​["VisitType"] = "OPD";
           ent​["VisitDate"] = my.date(e.field("AppointDate")​);
           if (e.field("Photo").length>0)​
@@ -692,6 +694,8 @@ var emx = {
         }​
         else if (libto == "uro" &​& libfrom == "Backup") {
           ent​["Op"] = e.field("Operation")​;
+          let newdx = fill.mostdxbyop(e.field("Operation"));
+          ent["Dx"] = newdx?newdx:e.field("Dx")​;
           ent​["ORType"] = e.field("ORType")​;
           ent​["VisitType"] = e.field("VisitType")​;
           if (e.field("VisitType")​== "Admit")​
@@ -707,6 +711,7 @@ var emx = {
             ent​["Future"] = null;
         }​
         else if (libto == "consult" &​& libfrom == "Backup") {
+          ent​["Dx"] = e.field("Dx")​;
           ent​["VisitType"] = "OPD";
           ent​["VisitDate"] = my.date(e.field("AppointDate")​);
           if (e.field("Photo").length>0)​
@@ -716,6 +721,8 @@ var emx = {
           ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
           ent​["RecordDate"] = today​;
 	  ent​["Op"] = e.field("Operation")​;
+          let newdx = fill.mostdxbyop(e.field("Operation"));
+          ent["Dx"] = newdx?newdx:e.field("Dx")​;
           if (e.field("Photo").length>0)​
             ent["Photo"] = e.field("Photo").join()​;
           if(my.gdate(ent​[field1])​>=ntoday​)​
@@ -724,6 +731,7 @@ var emx = {
             ent​["Future"] = null;
         }​
         else if (libto == "consult" &​& libfrom == "Consult") {​
+          ent​["Dx"] = e.field("Dx")​;
           ent["VisitType"]​ = "OPD" ;
           ent["VisitDate"]​ = my.date(e.field("AppointDate"));
           if (e.field("Photo").length>0)​
@@ -812,7 +820,24 @@ var fill = {
       let ptent = pt.findById(links[0].id) ;
       e.set("PastHx", this.sumpasthx(ptent, my.dateminus(e.field("Date"), 1)));
     }
-  }, 
+  },
+  mostdxbyop : function (op) {
+    let dx = libByName("DxAutoFill");
+    let dxs = dx.entries();
+    let list = dxs.filter((e)=>e.field("Op")==op);
+    if(list.length){
+      results = list.sort((a, b) => {
+        if(a.field("count")>b.field("count"))
+          return -1;
+        else if(a.field("count")<b.field("count"))
+          return 1;
+        else
+          return 0;
+      });
+      return results[0].field("Dx");
+    }
+    return "";
+  },
   track​ : function (e, lib) {
     let field1 = "" ;
     if(lib=="uro" || lib=="backup") {
