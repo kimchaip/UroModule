@@ -740,12 +740,12 @@ var emx = {
         lib.create(ent);
         let last = lib.entries()[0];
         last.link("Patient", links[0]);
+        fill.pasthx(last, libto);
         fill.track(last, libto)​;
         fill.underlying(last)​;
         fill.color(last, libto) ;
         message("successfully created new Entry") ;
         if (libto == "uro") ​{
-          fill.pasthx(last, libfrom);
           let dxe = uro.createautofill​(last)​;
           uro.setx15(last)​;
           let ope = uro.createoplist(last)​;
