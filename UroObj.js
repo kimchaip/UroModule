@@ -745,7 +745,7 @@ var emx = {
         fill.color(last, libto) ;
         message("successfully created new Entry") ;
         if (libto == "uro") ​{
-          fill.pasthx(last);
+          fill.pasthx(last, libfrom);
           let dxe = uro.createautofill​(last)​;
           uro.setx15(last)​;
           let ope = uro.createoplist(last)​;
@@ -814,11 +814,17 @@ var fill = {
     }
     return str;
   },
-  pasthx : function(e) {
+  pasthx : function(e, lib) {
     let links = e.field("Patient");
+    let date;
+    if(lib=="consult")
+      date = e.field("ConsultDate")
+    else
+      date = e.field("Date")
+
     if(links.length && !e.field("PastHx")){
       let ptent = pt.findById(links[0].id) ;
-      e.set("PastHx", this.sumpasthx(ptent, my.dateminus(e.field("Date"), 1)));
+      e.set("PastHx", this.sumpasthx(ptent, my.dateminus(date, 1)));
     }
   },
   mostdxbyop : function (op) {
@@ -1941,7 +1947,7 @@ var trig = {
     uro.setfuture(e)​;
     uro.setopextra(e)​;
     uro.setvisitdate(e)​;
-    fill.pasthx(e);
+    fill.pasthx(e, "uro");
     fill.track​(e, "uro")​;
     if (value=="create")
       mer.merge(e, false)​;
@@ -2014,7 +2020,7 @@ var trig = {
     uro.setfuture(e)​;
     uro.setopextra(e)​;
     uro.setvisitdate(e)​;
-    fill.pasthx(e);
+    fill.pasthx(e, "backup");
     fill.track​(e, "backup")​;
     if (value=="create")
       mer.merge(e, false)​;
@@ -2083,7 +2089,7 @@ var trig = {
       cso.setnewdate(e, false)​;
     }​
     cso.setvisitdate(e)​;
-    fill.pasthx(e);
+    fill.pasthx(e, "consult");
     fill.track​(e, "consult")​;
     if (value=="create")
       mer.merge(e, false)​;
