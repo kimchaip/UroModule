@@ -952,7 +952,7 @@ var fill = {
         }
         else if (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ ) { // D/C
           let dead = e.field(field3).match(/dead|death/ig);
-          dead = dead==null?0:dead.length​;
+          dead = dead?dead.length​:0;
           if(dead>0){
             links[0].set("Status" ,"Dead");
           }
