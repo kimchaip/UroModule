@@ -1993,6 +1993,11 @@ var trig = {
         break;
       }​
     }
+    let e = entry();
+    if(e.id){
+      oldUr.load(e)​;
+      fill.ptstatus(e)​;
+    }
   }, 
   UroBeforeDelete : function (e)​ {
     if (e.field("Merge")​==true)​ {
@@ -2066,6 +2071,11 @@ var trig = {
         break;
       }​
     }
+    let e = entry();
+    if(e.id){
+      oldUr.load(e)​;
+      fill.ptstatus(e)​;
+    }
   }, 
   BackupBeforeDelete : function (e)​ {
     if (e.field("Merge")​==true)​ {
@@ -2112,6 +2122,12 @@ var trig = {
   }, 
   ConsultBeforeOpenLib : function (all) {
     cso.resetcolor(all)​;
+  }, 
+  ConsultUpdatingField : function (e) {
+    if(e.id){
+      oldUr.load(e)​;
+      fill.ptstatus(e)​;
+    }
   }, 
   ConsultBeforeDelete : function (e)​ {
     if (e.field("Merge")​==true)​ {
