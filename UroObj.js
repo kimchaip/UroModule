@@ -762,7 +762,7 @@ var emx = {
     return ob;
   }, 
   flu : function (e)​ {
-    if (e.field("EntryMx")​== "F/U" &&  e.field("AppointDate")!= null) {
+    if (e.field("EntryMx")​== "F/U" &&  e.field("AppointDate")) {
       this.createnew(e, "consult")​;
     }​
     else if (e.field("EntryMx")​=="F/U")​ {
@@ -771,7 +771,7 @@ var emx = {
     }​
   }, 
   setor : function (e)​ {
-    if (e.field("EntryMx")​== "set OR" &&  e.field("AppointDate")!= null) {
+    if (e.field("EntryMx")​== "set OR" &&  e.field("AppointDate")) {
       this.createnew(e, "uro").show()​;
     }​
     else if (e.field("EntryMx")​=="set OR")​ {
@@ -1996,7 +1996,13 @@ var trig = {
     let e = entry();
     if(e.id){
       oldUr.load(e)​;
+      uro.setnewdate(e, false)​;
+      uro.setvisitdate(e)​;
+      fill.track​(e, "uro")​;
       fill.ptstatus(e)​;
+      fill.color(e, "uro")​;
+      mer.other(e)​;
+      oldUr.save(e)​;
     }
   }, 
   UroBeforeDelete : function (e)​ {
@@ -2074,7 +2080,13 @@ var trig = {
     let e = entry();
     if(e.id){
       oldUr.load(e)​;
+      uro.setnewdate(e, false)​;
+      uro.setvisitdate(e)​;
+      fill.track​(e, "backup")​;
       fill.ptstatus(e)​;
+      fill.color(e, "backup")​;
+      mer.other(e)​;
+      oldUr.save(e)​;
     }
   }, 
   BackupBeforeDelete : function (e)​ {
@@ -2125,8 +2137,14 @@ var trig = {
   }, 
   ConsultUpdatingField : function (e) {
     if(e.id){
-      oldUr.load(e)​;
+      oldCs.load(e)​;
+      cso.setnewdate(e, false)​;
+      cso.setvisitdate(e)​;
+      fill.track​(e, "consult")​;
       fill.ptstatus(e)​;
+      fill.color(e, "consult")​;
+      mer.other(e)​;
+      oldCs.save(e)​;
     }
   }, 
   ConsultBeforeDelete : function (e)​ {
