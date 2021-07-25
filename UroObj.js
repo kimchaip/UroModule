@@ -1982,7 +1982,7 @@ var trig = {
   UroBeforeOpenLib : function (all) {
     uro.resetcolor(all)​;
   }, 
-  UroUpdatingField : function (all) {
+  UroBeforeUpdatingField : function (e, all) {
     for(let i in all) {
       // update que
       oldUr.load(all[i]​)​;
@@ -1993,12 +1993,17 @@ var trig = {
         break;
       }​
     }
-    let e = entry();
     if(e.id){
       oldUr.load(e)​;
       uro.setnewdate(e, false)​;
       uro.setvisitdate(e)​;
       fill.track​(e, "uro")​;
+      uro.runq(e)​;
+    }
+  }, 
+  UroAfterUpdatingField : function (e) {
+    if(e.id){
+      oldUr.load(e)​;
       fill.ptstatus(e)​;
       fill.color(e, "uro")​;
       mer.other(e)​;
@@ -2066,7 +2071,7 @@ var trig = {
   BackupBeforeOpenLib : function (all) {
     uro.resetcolor(all)​;
   }, 
-  BackupUpdatingField : function (all) {
+  BackupBeforeUpdatingField : function (e, all) {
     for(let i in all) {
       // update que
       oldUr.load(all[i]​)​;
@@ -2077,12 +2082,17 @@ var trig = {
         break;
       }​
     }
-    let e = entry();
     if(e.id){
       oldUr.load(e)​;
       uro.setnewdate(e, false)​;
       uro.setvisitdate(e)​;
       fill.track​(e, "backup")​;
+      uro.runq(e)​;
+    }
+  }, 
+  BackupAfterUpdatingField : function (e) {
+    if(e.id){
+      oldUr.load(e)​;
       fill.ptstatus(e)​;
       fill.color(e, "backup")​;
       mer.other(e)​;
@@ -2135,12 +2145,17 @@ var trig = {
   ConsultBeforeOpenLib : function (all) {
     cso.resetcolor(all)​;
   }, 
-  ConsultUpdatingField : function (e) {
+  ConsultBeforeUpdatingField : function (e) {
     if(e.id){
       oldCs.load(e)​;
       cso.setnewdate(e, false)​;
       cso.setvisitdate(e)​;
       fill.track​(e, "consult")​;
+    }
+  }, 
+  ConsultAfterUpdatingField : function (e) {
+    if(e.id){
+      oldCs.load(e)​;
       fill.ptstatus(e)​;
       fill.color(e, "consult")​;
       mer.other(e)​;
