@@ -162,7 +162,7 @@ var oldCs = {
   }​,
   get vsdate() {
     if (this.a[4])​ return my.date(new Date(this.a[4])) ;
-    else return "Admit";
+    else return null;
   }​,
   get dcdate() {
     if (this.a[5])​ return my.date(new Date(this.a[5])) ;
