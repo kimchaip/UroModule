@@ -1983,12 +1983,15 @@ var trig = {
     uro.resetcolor(all)​;
   }, 
   UroBeforeUpdatingField : function (e) {
+    message(e.field("Previous"));
+    if(e.field("Previous")){
     oldUr.load(e)​;
     uro.setnewdate(e, false)​;
     uro.setvisitdate(e)​;
     fill.track​(e, "uro")​;
     if(e.field("Que")​!=oldUr.que &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
       uro.runq(e)​;
+    }
     }
   }, 
   UroAfterUpdatingField : function (e) {
