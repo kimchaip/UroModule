@@ -1984,7 +1984,7 @@ var trig = {
   }, 
   UroBeforeUpdatingField : function (e, all) {
     if(e){
-      message("viewcard");
+      message("viewcard" + typeof e);
       oldUr.load(e)​;
       uro.setnewdate(e, false)​;
       uro.setvisitdate(e)​;
@@ -1992,7 +1992,7 @@ var trig = {
       uro.runq(e)​;
     }
     else {
-      message("viewlist");
+      message("viewlist" + typeof e);
       for(let i in all) {
         // update que
         oldUr.load(all[i]​)​;
