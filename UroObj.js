@@ -1982,24 +1982,21 @@ var trig = {
   UroBeforeOpenLib : function (all) {
     uro.resetcolor(all)​;
   }, 
-  UroBeforeUpdatingField : function (e, all) {
+  UroBeforeUpdatingField : function (e) {
     oldUr.load(e)​;
+    uro.setnewdate(e, false)​;
+    uro.setvisitdate(e)​;
+    fill.track​(e, "uro")​;
     if(e.field("Que")​!=oldUr.que &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
-      uro.setnewdate(e, false)​;
-      uro.setvisitdate(e)​;
-      fill.track​(e, "uro")​;
       uro.runq(e)​;
-      oldUr.save(e);
     }
   }, 
   UroAfterUpdatingField : function (e) {
-    if(e.id){
-      oldUr.load(e)​;
-      fill.ptstatus(e)​;
-      fill.color(e, "uro")​;
-      mer.other(e)​;
-      oldUr.save(e)​;
-    }
+    oldUr.load(e)​;
+    fill.ptstatus(e)​;
+    fill.color(e, "uro")​;
+    mer.other(e)​;
+    oldUr.save(e)​;
   }, 
   UroBeforeDelete : function (e)​ {
     if (e.field("Merge")​==true)​ {
