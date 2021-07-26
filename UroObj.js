@@ -1986,6 +1986,7 @@ var trig = {
     fill.track​(e, "uro")​;
     if(e.field("Que")​!=oldUr.que &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
       uro.runq(e)​;
+      oldUr.save(e)​;
     }
   }, 
   UroAfterUpdatingField : function (e) {
