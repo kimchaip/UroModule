@@ -1983,8 +1983,8 @@ var trig = {
     uro.resetcolor(all)​;
   }, 
   UroBeforeUpdatingField : function (e, all) {
-    if(e){
-      message("viewcard" + typeof e);
+    if(e.id){
+      message("viewcard" + e.id);
       oldUr.load(e)​;
       uro.setnewdate(e, false)​;
       uro.setvisitdate(e)​;
