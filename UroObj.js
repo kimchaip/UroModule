@@ -1983,26 +1983,13 @@ var trig = {
     uro.resetcolor(all)​;
   }, 
   UroBeforeUpdatingField : function (e, all) {
-    if(e.id){
-      message("viewcard" + e.id);
-      oldUr.load(e)​;
+    oldUr.load(e)​;
+    if(e.field("Que")​!=oldUr.que &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
       uro.setnewdate(e, false)​;
       uro.setvisitdate(e)​;
       fill.track​(e, "uro")​;
       uro.runq(e)​;
-    }
-    else {
-      message("viewlist" + typeof e);
-      for(let i in all) {
-        // update que
-        oldUr.load(all[i]​)​;
-        if(all[i].field("Que")​!=oldUr.que &​& all[i].field("ORType")​=="GA" &​& all[i].field("Status") != "Not") {
-          uro.setnewdate(all[i], false)​;
-          uro.runq(all[i]​)​;
-          oldUr.save(all[i]);
-          break;
-        }​
-      }
+      oldUr.save(e);
     }
   }, 
   UroAfterUpdatingField : function (e) {
