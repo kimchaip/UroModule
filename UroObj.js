@@ -11,33 +11,32 @@ var oldUr = {
   },
   save : function (e)​ {
     this.a = [] ;​
-    if(e.id) {
-      this.a.push(e.field("Date")?e.field("Date").toDateString():null)​;	       //0
-      let links = e.field("Patient");
-      if(links.length)
-        this.a.push(links​[0].title);           //​1
-      else
-        this.a.push(null);                     //1
-      this.a.push(e.field("ORType"));          //​2
-      this.a.push(e.field("Que"));             //​3
-      this.a.push(e.field("VisitType"));       //​4
-      this.a.push(e.field("Ward"));            //​5
-      this.a.push(e.field("VisitDate")?e.field("VisitDate").toDateString():null);       //​6
-      this.a.push(e.field("DischargeDate")?e.field("DischargeDate").toDateString():null);   //​7
-      this.a.push(e.field("EntryMx"));         //​8
-      this.a.push(e.field("AppointDate")?e.field("AppointDate").toDateString():null​);     //​9
-      this.a.push(e.field("Status"));         //​10
-      this.a.push(e.field("DJstent"));        //​11
-      this.a.push(e.field("OpExtra"));        //​12
-      this.a.push(e.field("Bonus"));          //​13
-      this.a.push(e.field("RecordDate")?e.field("RecordDate").toDateString():null);     //​14
-      this.a.push(e.field("Dx"));             //​15
-      this.a.push(e.field("Op"));             //​16
-      this.a.push(e.field("OpResult"));       //​17
-      this.a.push(e.field("Track"));          //​18
-            
-      e.set("Previous", this.a.join());
-    }
+
+    this.a.push(e.field("Date")?e.field("Date").toDateString():null)​;	       //0
+    let links = e.field("Patient");
+    if(links.length)
+      this.a.push(links​[0].title);           //​1
+    else
+      this.a.push(null);                     //1
+    this.a.push(e.field("ORType"));          //​2
+    this.a.push(e.field("Que"));             //​3
+    this.a.push(e.field("VisitType"));       //​4
+    this.a.push(e.field("Ward"));            //​5
+    this.a.push(e.field("VisitDate")?e.field("VisitDate").toDateString():null);       //​6
+    this.a.push(e.field("DischargeDate")?e.field("DischargeDate").toDateString():null);   //​7
+    this.a.push(e.field("EntryMx"));         //​8
+    this.a.push(e.field("AppointDate")?e.field("AppointDate").toDateString():null​);     //​9
+    this.a.push(e.field("Status"));         //​10
+    this.a.push(e.field("DJstent"));        //​11
+    this.a.push(e.field("OpExtra"));        //​12
+    this.a.push(e.field("Bonus"));          //​13
+    this.a.push(e.field("RecordDate")?e.field("RecordDate").toDateString():null);     //​14
+    this.a.push(e.field("Dx"));             //​15
+    this.a.push(e.field("Op"));             //​16
+    this.a.push(e.field("OpResult"));       //​17
+    this.a.push(e.field("Track"));          //​18
+    
+    e.set("Previous", this.a.join());
   },
   get opdate() {
     if (this.a[0])​ return my.date(new Date(this.a[0]))​;
@@ -123,26 +122,25 @@ var oldCs = {
   },
   save : function (e)​ {
     this.a = [] ;​
-    if(e.id) {
-      this.a.push(e.field("ConsultDate")?e.field("ConsultDate").toDateString():null)​;	       //0
-      let links = e.field("Patient");
-      if(links.length)
-        this.a.push(links​[0].title);           //​1
-      else
-        this.a.push(null);                     //​1
-      this.a.push(e.field("VisitType"));       //​2
-      this.a.push(e.field("Ward"));            //​3
-      this.a.push(e.field("VisitDate")?e.field("VisitDate").toDateString():null);       //​4
-      this.a.push(e.field("DischargeDate")?e.field("DischargeDate").toDateString():null);   //​5
-      this.a.push(e.field("EntryMx"));         //​6
-      this.a.push(e.field("AppointDate")?e.field("AppointDate").toDateString():null);     //​7
-      this.a.push(e.field("Dx"));              //​8
-      this.a.push(e.field("Rx"));              //​9
-      this.a.push(e.field("Note"));           //​10
-      this.a.push(e.field("Track"));          //​11
-      
-      e.set("Previous", this.a.join());
-    }​
+
+    this.a.push(e.field("ConsultDate")?e.field("ConsultDate").toDateString():null)​;	       //0
+    let links = e.field("Patient");
+    if(links.length)
+      this.a.push(links​[0].title);           //​1
+    else
+      this.a.push(null);                     //​1
+    this.a.push(e.field("VisitType"));       //​2
+    this.a.push(e.field("Ward"));            //​3
+    this.a.push(e.field("VisitDate")?e.field("VisitDate").toDateString():null);       //​4
+    this.a.push(e.field("DischargeDate")?e.field("DischargeDate").toDateString():null);   //​5
+    this.a.push(e.field("EntryMx"));         //​6
+    this.a.push(e.field("AppointDate")?e.field("AppointDate").toDateString():null);     //​7
+    this.a.push(e.field("Dx"));              //​8
+    this.a.push(e.field("Rx"));              //​9
+    this.a.push(e.field("Note"));           //​10
+    this.a.push(e.field("Track"));          //​11
+    
+    e.set("Previous", this.a.join());
   },
   get csdate() {
     if (this.a[0])​ return my.date(new Date(this.a[0]))​;
@@ -200,30 +198,29 @@ var oldPt = {
   },
   save : function (e)​ {
     this.a = [] ;​
-    if(e.id) {
-      this.a.push(e.field("PtName"));              //​0
-      if(e.field("YY"))
-        this.a.push(e.field("YY"));                //​1
-      else
-        this.a.push(null);
-      if(e.field("MM"))
-        this.a.push(e.field("MM"));                //​2
-      else
-        this.a.push(null);
-      if(e.field("DD"))
-        this.a.push(e.field("DD"));                  //​3
-      else
-        this.a.push(null);
-      if(e.field("Birthday"))
-        this.a.push(e.field("Birthday").toDateString());                //​4
-      else
-        this.a.push(null);
-      this.a.push(e.field("HN"));                  //​5
-      this.a.push(e.field("Phone"));               //​6
-      this.a.push(e.field("Contact"));             //​7
+    
+    this.a.push(e.field("PtName"));              //​0
+    if(e.field("YY"))
+      this.a.push(e.field("YY"));                //​1
+    else
+      this.a.push(null);
+    if(e.field("MM"))
+      this.a.push(e.field("MM"));                //​2
+    else
+      this.a.push(null);
+    if(e.field("DD"))
+      this.a.push(e.field("DD"));                  //​3
+    else
+      this.a.push(null);
+    if(e.field("Birthday"))
+      this.a.push(e.field("Birthday").toDateString());                //​4
+    else
+      this.a.push(null);
+    this.a.push(e.field("HN"));                  //​5
+    this.a.push(e.field("Phone"));               //​6
+    this.a.push(e.field("Contact"));             //​7
 
-      e.set("Previous", this.a.join());
-    }
+    e.set("Previous", this.a.join());
   },
   get ptname() {
     if (this.a[0])​ return this.a[0]​;
@@ -1983,11 +1980,11 @@ var trig = {
     uro.resetcolor(all)​;
   }, 
   UroBeforeUpdatingField : function (e) {
-    oldUr.load(f)​;
-    uro.setnewdate(f, false)​;
-    uro.setvisitdate(f)​;
-    fill.track​(f, "uro")​;
-    if(f.field("Que")​!=oldUr.que &​& f.field("ORType")​=="GA" &​& f.field("Status") != "Not") {
+    oldUr.load(e)​;
+    uro.setnewdate(e, false)​;
+    uro.setvisitdate(e)​;
+    fill.track​(e, "uro")​;
+    if(e.field("Que")​!=oldUr.que &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
       uro.runq(e)​;
     }
   }, 
