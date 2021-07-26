@@ -1983,15 +1983,12 @@ var trig = {
     uro.resetcolor(all)​;
   }, 
   UroBeforeUpdatingField : function (e) {
-    message(e.field("Previous"));
-    if(e.field("Previous")){
-    oldUr.load(e)​;
-    uro.setnewdate(e, false)​;
-    uro.setvisitdate(e)​;
-    fill.track​(e, "uro")​;
-    if(e.field("Que")​!=oldUr.que &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
+    oldUr.load(f)​;
+    uro.setnewdate(f, false)​;
+    uro.setvisitdate(f)​;
+    fill.track​(f, "uro")​;
+    if(f.field("Que")​!=oldUr.que &​& f.field("ORType")​=="GA" &​& f.field("Status") != "Not") {
       uro.runq(e)​;
-    }
     }
   }, 
   UroAfterUpdatingField : function (e) {
@@ -2062,35 +2059,21 @@ var trig = {
   BackupBeforeOpenLib : function (all) {
     uro.resetcolor(all)​;
   }, 
-  BackupBeforeUpdatingField : function (e, all) {
-    if(e.id){
-      oldUr.load(e)​;
-      uro.setnewdate(e, false)​;
-      uro.setvisitdate(e)​;
-      fill.track​(e, "backup")​;
+  BackupBeforeUpdatingField : function (e) {
+    oldUr.load(e)​;
+    uro.setnewdate(e, false)​;
+    uro.setvisitdate(e)​;
+    fill.track​(e, "backup")​;
+    if(e.field("Que")!=oldUr.que && e.field("ORType")=="GA" && e.field("Status") != "Not") {
       uro.runq(e)​;
-    }
-    else {
-      for(let i in all) {
-        // update que
-        oldUr.load(all[i]​)​;
-        if(all[i].field("Que")​!=oldUr.que &​& all[i].field("ORType")​=="GA" &​& all[i].field("Status") != "Not") {
-          uro.setnewdate(all[i], false)​;
-          uro.runq(all[i]​)​;
-          oldUr.save(all[i]);
-          break;
-        }​
-      }
     }
   }, 
   BackupAfterUpdatingField : function (e) {
-    if(e.id){
-      oldUr.load(e)​;
-      fill.ptstatus(e)​;
-      fill.color(e, "backup")​;
-      mer.other(e)​;
-      oldUr.save(e)​;
-    }
+    oldUr.load(e)​;
+    fill.ptstatus(e)​;
+    fill.color(e, "backup")​;
+    mer.other(e)​;
+    oldUr.save(e)​;
   }, 
   BackupBeforeDelete : function (e)​ {
     if (e.field("Merge")​==true)​ {
@@ -2138,22 +2121,18 @@ var trig = {
   ConsultBeforeOpenLib : function (all) {
     cso.resetcolor(all)​;
   }, 
-  ConsultBeforeUpdatingField : function (e) {
-    if(e.id){
-      oldCs.load(e)​;
-      cso.setnewdate(e, false)​;
-      cso.setvisitdate(e)​;
-      fill.track​(e, "consult")​;
-    }
+  ConsultBeforeUpdatingField : function (e) {  
+    oldCs.load(e)​;
+    cso.setnewdate(e, false)​;
+    cso.setvisitdate(e)​;
+    fill.track​(e, "consult")​;
   }, 
   ConsultAfterUpdatingField : function (e) {
-    if(e.id){
-      oldCs.load(e)​;
-      fill.ptstatus(e)​;
-      fill.color(e, "consult")​;
-      mer.other(e)​;
-      oldCs.save(e)​;
-    }
+    oldCs.load(e)​;
+    fill.ptstatus(e)​;
+    fill.color(e, "consult")​;
+    mer.other(e)​;
+    oldCs.save(e)​;
   }, 
   ConsultBeforeDelete : function (e)​ {
     if (e.field("Merge")​==true)​ {
