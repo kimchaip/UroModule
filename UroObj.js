@@ -1983,22 +1983,24 @@ var trig = {
     uro.resetcolor(all)​;
   }, 
   UroBeforeUpdatingField : function (e, all) {
-    for(let i in all) {
-      // update que
-      oldUr.load(all[i]​)​;
-      if(all[i].field("Que")​!=oldUr.que &​& all[i].field("ORType")​=="GA" &​& all[i].field("Status") != "Not") {
-        uro.setnewdate(all[i], false)​;
-        uro.runq(all[i]​)​;
-        oldUr.save(all[i]);
-        break;
-      }​
-    }
     if(e.id){
       oldUr.load(e)​;
       uro.setnewdate(e, false)​;
       uro.setvisitdate(e)​;
       fill.track​(e, "uro")​;
       uro.runq(e)​;
+    }
+    else {
+      for(let i in all) {
+        // update que
+        oldUr.load(all[i]​)​;
+        if(all[i].field("Que")​!=oldUr.que &​& all[i].field("ORType")​=="GA" &​& all[i].field("Status") != "Not") {
+          uro.setnewdate(all[i], false)​;
+          uro.runq(all[i]​)​;
+          oldUr.save(all[i]);
+          break;
+        }​
+      }
     }
   }, 
   UroAfterUpdatingField : function (e) {
@@ -2072,22 +2074,24 @@ var trig = {
     uro.resetcolor(all)​;
   }, 
   BackupBeforeUpdatingField : function (e, all) {
-    for(let i in all) {
-      // update que
-      oldUr.load(all[i]​)​;
-      if(all[i].field("Que")​!=oldUr.que &​& all[i].field("ORType")​=="GA" &​& all[i].field("Status") != "Not") {
-        uro.setnewdate(all[i], false)​;
-        uro.runq(all[i]​)​;
-        oldUr.save(all[i]);
-        break;
-      }​
-    }
     if(e.id){
       oldUr.load(e)​;
       uro.setnewdate(e, false)​;
       uro.setvisitdate(e)​;
       fill.track​(e, "backup")​;
       uro.runq(e)​;
+    }
+    else {
+      for(let i in all) {
+        // update que
+        oldUr.load(all[i]​)​;
+        if(all[i].field("Que")​!=oldUr.que &​& all[i].field("ORType")​=="GA" &​& all[i].field("Status") != "Not") {
+          uro.setnewdate(all[i], false)​;
+          uro.runq(all[i]​)​;
+          oldUr.save(all[i]);
+          break;
+        }​
+      }
     }
   }, 
   BackupAfterUpdatingField : function (e) {
