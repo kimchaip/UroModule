@@ -1192,24 +1192,48 @@ var uro = {
     }
   }, 
   setvisitdate ​: function (e)​ {
-    if (e.field("EntryMx")​== "<Default>" &​& e.field("VisitDate") == null) {
-      if (e.field("ORType") == "GA") {
-        if (e.field("VisitType") == "OPD")​
-          e.set("VisitType", "Admit")​;
-        e.set("VisitDate", my.dateminus(e.field("Date"), 1));
-      }​
-      else ​{
-        e.set("VisitDate", my.date(e.field("Date")))​;
-      }​
-    }
-    else if(oldUr.optype!=e.field("ORType") || my.gdate(oldUr.opdate)!=my.gdate(e.field("Date"))){
-      if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) > my.gdate(my.dateminus(e.field("Date"), 1))){
-        if (e.field("VisitType") == "OPD")​
-          e.set("VisitType", "Admit")​;
-        e.set("VisitDate", my.dateminus(e.field("Date"), 1));
+    if(e.field("Merge")​){
+      if (e.field("EntryMx")​== "<Default>" &​& e.field("VisitDate") == null) {
+        if (e.field("ORType") == "GA") {
+          if (e.field("VisitType") == "OPD")​
+            e.set("VisitType", "Admit")​;
+          e.set("VisitDate", my.dateminus(e.field("Date"), 1));
+        }​
+        else ​{
+          e.set("VisitDate", my.date(e.field("Date")))​;
+        }​
       }
-      else if(e.field("ORType") == "LA" &​& my.gdate(e.field("VisitDate")) > my.gdate(e.field("Date"))){
-        e.set("VisitDate", my.date(e.field("Date")))​;
+      else if(oldUr.optype!=e.field("ORType") || my.gdate(oldUr.opdate)!=my.gdate(e.field("Date"))){
+        if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) > my.gdate(my.dateminus(e.field("Date"), 1))){
+          if (e.field("VisitType") == "OPD")​
+            e.set("VisitType", "Admit")​;
+          e.set("VisitDate", my.dateminus(e.field("Date"), 1));
+        }
+        else if(e.field("ORType") == "LA" &​& my.gdate(e.field("VisitDate")) > my.gdate(e.field("Date"))){
+          e.set("VisitDate", my.date(e.field("Date")))​;
+        }
+      }
+    }
+    else {
+      if (e.field("EntryMx")​== "<Default>" &​& e.field("VisitDate") == null) {
+        if (e.field("ORType") == "GA") {
+          if (e.field("VisitType") == "OPD")​
+            e.set("VisitType", "Admit")​;
+          e.set("VisitDate", my.dateminus(e.field("Date"), 1));
+        }​
+        else ​{
+          e.set("VisitDate", my.date(e.field("Date")))​;
+        }​
+      }
+      else if(oldUr.optype!=e.field("ORType") || my.gdate(oldUr.opdate)!=my.gdate(e.field("Date"))){
+        if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) != my.gdate(my.dateminus(e.field("Date"), 1))){
+          if (e.field("VisitType") == "OPD")​
+            e.set("VisitType", "Admit")​;
+          e.set("VisitDate", my.dateminus(e.field("Date"), 1));
+        }
+        else if(e.field("ORType") == "LA" &​& my.gdate(e.field("VisitDate")) != my.gdate(e.field("Date"))){
+          e.set("VisitDate", my.date(e.field("Date")))​;
+        }
       }
     }
   }, 
