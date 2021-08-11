@@ -662,7 +662,6 @@ var emx = {
         ent​[field1] = my.date(e.field("AppointDate")​);
         
         ent​["PastHx"] = e.field("PastHx")​;
-        ent​["Inv"] = e.field("Inv").join()​;
         ent​["InvResult"] = e.field("InvResult");
         if (libto == "uro" &​& libfrom == "UroBase") {
           ent​["Op"] = e.field("Operation")​;
