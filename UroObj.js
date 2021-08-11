@@ -1244,13 +1244,13 @@ var uro = {
       ondj = ondj==null?0:ondj.length;
       let opon = e.field("Op").match(/dj/i);
       opon = opon==null?0:opon.length;
-      let offdj = opresult.match(/off|dj/ig);
+      let offdj = opresult.match(/((off)(\s+)[a-๙]*(\s*)(dj))/ig);
       offdj = offdj==null?0:offdj.length;
-      let opoff = e.field("Op").match(/off|dj/ig);
+      let opoff = e.field("Op").match(/((off)(\s+)[a-๙]*(\s*)(dj))/ig);
       opoff = opoff==null?0:opoff.length;
-      let changedj = opresult.match(/change|dj/ig);
+      let changedj = opresult.match(/((change)(\s+)[a-๙]*(\s*)(dj))/ig);
       changedj = changedj==null?0:changedj.length;
-      let opchange = e.field("Op").match(/change|dj/ig);
+      let opchange = e.field("Op").match(/((change)(\s+)[a-๙]*(\s*)(dj))/ig);
       opchange = opchange==null?0:opchange.length;
       let notonly = opresult.match(/งดเพราะ/ig);
       notonly = notonly==null?0:notonly.length;
@@ -1266,9 +1266,9 @@ var uro = {
       else if(e.field("Status")!="Done")
         e.set("Status", "Done");
 
-      if(changedj>1||opchange>1)
+      if(changedj>0||opchange>0)
         e.set("DJstent", "change DJ");
-      else if(offdj>1||opoff>1)
+      else if(offdj>0||opoff>0)
         e.set("DJstent", "off DJ");
       else if(ondj>0||opon>0)
         e.set("DJstent", "on DJ");
