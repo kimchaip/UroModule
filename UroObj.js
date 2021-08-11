@@ -1244,13 +1244,13 @@ var uro = {
       ondj = ondj==null?0:ondj.length;
       let opon = e.field("Op").match(/dj/i);
       opon = opon==null?0:opon.length;
-      let offdj = opresult.match(/((off)(\s+)[a-๙]*(\s*)(dj))/ig);
+      let offdj = opresult.match(/((off)(\s+)[a-z]*(\s*)(dj))/ig);
       offdj = offdj==null?0:offdj.length;
-      let opoff = e.field("Op").match(/((off)(\s+)[a-๙]*(\s*)(dj))/ig);
+      let opoff = e.field("Op").match(/((off)(\s+)[a-z]*(\s*)(dj))/ig);
       opoff = opoff==null?0:opoff.length;
-      let changedj = opresult.match(/((change)(\s+)[a-๙]*(\s*)(dj))/ig);
+      let changedj = opresult.match(/((change)(\s+)[a-z]*(\s*)(dj))/ig);
       changedj = changedj==null?0:changedj.length;
-      let opchange = e.field("Op").match(/((change)(\s+)[a-๙]*(\s*)(dj))/ig);
+      let opchange = e.field("Op").match(/((change)(\s+)[a-z]*(\s*)(dj))/ig);
       opchange = opchange==null?0:opchange.length;
       let notonly = opresult.match(/งดเพราะ/ig);
       notonly = notonly==null?0:notonly.length;
