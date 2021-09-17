@@ -1983,7 +1983,7 @@ var opu = {
         ent["HN"] =  link.field("HN");
         ent["Dx"] =  e.field("Dx")​;
         ent["Op"] = e.field("Op")​;
-        ent["Note"] =  link.field("Underlying");
+        ent["Note"] =  link.field("Underlying").join();
         ent["TimeStamp"] =  new Date(e.creationTime);
         os.create(ent);
         message("create OpUroSx!");
@@ -2008,7 +2008,7 @@ var opu = {
             oss[s].field("HN") =  link.field("HN");
             oss[s].field("Dx") =  e.field("Dx")​;
             oss[s].field("Op") = e.field("Op")​;
-            oss[s].field("Note") =  link.field("Underlying");
+            oss[s].field("Note") =  link.field("Underlying").join();
             oss[s].field("TimeStamp") =  !oss[s].field("TimeStamp")?new Date(e.creationTime):null;
             message("update OpUroSx!");
             break;
