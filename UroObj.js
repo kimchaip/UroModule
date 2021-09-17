@@ -734,8 +734,7 @@ var emx = {
           if (e.field("Photo").length>0)​
             ent["Photo"] = e.field("Photo").join()​;
         }​
-        lib.create(ent);
-        let last = lib.entries()[0];
+        let last = lib.create(ent);
         last.link("Patient", links[0]);
         fill.pasthx(last, libto);
         fill.track(last, libto)​;
@@ -1984,7 +1983,7 @@ var opu = {
         ent["Dx"] =  e.field("Dx")​;
         ent["Op"] = e.field("Op")​;
         ent["Note"] =  link.field("Underlying").join();
-        ent["TimeStamp"] =  new Date(e.creationTime);
+        ent["TimeStamp"] =  e.creationTime;
         os.create(ent);
         message("create OpUroSx!");
       }
@@ -2010,7 +2009,7 @@ var opu = {
             oss[s].set("Op", e.field("Op")​);
             oss[s].set("Note", link.field("Underlying").join());
             if(!oss[s].field("TimeStamp"))
-              oss[s].set("TimeStamp", new Date(e.creationTime));
+              oss[s].set("TimeStamp", e.creationTime);
             message("update OpUroSx!");
             break;
           }
