@@ -3,6 +3,7 @@ var or = libByName("UroBase") ;​
 var cs = libByName("Consult") ;
 var bu = libByName("Backup") ;
 var rp = libByName("Report")​;
+var os = libByName("OpUroSx");
 
 var oldUr = {
   a : [],​
@@ -1920,6 +1921,124 @@ var rpo = {
     }​
   }​
 }​;
+var opu = {
+  splitPtName : function (ptName) {
+    let arr = [];
+    let inx = ptName.search(/\d+/); // search for number
+    if(inx>-1){
+      arr[0] = ptName.slice(0,inx).trim(); // alphabet
+      ptName = ptName.slice(inx).trim(); // number +/- alphabet
+    }
+    else {
+      arr[0] = ptName.trim();
+      arr[1] = '';
+      arr[2] = '';
+    }
+    inx = ptName.search(/\D/); // search for alphabet
+    if(inx>-1){
+      let num = ptName.slice(0,inx).trim(); // number
+      ptName = ptName.slice(inx); // alphabet +/- number
+      inx = ptName.search(/\d/); // search for number
+      if(inx>-1){
+        arr[1] = num + ' ' + ptName.slice(0,inx).trim(); // alphabet
+        arr[2] = ptName.slice(inx);  // number
+      }
+      else {
+        arr[1] = num + ' ' + ptName;
+        arr[2] = '';
+      }
+    }
+    else {
+      inx = ptName.search(/\s/); // search for space
+      if(inx>-1){
+        arr[1] = ptName.slice(0,inx);
+        arr[2] = ptName.slice(inx).trim();
+      }
+      else {
+        if(Number(ptName)<120){
+          arr[1] = ptName.trim();
+          arr[2] = '';
+        }
+        else{
+          arr[1] = '';
+          arr[2] = ptName.trim();
+        }
+      }
+    }
+    return arr;
+  },
+  createOp : function (e) {
+    if(e.field("OpExtra") && e.field("Status") != "Not"){
+      let ent = new Object()​ ;
+      let links = e.field("Patient");
+      if(links.length>0){
+        let link = links[0];
+        ent["OpDate"] = e.field("Date") ;
+        ent["Dr"] =  "ชัยพร";
+        ent["OpType"] =  e.field("ORType")​;
+        ent["PtName"] =  link.field("PtName");
+        ent["Age"] =  link.field("YY");
+        ent["HN"] =  link.field("HN");
+        ent["Dx"] =  e.field("Dx")​;
+        ent["Op"] = e.field("Op")​;
+        ent["Note"] =  link.field("Underlying");
+        ent["TimeStamp"] =  new Date(e.creationTime);
+        os.create(ent);
+        message("create OpUroSx!");
+      }
+    }
+  },
+  updateOp : function (e) {
+    if(oldUr.opext && oldUr.status != "Not" && e.field("OpExtra") && e.field("Status") != "Not"){
+      //update
+      let oss = os.entries();
+      let links = e.field("Patient");
+      if(links.length>0 && oss.length>0){
+        let link = links[0];
+        let parr = this.splitPtName(oldUr.patient);
+        for (let s in oss)​{
+          if (my.gdate(oss[s].field("OpDate"))​ == my.gdate(oldUr.opdate)​ &​& oss[s].field("Dr") ==​ "ชัยพร" &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] &​& oss[s].field("Age") == Number(parr[1].replace(/\s*ปี/, "")) && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
+            oss[s].field("OpDate") = e.field("Date") ;
+            oss[s].field("Dr") =  "ชัยพร";
+            oss[s].field("OpType") =  e.field("ORType")​;
+            oss[s].field("PtName") =  link.field("PtName");
+            oss[s].field("Age") =  link.field("YY");
+            oss[s].field("HN") =  link.field("HN");
+            oss[s].field("Dx") =  e.field("Dx")​;
+            oss[s].field("Op") = e.field("Op")​;
+            oss[s].field("Note") =  link.field("Underlying");
+            oss[s].field("TimeStamp") =  !oss[s].field("TimeStamp")?new Date(e.creationTime);
+            message("update OpUroSx!");
+            break;
+          }
+        }​
+      }​
+    }
+    else if(oldUr.opext == false && e.field("OpExtra") == true && e.field("Status") != "Not" || oldUr.status == "Not" && e.field("Status") != "Not" && e.field("OpExtra") == true){
+      //create
+      this.createOp(e);
+    }
+    else if(oldUr.opext == true && e.field("OpExtra") == false && oldUr.status != "Not" || oldUr.status != "Not" && e.field("Status") == "Not" && oldUr.opext == true)){
+      //delete
+      this.deleteOp(e);
+    }
+  },
+  deleteOp : function (e) {
+    if(oldUr.opext == true && oldUr.status != "Not"){
+      let oss = os.entries();
+      if(oss.length>0){
+        let parr = this.splitPtName(oldUr.patient);
+        for (let s in oss)​{
+          if (my.gdate(oss[s].field("OpDate"))​ == my.gdate(oldUr.opdate)​ &​& oss[s].field("Dr") ==​ "ชัยพร" &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] &​& oss[s].field("Age") == Number(parr[1].replace(/\s*ปี/, "")) && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
+            oss[s].trash();
+            message("delete OpUroSx!");
+            break;
+          }
+        }​
+      }​
+    }
+  }
+};
 var trig = {
   PatientOpenEdit : function(e) {
     oldPt.save(e);
@@ -1994,6 +2113,10 @@ var trig = {
     emx.setor(e)​;
     uro.updateDJStamp(e)​;
     rpo.setreport(e)​;
+    if (value=="create")
+      opu.createOp(e)​;
+    else if (value=="update")​
+      opu.updateOp(e)​;
     oldUr.save(e)​;
   }, 
   UroBeforeViewCard ​: function (e) {​
@@ -2007,6 +2130,7 @@ var trig = {
     uro.setnewdate(e, false)​;
     uro.setvisitdate(e)​;
     fill.track​(e, "uro")​;
+    opu.updateOp(e)​;
     if(e.field("Que")​!=oldUr.que &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
       uro.runq(e)​;
       oldUr.save(e)​;
@@ -2028,6 +2152,7 @@ var trig = {
   UroAfterDelete : function (e)​ {
     uro.deletedxop(e)​;
     uro.deleterp(e)​;
+    opu.deleteOp(e);
     uro.deletept(e)​;
   }, 
   BackupOpenEdit : function (e)​ {
