@@ -2000,16 +2000,17 @@ var opu = {
         let parr = this.splitPtName(oldUr.patient);
         for (let s in oss)​{
           if (my.gdate(oss[s].field("OpDate"))​ == my.gdate(oldUr.opdate)​ &​& oss[s].field("Dr") ==​ "ชัยพร" &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] &​& oss[s].field("Age") == Number(parr[1].replace(/\s*ปี/, "")) && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
-            oss[s].field("OpDate") = e.field("Date") ;
-            oss[s].field("Dr") =  "ชัยพร";
-            oss[s].field("OpType") =  e.field("ORType")​;
-            oss[s].field("PtName") =  link.field("PtName");
-            oss[s].field("Age") =  link.field("YY");
-            oss[s].field("HN") =  link.field("HN");
-            oss[s].field("Dx") =  e.field("Dx")​;
-            oss[s].field("Op") = e.field("Op")​;
-            oss[s].field("Note") =  link.field("Underlying").join();
-            oss[s].field("TimeStamp") =  !oss[s].field("TimeStamp")?new Date(e.creationTime):null;
+            oss[s].set("OpDate", e.field("Date"));
+            oss[s].set("Dr", "ชัยพร");
+            oss[s].set("OpType", e.field("ORType")​);
+            oss[s].set("PtName", link.field("PtName"));
+            oss[s].set("Age", link.field("YY"));
+            oss[s].set("HN", link.field("HN"));
+            oss[s].set("Dx", e.field("Dx")​);
+            oss[s].set("Op", e.field("Op")​);
+            oss[s].set("Note", link.field("Underlying").join());
+            if(!oss[s].field("TimeStamp"))
+              oss[s].set("TimeStamp", new Date(e.creationTime));
             message("update OpUroSx!");
             break;
           }
