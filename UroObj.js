@@ -743,6 +743,7 @@ var emx = {
         fill.color(last, libto) ;
         message("successfully created new Entry") ;
         if (libto == "uro") ​{
+          uro.setopextra(last);
           let dxe = uro.createautofill​(last)​;
           uro.setx15(last)​;
           let ope = uro.createoplist(last)​;
