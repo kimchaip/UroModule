@@ -751,6 +751,7 @@ var emx = {
           if(ope!=undefined)​
             uro.updatedxop​(last, "op", ope)​;
           rpo.updatenew(last)​;
+          opu.createOp(last);
           ob=last​;
         }​
       }​
