@@ -2018,7 +2018,7 @@ var opu = {
       //create
       this.createOp(e);
     }
-    else if(oldUr.opext == true && e.field("OpExtra") == false && oldUr.status != "Not" || oldUr.status != "Not" && e.field("Status") == "Not" && oldUr.opext == true)){
+    else if(oldUr.opext == true && e.field("OpExtra") == false && oldUr.status != "Not" || oldUr.status != "Not" && e.field("Status") == "Not" && oldUr.opext == true){
       //delete
       this.deleteOp(e);
     }
