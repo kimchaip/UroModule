@@ -2007,7 +2007,7 @@ var opu = {
             oss[s].field("Dx") =  e.field("Dx")​;
             oss[s].field("Op") = e.field("Op")​;
             oss[s].field("Note") =  link.field("Underlying");
-            oss[s].field("TimeStamp") =  !oss[s].field("TimeStamp")?new Date(e.creationTime);
+            oss[s].field("TimeStamp") =  !oss[s].field("TimeStamp")?new Date(e.creationTime):null;
             message("update OpUroSx!");
             break;
           }
