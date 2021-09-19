@@ -1979,7 +1979,7 @@ var opu = {
       let links = e.field("Patient");
       if(links.length>0){
         let link = links[0];
-        ent["OpDate"] = e.field("Date") ;
+        ent["OpDate"] = my.date(e.field("Date")) ;
         ent["Dr"] =  e.field("Dr");;
         ent["OpType"] =  e.field("ORType")​;
         ent["PtName"] =  link.field("PtName");
@@ -2003,10 +2003,9 @@ var opu = {
       if(links.length>0 && oss.length>0){
         let link = links[0];
         let parr = this.splitPtName(oldUr.patient);
-        message(oldUr.opdate.​toString() + "," + oldUr.dr + "," + oldUr.optype + "," +​ parr[0] + "," + Number(parr[1].replace(/\s*ปี/, "")) + "," + parr[2] + "," +​ oldUr.dx + "," + oldUr.op);
         for (let s in oss)​{
-          if (my.gdate(oss[s].field("OpDate"))​ == my.gdate(oldUr.opdate)​ && oss[s].field("Dr") ==​ oldUr.dr &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] &​& oss[s].field("Age") == Number(parr[1].replace(/\s*ปี/, "")) && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
-            oss[s].set("OpDate", e.field("Date"));
+          if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(oldUr.opdate))​ && oss[s].field("Dr") ==​ oldUr.dr &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] &​& oss[s].field("Age") == Number(parr[1].replace(/\s*ปี/, "")) && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
+            oss[s].set("OpDate", my.date(e.field("Date")));
             oss[s].set("Dr", e.field("Dr"));
             oss[s].set("OpType", e.field("ORType")​);
             oss[s].set("PtName", link.field("PtName"));
@@ -2040,7 +2039,7 @@ var opu = {
       if(oss.length>0){
         let parr = this.splitPtName(oldUr.patient);
         for (let s in oss)​{
-          if (my.gdate(oss[s].field("OpDate"))​ == my.gdate(oldUr.opdate)​ &​& oss[s].field("Dr") ==​ oldUr.dr &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] &​& oss[s].field("Age") == Number(parr[1].replace(/\s*ปี/, "")) && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
+          if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(oldUr.opdate))​ &​& oss[s].field("Dr") ==​ oldUr.dr &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] &​& oss[s].field("Age") == Number(parr[1].replace(/\s*ปี/, "")) && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
             oss[s].trash();
             message("delete OpUroSx!");
             break;
