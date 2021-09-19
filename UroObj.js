@@ -1980,7 +1980,7 @@ var opu = {
       if(links.length>0){
         let link = links[0];
         ent["OpDate"] = e.field("Date") ;
-        ent["Dr"] =  "ชัยพร";
+        ent["Dr"] =  e.field("Dr");;
         ent["OpType"] =  e.field("ORType")​;
         ent["PtName"] =  link.field("PtName");
         ent["Age"] =  link.field("YY");
@@ -1989,7 +1989,7 @@ var opu = {
         ent["Op"] = e.field("Op")​;
         ent["Note"] =  link.field("Underlying").join();
         ent["creationTime"] =  e.creationTime;
-        ent["ModifiedTime"] =  e.creationTime;
+        ent["ModifiedTime"] =  e.lastModifiedTime;
         os.create(ent);
         message("create OpUroSx!");
       }
@@ -2039,7 +2039,7 @@ var opu = {
       if(oss.length>0){
         let parr = this.splitPtName(oldUr.patient);
         for (let s in oss)​{
-          if (my.gdate(oss[s].field("OpDate"))​ == my.gdate(oldUr.opdate)​ &​& oss[s].field("Dr") ==​ "ชัยพร" &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] &​& oss[s].field("Age") == Number(parr[1].replace(/\s*ปี/, "")) && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
+          if (my.gdate(oss[s].field("OpDate"))​ == my.gdate(oldUr.opdate)​ &​& oss[s].field("Dr") ==​ oldUr.dr &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] &​& oss[s].field("Age") == Number(parr[1].replace(/\s*ปี/, "")) && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
             oss[s].trash();
             message("delete OpUroSx!");
             break;
