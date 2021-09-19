@@ -1928,6 +1928,9 @@ var rpo = {
   }​
 }​;
 var opu = {
+  setnewdate : function (e) {
+    e.set("OpDate", my.date(e.field("OpDate")));
+  }, 
   splitPtName : function (ptName) {
     let arr = [];
     let inx = ptName.search(/\d+/); // search for number
@@ -2298,5 +2301,11 @@ var trig = {
   }, 
   ConsultAfterDelete : function (e)​ {
     uro.deletept(e);
+  }
+  OpUroBeforeEdit : function (e) {
+    opu.setnewdate(e)​;
+  }, 
+  OpUroAfterEdit : function (e) {
+    
   }
 }​;
