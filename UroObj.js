@@ -2301,7 +2301,7 @@ var trig = {
   }, 
   ConsultAfterDelete : function (e)​ {
     uro.deletept(e);
-  }
+  },
   OpUroBeforeEdit : function (e) {
     opu.setnewdate(e)​;
   }, 
