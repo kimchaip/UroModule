@@ -36,6 +36,7 @@ var oldUr = {
     this.a.push(e.field("Op"));             //​16
     this.a.push(e.field("OpResult"));       //​17
     this.a.push(e.field("Track"));          //​18
+    this.a.push(e.field("Dr"));             //​19
     
     e.set("Previous", this.a.join());
   },
@@ -114,6 +115,10 @@ var oldUr = {
   get track() {
     if (this.a[18])​ return this.a[18] ;
     else return 0 ;
+  }​,
+  get dr() {
+    if (this.a[19])​ return this.a[19] ;
+    else return "ชัยพร";​
   }​
 };
 var oldCs = {
@@ -1983,7 +1988,8 @@ var opu = {
         ent["Dx"] =  e.field("Dx")​;
         ent["Op"] = e.field("Op")​;
         ent["Note"] =  link.field("Underlying").join();
-        ent["TimeStamp"] =  e.creationTime;
+        ent["creationTime"] =  e.creationTime;
+        ent["ModifiedTime"] =  e.creationTime;
         os.create(ent);
         message("create OpUroSx!");
       }
@@ -1998,9 +2004,9 @@ var opu = {
         let link = links[0];
         let parr = this.splitPtName(oldUr.patient);
         for (let s in oss)​{
-          if (my.gdate(oss[s].field("OpDate"))​ == my.gdate(oldUr.opdate)​ &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] &​& oss[s].field("Age") == Number(parr[1].replace(/\s*ปี/, "")) && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
+          if (my.gdate(oss[s].field("OpDate"))​ == my.gdate(oldUr.opdate)​ && oss[s].field("Dr") ==​ oldUr.dr &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] &​& oss[s].field("Age") == Number(parr[1].replace(/\s*ปี/, "")) && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
             oss[s].set("OpDate", e.field("Date"));
-            oss[s].set("Dr", "ชัยพร");
+            oss[s].set("Dr", e.field("Dr"));
             oss[s].set("OpType", e.field("ORType")​);
             oss[s].set("PtName", link.field("PtName"));
             oss[s].set("Age", link.field("YY"));
@@ -2008,8 +2014,10 @@ var opu = {
             oss[s].set("Dx", e.field("Dx")​);
             oss[s].set("Op", e.field("Op")​);
             oss[s].set("Note", link.field("Underlying").join());
-            if(!oss[s].field("TimeStamp"))
-              oss[s].set("TimeStamp", e.creationTime);
+            if(!oss[s].field("creationTime"))
+              oss[s].set("creationTime", e.creationTime);
+            if(my.gdate(oss[s].field("ModifiedTime"))<my.gdate(e.lastModifiedTime))
+              oss[s].set("ModifiedTime", e.lastModifiedTime);
             message("update OpUroSx!");
             break;
           }
