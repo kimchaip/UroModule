@@ -1983,7 +1983,8 @@ var opu = {
         ent["Dx"] =  e.field("Dx")​;
         ent["Op"] = e.field("Op")​;
         ent["Note"] =  link.field("Underlying").join();
-        ent["TimeStamp"] =  e.creationTime;
+        ent["CreationTime"] =  e.creationTime;
+        ent["ModifiedTime"] =  e.creationTime;
         os.create(ent);
         message("create OpUroSx!");
       }
@@ -2008,8 +2009,10 @@ var opu = {
             oss[s].set("Dx", e.field("Dx")​);
             oss[s].set("Op", e.field("Op")​);
             oss[s].set("Note", link.field("Underlying").join());
-            if(!oss[s].field("TimeStamp"))
-              oss[s].set("TimeStamp", e.creationTime);
+            if(!oss[s].field("CreationTime"))
+              oss[s].set("CreationTime", e.creationTime);
+            if(my.gdate(oss[s].field("ModifiedTime"))<my.gdate(e.lastModifiedTime))
+              oss[s].set("ModifiedTime", e.lastModifiedTime);
             message("update OpUroSx!");
             break;
           }
