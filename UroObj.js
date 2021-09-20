@@ -2006,6 +2006,7 @@ var opu = {
       if(links.length>0 && oss.length>0){
         let link = links[0];
         let parr = this.splitPtName(oldUr.patient);
+        message(my.date(oldUr.opdate).toString());
         for (let s in oss)​{
           if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(oldUr.opdate))​ && oss[s].field("Dr") ==​ oldUr.dr &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] &​& oss[s].field("Age") == Number(parr[1].replace(/\s*ปี/, "")) && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
             oss[s].set("OpDate", my.date(e.field("Date")));
