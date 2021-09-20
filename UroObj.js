@@ -109,10 +109,6 @@ var oldUr = {
     if (this.a[16])​ return this.a[16] ;
     else return "" ;
   }​,
-  get result() {
-    if (this.a[19])​ return this.a[19] ;
-    else return "" ;
-  }, 
   get track() {
     if (this.a[17])​ return this.a[17] ;
     else return 0 ;
@@ -120,7 +116,11 @@ var oldUr = {
   get dr() {
     if (this.a[18])​ return this.a[18] ;
     else return "ชัยพร";​
-  }​
+  }​,
+  get result() {
+    if (this.a[19])​ return this.a[19] ;
+    else return "" ;
+  }
 };
 var oldCs = {
   a : [],​
@@ -188,13 +188,13 @@ var oldCs = {
     if (this.a[9])​ return this.a[9] ;
     else return "";
   }​,
-  get note() {
-    if (this.a[10])​ return this.a[11] ;
-    else return "";
-  }​,
   get track() {
-    if (this.a[11])​ return this.a[10] ;
+    if (this.a[10])​ return this.a[10] ;
     else return 0;
+  }
+  get note() {
+    if (this.a[11])​ return this.a[11] ;
+    else return "";
   }​
 };
 var oldPt = {
@@ -2006,7 +2006,6 @@ var opu = {
       if(links.length>0 && oss.length>0){
         let link = links[0];
         let parr = this.splitPtName(oldUr.patient);
-        message(my.date(oldUr.opdate).toString() + "," + oldUr.dr + "," + oldUr.optype + "," + parr[0] + "," + Number(parr[1].replace(/\s*ปี/, "")) + "," + ​ Number(parr[2]) + "," + oldUr.dx + "," + oldUr.op);
         for (let s in oss)​{
           if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(oldUr.opdate))​ && oss[s].field("Dr") ==​ oldUr.dr &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] &​& oss[s].field("Age") == Number(parr[1].replace(/\s*ปี/, "")) && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
             oss[s].set("OpDate", my.date(e.field("Date")));
