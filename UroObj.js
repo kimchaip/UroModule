@@ -34,9 +34,10 @@ var oldUr = {
     this.a.push(e.field("RecordDate")?e.field("RecordDate").toDateString():null);     //​14
     this.a.push(e.field("Dx"));             //​15
     this.a.push(e.field("Op"));             //​16
-    this.a.push(e.field("OpResult"));       //​17
-    this.a.push(e.field("Track"));          //​18
-    this.a.push(e.field("Dr"));             //​19
+    this.a.push(e.field("Track"));          //​17
+    this.a.push(e.field("Dr"));             //​18
+    this.a.push(e.field("OpResult"));       //​19
+    
     
     e.set("Previous", this.a.join());
   },
@@ -109,15 +110,15 @@ var oldUr = {
     else return "" ;
   }​,
   get result() {
-    if (this.a[17])​ return this.a[17] ;
+    if (this.a[19])​ return this.a[19] ;
     else return "" ;
   }, 
   get track() {
-    if (this.a[18])​ return this.a[18] ;
+    if (this.a[17])​ return this.a[17] ;
     else return 0 ;
   }​,
   get dr() {
-    if (this.a[19])​ return this.a[19] ;
+    if (this.a[18])​ return this.a[18] ;
     else return "ชัยพร";​
   }​
 };
@@ -143,9 +144,8 @@ var oldCs = {
     this.a.push(e.field("AppointDate")?e.field("AppointDate").toDateString():null);     //​7
     this.a.push(e.field("Dx"));              //​8
     this.a.push(e.field("Rx"));              //​9
-    this.a.push(e.field("Note"));           //​10
-    this.a.push(e.field("Track"));          //​11
-    
+    this.a.push(e.field("Track"));          //10
+    this.a.push(e.field("Note"));           //​11
     e.set("Previous", this.a.join());
   },
   get csdate() {
@@ -189,11 +189,11 @@ var oldCs = {
     else return "";
   }​,
   get note() {
-    if (this.a[10])​ return this.a[10] ;
+    if (this.a[10])​ return this.a[11] ;
     else return "";
   }​,
   get track() {
-    if (this.a[11])​ return this.a[11] ;
+    if (this.a[11])​ return this.a[10] ;
     else return 0;
   }​
 };
