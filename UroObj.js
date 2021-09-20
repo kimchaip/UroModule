@@ -191,7 +191,7 @@ var oldCs = {
   get track() {
     if (this.a[10])​ return this.a[10] ;
     else return 0;
-  }
+  },
   get note() {
     if (this.a[11])​ return this.a[11] ;
     else return "";
