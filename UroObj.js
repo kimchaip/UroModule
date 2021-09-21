@@ -2037,7 +2037,7 @@ var opu = {
     }
   },
   deleteOp : function (e) {
-    message(oldUr.opext + "," + oldUr.status + "," + oldUr.dr + "," +​ oldUr.optype + "," +​ parr[0] + "," + Number(parr[1].replace(/\s*ปี/, "")) + "," +​ Number(parr[2]) + "," + ​oldUr.dx + "," + oldUr.op);
+    message(oldUr.opext + "," + oldUr.status + "," + oldUr.dr + "," +​ oldUr.optype + "," +​ oldUr.patient + "," + ​oldUr.dx + "," + oldUr.op);
     if(oldUr.opext == true && oldUr.status != "Not"){
       let oss = os.entries();
       if(oss.length>0){
