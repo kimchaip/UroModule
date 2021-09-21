@@ -2037,7 +2037,7 @@ var opu = {
     }
   },
   deleteOp : function (e) {
-    message(my.date(oldUr.opdate).toString() + "," + oldUr.opext + "," + oldUr.status + "," + oldUr.dr + "," + oldUr.optype + "," + oldUr.dx + "," + oldUr.op);
+    message((oldUr.opext == true) + "," + (oldUr.status != "Not"));
     if(oldUr.opext == true && oldUr.status != "Not"){
       let oss = os.entries();
       if(oss.length>0){
