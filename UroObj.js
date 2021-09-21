@@ -2157,16 +2157,16 @@ var trig = {
     oldUr.save(e)​;
   }, 
   UroBeforeDelete : function (e)​ {
-    oldUr.load(e);
     if (e.field("Merge")​==true)​ {
       e.set("Merge", false)​
       mer.mlacancel(e)​;
     }
-    opu.deleteOp(e);
   }, 
   UroAfterDelete : function (e)​ {
+    oldUr.load(e);
     uro.deletedxop(e)​;
     uro.deleterp(e)​;
+    opu.deleteOp(e);
     uro.deletept(e)​;
   }, 
   BackupOpenEdit : function (e)​ {
