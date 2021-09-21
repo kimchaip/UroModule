@@ -2165,7 +2165,7 @@ var trig = {
   UroAfterDelete : function (e)​ {
     oldUr.load(e);
     uro.deletedxop(e)​;
-    opu.deleteop(e);
+    opu.deleteOp(e);
     uro.deleterp(e)​;
     uro.deletept(e)​;
   }, 
