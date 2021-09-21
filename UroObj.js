@@ -90,7 +90,7 @@ var oldUr = {
     else return null;​
   }​,
   get opext() {
-    if (this.a[12])​ return this.a[12] ;
+    if (this.a[12])​ return true ;
     else return false;​
   }​,
   get bonus() {
@@ -2037,7 +2037,7 @@ var opu = {
     }
   },
   deleteOp : function (e) {
-    message((oldUr.opext=="true") + "," + (oldUr.status != "Not"));
+    message((oldUr.opext==true) + "," + (oldUr.status != "Not"));
     if(oldUr.opext == true && oldUr.status != "Not"){
       let oss = os.entries();
       if(oss.length>0){
