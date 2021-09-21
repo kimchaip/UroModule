@@ -2161,11 +2161,11 @@ var trig = {
       e.set("Merge", false)​
       mer.mlacancel(e)​;
     }
+    opu.deleteOp(e);
   }, 
   UroAfterDelete : function (e)​ {
     uro.deletedxop(e)​;
     uro.deleterp(e)​;
-    opu.deleteOp(e);
     uro.deletept(e)​;
   }, 
   BackupOpenEdit : function (e)​ {
