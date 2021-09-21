@@ -2037,9 +2037,9 @@ var opu = {
     }
   },
   deleteOp : function (e) {
+    message(my.date(oldUr.opdate).toString() + "," + oldUr.opext + "," + oldUr.status + "," + oldUr.dr + "," + oldUr.optype + "," + oldUr.dx + "," + oldUr.op);
     if(oldUr.opext == true && oldUr.status != "Not"){
       let oss = os.entries();
-      message(my.date(oldUr.opdate).toString() + "," + oldUr.opext + "," + oldUr.status + "," + oldUr.dr + "," + oldUr.optype + "," + oldUr.dx + "," + oldUr.op);
       if(oss.length>0){
         let parr = this.splitPtName(oldUr.patient);
         for (let s in oss)​{
