@@ -1986,7 +1986,7 @@ var opu = {
         ent["Dr"] =  e.field("Dr");;
         ent["OpType"] =  e.field("ORType")​;
         ent["PtName"] =  link.field("PtName");
-        ent["Age"] =  link.field("YY");
+        ent["Age"] =  Number(link.field("Age").replace(/\s*ปี/,"")));
         ent["HN"] =  link.field("HN");
         ent["Dx"] =  e.field("Dx")​;
         ent["Op"] = e.field("Op")​;
@@ -2012,7 +2012,7 @@ var opu = {
             oss[s].set("Dr", e.field("Dr"));
             oss[s].set("OpType", e.field("ORType")​);
             oss[s].set("PtName", link.field("PtName"));
-            oss[s].set("Age", link.field("YY"));
+            oss[s].set("Age", Number(link.field("Age").replace(/\s*ปี/,"")));
             oss[s].set("HN", link.field("HN"));
             oss[s].set("Dx", e.field("Dx")​);
             oss[s].set("Op", e.field("Op")​);
