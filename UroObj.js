@@ -1983,10 +1983,10 @@ var opu = {
       if(links.length>0){
         let link = links[0];
         ent["OpDate"] = my.date(e.field("Date")) ;
-        ent["Dr"] =  e.field("Dr");;
+        ent["Dr"] =  e.field("Dr");
         ent["OpType"] =  e.field("ORType")​;
         ent["PtName"] =  link.field("PtName");
-        ent["Age"] =  Number(link.field("Age").replace(/\s*ปี/,"")));
+        ent["Age"] =  Number(link.field("Age").replace(/\s*ปี/,""));
         ent["HN"] =  link.field("HN");
         ent["Dx"] =  e.field("Dx")​;
         ent["Op"] = e.field("Op")​;
