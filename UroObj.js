@@ -2043,7 +2043,7 @@ var opu = {
       let oss = os.entries();
       if(oss.length>0){
         let parr = this.splitPtName(oldUr.patient);
-        message("delete:"+oldUr.opext+"->"+e.field("OpExtra")+","+oldUr.status+"->"+e.field("Status")+"\n"+oldUr.opdate+","+parr.join()+","++oldUr.dr+","+oldUr.optype+","+oldUr.dx+"->"+oldUr.op);
+        message("delete:"+oldUr.opext+"->"+e.field("OpExtra")+","+oldUr.status+"->"+e.field("Status")+"\n"+oldUr.opdate+","+parr.join()+","+oldUr.dr+","+oldUr.optype+","+oldUr.dx+"->"+oldUr.op);
         for (let s in oss)​{
           if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(oldUr.opdate))​ &​& oss[s].field("Dr") ==​ oldUr.dr &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
             oss[s].trash();
