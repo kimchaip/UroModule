@@ -2148,6 +2148,7 @@ var trig = {
     fill.track​(e, "uro")​;
     opu.updateOp(e)​;
     if(e.field("Que")​!=oldUr.que &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
+      message("before:"+oldUr.que+"->"+e.field("Que")​);
       uro.runq(e)​;
     }
   }, 
@@ -2157,6 +2158,7 @@ var trig = {
     fill.color(e, "uro")​;
     mer.other(e)​;
     if(e.field("Que")​!=oldUr.que &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
+      message("after:"+oldUr.que+"->"+e.field("Que")​);
       oldUr.save(e)​;
     }
   }, 
