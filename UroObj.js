@@ -2030,7 +2030,7 @@ var opu = {
     }
     else if(oldUr.opext == false && e.field("OpExtra") == true && e.field("Status") != "Not" || oldUr.status == "Not" && e.field("Status") != "Not" && e.field("OpExtra") == true){
       //create
-      message("create:"+oldUr.opext+"->"+e.field("OpExtra")+","+oldUr.status+"->"+e.field("Status")+","+e.field("Date").toDateString()+","+e.field("Patient")[0].title+e.field("Dr")+","+e.field("OpType")+","+e.field("Dx")+"->"+e.field("Op"));
+      message("create:"+oldUr.opext+"->"+e.field("OpExtra")+","+oldUr.status+"->"+e.field("Status")+","+e.field("Date").toDateString()+","+e.field("Patient")[0].title+e.field("Dr")+","+e.field("ORType")+","+e.field("Dx")+"->"+e.field("Op"));
       this.createOp(e);
     }
     else if(oldUr.opext == true && e.field("OpExtra") == false && oldUr.status != "Not" || oldUr.status != "Not" && e.field("Status") == "Not" && oldUr.opext == true){
@@ -2149,7 +2149,6 @@ var trig = {
     opu.updateOp(e)​;
     if(e.field("Que")​!=oldUr.que &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
       uro.runq(e)​;
-      oldUr.save(e)​;
     }
   }, 
   UroAfterUpdatingField : function (e) {
@@ -2157,7 +2156,9 @@ var trig = {
     fill.ptstatus(e)​;
     fill.color(e, "uro")​;
     mer.other(e)​;
-    oldUr.save(e)​;
+    if(e.field("Que")​!=oldUr.que &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
+      oldUr.save(e)​;
+    }
   }, 
   UroBeforeDelete : function (e)​ {
     if (e.field("Merge")​==true)​ {
@@ -2236,7 +2237,9 @@ var trig = {
     fill.ptstatus(e)​;
     fill.color(e, "backup")​;
     mer.other(e)​;
-    oldUr.save(e)​;
+    if(e.field("Que")​!=oldUr.que &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
+      oldUr.save(e)​;
+    }
   }, 
   BackupBeforeDelete : function (e)​ {
     if (e.field("Merge")​==true)​ {
