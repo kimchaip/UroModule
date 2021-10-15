@@ -1999,13 +1999,14 @@ var opu = {
     }
   },
   updateOp : function (e) {
-    if(oldUr.opext && oldUr.status != "Not" && e.field("OpExtra") && e.field("Status") != "Not"){
+    if(oldUr.opext == true && oldUr.status != "Not" && e.field("OpExtra") == true && e.field("Status") != "Not"){
       //update
       let oss = os.entries();
       let links = e.field("Patient");
       if(links.length>0 && oss.length>0){
         let link = links[0];
         let parr = this.splitPtName(oldUr.patient);
+        message("update:"+oldUr.opext+"->"+e.field("OpExtra")+","oldUr.status+"->"+e.field("Status")+"\n"+oldUr.opdate+","+parr.join()+oldUr.dr+","+oldUr.optype+","+oldUr.dx+"->"+oldUr.op);
         for (let s in oss)​{
           if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(oldUr.opdate))​ && oss[s].field("Dr") ==​ oldUr.dr &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
             oss[s].set("OpDate", my.date(e.field("Date")));
@@ -2029,6 +2030,7 @@ var opu = {
     }
     else if(oldUr.opext == false && e.field("OpExtra") == true && e.field("Status") != "Not" || oldUr.status == "Not" && e.field("Status") != "Not" && e.field("OpExtra") == true){
       //create
+      message("create:"+oldUr.opext+"->"+e.field("OpExtra")+","oldUr.status+"->"+e.field("Status")+","+e.field("Date").toDateString()+","+e.field("Patient")[0].title+e.field("Dr")+","+e.field("OpType")+","+e.field("Dx")+"->"+e.field("Op"));
       this.createOp(e);
     }
     else if(oldUr.opext == true && e.field("OpExtra") == false && oldUr.status != "Not" || oldUr.status != "Not" && e.field("Status") == "Not" && oldUr.opext == true){
@@ -2041,6 +2043,7 @@ var opu = {
       let oss = os.entries();
       if(oss.length>0){
         let parr = this.splitPtName(oldUr.patient);
+        message("delete:"+oldUr.opext+"->"+e.field("OpExtra")+","oldUr.status+"->"+e.field("Status")+"\n"+oldUr.opdate+","+parr.join()+","++oldUr.dr+","+oldUr.optype+","+oldUr.dx+"->"+oldUr.op);
         for (let s in oss)​{
           if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(oldUr.opdate))​ &​& oss[s].field("Dr") ==​ oldUr.dr &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
             oss[s].trash();
