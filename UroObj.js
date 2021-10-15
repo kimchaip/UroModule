@@ -90,7 +90,7 @@ var oldUr = {
     else return null;​
   }​,
   get opext() {
-    if (this.a[12])​ return true ;
+    if (this.a[12] && this.a[12]!="false")​ return true ;
     else return false;​
   }​,
   get bonus() {
