@@ -2146,7 +2146,6 @@ var trig = {
     uro.setnewdate(e, false)​;
     uro.setvisitdate(e)​;
     fill.track​(e, "uro")​;
-    opu.updateOp(e)​;
     if(e.field("Que")​!=oldUr.que &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
       message("before:"+oldUr.que+"->"+e.field("Que")​);
       uro.runq(e)​;
