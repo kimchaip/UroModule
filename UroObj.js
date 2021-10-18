@@ -2051,26 +2051,37 @@ var opu = {
       }​
     }
   },
-  ptTrigOpuro : function (e) 
-    if(oldPt.ptname != e.field("PtName") || oldPt.yy != e.field("YY") || oldPt.mm != e.field("MM")  || oldPt.dd != e.field("DD") || my.gdate(oldPt.birthday) != my.gdate(e.field("Birthday")) || oldPt.hn != e.field("HN") ){
-      let orlinks = e.linksFrom("UroBase", "Patient") ;
+  ptTrigOpuro : function (e) {
+    if(oldPt.ptname != e.field("PtName") || oldPt.yy != e.field("YY") || oldPt.mm != e.field("MM")  || oldPt.dd != e.field("DD") || my.gdate(my.date(oldPt.birthday)) != my.gdate(my.date(e.field("Birthday"))) || oldPt.hn != e.field("HN") ){
+      let orlinks = e.linksFrom("UroBase", "Patient");
+      let bulinks = e.linksFrom("Backup", "Patient");
       let found = [];
-      if(orlinks.length>0) {
+      if(orlinks.length+bulinks.length>0) {
         for (let i in orlinks) {
           if (orlinks[i].field("OpExtra")==true) {
-            found = orlinks[i];
+            found.push(orlinks[i]);
+          }
+        }
+        for (let i in bulinks) {
+          if (bulinks[i].field("OpExtra")==true) {
+            found.push(bulinks[i]);
           }
         }
       }
       if(found.length>0) {
         //update OpUroSx
         let oss = os.entries();
+        let count = 0;
         for(let i in oss) {
           if(oldPt.ptname == oss[i].field("PtName") && oldPt.hn == oss[i].field("HN")) {
             oss[i].set("PtName", e.field("PtName"));
             oss[i].set("Age", Number(e.field("Age").replace(/\s*ปี/,"")));
             oss[i].set("HN", e.field("HN"));
+            count++;
           }
+        }
+        if(count) {
+          message("Update " + count + " PtName in OpUroSx!");
         }
       }
     }
@@ -2092,10 +2103,10 @@ var trig = {
     pto.dj(e)​;
   }, 
   PatientAfterEdit : function (e, value) {
-    oldUr.load(e)​;
+    oldPt.load(e)​;
     if (value=="update")​
-      ptTrigOpuro(e);
-    oldUr.save(e)​;
+      opu.ptTrigOpuro(e);
+    oldPt.save(e)​;
   }, 
   PatientUpdatingField ​: function (all) {
     let e = entry()​;
