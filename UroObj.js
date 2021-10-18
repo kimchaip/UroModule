@@ -2050,6 +2050,30 @@ var opu = {
         }​
       }​
     }
+  },
+  ptTrigOpuro : function (e) 
+    if(oldPt.ptname != e.field("PtName") || oldPt.yy != e.field("YY") || oldPt.mm != e.field("MM")  || oldPt.dd != e.field("DD") || my.gdate(oldPt.birthday) != my.gdate(e.field("Birthday")) || oldPt.hn != e.field("HN") ){
+      let orlinks = e.linksFrom("UroBase", "Patient") ;
+      let found = [];
+      if(orlinks.length>0) {
+        for (let i in orlinks) {
+          if (orlinks[i].field("OpExtra")==true) {
+            found = orlinks[i];
+          }
+        }
+      }
+      if(found.length>0) {
+        //update OpUroSx
+        let oss = os.entries();
+        for(let i in oss) {
+          if(oldPt.ptname == oss[i].field("PtName") && oldPt.hn == oss[i].field("HN")) {
+            oss[i].set("PtName", e.field("PtName"));
+            oss[i].set("Age", Number(e.field("Age").replace(/\s*ปี/,"")));
+            oss[i].set("HN", e.field("HN"));
+          }
+        }
+      }
+    }
   }
 };
 var trig = {
@@ -2066,6 +2090,12 @@ var trig = {
     pto.age(e)​;
     pto.status(e)​;
     pto.dj(e)​;
+  }, 
+  PatientAfterEdit : function (e, value) {
+    oldUr.load(e)​;
+    if (value=="update")​
+      ptTrigOpuro(e);
+    oldUr.save(e)​;
   }, 
   PatientUpdatingField ​: function (all) {
     let e = entry()​;
