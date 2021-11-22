@@ -1845,16 +1845,6 @@ var rpo = {
     }​
   },
   updatenew : function (e) {
-    let wd = my.gday(e.field("Date")​)​ ;
-    let wdt = "" ;
-    if (wd==0)​ wdt = "Sun" ;
-    else if (wd==1)​ wdt = "Mon" ;
-    else if (wd==2)​ wdt = "Tue" ;
-    else if (wd==3)​ wdt = "Wed" ;
-    else if (wd==4)​ wdt = "Thu" ;
-    else if (wd==5)​ wdt = "Fri" ;
-    else if (wd==6)​ wdt = "Sat" ;
-    
     let found = false;​
     let rpt = undefined;
     let ptlks = e.field("Patient")​;
@@ -1891,7 +1881,7 @@ var rpo = {
       }​
       ​
       //---WeekDay
-      rpt.set("WeekDay", wdt)​;
+      rpt.set("WeekDay", my.wkname(my.gday(e.field("Date")​)​ ))​;
       //---Dead
       if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
         rpt.set("Dead","Dead");
@@ -1917,7 +1907,7 @@ var rpo = {
       }​
       
       //---WeekDay
-      ent["WeekDay"]​ =  wdt;
+      ent["WeekDay"]​ =  my.wkname(my.gday(e.field("Date")​)​ ;
       //---Dead
       if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
         ent["Dead"]​ = "Dead";
