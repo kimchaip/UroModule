@@ -917,20 +917,15 @@ var fill = {
   }, 
   opdatecal : function (e) {
     if(e.field("Date")) {
-      let microsec, hs, mm, ss;
+      let time = e.field("Timein");
       let opdate = e.field("Date");
-      if(e.field("Timein")) {
-        microsec = e.field("TimeIn");
-        hs = Math.floor(microsec/3600);
-        microsec = microsec%3600;
-        mm = Math.floor(microsec/60);
-        microsec = microsec%60;
-        ss = Math.floor(microsec);
-      }
-      else {
-        hs = Number(e.field("Que"))+8;
-        mm = 0;
-        ss = 0;
+      let hs = Number(e.field("Que"))+8;
+      let mm = 0;
+      let ss = 0;
+      if(time) {
+        hs = time.getHours();
+        mm = time.getMinutes();
+        ss = time.getSeconds();
       }
       e.set("OpDateCal", new Date(opdate.getFullYear(), opdate.getMonth(), opdate.getDate(), hs, mm, ss));
     }
