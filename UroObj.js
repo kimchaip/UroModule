@@ -755,7 +755,7 @@ var emx = {
             uro.updatedxop​(last, "dx", dxe)​;
           if(ope!=undefined)​
             uro.updatedxop​(last, "op", ope)​;
-          rpo.updatenew(last)​;
+          rpo.createnew(last)​;
           opu.createOp(last);
           ob=last​;
         }​
@@ -1728,23 +1728,7 @@ var uro = {
         ptent.trash()​;
       }​
     }
-  }, 
-  deleterp : function (e)​{
-    //Report
-    let ptlks = e.field("Patient");
-    if (ptlks.length>0)​ {
-      let ptent = pt.findById(ptlks[0].id) ;
-      let rplinks = ptent.linksFrom("Report", "Patient") ;
-      if(rplinks.length>0)​{
-        for (let r in rplinks)​{
-          if (my.gdate(rplinks[r].field("OpDate"))​ == my.gdate(e.field("Date"))​ &​& rplinks[r].field("Dx") ==​ e.field("Dx") &​& rplinks[r].field("Op") ==​ e.field("Op"))​{
-            rplinks[r].trash();
-            break;
-          }​
-        }​
-      }​
-    }
-  }, 
+  },
   updateDJStamp : function (e) {
     let links = e.field("Patient")​;
     if (links.length>0) {
@@ -1820,30 +1804,6 @@ var cso = {
   }​
 }​;
 var rpo = {
-  setreport : function (e) {
-    if (e.field("Status") != oldUr.status) { //change status
-      if (e.field("Status") != "Not") { //status <> "Not" 
-        if (my.gdate(e.field("Date"))​ != my.gdate(oldUr.opdate)​ || (e.field("Patient").length>0 &​& e.field("Patient")[0].title != oldUr.patient)​ || e.field("Dx") != oldUr.dx || e.field("Op") != oldUr.op) { //change Date, Pt, Dx, Op
-          this.updatenew(e)​;
-          this.deleteold()​;
-        }​
-        else { //unchange Date, Pt, Dx, Op
-          this.updatenew(e)​;
-        }​
-      }​
-      else { //status == "Not" 
-        this.deleteold()​;
-      }​
-    }​
-    else { // unchange status
-      if (e.field("Status") != "Not") { //status <> "Not" 
-        if (my.gdate(e.field("Date"))​ != my.gdate(oldUr.opdate)​ || (e.field("Patient").length>0 &​& e.field("Patient")[0].title != oldUr.patient)​ || e.field("Dx") != oldUr.dx || e.field("Op") != oldUr.op) { //change Date, Pt, Dx, Op
-          this.updatenew(e)​;
-          this.deleteold()​;
-        }​
-      }​
-    }​
-  },
   createnew : function (e) {
     if(e.field("Status") != "Not"){
       let ent = new Object();
@@ -1879,79 +1839,50 @@ var rpo = {
     }
   },
   updatenew : function (e) {
-    let found = false;​
-    let rpt = undefined;
-    let ptlks = e.field("Patient")​;
-    if (ptlks.length>0) {
-      let ptent = pt.findById(ptlks​[0].id) ;
-      let rps = ptent.linksFrom("Report", "Patient")​;
-      if (rps.length>0) {
-        for (let r in rps)​{
-          if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(e.field("Date"))​ &​& rps[r].field("Dx") ==​ e.field("Dx") &​& rps[r].field("Op") ==​ e.field("Op"))​{
-            found = true;
-            rpt = rps[r]​;
-            break;
+    if(oldUr.status != "Not" && e.field("Status") != "Not"){
+      //update
+      let ptlks = pt.find(oldUr.patient)​;
+      if (ptlks.length>0) {
+        let ptent = pt.findById(ptlks[0].id);
+        let rps = ptent.linksFrom("Report", "Patient")​;
+        if (rps.length>0) {
+          for (let r in rps)​{
+            if (my.gdate(my.date(rps[r].field("OpDate"))​) == my.gdate(my.date(oldUr.opdate)​) && rps[r].field("ORType") ==​ oldUr.optype &​& rps[r].field("Dx") ==​ oldUr.dx &​& rps[r].field("Op") ==​ oldUr.op)​{
+              let rpt = rps[r]​;
+              //---Date, Patient, Dx, Op, ORType, Extra, LOS
+              rpt.set("ORType", e.field("ORType"));
+              rpt.set("Extra", e.field("OpExtra"));
+              rpt.set("LOS", e.field("LOS"));
+              rpt.set("OpDateCal", e.field("OpDateCal"));
+              rpt.set("OpLength", e.field("OpLength"));
+
+              //---OpGroup, Organ
+              if (e.field("OperationList").length>0)​{
+                rpt.set("OpGroup", e.field("OperationList")[0].field("OpList"));
+                rpt.set("Organ", e.field("OperationList")[0].field("OpGroup").join(" ")​);
+              }​
+      ​
+              //---WeekDay
+              rpt.set("WeekDay", my.wkname(my.gday(e.field("Date")​)​ ))​;
+              //---Dead
+              if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
+                rpt.set("Dead","Dead");
+              else
+                rpt.set("Dead","Alive");
+                
+              break;
+            }
           }​
         }​
       }​
-    }​
-    let dt = e.field("OpDateCal");
-    let cdt = null ;
-    if(dt) {
-      cdt = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds());
     }
-    if(found)​{ //edit 
-      //---Date, Patient, Dx, Op, ORType, Extra, LOS
-      rpt.set("ORType", e.field("ORType"));
-      rpt.set("Extra", e.field("OpExtra"));
-      rpt.set("LOS", e.field("LOS"));
-      rpt.set("OpDateCal", cdt);
-      rpt.set("OpLength", e.field("OpLength"));
-
-      //---OpGroup, Organ
-      if (e.field("OperationList").length>0)​{
-        rpt.set("OpGroup", e.field("OperationList")[0].field("OpList"));
-        rpt.set("Organ", e.field("OperationList")[0].field("OpGroup").join(" ")​);
-      }​
-      ​
-      //---WeekDay
-      rpt.set("WeekDay", my.wkname(my.gday(e.field("Date")​)​ ))​;
-      //---Dead
-      if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
-        rpt.set("Dead","Dead");
-      else
-        rpt.set("Dead","Alive");
-    }​
-    else { // not found, create new
-      let ent = new Object();
-      //---Date, Patient, Dx, Op, ORType, Extra, LOS
-      ent["OpDate"] = e.field("Date");
-      ent["Dx"]​ = e.field("Dx");
-      ent["Op"]​ = e.field("Op");
-      ent["ORType"] = e.field("ORType");
-      ent["Extra"]​ = e.field("OpExtra");
-      ent["LOS"]​ = e.field("LOS");
-      ent["OpDateCal"] = e.field("OpDateCal");
-      ent["OpLength"] = e.field("OpLength");
-
-      //---OpGroup, Organ
-      if (e.field("OperationList").length>0)​{
-        ent["OpGroup"] = e.field("OperationList")[0].field("OpList");
-        ent["Organ"]​ = e.field("OperationList")[0].field("OpGroup").join(" ")​;
-      }​
-      
-      //---WeekDay
-      ent["WeekDay"]​ =  my.wkname(my.gday(e.field("Date")​)​ ;
-      //---Dead
-      if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
-        ent["Dead"]​ = "Dead";
-      else
-        ent["Dead"]​ = "Alive";
-      rp.create(ent);
-      let rplast = rp.entries()​[0];
-      if(e.field("Patient").length>0){
-        rplast.link("Patient", e.field("Patient")​[0]);
-      }​
+    else if(oldUr.status == "Not" && e.field("Status") != "Not" ){
+      //create
+      this.createnew(e);
+    }
+    else if(oldUr.status != "Not" && e.field("Status") == "Not" ){
+      //delete
+      this.deleteold(e);
     }​
   }, 
   deleteold : function (e) {
@@ -2214,11 +2145,14 @@ var trig = {
     emx.flu(e)​;
     emx.setor(e)​;
     uro.updateDJStamp(e)​;
-    rpo.setreport(e)​;
-    if (value=="create")
+    if (value=="create") {
+      rpo.createnew(e);
       opu.createOp(e)​;
-    else if (value=="update")​
+    }
+    else if (value=="update")​ {
+      rpo.updatenew(e);
       opu.updateOp(e)​;
+    }
     oldUr.save(e)​;
   }, 
   UroBeforeViewCard ​: function (e) {​
@@ -2254,7 +2188,7 @@ var trig = {
   UroAfterDelete : function (e)​ {
     oldUr.load(e);
     uro.deletedxop(e)​;
-    uro.deleterp(e)​;
+    rpo.deleteold(e)​;
     opu.deleteOp(e);
     uro.deletept(e)​;
   }, 
@@ -2301,7 +2235,6 @@ var trig = {
     emx.flu(e)​;
     emx.setor(e)​;
     uro.updateDJStamp(e)​;
-    rpo.setreport(e)​;
     oldUr.save(e)​;
   }, 
   BackupBeforeViewCard ​: function (e) {​
@@ -2336,7 +2269,6 @@ var trig = {
   }, 
   BackupAfterDelete : function (e)​ {
     uro.deletedxop(e)​;
-    uro.deleterp(e)​;
     uro.deletept(e)​;
   }, 
   ConsultOpenEdit : function (e)​ {
