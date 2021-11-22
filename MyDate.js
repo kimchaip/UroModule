@@ -52,6 +52,17 @@ var my = {
       this.nd = 0;
       return this.d;
     }
+  },
+  wkname : function (wd) {
+    let wdt = "" ;
+    if (wd==0)​ wdt = "Sun" ;
+    else if (wd==1)​ wdt = "Mon" ;
+    else if (wd==2)​ wdt = "Tue" ;
+    else if (wd==3)​ wdt = "Wed" ;
+    else if (wd==4)​ wdt = "Thu" ;
+    else if (wd==5)​ wdt = "Fri" ;
+    else if (wd==6)​ wdt = "Sat" ;
+    return wdt;
   }
 }​;​
 
