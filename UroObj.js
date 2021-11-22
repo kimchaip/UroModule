@@ -1871,12 +1871,17 @@ var rpo = {
         }​
       }​
     }​
+    let dt = e.field("OpDateCal");
+    let cdt = null ;
+    if(dt) {
+      cdt = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds());
+    }
     if(found)​{ //edit 
       //---Date, Patient, Dx, Op, ORType, Extra, LOS
       rpt.set("ORType", e.field("ORType"));
       rpt.set("Extra", e.field("OpExtra"));
       rpt.set("LOS", e.field("LOS"));
-      rpt.set("OpDateCal", e.field("OpDateCal"));
+      rpt.set("OpDateCal", cdt);
       rpt.set("OpLength", e.field("OpLength"));
 
       //---OpGroup, Organ
