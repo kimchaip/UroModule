@@ -1865,6 +1865,7 @@ var rpo = {
       rpt.set("ORType", e.field("ORType"));
       rpt.set("Extra", e.field("OpExtra"));
       rpt.set("LOS", e.field("LOS"));
+      rpt.set("OpDateCal", e.field("OpDateCal"));
       //---OpGroup, Organ
       if (e.field("OperationList").length>0)​{
         rpt.set("OpGroup", e.field("OperationList")[0].field("OpList"));
@@ -1897,6 +1898,7 @@ var rpo = {
       ent["ORType"] = e.field("ORType");
       ent["Extra"]​ = e.field("OpExtra");
       ent["LOS"]​ = e.field("LOS");
+      ent["OpDateCal"] = e.field("OpDateCal");
       //---OpGroup, Organ
       if (e.field("OperationList").length>0)​{
         ent["OpGroup"] = e.field("OperationList")[0].field("OpList");
@@ -2259,6 +2261,7 @@ var trig = {
     uro.runq(e)​;
     fill.underlying(e)​;
     fill.los(e)​;
+    fill.opdatecal(e);
   }, 
   BackupAfterEdit : function (e, value) {
     oldUr.load(e)​;
