@@ -930,6 +930,17 @@ var fill = {
       e.set("OpDateCal", new Date(opdate.getFullYear(), opdate.getMonth(), opdate.getDate(), hs, mm, ss));
     }
   },
+  oplength : function (e) {
+    if (e.field("TimeOut") > e.field("TimeIn"))​ {
+      e.set("OpLength", e.field("TimeOut")-e.field("TimeIn"))​;
+    }​
+    else if (e.field("TimeIn") > e.field("TimeOut"))​ {
+      e.set("OpLength", 86400000-(e.field("TimeIn")-e.field("TimeOut"))​);
+    }​
+    else {
+      e.set("OpLength", null)​;
+    }
+  },
   ptstatus : function (e) {
     let links = e.field("Patient")​;
     let field1 = "" ;
@@ -1866,21 +1877,14 @@ var rpo = {
       rpt.set("Extra", e.field("OpExtra"));
       rpt.set("LOS", e.field("LOS"));
       rpt.set("OpDateCal", e.field("OpDateCal"));
+      rpt.set("OpLength", e.field("OpLength"));
+
       //---OpGroup, Organ
       if (e.field("OperationList").length>0)​{
         rpt.set("OpGroup", e.field("OperationList")[0].field("OpList"));
         rpt.set("Organ", e.field("OperationList")[0].field("OpGroup").join(" ")​);
       }​
-      //---OpLength
-      if (e.field("TimeOut") > e.field("TimeIn"))​ {
-        rpt.set("OpLength", e.field("TimeOut")-e.field("TimeIn"))​;
-      }​
-      else if (e.field("TimeIn") > e.field("TimeOut"))​ {
-        rpt.set("OpLength", 86400000-(e.field("TimeIn")-e.field("TimeOut"))​);
-      }​
-      else {
-        rpt.set("OpLength", null)​;
-      }​
+      ​
       //---WeekDay
       rpt.set("WeekDay", wdt)​;
       //---Dead
@@ -1899,21 +1903,14 @@ var rpo = {
       ent["Extra"]​ = e.field("OpExtra");
       ent["LOS"]​ = e.field("LOS");
       ent["OpDateCal"] = e.field("OpDateCal");
+      ent["OpLength"] = e.field("OpLength");
+
       //---OpGroup, Organ
       if (e.field("OperationList").length>0)​{
         ent["OpGroup"] = e.field("OperationList")[0].field("OpList");
         ent["Organ"]​ = e.field("OperationList")[0].field("OpGroup").join(" ")​;
       }​
-      //---OpLength
-      if (e.field("TimeOut") > e.field("TimeIn"))​ {
-        ent["OpLength"]​ =  e.field("TimeOut")-e.field("TimeIn");
-      }​
-      else if (e.field("TimeIn") > e.field("TimeOut"))​ {
-        ent["OpLength"]​ = 86400000-(e.field("TimeIn")-e.field("TimeOut"))​;
-      }​
-      else {
-        ent["OpLength"]​ =  null;
-      }​
+      
       //---WeekDay
       ent["WeekDay"]​ =  wdt;
       //---Dead
@@ -2176,6 +2173,7 @@ var trig = {
     fill.underlying(e)​;
     fill.los(e)​;
     fill.opdatecal(e);
+    fill.oplength(e);
   }, 
   UroAfterEdit : function (e, value) {
     oldUr.load(e)​;
@@ -2262,6 +2260,7 @@ var trig = {
     fill.underlying(e)​;
     fill.los(e)​;
     fill.opdatecal(e);
+    fill.oplength(e);
   }, 
   BackupAfterEdit : function (e, value) {
     oldUr.load(e)​;
