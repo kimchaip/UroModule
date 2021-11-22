@@ -1954,19 +1954,21 @@ var rpo = {
       }​
     }​
   }, 
-  deleteold : function () {
-    let ptlks = pt.find(oldUr.patient)​;
-    if (ptlks.length>0) {
-      let ptent = pt.findById(ptlks[0].id);
-      let rps = ptent.linksFrom("Report", "Patient")​;
-      if (rps.length>0) {
-        for (let r in rps)​{
-          if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(oldUr.opdate)​ &​& rps[r].field("Dx") ==​ oldUr.dx &​& rps[r].field("Op") ==​ oldUr.op)​{
-            rps[r].trash();
-            break;
+  deleteold : function (e) {
+    if(oldUr.status != "Not"){
+      let ptlks = pt.find(oldUr.patient)​;
+      if (ptlks.length>0) {
+        let ptent = pt.findById(ptlks[0].id);
+        let rps = ptent.linksFrom("Report", "Patient")​;
+        if (rps.length>0) {
+          for (let r in rps)​{
+            if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(oldUr.opdate)​ &​& rps[r].field("Dx") ==​ oldUr.dx &​& rps[r].field("Op") ==​ oldUr.op)​{
+              rps[r].trash();
+              break;
+            }​
           }​
         }​
-      }​
+      }
     }​
   }​
 }​;
