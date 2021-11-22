@@ -915,6 +915,26 @@ var fill = {
       e.set("LOS", undefined)​;
     }​
   }, 
+  opdatecal : function (e) {
+    if(e.field("Date")) {
+      let microsec, hs, mm, ss;
+      let opdate = e.field("Date");
+      if(e.field("Timein")) {
+        microsec = e.field("TimeIn");
+        hs = Math.floor(microsec/3600);
+        microsec = microsec%3600;
+        mm = Math.floor(microsec/60);
+        microsec = microsec%60;
+        ss = Math.floor(microsec);
+      }
+      else {
+        hs = Number(e.field("Que"))+8;
+        mm = 0;
+        ss = 0;
+      }
+      e.set("OpDateCal", new Date(opdate.getFullYear(), opdate.getMonth(), opdate.getDate(), hs, mm, ss));
+    }
+  },
   ptstatus : function (e) {
     let links = e.field("Patient")​;
     let field1 = "" ;
@@ -2158,6 +2178,7 @@ var trig = {
     uro.runq(e)​;
     fill.underlying(e)​;
     fill.los(e)​;
+    fill.opdatecal(e);
   }, 
   UroAfterEdit : function (e, value) {
     oldUr.load(e)​;
