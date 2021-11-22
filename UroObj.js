@@ -1824,7 +1824,7 @@ var rpo = {
       }​
       
       //---WeekDay
-      ent["WeekDay"]​ =  my.wkname(my.gday(e.field("Date")​)​ ;
+      ent["WeekDay"]​ =  my.wkname(my.gday(e.field("Date")​))​ ;
       
       //---Dead
       if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
