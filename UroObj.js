@@ -1844,6 +1844,40 @@ var rpo = {
       }​
     }​
   },
+  createnew : function (e) {
+    if(e.field("Status") != "Not"){
+      let ent = new Object();
+      //---Date, Patient, Dx, Op, ORType, Extra, LOS
+      ent["OpDate"] = e.field("Date");
+      ent["Dx"]​ = e.field("Dx");
+      ent["Op"]​ = e.field("Op");
+      ent["ORType"] = e.field("ORType");
+      ent["Extra"]​ = e.field("OpExtra");
+      ent["LOS"]​ = e.field("LOS");
+      ent["OpDateCal"] = e.field("OpDateCal");
+      ent["OpLength"] = e.field("OpLength");
+
+      //---OpGroup, Organ
+      if (e.field("OperationList").length>0)​{
+        ent["OpGroup"] = e.field("OperationList")[0].field("OpList");
+        ent["Organ"]​ = e.field("OperationList")[0].field("OpGroup").join(" ")​;
+      }​
+      
+      //---WeekDay
+      ent["WeekDay"]​ =  my.wkname(my.gday(e.field("Date")​)​ ;
+      
+      //---Dead
+      if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
+        ent["Dead"]​ = "Dead";
+      else
+        ent["Dead"]​ = "Alive";
+        
+      let rplast = rp.create(ent);
+      if(e.field("Patient").length>0){
+        rplast.link("Patient", e.field("Patient")​[0]);
+      }​
+    }
+  },
   updatenew : function (e) {
     let found = false;​
     let rpt = undefined;
