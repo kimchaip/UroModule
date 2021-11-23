@@ -8,7 +8,7 @@ var os = libByName("OpUroSx");
 var oldUr = {
   a : [],​
   load : function (e)​ {
-    this.a = e.field("Previous").split(",");
+    this.a = e.field("Previous").split(";");
   },
   save : function (e)​ {
     this.a = [] ;​
@@ -39,7 +39,7 @@ var oldUr = {
     this.a.push(e.field("OpResult"));       //​19
     
     
-    e.set("Previous", this.a.join());
+    e.set("Previous", this.a.join(";"));
   },
   get opdate() {
     if (this.a[0])​ return my.date(new Date(this.a[0]))​;
@@ -125,7 +125,7 @@ var oldUr = {
 var oldCs = {
   a : [],​
   load : function (e)​ {
-    this.a = e.field("Previous").split(",");
+    this.a = e.field("Previous").split(";");
   },
   save : function (e)​ {
     this.a = [] ;​
@@ -146,7 +146,7 @@ var oldCs = {
     this.a.push(e.field("Rx"));              //​9
     this.a.push(e.field("Track"));          //10
     this.a.push(e.field("Note"));           //​11
-    e.set("Previous", this.a.join());
+    e.set("Previous", this.a.join(";"));
   },
   get csdate() {
     if (this.a[0])​ return my.date(new Date(this.a[0]))​;
@@ -200,7 +200,7 @@ var oldCs = {
 var oldPt = {
   a : [],​
   load : function (e)​ {
-    this.a = e.field("Previous").split(",");
+    this.a = e.field("Previous").split(";");
   },
   save : function (e)​ {
     this.a = [] ;​
@@ -226,7 +226,7 @@ var oldPt = {
     this.a.push(e.field("Phone"));               //​6
     this.a.push(e.field("Contact"));             //​7
 
-    e.set("Previous", this.a.join());
+    e.set("Previous", this.a.join(";"));
   },
   get ptname() {
     if (this.a[0])​ return this.a[0]​;
