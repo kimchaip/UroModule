@@ -1850,6 +1850,9 @@ var rpo = {
             if (my.gdate(my.date(rps[r].field("OpDate"))​) == my.gdate(my.date(oldUr.opdate)​) && rps[r].field("ORType") ==​ oldUr.optype &​& rps[r].field("Dx") ==​ oldUr.dx &​& rps[r].field("Op") ==​ oldUr.op)​{
               let rpt = rps[r]​;
               //---Date, Patient, Dx, Op, ORType, Extra, LOS
+              rpt.set("OpDate", e.field("Date"));
+              rpt.set("Dx", e.field("Dx"));
+              rpt.set("Op", e.field("Op"));
               rpt.set("ORType", e.field("ORType"));
               rpt.set("Extra", e.field("OpExtra"));
               rpt.set("LOS", e.field("LOS"));
