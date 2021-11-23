@@ -2047,7 +2047,6 @@ var opu = {
           }
         }
       }
-      message(found.length+","+oldPt.ptname +","+ e.field("PtName") +","+ oldPt.yy +","+  e.field("YY") +","+  oldPt.mm +","+  e.field("MM")  +","+ oldPt.dd +","+ e.field("DD") +","+ my.gdate(my.date(oldPt.birthday)) +","+  my.gdate(my.date(e.field("Birthday"))) +","+  oldPt.hn +","+  e.field("HN"));
       if(found.length>0) {
         //update OpUroSx
         let oss = os.entries();
@@ -2061,7 +2060,7 @@ var opu = {
           }
         }
         if(count) {
-          message("Update " + count + " PtName in OpUroSx!");
+          message("Update related PtName in OpUroSx!");
         }
       }
     }
