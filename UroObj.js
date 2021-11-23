@@ -2235,6 +2235,12 @@ var trig = {
     emx.flu(e)​;
     emx.setor(e)​;
     uro.updateDJStamp(e)​;
+    if (value=="create") {
+      rpo.createnew(e);
+    }
+    else if (value=="update")​ {
+      rpo.updatenew(e);
+    }
     oldUr.save(e)​;
   }, 
   BackupBeforeViewCard ​: function (e) {​
@@ -2268,7 +2274,9 @@ var trig = {
     }
   }, 
   BackupAfterDelete : function (e)​ {
+    oldUr.load(e);
     uro.deletedxop(e)​;
+    rpo.deleteold(e)​;
     uro.deletept(e)​;
   }, 
   ConsultOpenEdit : function (e)​ {
