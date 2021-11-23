@@ -1841,6 +1841,7 @@ var rpo = {
   updatenew : function (e) {
     if(oldUr.status != "Not" && e.field("Status") != "Not"){
       //update
+      message('oldUr.status='+oldUr.status+'e.field("Status")='+e.field("Status"));
       let ptlks = pt.find(oldUr.patient)​;
       if (ptlks.length>0) {
         let ptent = pt.findById(ptlks[0].id);
