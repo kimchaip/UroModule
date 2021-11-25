@@ -5,261 +5,110 @@ var bu = libByName("Backup") ;
 var rp = libByName("Report")​;
 var os = libByName("OpUroSx");
 
-var oldUr = {
-  a : [],​
-  load : function (e)​ {
-    this.a = e.field("Previous").split(";");
-  },
-  save : function (e)​ {
-    this.a = [] ;​
-
-    this.a.push(e.field("Date")?e.field("Date").toDateString():null)​;	       //0
-    let links = e.field("Patient");
-    if(links.length)
-      this.a.push(links​[0].title);           //​1
-    else
-      this.a.push(null);                     //1
-    this.a.push(e.field("ORType"));          //​2
-    this.a.push(e.field("Que"));             //​3
-    this.a.push(e.field("VisitType"));       //​4
-    this.a.push(e.field("Ward"));            //​5
-    this.a.push(e.field("VisitDate")?e.field("VisitDate").toDateString():null);       //​6
-    this.a.push(e.field("DischargeDate")?e.field("DischargeDate").toDateString():null);   //​7
-    this.a.push(e.field("EntryMx"));         //​8
-    this.a.push(e.field("AppointDate")?e.field("AppointDate").toDateString():null​);     //​9
-    this.a.push(e.field("Status"));         //​10
-    this.a.push(e.field("DJstent"));        //​11
-    this.a.push(e.field("OpExtra"));        //​12
-    this.a.push(e.field("Bonus"));          //​13
-    this.a.push(e.field("RecordDate")?e.field("RecordDate").toDateString():null);     //​14
-    this.a.push(e.field("Dx"));             //​15
-    this.a.push(e.field("Op"));             //​16
-    this.a.push(e.field("Track"));          //​17
-    this.a.push(e.field("Dr"));             //​18
-    this.a.push(e.field("OpResult"));       //​19
-    
-    
-    e.set("Previous", this.a.join(";"));
-  },
-  get opdate() {
-    if (this.a[0])​ return my.date(new Date(this.a[0]))​;
-    else return null;
-  }​,
-  get patient() {
-    if (this.a[1])​ return this.a[1] ;
-    else return null;
-  }​, 
-  get optype() {
-    if (this.a[2])​ return this.a[2] ;
-    else return "GA";
-  }​,​
-  get que() {
-    if (this.a[3])​ return this.a[3] ;
-    else return "00";
-  }​,
-  get vstype() {
-    if (this.a[4])​ return this.a[4] ;
-    else return "Admit";
-  }​,
-  get ward() {
-    if (this.a[5])​ return this.a[5] ;
-    else return "Uro";
-  }​,
-  get vsdate() {
-    if (this.a[6])​ return my.date(new Date(this.a[6]))​ ;
-    else return null;​
-  }​,
-  get dcdate() {
-    if (this.a[7])​ return my.date(new Date(this.a[7]))​ ;
-    else return null;​
-  }​,
-  get emx() {
-    if (this.a[8])​ return this.a[8] ;
-    else return "<Default>";
-  }​,
-  get apdate() {
-    if (this.a[9])​ return my.date(new Date(this.a[9]))​ ;
-    else return null;​
-  }​,
-  get status() {
-    if (this.a[10])​ return this.a[10] ;
-    else return "Plan";​
-  }​,
-  get dj() {
-    if (this.a[11])​ return this.a[11] ;
-    else return null;​
-  }​,
-  get opext() {
-    if (this.a[12] && this.a[12]!="false")​ return true ;
-    else return false;​
-  }​,
-  get bonus() {
-    if (this.a[13])​ return this.a[13] ;
-    else return 0;​
-  }, 
-  get rcdate() {
-    if (this.a[14])​ return my.date(new Date(this.a[14]))​ ;
-    else return null;​
-  }​,
-  get dx() {
-    if (this.a[15])​ return this.a[15] ;
-    else return "" ;
-  }​,
-  get op() {
-    if (this.a[16])​ return this.a[16] ;
-    else return "" ;
-  }​,
-  get track() {
-    if (this.a[17])​ return this.a[17] ;
-    else return 0 ;
-  }​,
-  get dr() {
-    if (this.a[18])​ return this.a[18] ;
-    else return "ชัยพร";​
-  }​,
-  get result() {
-    if (this.a[19])​ return this.a[19] ;
-    else return "" ;
-  }
-};
-var oldCs = {
-  a : [],​
-  load : function (e)​ {
-    this.a = e.field("Previous").split(";");
-  },
-  save : function (e)​ {
-    this.a = [] ;​
-
-    this.a.push(e.field("ConsultDate")?e.field("ConsultDate").toDateString():null)​;	       //0
-    let links = e.field("Patient");
-    if(links.length)
-      this.a.push(links​[0].title);           //​1
-    else
-      this.a.push(null);                     //​1
-    this.a.push(e.field("VisitType"));       //​2
-    this.a.push(e.field("Ward"));            //​3
-    this.a.push(e.field("VisitDate")?e.field("VisitDate").toDateString():null);       //​4
-    this.a.push(e.field("DischargeDate")?e.field("DischargeDate").toDateString():null);   //​5
-    this.a.push(e.field("EntryMx"));         //​6
-    this.a.push(e.field("AppointDate")?e.field("AppointDate").toDateString():null);     //​7
-    this.a.push(e.field("Dx"));              //​8
-    this.a.push(e.field("Rx"));              //​9
-    this.a.push(e.field("Track"));          //10
-    this.a.push(e.field("Note"));           //​11
-    e.set("Previous", this.a.join(";"));
-  },
-  get csdate() {
-    if (this.a[0])​ return my.date(new Date(this.a[0]))​;
-    else return null;
-  }​,
-  get patient() {
-    if (this.a[1])​ return this.a[1] ;
-    else return null;
-  }​, 
-  get vstype() {
-    if (this.a[2])​ return this.a[2] ;
-    else return null;
-  }​,
-  get ward() {
-    if (this.a[3])​ return this.a[3] ;
-    else return "Uro";
-  }​,
-  get vsdate() {
-    if (this.a[4])​ return my.date(new Date(this.a[4])) ;
-    else return null;
-  }​,
-  get dcdate() {
-    if (this.a[5])​ return my.date(new Date(this.a[5])) ;
-    else return null;
-  }​,
-  get emx() {
-    if (this.a[6])​ return this.a[6] ;
-    else return "<Default>";
-  }​,
-  get apdate() {
-    if (this.a[7])​ return my.date(new Date(this.a[7])) ;
-    else return null;
-  }​,
-  get dx() {
-    if (this.a[8])​ return this.a[8] ;
-    else return "";
-  }​,
-  get rx() {
-    if (this.a[9])​ return this.a[9] ;
-    else return "";
-  }​,
-  get track() {
-    if (this.a[10])​ return this.a[10] ;
-    else return 0;
-  },
-  get note() {
-    if (this.a[11])​ return this.a[11] ;
-    else return "";
-  }​
-};
-var oldPt = {
-  a : [],​
-  load : function (e)​ {
-    this.a = e.field("Previous").split(";");
-  },
-  save : function (e)​ {
-    this.a = [] ;​
-    
-    this.a.push(e.field("PtName"));              //​0
-    if(e.field("YY"))
-      this.a.push(e.field("YY"));                //​1
-    else
-      this.a.push(null);
-    if(e.field("MM"))
-      this.a.push(e.field("MM"));                //​2
-    else
-      this.a.push(null);
-    if(e.field("DD"))
-      this.a.push(e.field("DD"));                  //​3
-    else
-      this.a.push(null);
-    if(e.field("Birthday"))
-      this.a.push(e.field("Birthday").toDateString());                //​4
-    else
-      this.a.push(null);
-    this.a.push(e.field("HN"));                  //​5
-    this.a.push(e.field("Phone"));               //​6
-    this.a.push(e.field("Contact"));             //​7
-
-    e.set("Previous", this.a.join(";"));
-  },
-  get ptname() {
-    if (this.a[0])​ return this.a[0]​;
-    else return null;
-  }​,
-  get yy() {
-    if (this.a[1])​ return this.a[1];
-    else return null;
-  }​,
-  get mm() {
-    if (this.a[2])​ return this.a[2];
-    else return null;
-  }​,
-  get dd() {
-    if (this.a[3])​ return this.a[3];
-    else return null;
-  }​,
-  get birthday() {
-    if (this.a[4])​ return my.date(new Date(this.a[4]))​ ;
-    else return null;​
-  }​,
-  get hn() {
-    if (this.a[5])​ return this.a[5];
-    else return null;
-  }​,
-  get phone() {
-    if (this.a[6])​ return this.a[6];
-    else return null;
-  }​,
-  get contact() {
-    if (this.a[7])​ return this.a[7];
-    else return null;
-  }​​
+var old = {
+    d : {}, 
+    load : function (e) {
+      //get Previous to Obj
+      this.d = JSON.parse(e.field("Previous"), function (key, value) {
+        if (value) {
+          if (typeof value == "string" && value.match(/\d+\-\d+\-\d+T\d+/)) {
+            return new Date(value);
+          }
+          else {
+            return value;
+          }
+        }
+        else {
+          if (value==false || value==0 || value=="") {
+            return value;
+          }
+          else {
+            return null;
+          }
+        }
+      });
+    },
+    save : function (e) {
+      //save field value to Obj and set to Previous
+      if(lib().title=="Patient") {
+        this.d["PtName"] = e.field("PtName"); 
+        this.d["Age"] = e.field("Age");
+        this.d["YY"] = e.field("YY");
+        this.d["MM"] = e.field("MM");
+        this.d["DD"] = e.field("DD"); 
+        this.d["Birthday"] = e.field("Birthday");
+        this.d["HN"] = e.field("HN");
+        this.d["HNBar"] = e.field("HNBar");
+        this.d["Underlying"] = e.field("Underlying");
+        this.d["VIP"] = e.field("VIP");
+        this.d["Allergies"] = e.field("Allergies");
+        this.d["DJstent"] = e.field("DJstent");
+        this.d["DJStamp"] = e.field("DJStamp");
+        this.d["Status"] = e.field("Status");
+        this.d["Done"] = e.field("Done");
+        this.d["Ward"] = e.field("Ward");
+        this.d["WardStamp"] = e.field("WardStamp");
+        this.d["Address"] = e.field("Address");
+        this.d["Phone"] = e.field("Phone");
+        this.d["Contact"] = e.field("Contact");
+        this.d["Descript"] = e.field("Descript");
+      }
+      else {
+        this.d["Patient"] = e.field("Patient").length? e.field("Patient")​[0].title: ""; 
+        this.d["PastHx"] = e.field("PastHx");
+        this.d["InvResult"] = e.field("InvResult");
+        this.d["Dx"] = e.field("Dx");
+        this.d["VisitType"] = e.field("VisitType");
+        this.d["VisitDate"] = e.field("VisitDate");
+        this.d["Ward"] = e.field("Ward");
+        this.d["Merge"] = e.field("Merge");
+        this.d["EntryMx"] = e.field("EntryMx");
+        this.d["AppointDate"] = e.field("AppointDate");
+        this.d["Operation"] = e.field("Operation");
+        this.d["Color"] = e.field("Color");
+        this.d["MergeID"] = e.field("MergeID");
+        this.d["Photo"] = e.field("Photo"); 
+        this.d["DischargeDate"] = e.field("DischargeDate");
+        this.d["LOS"] = e.field("LOS");
+        this.d["Summary"] = e.field("Summary");
+        this.d["Track"] = e.field("Track");
+      }
+      if(lib().title=="UroBase" || lib().title=="Backup") {
+        this.d["Date"] = e.field("Date")​;
+        this.d["DxAutoFill"] = e.field("DxAutoFill").length? e.field("DxAutoFill")[0].title: "";
+        this.d["Op"] = e.field("Op");
+        this.d["OperationList"] = e.field("OperationList").length? e.field("OperationList")​[0].title: "";
+        this.d["AutoOpExtra"] = e.field("AutoOpExtra");
+        this.d["OpExtra"] = e.field("OpExtra");
+        this.d["x1.5"] = e.field("x1.5");
+        this.d["Bonus"] = e.field("Bonus");
+        this.d["ORType"] = e.field("ORType");
+        this.d["Que"] = e.field("Que");
+        this.d["Dr"] = e.field("Dr");
+        this.d["RecordDate"] = e.field("RecordDate");
+        this.d["Future"] = e.field("Future");
+        this.d["Status"] = e.field("Status");
+        this.d["OpResult"] = e.field("OpResult");
+        this.d["DJstent"] = e.field("DJstent");
+        this.d["TimeIn"] = e.field("TimeIn");
+        this.d["TimeOut"] = e.field("TimeOut");
+        this.d["OpDateCal"] = e.field("OpDateCal");
+        this.d["OpLength"] = e.field("OpLength");
+      }
+      else if(lib().title=="Consult") {
+        this.d["ConsultDate"] = e.field("ConsultDate");
+        this.d["Rx"] = e.field("Rx");
+        this.d["Note"] = e.field("Note");
+      }
+      
+      e.set("Previous", JSON.stringify(this.d));
+    },
+    field : function (fieldname) {
+      //get data by field
+      if(fieldname in this.d)
+        return this.d[fieldname];
+      
+    }
 };
 
 var mer = {
@@ -386,25 +235,23 @@ var mer = {
     return o;
   }​, 
   effect : function (e)  {
-    let old = (lib().title=="UroBase" || lib().title=="Backup") ? 
-                   oldUr:oldCs;
     let mpos = this.posinmerge(e)​;
     if(mpos["found"]​ == true ) { //parent or child
-      if(my.gdate(old.vsdate) != my.gdate(e.field("VisitDate"))) {
+      if(my.gdate(old.field("VisitDate")) != my.gdate(e.field("VisitDate"))) {
         this.changeother(e, mpos["pos"]​, mpos["mar"]​, "VisitDate" ) ;
       }
-      if(old.ward != e.field("Ward") ) {
+      if(old.field("Ward") != e.field("Ward") ) {
         this.changeother(e, mpos["pos"], mpos["mar"], "Ward" ) ;
       } 
-      if(my.gdate(old.dcdate) != my.gdate(e.field("DischargeDate")) ) {
+      if(my.gdate(old.field("DischargeDate")) != my.gdate(e.field("DischargeDate")) ) {
         this.changeother(e, mpos["pos"], mpos["mar"], "DischargeDate" ) ;
       }
-      if (old.vstype == undefined || e.field("VisitType") == undefined) {
+      if (!old.field("VisitType") || !e.field("VisitType")) {
         e.set("VisitType", "Admit");
         this.changeother(e, mpos["pos"], mpos["mar"], "VisitType" ) ;
       }​
-      else if(old.vstype != e.field("VisitType") ) {
-        e.set("VisitType", old.vstype);
+      else if(old.field("VisitType") != e.field("VisitType") ) {
+        e.set("VisitType", old.field("VisitType"));
       }
     } 
   }, 
@@ -1120,9 +967,9 @@ var pto = {
     }​
     
     let d = 0;
-    if (oldPt.yy != e.field("YY") && e.field("YY") ||
-        oldPt.mm != e.field("MM") ||
-        oldPt.dd != e.field("DD"))​ {
+    if (old.field("YY") != e.field("YY") && e.field("YY") ||
+        old.field("MM") != e.field("MM") ||
+        old.field("DD") != e.field("DD"))​ {
       let month = e.field("MM")?e.field("MM"):0;
       let day = e.field("DD")?e.field("DD"):0;
       d = Math.round(e.field("YY")*365.2425 + month*30.4375 + day);
@@ -1185,19 +1032,19 @@ var uro = {
   }, ​
   setnewdate : function (e, value) {
     //---if Date change : set new date
-    if (value || my.gdate(oldUr.opdate) != my.gdate(​e.field("Date"))​) {
+    if (value || my.gdate(old.field("Date")) != my.gdate(​e.field("Date"))​) {
       e.set("Date", my.date(e.field("Date")));
     }​
-    if (value || my.gdate(​oldUr.vsdate) != my.gdate(​e.field("VisitDate"))) {
+    if (value || my.gdate(​old.field("VisitDate")) != my.gdate(​e.field("VisitDate"))) {
       e.set("VisitDate", my.date(e.field("VisitDate")));
     }​
-    if (value || my.gdate(​oldUr.dcdate) != my.gdate(​e.field("DischargeDate"))​) {
+    if (value || my.gdate(​old.field("DischargeDate")) != my.gdate(​e.field("DischargeDate"))​) {
       e.set("DischargeDate", my.date(e.field("DischargeDate")));
     }​
-    if (value || my.gdate(​oldUr.apdate) != my.gdate(​e.field("AppointDate"))) {
+    if (value || my.gdate(​old.field("AppointDate")) != my.gdate(​e.field("AppointDate"))) {
       e.set("AppointDate", my.date(e.field("AppointDate")));
     }​
-    if (value || my.gdate(​oldUr.rcdate) != my.gdate(​e.field("RecordDate"))​) {
+    if (value || my.gdate(​old.field("RecordDate")) != my.gdate(​e.field("RecordDate"))​) {
       e.set("RecordDate", my.date(e.field("RecordDate")));
     }​
   }, 
@@ -1235,7 +1082,7 @@ var uro = {
           e.set("VisitDate", my.date(e.field("Date")))​;
         }​
       }
-      else if(oldUr.optype!=e.field("ORType") || my.gdate(oldUr.opdate)!=my.gdate(e.field("Date"))){
+      else if(old.field("ORType")!=e.field("ORType") || my.gdate(old.field("Date"))!=my.gdate(e.field("Date"))){
         if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) > my.gdate(my.dateminus(e.field("Date"), 1))){
           if (e.field("VisitType") == "OPD")​
             e.set("VisitType", "Admit")​;
@@ -1257,7 +1104,7 @@ var uro = {
           e.set("VisitDate", my.date(e.field("Date")))​;
         }​
       }
-      else if(oldUr.optype!=e.field("ORType") || my.gdate(oldUr.opdate)!=my.gdate(e.field("Date"))){
+      else if(old.field("ORType")!=e.field("ORType") || my.gdate(old.field("Date"))!=my.gdate(e.field("Date"))){
         if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) != my.gdate(my.dateminus(e.field("Date"), 1))){
           if (e.field("VisitType") == "OPD")​
             e.set("VisitType", "Admit")​;
@@ -1272,7 +1119,7 @@ var uro = {
   opresulteffect : function(e) {
     let opresult = e.field("OpResult").replace(/ +/g, ' ').trim().replace(/\n +/g, '\n');
     e.set("OpResult", opresult);
-    if(opresult && oldUr.result != opresult ) {
+    if(opresult && old.field("OpResult") != opresult ) {
       let ondj = opresult.match(/dj/i);
       ondj = ondj==null?0:ondj.length;
       let opon = e.field("Op").match(/dj/i);
@@ -1308,7 +1155,7 @@ var uro = {
       else
         e.set("DJstent", null);
     }
-    else if(oldUr.result && opresult == "" &​& oldUr.result != opresult){
+    else if(old.field("OpResult") && opresult == ""){
       e.set("Status", "Plan");
       if (e.field("ORType") == "GA") {
         if (e.field("VisitType") == "OPD")​
@@ -1322,10 +1169,10 @@ var uro = {
     let lenq = que.q.length;
     let newq = 0;
     let eq = Number(e.field("Que")​)​;
-    let qstr = "," + oldUr.que​ + "," ;
+    let qstr = '"Que":"' + old.field("Que")​ + '"' ;
     //---Status assign Que---//
     if (e.field("Status") == "Not" || e.field("ORType")​ == "LA" ) {
-      e.set("Previous", e.field("Previous").replace(qstr, ",00,"))​;
+      e.set("Previous", e.field("Previous").replace(qstr, '"Que":"00"'))​;
       e.set("Que", "00") ;
       let near = que.findque(eq)​;
       if(near != undefined)​
@@ -1336,8 +1183,8 @@ var uro = {
         for (let i = hole+1 ; i<maxq; i++)​ {
           near = que.findque(i);
           if (near != undefined)​{
-            qstr = "," + que.string(i) + "," ;
-            near.set("Previous", near.field("Previous").replace(qstr, "," + que.string(hole) ​+ ","))​;
+            qstr = '"Que":"' +  que.string(i) + '"' ;
+            near.set("Previous", near.field("Previous").replace(qstr, '"Que":"' + que.string(hole) ​+ '"'))​;
             near.set("Que", que.string(hole)​);
             break;
           }​
@@ -1354,7 +1201,7 @@ var uro = {
       else {
         newq = hole;
       }​
-      e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(newq) ​+ ","))​;
+      e.set("Previous", e.field("Previous").replace(qstr, '"Que":"' + que.string(newq) ​+ '"'))​;
       e.set("Que", que.string(newq)​)​;
     }​ 
     else if (eq <= maxq)​ { //update, que 0<nn<max
@@ -1364,7 +1211,7 @@ var uro = {
       maxq += 1;
       if (dup != null &​& hole > 0) { //found dup, found hole
         let skip = 0;
-        e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(eq) + ","))​;
+        e.set("Previous", e.field("Previous").replace(qstr, '"Que":"' + que.string(eq) + '"'))​;
         if (Number(dup.field("Que"))<hole)​ { //wave to right
           skip = 1;
         }​
@@ -1375,13 +1222,13 @@ var uro = {
           let i = Number(dup.field("Que"))​+skip;
           near = que.findque(i);
           if (near != null)​{ //found next que
-            qstr = "," + dup.field("Que")​+ "," ;
-            dup.set("Previous", dup.field("Previous").replace(qstr, "," + near.field("Que") ​+ ","))​;
+            qstr = '"Que":"' +  dup.field("Que")​ + '"' ;
+            dup.set("Previous", dup.field("Previous").replace(qstr, '"Que":"' + near.field("Que") ​+ '"'))​;
             dup.set("Que", near.field("Que"));
           }​
           else { //found hole
-            qstr = "," + dup.field("Que") + "," ;
-            dup.set("Previous", dup.field("Previous").replace(qstr, "," + que.string(i) ​+ ","))​;
+            qstr = '"Que":"' + dup.field("Que") + '"' ;
+            dup.set("Previous", dup.field("Previous").replace(qstr, '"Que":"' + que.string(i) ​+ '"'))​;
             dup.set("Que", que.string(i))​;
             break;
           }​
@@ -1389,18 +1236,18 @@ var uro = {
         }    
       }​
       else if (dup != null &​& hole == 0) { //found dup, no hole
-        e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(eq) + ","))​;
+        e.set("Previous", e.field("Previous").replace(qstr, '"Que":"' + que.string(eq) + '"'))​;
         while (dup != null)​ {//found duplicate
           let i = Number(dup.field("Que"))​+1 ;
           near = que.findque(i);
           if (near != null)​{ //found next que
-            qstr = "," + dup.field("Que")​+ "," ;
-            dup.set("Previous", dup.field("Previous").replace(qstr, "," + near.field("Que") ​+ ","))​;
+            qstr = '"Que":"' + dup.field("Que")​+ '"' ;
+            dup.set("Previous", dup.field("Previous").replace(qstr, '"Que":"' + near.field("Que") ​+ '"'))​;
             dup.set("Que", near.field("Que"));
           }​
           else { //found maxq
-            qstr = "," + dup.field("Que")​+ "," ;
-            dup.set("Previous", dup.field("Previous").replace(qstr, "," + que.string(i)​ ​+ ","))​;
+            qstr = '"Que":"' + dup.field("Que")​+ '"' ;
+            dup.set("Previous", dup.field("Previous").replace(qstr, '"Que":"' + que.string(i)​ ​+ '"'))​;
             dup.set("Que", que.string(i))​;
             break;
           }​
@@ -1409,11 +1256,11 @@ var uro = {
       } 
       else if (dup == null &​& hole != 0)​ { // no dup, found hole
         if (eq<hole) {
-          e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(eq)​ ​+ ","))​;
+          e.set("Previous", e.field("Previous").replace(qstr, '"Que":"' + que.string(eq)​ ​+ '"'))​;
           e.set("Que", que.string(eq))​;
         }
         else {
-          e.set("Previous", e.field("Previous").replace(qstr, "," + que.string(hole)​ ​+ ","))​;
+          e.set("Previous", e.field("Previous").replace(qstr, '"Que":"' + que.string(hole)​ ​+ '"'))​;
           e.set("Que", que.string(hole))​;
         }
       }​
@@ -1441,7 +1288,7 @@ var uro = {
         }​
       }​
       else if (e.field("Date") < links[0].field("DJStamp"))​  {// edit entry before last DJStamp, can't edit
-        e.set("DJstent", oldUr.dj);
+        e.set("DJstent", old.field("DJstent"));
       }​
       else if (my.gdate(e.field("Date")) == my.gdate(links[0].field("DJStamp")))​ {// this entry is last DJStamp
         if (!links[0].field("DJstent"))​ {// this entry is off DJ, get only off or changeDJ​
@@ -1493,9 +1340,9 @@ var uro = {
     return o ;
   },
   setdxop : function(e){
-    if(oldUr.dx!=e.field("Dx")&&e.field("Dx")!=''​)
+    if(old.field("Dx")!=e.field("Dx")&&e.field("Dx")!=''​)
       e.set("Dx", e.field("Dx").replace(/-|#/g, '').replace(/\s+/g, ' ').trim()​);
-    if(oldUr.op!=e.field("Op")&&e.field("Op")!=''​)​
+    if(old.field("Op")!=e.field("Op")&&e.field("Op")!=''​)​
       e.set("Op", e.field("Op").replace(/-|#/g, '').replace(/\s+/g, ' ').trim()​);
   }, 
   createautofill : function (e) {
@@ -1646,14 +1493,14 @@ var uro = {
         let bulink = dxop.linksFrom("Backup", "DxAutoFill");​
         dxop.set("Count", orlink.length+bulink.length)​;​​​​
       }​
-      if((oldUr.dx != e.field("Dx")​ &​& oldUr.dx != "" &​& oldUr.dx)​ || 
-          (oldUr.op != e.field("Op")​ &​& oldUr.op != "" &​& oldUr.opl)​)​ { //update old dx in dxautofill
+      if((old.field("Dx") != e.field("Dx")​ &​& old.field("Dx"))​ || 
+          (old.field("Op") != e.field("Op")​ &​& old.field("Op"))​)​ { //update old dx in dxautofill
         let dx = libByName("DxAutoFill");
-        let dxs = dx.find(oldUr.dx)​;
+        let dxs = dx.find(old.field("Dx"))​;
         let find = undefined;
         if (dxs.length > 0) {
           for(let i in dxs)​{
-            if(dxs[i]​.field("Dx")​==oldUr.dx ​&& dxs[i]​.field("Op")​==oldUr.op​)​
+            if(dxs[i]​.field("Dx")​==old.field("Dx") ​&& dxs[i]​.field("Op")​==old.field("Op")​)​
               find = dxs[i]​ ;​
           }​
         }​
@@ -1674,13 +1521,13 @@ var uro = {
         let bulink = dxop.linksFrom("Backup", "OperationList");​
         dxop.set("Count", orlink.length+bulink.length)​;​​​​
       }​
-      if(oldUr.op != e.field("Op")​ &​& oldUr.op != "" &​& oldUr.op)​ { //update old op in oplist
+      if(old.field("Op") != e.field("Op")​ &​& old.field("Op"))​ { //update old op in oplist
         let op = libByName("OperationList")​;
-        let ops = op.find(oldUr.op)​;
+        let ops = op.find(old.field("Op"))​;
         let find = undefined;
         if (ops.length > 0) {
           for(let i in ops)​{
-            if(ops[i]​.field("OpFill")​==oldUr.op​)​
+            if(ops[i]​.field("OpFill")​==old.field("Op")​)​
               find = ops[i]​ ;​
           }
         }​
@@ -1774,16 +1621,16 @@ var uro = {
 var cso = {
   setnewdate : function (e, value) {
     //---if Date change : set new date
-    if (value || my.gdate(oldCs.csdate) != my.gdate(​e.field("ConsultDate"))​) {
+    if (value || my.gdate(old.field("ConsultDate")) != my.gdate(​e.field("ConsultDate"))​) {
       e.set("ConsultDate", my.date(e.field("ConsultDate")));
     }​
-    if (value || my.gdate(​oldCs.vsdate) != my.gdate(​e.field("VisitDate"))) {
+    if (value || my.gdate(​old.field("VisitDate")) != my.gdate(​e.field("VisitDate"))) {
       e.set("VisitDate", my.date(e.field("VisitDate")));
     }​
-    if (value || my.gdate(​oldCs.dcdate) != my.gdate(​e.field("DischargeDate"))​) {
+    if (value || my.gdate(​old.field("DischargeDate")) != my.gdate(​e.field("DischargeDate"))​) {
       e.set("DischargeDate", my.date(e.field("DischargeDate")));
     }​
-    if (value || my.gdate(​oldCs.apdate) != my.gdate(​e.field("AppointDate"))) {
+    if (value || my.gdate(​old.field("AppointDate")) != my.gdate(​e.field("AppointDate"))) {
       e.set("AppointDate", my.date(e.field("AppointDate")));
     }​
   }, 
@@ -1839,15 +1686,15 @@ var rpo = {
     }
   },
   updatenew : function (e) {
-    if(oldUr.status != "Not" && e.field("Status") != "Not"){
+    if(old.field("Status") != "Not" && e.field("Status") != "Not"){
       //update
-      let ptlks = pt.find(oldUr.patient)​;
+      let ptlks = pt.find(old.field("Patient"))​;
       if (ptlks.length>0) {
         let ptent = pt.findById(ptlks[0].id);
         let rps = ptent.linksFrom("Report", "Patient")​;
         if (rps.length>0) {
           for (let r in rps)​{
-            if (my.gdate(my.date(rps[r].field("OpDate"))​) == my.gdate(my.date(oldUr.opdate)​) && rps[r].field("ORType") ==​ oldUr.optype &​& rps[r].field("Dx") ==​ oldUr.dx &​& rps[r].field("Op") ==​ oldUr.op)​{
+            if (my.gdate(my.date(rps[r].field("OpDate"))​) == my.gdate(my.date(old.field("Date"))​) && rps[r].field("ORType") ==​ old.field("ORType") &​& rps[r].field("Dx") ==​ old.field("Dx") &​& rps[r].field("Op") ==​ old.field("Op"))​{
               let rpt = rps[r]​;
               //---Date, Patient, Dx, Op, ORType, Extra, LOS
               rpt.set("OpDate", e.field("Date"));
@@ -1879,24 +1726,24 @@ var rpo = {
         }​
       }​
     }
-    else if(oldUr.status == "Not" && e.field("Status") != "Not" ){
+    else if(old.field("Status") == "Not" && e.field("Status") != "Not" ){
       //create
       this.createnew(e);
     }
-    else if(oldUr.status != "Not" && e.field("Status") == "Not" ){
+    else if(old.field("Status") != "Not" && e.field("Status") == "Not" ){
       //delete
       this.deleteold(e);
     }​
   }, 
   deleteold : function (e) {
-    if(oldUr.status != "Not"){
-      let ptlks = pt.find(oldUr.patient)​;
+    if(old.field("Status") != "Not"){
+      let ptlks = pt.find(old.field("Patient"))​;
       if (ptlks.length>0) {
         let ptent = pt.findById(ptlks[0].id);
         let rps = ptent.linksFrom("Report", "Patient")​;
         if (rps.length>0) {
           for (let r in rps)​{
-            if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(oldUr.opdate)​ &​& rps[r].field("Dx") ==​ oldUr.dx &​& rps[r].field("Op") ==​ oldUr.op)​{
+            if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(old.field("Date"))​ &​& rps[r].field("Dx") ==​ old.field("Dx") &​& rps[r].field("Op") ==​ old.field("Op"))​{
               rps[r].trash();
               break;
             }​
@@ -1978,15 +1825,15 @@ var opu = {
     }
   },
   updateOp : function (e) {
-    if(oldUr.opext == true && oldUr.status != "Not" && e.field("OpExtra") == true && e.field("Status") != "Not"){
+    if(old.field("OpExtra") == true && old.field("Status") != "Not" && e.field("OpExtra") == true && e.field("Status") != "Not"){
       //update
       let oss = os.entries();
       let links = e.field("Patient");
       if(links.length>0 && oss.length>0){
         let link = links[0];
-        let parr = this.splitPtName(oldUr.patient);
+        let parr = this.splitPtName(old.field("Patient"));
         for (let s in oss)​{
-          if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(oldUr.opdate))​ && oss[s].field("Dr") ==​ oldUr.dr &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
+          if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(old.field("Date")))​ && oss[s].field("Dr") ==​ old.field("Dr") &​& oss[s].field("OpType") ==​ old.field("ORType") &​& oss[s].field("PtName") ==​ parr[0] && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ old.field("Dx") &​& oss[s].field("Op") ==​ old.field("Op"))​{
             oss[s].set("OpDate", my.date(e.field("Date")));
             oss[s].set("Dr", e.field("Dr"));
             oss[s].set("OpType", e.field("ORType")​);
@@ -2006,22 +1853,22 @@ var opu = {
         }​
       }​
     }
-    else if(oldUr.opext == false && e.field("OpExtra") == true && e.field("Status") != "Not" || oldUr.status == "Not" && e.field("Status") != "Not" && e.field("OpExtra") == true){
+    else if(old.field("OpExtra") == false && e.field("OpExtra") == true && e.field("Status") != "Not" || old.field("Status") == "Not" && e.field("Status") != "Not" && e.field("OpExtra") == true){
       //create
       this.createOp(e);
     }
-    else if(oldUr.opext == true && e.field("OpExtra") == false && oldUr.status != "Not" || oldUr.status != "Not" && e.field("Status") == "Not" && oldUr.opext == true){
+    else if(old.field("OpExtra") == true && e.field("OpExtra") == false && old.field("Status") != "Not" || old.field("Status") != "Not" && e.field("Status") == "Not" && old.field("OpExtra") == true){
       //delete
       this.deleteOp(e);
     }
   },
   deleteOp : function (e) {
-    if(oldUr.opext && oldUr.status != "Not"){
+    if(old.field("OpExtra") && old.field("Status") != "Not"){
       let oss = os.entries();
       if(oss.length>0){
-        let parr = this.splitPtName(oldUr.patient);
+        let parr = this.splitPtName(old.field("Patient"));
         for (let s in oss)​{
-          if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(oldUr.opdate))​ &​& oss[s].field("Dr") ==​ oldUr.dr &​& oss[s].field("OpType") ==​ oldUr.optype &​& oss[s].field("PtName") ==​ parr[0] && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ oldUr.dx &​& oss[s].field("Op") ==​ oldUr.op)​{
+          if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(old.field("Date")))​ &​& oss[s].field("Dr") ==​ old.field("Dr") &​& oss[s].field("OpType") ==​ old.field("ORType") &​& oss[s].field("PtName") ==​ parr[0] && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ old.field("Dx") &​& oss[s].field("Op") ==​ old.field("Op"))​{
             oss[s].trash();
             message("delete OpUroSx!");
             break;
@@ -2031,7 +1878,7 @@ var opu = {
     }
   },
   ptTrigOpuro : function (e) {
-    if(oldPt.ptname != e.field("PtName") || oldPt.yy != e.field("YY") || oldPt.mm != e.field("MM")  || oldPt.dd != e.field("DD") || my.gdate(my.date(oldPt.birthday)) != my.gdate(my.date(e.field("Birthday"))) || oldPt.hn != e.field("HN") ){
+    if(old.field("PtName") != e.field("PtName") || old.field("YY") != e.field("YY") || old.field("MM") != e.field("MM")  || old.field("DD") != e.field("DD") || my.gdate(my.date(old.field("Birthday"))) != my.gdate(my.date(e.field("Birthday"))) || old.field("HN") != e.field("HN") ){
       let orlinks = e.linksFrom("UroBase", "Patient");
       let bulinks = e.linksFrom("Backup", "Patient");
       let found = [];
@@ -2052,7 +1899,7 @@ var opu = {
         let oss = os.entries();
         let count = 0;
         for(let i in oss) {
-          if(oldPt.ptname == oss[i].field("PtName") && oldPt.hn == oss[i].field("HN")) {
+          if(old.field("PtName") == oss[i].field("PtName") && old.field("HN") == oss[i].field("HN")) {
             oss[i].set("PtName", e.field("PtName"));
             oss[i].set("Age", Number(e.field("Age").replace(/\s*ปี/,"")));
             oss[i].set("HN", e.field("HN"));
@@ -2068,11 +1915,11 @@ var opu = {
 };
 var trig = {
   PatientOpenEdit : function(e) {
-    oldPt.save(e);
+    old.save(e);
   },
   PatientBeforeEdit : function (e, value)​ {
     pto.rearrangename(e);
-    oldPt.load(e);
+    old.load(e);
     if (value=="create")
       pto.uniqueHN(e, true)​;
     else if (value=="update")​
@@ -2082,10 +1929,10 @@ var trig = {
     pto.dj(e)​;
   }, 
   PatientAfterEdit : function (e, value) {
-    oldPt.load(e)​;
+    old.load(e)​;
     if (value=="update")​
       opu.ptTrigOpuro(e);
-    oldPt.save(e)​;
+    old.save(e)​;
   }, 
   PatientUpdatingField ​: function (all) {
     let e = entry()​;
@@ -2101,14 +1948,14 @@ var trig = {
     pto.resetdone(all)​;
   }, 
   PatientBeforeLink : function (e)​ {
-    oldPt.load(e);
+    old.load(e);
     pto.age(e)​;
   }, 
   UroOpenEdit : function (e)​ {
-    oldUr.save(e)​;
+    old.save(e)​;
   }, 
   UroBeforeEdit : function (e, value)​ {
-    oldUr.load(e)​;
+    old.load(e)​;
     if (value=="create")
       uro.setnewdate(e, true)​;
     else if (value=="update")​{
@@ -2140,7 +1987,7 @@ var trig = {
     fill.oplength(e);
   }, 
   UroAfterEdit : function (e, value) {
-    oldUr.load(e)​;
+    old.load(e)​;
     fill.ptstatus(e)​;
     fill.color(e, "uro")​;
     mer.other(e)​;
@@ -2155,7 +2002,7 @@ var trig = {
       rpo.updatenew(e);
       opu.updateOp(e)​;
     }
-    oldUr.save(e)​;
+    old.save(e)​;
   }, 
   UroBeforeViewCard ​: function (e) {​
     fill.color(e, "uro")​;
@@ -2164,21 +2011,21 @@ var trig = {
     uro.resetcolor(all)​;
   }, 
   UroBeforeUpdatingField : function (e) {
-    oldUr.load(e)​;
+    old.load(e)​;
     uro.setnewdate(e, false)​;
     uro.setvisitdate(e)​;
     fill.track​(e, "uro")​;
-    if(e.field("Que")​!=oldUr.que &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
+    if(e.field("Que")​!=old.field("Que") &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
       uro.runq(e)​;
     }
   }, 
   UroAfterUpdatingField : function (e) {
-    oldUr.load(e)​;
+    old.load(e)​;
     fill.ptstatus(e)​;
     fill.color(e, "uro")​;
     mer.other(e)​;
-    if(e.field("Que")​!=oldUr.que &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
-      oldUr.save(e)​;
+    if(e.field("Que")​!=old.field("Que") &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
+      old.save(e)​;
     }
   }, 
   UroBeforeDelete : function (e)​ {
@@ -2188,17 +2035,17 @@ var trig = {
     }
   }, 
   UroAfterDelete : function (e)​ {
-    oldUr.load(e);
+    old.load(e);
     uro.deletedxop(e)​;
     rpo.deleteold(e)​;
     opu.deleteOp(e);
     uro.deletept(e)​;
   }, 
   BackupOpenEdit : function (e)​ {
-    oldUr.save(e)​;
+    old.save(e)​;
   }, 
   BackupBeforeEdit : function (e, value)​ {
-    oldUr.load(e)​;
+    old.load(e)​;
     if (value=="create")
       uro.setnewdate(e, true)​;
     else if (value=="update")​{
@@ -2230,7 +2077,7 @@ var trig = {
     fill.oplength(e);
   }, 
   BackupAfterEdit : function (e, value) {
-    oldUr.load(e)​;
+    old.load(e)​;
     fill.ptstatus(e)​;
     fill.color(e, "backup")​;
     mer.other(e)​;
@@ -2243,7 +2090,7 @@ var trig = {
     else if (value=="update")​ {
       rpo.updatenew(e);
     }
-    oldUr.save(e)​;
+    old.save(e)​;
   }, 
   BackupBeforeViewCard ​: function (e) {​
     fill.color(e, "backup")​;
@@ -2252,21 +2099,21 @@ var trig = {
     uro.resetcolor(all)​;
   }, 
   BackupBeforeUpdatingField : function (e) {
-    oldUr.load(e)​;
+    old.load(e)​;
     uro.setnewdate(e, false)​;
     uro.setvisitdate(e)​;
     fill.track​(e, "backup")​;
-    if(e.field("Que")!=oldUr.que && e.field("ORType")=="GA" && e.field("Status") != "Not") {
+    if(e.field("Que")!=old.field("Que") && e.field("ORType")=="GA" && e.field("Status") != "Not") {
       uro.runq(e)​;
     }
   }, 
   BackupAfterUpdatingField : function (e) {
-    oldUr.load(e)​;
+    old.load(e)​;
     fill.ptstatus(e)​;
     fill.color(e, "backup")​;
     mer.other(e)​;
-    if(e.field("Que")​!=oldUr.que &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
-      oldUr.save(e)​;
+    if(e.field("Que")​!=old.field("Que") &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
+      old.save(e)​;
     }
   }, 
   BackupBeforeDelete : function (e)​ {
@@ -2276,16 +2123,16 @@ var trig = {
     }
   }, 
   BackupAfterDelete : function (e)​ {
-    oldUr.load(e);
+    old.load(e);
     uro.deletedxop(e)​;
     rpo.deleteold(e)​;
     uro.deletept(e)​;
   }, 
   ConsultOpenEdit : function (e)​ {
-    oldCs.save(e)​;
+    old.save(e)​;
   }, 
   ConsultBeforeEdit : function (e, value)​ {
-    oldCs.load(e)​;
+    old.load(e)​;
     if (value=="create")
       cso.setnewdate(e, true)​;
     else if (value=="update")​ {
@@ -2302,13 +2149,13 @@ var trig = {
     fill.los(e)​;
   },
   ConsultAfterEdit : function (e, value) {
-    oldCs.load(e)​;
+    old.load(e)​;
     fill.ptstatus(e)​;
     fill.color(e, "consult")​;
     mer.other(e)​;
     emx.flu(e)​;
     emx.setor(e)​;
-    oldCs.save(e)​;
+    old.save(e)​;
   }, 
   ConsultBeforeViewCard ​: function (e) {​
     fill.color(e, "consult")​;
@@ -2317,17 +2164,17 @@ var trig = {
     cso.resetcolor(all)​;
   }, 
   ConsultBeforeUpdatingField : function (e) {  
-    oldCs.load(e)​;
+    old.load(e)​;
     cso.setnewdate(e, false)​;
     cso.setvisitdate(e)​;
     fill.track​(e, "consult")​;
   }, 
   ConsultAfterUpdatingField : function (e) {
-    oldCs.load(e)​;
+    old.load(e)​;
     fill.ptstatus(e)​;
     fill.color(e, "consult")​;
     mer.other(e)​;
-    oldCs.save(e)​;
+    old.save(e)​;
   }, 
   ConsultBeforeDelete : function (e)​ {
     if (e.field("Merge")​==true)​ {
