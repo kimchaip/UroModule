@@ -437,7 +437,7 @@ var que = {
   },
   remove: function(e) {
     // findInx and remove this entry from q
-    let inx = findInx(e);
+    let inx = this.findInx(e);
     if(inx>-1)
       q.splice(inx, 1);
   },
