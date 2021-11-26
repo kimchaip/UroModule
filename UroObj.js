@@ -2006,6 +2006,7 @@ var trig = {
   }, 
   UroBeforeViewCard ​: function (e) {​
     fill.color(e, "uro")​;
+    old.save(e)​;
   }, 
   UroBeforeOpenLib : function (all) {
     uro.resetcolor(all)​;
@@ -2094,6 +2095,7 @@ var trig = {
   }, 
   BackupBeforeViewCard ​: function (e) {​
     fill.color(e, "backup")​;
+    old.save(e)​;
   }, 
   BackupBeforeOpenLib : function (all) {
     uro.resetcolor(all)​;
@@ -2159,6 +2161,7 @@ var trig = {
   }, 
   ConsultBeforeViewCard ​: function (e) {​
     fill.color(e, "consult")​;
+    old.save(e)​;
   }, 
   ConsultBeforeOpenLib : function (all) {
     cso.resetcolor(all)​;
