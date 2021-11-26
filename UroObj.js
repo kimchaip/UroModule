@@ -392,7 +392,7 @@ var que = {
   q: [],​
   load: function(e) {  // load entry to q
     all = lib().entries();
-    q = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(this.field("Date")) && v.field("ORType")=="GA" && v.field("Status")!="Not", e);
+    q = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(e.field("Date")) && v.field("ORType")=="GA" && v.field("Status")!="Not");
   },
   save: function(e) {
     // reorder by TimeIn
