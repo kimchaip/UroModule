@@ -1163,109 +1163,7 @@ var uro = {
       }​
     }
   }, 
-  runq : function (e) {
-    que.getstart(e)​;
-    let maxq = que.max()​;
-    let lenq = que.q.length;
-    let newq = 0;
-    let eq = Number(e.field("Que")​)​;
-    let qstr = '"Que":"' + old.field("Que")​ + '"' ;
-    //---Status assign Que---//
-    if (e.field("Status") == "Not" || e.field("ORType")​ == "LA" ) {
-      e.set("Previous", e.field("Previous").replace(qstr, '"Que":"00"'))​;
-      e.set("Que", "00") ;
-      let near = que.findque(eq)​;
-      if(near != undefined)​
-        near.set("Que", "00")​;
-      let hole = que.findhole()​;
-      maxq += 1;​​
-      while ( hole != 0​)​ { // found hole
-        for (let i = hole+1 ; i<maxq; i++)​ {
-          near = que.findque(i);
-          if (near != undefined)​{
-            qstr = '"Que":"' +  que.string(i) + '"' ;
-            near.set("Previous", near.field("Previous").replace(qstr, '"Que":"' + que.string(hole) ​+ '"'))​;
-            near.set("Que", que.string(hole)​);
-            break;
-          }​
-        }​
-        hole = que.findhole();
-      }​
-    }​
-    else if (eq == 0)​ { //update, que 00
-      let hole = que.findhole()​;
-      maxq += 1;
-      if (hole == 0)​ {
-        newq = maxq;
-      }​
-      else {
-        newq = hole;
-      }​
-      e.set("Previous", e.field("Previous").replace(qstr, '"Que":"' + que.string(newq) ​+ '"'))​;
-      e.set("Que", que.string(newq)​)​;
-    }​ 
-    else if (eq <= maxq)​ { //update, que 0<nn<max
-      let dup = que.finddup(e)​;
-      let hole = que.findhole()​;
-      let near = null;
-      maxq += 1;
-      if (dup != null &​& hole > 0) { //found dup, found hole
-        let skip = 0;
-        e.set("Previous", e.field("Previous").replace(qstr, '"Que":"' + que.string(eq) + '"'))​;
-        if (Number(dup.field("Que"))<hole)​ { //wave to right
-          skip = 1;
-        }​
-        else {
-          skip = -​1;
-        }​
-        while (dup != null)​ { //found duplicate
-          let i = Number(dup.field("Que"))​+skip;
-          near = que.findque(i);
-          if (near != null)​{ //found next que
-            qstr = '"Que":"' +  dup.field("Que")​ + '"' ;
-            dup.set("Previous", dup.field("Previous").replace(qstr, '"Que":"' + near.field("Que") ​+ '"'))​;
-            dup.set("Que", near.field("Que"));
-          }​
-          else { //found hole
-            qstr = '"Que":"' + dup.field("Que") + '"' ;
-            dup.set("Previous", dup.field("Previous").replace(qstr, '"Que":"' + que.string(i) ​+ '"'))​;
-            dup.set("Que", que.string(i))​;
-            break;
-          }​
-          dup = que.finddup(dup);
-        }    
-      }​
-      else if (dup != null &​& hole == 0) { //found dup, no hole
-        e.set("Previous", e.field("Previous").replace(qstr, '"Que":"' + que.string(eq) + '"'))​;
-        while (dup != null)​ {//found duplicate
-          let i = Number(dup.field("Que"))​+1 ;
-          near = que.findque(i);
-          if (near != null)​{ //found next que
-            qstr = '"Que":"' + dup.field("Que")​+ '"' ;
-            dup.set("Previous", dup.field("Previous").replace(qstr, '"Que":"' + near.field("Que") ​+ '"'))​;
-            dup.set("Que", near.field("Que"));
-          }​
-          else { //found maxq
-            qstr = '"Que":"' + dup.field("Que")​+ '"' ;
-            dup.set("Previous", dup.field("Previous").replace(qstr, '"Que":"' + que.string(i)​ ​+ '"'))​;
-            dup.set("Que", que.string(i))​;
-            break;
-          }​
-          dup = que.finddup(dup);
-        }    
-      } 
-      else if (dup == null &​& hole != 0)​ { // no dup, found hole
-        if (eq<hole) {
-          e.set("Previous", e.field("Previous").replace(qstr, '"Que":"' + que.string(eq)​ ​+ '"'))​;
-          e.set("Que", que.string(eq))​;
-        }
-        else {
-          e.set("Previous", e.field("Previous").replace(qstr, '"Que":"' + que.string(hole)​ ​+ '"'))​;
-          e.set("Que", que.string(hole))​;
-        }
-      }​
-    }​
-  }, 
+  
   setDJstent : function (e) {
     let links = e.field("Patient")​;
     if (links.length>0) {
@@ -1980,7 +1878,7 @@ var trig = {
       uro.updatedxop​(e, "dx", dxe)​;
     if(ope!=undefined)​
       uro.updatedxop​(e, "op", ope)​;
-    uro.runq(e)​;
+    que.run(e)​;
     fill.underlying(e)​;
     fill.los(e)​;
     fill.opdatecal(e);
@@ -2016,18 +1914,14 @@ var trig = {
     uro.setnewdate(e, false)​;
     uro.setvisitdate(e)​;
     fill.track​(e, "uro")​;
-    if(e.field("Que")​!=old.field("Que") &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
-      uro.runq(e)​;
-    }
+    que.run(e)​​;
   }, 
   UroAfterUpdatingField : function (e) {
     old.load(e)​;
     fill.ptstatus(e)​;
     fill.color(e, "uro")​;
     mer.other(e)​;
-    if(e.field("Que")​!=old.field("Que") &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
-      old.save(e)​;
-    }
+    old.save(e)​;
   }, 
   UroBeforeDelete : function (e)​ {
     if (e.field("Merge")​==true)​ {
@@ -2071,7 +1965,7 @@ var trig = {
       uro.updatedxop​(e, "dx", dxe)​;
     if(ope!=undefined)​
       uro.updatedxop​(e, "op", ope)​;
-    uro.runq(e)​;
+    que.run(e)​​;
     fill.underlying(e)​;
     fill.los(e)​;
     fill.opdatecal(e);
@@ -2105,18 +1999,14 @@ var trig = {
     uro.setnewdate(e, false)​;
     uro.setvisitdate(e)​;
     fill.track​(e, "backup")​;
-    if(e.field("Que")!=old.field("Que") && e.field("ORType")=="GA" && e.field("Status") != "Not") {
-      uro.runq(e)​;
-    }
+    que.run(e)​​;
   }, 
   BackupAfterUpdatingField : function (e) {
     old.load(e)​;
     fill.ptstatus(e)​;
     fill.color(e, "backup")​;
     mer.other(e)​;
-    if(e.field("Que")​!=old.field("Que") &​& e.field("ORType")​=="GA" &​& e.field("Status") != "Not") {
-      old.save(e)​;
-    }
+    old.save(e)​;
   }, 
   BackupBeforeDelete : function (e)​ {
     if (e.field("Merge")​==true)​ {
