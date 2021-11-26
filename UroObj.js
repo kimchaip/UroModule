@@ -402,11 +402,7 @@ var que = {
   },
   sortque: function(e) {
     // order q by que asc except this entry use old que
-    q = q.sort((a,b)=>{
-      let q1 = a.id==this.id? old.field("Que"): a.field("Que");
-      let q2 = b.id==this.id? old.field("Que"): b.field("Que");
-      return q1-q2;
-    }, e);
+    q = q.sort((a,b)=>a.field("Que")-b.field("Que"));
   },
   sorttime: function(e) {
     // order q by TimeIn asc (if any is null, TimeIn is max)
