@@ -389,71 +389,75 @@ var mer = {
   }
 }​;
 var que = {
-  q : [],​
-  fq : 0,
-  string : function (value)​ {
-    if(typeof (value)​ == "number")​ {
-      if(value>9) 
-        return String(value) ;
-      else 
-        return "0" + String(value);
+  q: [],​
+  load: function(e) {  // load entry to q
+    all = lib().entries();
+    q = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(this.field("Date")) && v.field("ORType")=="GA" && v.field("Status")!="Not", e);
+  },
+  save: function(e) {
+    // reorder by TimeIn
+    this.sorttime();
+    // set new que to every entry
+    q.forEach((v,i)=>v.set("Que", ("0"+(i+1)).slice(-2)););
+  },
+  sortque: function(e) {
+    // order q by que asc except this entry use old que
+    q = q.sort((a,b)=>{
+      let q1 = a.id==this.id? old.field("Que"): a.field("Que");
+      let q2 = b.id==this.id? old.field("Que"): b.field("Que");
+      return q1-q2;
+    }, e);
+  },
+  sorttime: function(e) {
+    // order q by TimeIn asc (if any is null, TimeIn is max)
+    q = q.sort((a,b)=>{
+      let q1 = a.field("TimeIn")? my.gdate(a.field("TimeIn")): 86400000;
+      let q1 = b.field("TimeIn")? my.gdate(b.field("TimeIn")): 86400000;
+      return q1-q2;
+    });
+  },
+  findInx: function(e) {
+    //q.findIndex by this entry.id
+    if(q.length>0)
+      return q.findIndex(v=>v.id==this.id, e);
+    else
+      return -1;
+  },
+  insert: function(e) {
+    // remove this entry from q if found
+    this.remove(e);
+    // get this que
+    let thisq = Number(e.field("Que"));
+    if (thisq>0)  // thisq > 0
+      // insert this entry to position by que
+      q.splice(thisq-1, 0, e);
+    else  // thisq <= 0
+      // append this entry to q
+      q.push(e);
+  },
+  remove: function(e) {
+    // findInx and remove this entry from q
+    let inx = findInx(e);
+    if(inx>-1)
+      q.splice(inx, 1);
+  },
+  run: function (e) {
+  if (my.gdate(e.field("TimeIn")) != my.gdate(old.field("TimeIn")) || e.field("Que") != old.field("Que") || e.field("Status") != old.field("Status") || e.field("ORType") != old.field("ORType")) {
+    if (e.field("Status") == "Not" || e.field("ORType")​ == "LA") {  // change Status -> Not or ORType -> LA
+      e.set("Que", "00");
     }
-    else if(typeof (value)​ == "string" )​ {
-      if(value.length>1) 
-        return  value;
-      else 
-        return "0" + value ;
-    } 
-  }, 
-  getstart : function(e)​ {
-    let all = lib().entries();
-    this.q = [] ;
-    for (let i in all)​ {
-      if (my.gdate(all[i].field("Date")​) == my.gdate(e.field("Date"))  &​& all[i].field("ORType") == "GA" &​& all[i].field("Status")​ != "Not")​ {
-        this.q.push(all[i]​)​;
-      }​
-    }​
-  }, 
-  max : function()​ {
-    let maxq = 0;
-    for(let i in this.q) {
-      if(Number(this.q[i]​.field("Que"))​ > maxq) {
-        maxq = Number(this.q[i]​.field("Que"))​;
-      }​
-    }​
-    return maxq;
-  }, 
-  checkque : function (value)​ {
-    return Number(value.field("Que")​) == this.fq;
-  }, 
-  checkdup : function (value)​ {
-    return value.id != this.id &​& value.field("Que") == this.field("Que");
-  }, 
-  findque : function (value)​ {
-    this.fq = value;
-    return this.q.find(this.checkque, this);
-  }, 
-  finddup : function (entry)​ {
-    return this.q.find(this.checkdup, entry);
-  }, 
-  findhole : function ()​ {
-    let m = this.max()+1;
-    for (let i = 1; i<m;  i++) {
-      let found = false;
-      for (let j in this.q) {
-        let nq = Number(this.q[j]​.field("Que"​))​;
-        if (nq==i)​ {
-          found = true;
-          break;
-        }​
-      }​
-      if (found==false)​ {
-        return i;
-      }​
-    }​
-    return 0;
+    // load entry to q
+    this.load(e);
+    // sort q by que
+    this.sortque(e);
+    if (e.field("Que") != old.field("Que")) {
+      // insert this entry to q at position que
+      this.insert(e);
+    }
+    //reorder by TimeIn -> set new que to every entry
+    this.save(e);
   }
-}​;
+};
 var emx = {
   createnew : function  (e, libto)​ {
     let ob = {}​;
