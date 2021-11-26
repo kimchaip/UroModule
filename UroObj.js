@@ -440,6 +440,7 @@ var que = {
     let inx = this.findInx(e);
     if(inx>-1)
       q.splice(inx, 1);
+    e.set("Output", e.field("Output")+"\n"+q.map(v=>v.field("Que")).join());
   },
   run: function (e) {
     if (my.gdate(e.field("TimeIn")) != my.gdate(old.field("TimeIn")) || e.field("Que") != old.field("Que") || e.field("Status") != old.field("Status") || e.field("ORType") != old.field("ORType")) {
@@ -448,13 +449,16 @@ var que = {
       }
       // load entry to q
       this.load(e);
+      e.set("Output", q.map(v=>v.field("Que")).join());
       // sort q by que
       this.sortque(e);
+      e.set("Output", e.field("Output")+"\n"+q.map(v=>v.field("Que")).join());
       if (e.field("Que") != old.field("Que")) {
         // insert this entry to q at position que
         this.insert(e);
       }
       //reorder by TimeIn -> set new que to every entry
+      e.set("Output", e.field("Output")+"\n"+q.map(v=>v.field("Que")).join());
       this.save(e);
     }
   }
