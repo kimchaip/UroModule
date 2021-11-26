@@ -419,7 +419,7 @@ var que = {
   findInx: function(e) {
     //q.findIndex by this entry.id
     if(q.length>0)
-      return q.findIndex(v=>v.id==this.id, e);
+      return q.findIndex(v=>v.id==e.id);
     else
       return -1;
   },
