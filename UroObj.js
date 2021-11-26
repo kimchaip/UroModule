@@ -398,7 +398,7 @@ var que = {
     // reorder by TimeIn
     this.sorttime();
     // set new que to every entry
-    q.forEach((v,i)=>v.set("Que", ("0"+(i+1)).slice(-2)););
+    q.forEach((v,i)=>v.set("Que", ("0"+(i+1)).slice(-2)));
   },
   sortque: function(e) {
     // order q by que asc except this entry use old que
