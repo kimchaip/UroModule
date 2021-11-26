@@ -442,20 +442,21 @@ var que = {
       q.splice(inx, 1);
   },
   run: function (e) {
-  if (my.gdate(e.field("TimeIn")) != my.gdate(old.field("TimeIn")) || e.field("Que") != old.field("Que") || e.field("Status") != old.field("Status") || e.field("ORType") != old.field("ORType")) {
-    if (e.field("Status") == "Not" || e.field("ORType")​ == "LA") {  // change Status -> Not or ORType -> LA
-      e.set("Que", "00");
+    if (my.gdate(e.field("TimeIn")) != my.gdate(old.field("TimeIn")) || e.field("Que") != old.field("Que") || e.field("Status") != old.field("Status") || e.field("ORType") != old.field("ORType")) {
+      if (e.field("Status") == "Not" || e.field("ORType")​ == "LA") {  // change Status -> Not or ORType -> LA
+        e.set("Que", "00");
+      }
+      // load entry to q
+      this.load(e);
+      // sort q by que
+      this.sortque(e);
+      if (e.field("Que") != old.field("Que")) {
+        // insert this entry to q at position que
+        this.insert(e);
+      }
+      //reorder by TimeIn -> set new que to every entry
+      this.save(e);
     }
-    // load entry to q
-    this.load(e);
-    // sort q by que
-    this.sortque(e);
-    if (e.field("Que") != old.field("Que")) {
-      // insert this entry to q at position que
-      this.insert(e);
-    }
-    //reorder by TimeIn -> set new que to every entry
-    this.save(e);
   }
 };
 var emx = {
