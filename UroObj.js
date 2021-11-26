@@ -442,7 +442,7 @@ var que = {
     if (my.gdate(e.field("TimeIn")) != my.gdate(old.field("TimeIn")) || e.field("Que") != old.field("Que") || e.field("Status") != old.field("Status") || e.field("ORType") != old.field("ORType")) {
       // load old entry to q
       this.load(e);
-      e.set("Output", q.map(v=>v.field("Que")).join());
+      //e.set("Output", q.map(v=>v.field("Que")).join());
       // remove old e or insert new e
       if (e.field("Status") == "Not" || e.field("ORType")​ == "LA") {  // change Status -> Not or ORType -> LA
         this.remove(e);
@@ -451,19 +451,19 @@ var que = {
       else {  // change Status -> !Not and ORType -> GA
         this.insert(e);
       }
-      e.set("Output", e.field("Output")+"\n"+q.map(v=>v.field("Que")).join());
+      //e.set("Output", e.field("Output")+"\n"+q.map(v=>v.field("Que")).join());
       // sort q by que
       this.sortque(e);
-      e.set("Output", e.field("Output")+"\n"+q.map(v=>v.field("Que")).join());
+      //e.set("Output", e.field("Output")+"\n"+q.map(v=>v.field("Que")).join());
       // update when Que change and !Not and GA
       if (e.field("Que") != old.field("Que") && e.field("Status") != "Not" && e.field("ORType")​ == "GA") {
         // insert this entry to q at position que
         this.insert(e);
       }
       //reorder by TimeIn -> set new que to every entry
-      e.set("Output", e.field("Output")+"\n"+q.map(v=>v.field("Que")).join());
+      //e.set("Output", e.field("Output")+"\n"+q.map(v=>v.field("Que")).join());
       this.save(e);
-      e.set("Output", e.field("Output")+"\n"+q.map(v=>v.field("Que")).join());
+      //e.set("Output", e.field("Output")+"\n"+q.map(v=>v.field("Que")).join());
     }
   }
 };
@@ -1731,7 +1731,7 @@ var opu = {
         ent["CreationTime"] =  e.creationTime;
         ent["ModifiedTime"] =  e.lastModifiedTime;
         os.create(ent);
-        message("create OpUroSx!");
+        //message("create OpUroSx!");
       }
     }
   },
@@ -1758,7 +1758,7 @@ var opu = {
               oss[s].set("CreationTime", e.creationTime);
             if(my.gdate(oss[s].field("ModifiedTime"))<my.gdate(e.lastModifiedTime))
               oss[s].set("ModifiedTime", e.lastModifiedTime);
-            message("update OpUroSx!");
+            //message("update OpUroSx!");
             break;
           }
         }​
@@ -1781,7 +1781,7 @@ var opu = {
         for (let s in oss)​{
           if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(old.field("Date")))​ &​& oss[s].field("Dr") ==​ old.field("Dr") &​& oss[s].field("OpType") ==​ old.field("ORType") &​& oss[s].field("PtName") ==​ parr[0] && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ old.field("Dx") &​& oss[s].field("Op") ==​ old.field("Op"))​{
             oss[s].trash();
-            message("delete OpUroSx!");
+            //message("delete OpUroSx!");
             break;
           }
         }​
