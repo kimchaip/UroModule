@@ -449,7 +449,7 @@ var que = {
       // sort q by que
       this.sortque(e);
       e.set("Output", e.field("Output")+"\n"+q.map(v=>v.field("Que")).join());
-      if (e.field("Que") != old.field("Que")) {
+      if (e.field("Que") != old.field("Que") || e.field("Status") != "Not" && e.field("ORType")​ == "GA") {
         // insert this entry to q at position que
         this.insert(e);
       }
