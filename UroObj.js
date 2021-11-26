@@ -440,16 +440,20 @@ var que = {
   },
   run: function (e) {
     if (my.gdate(e.field("TimeIn")) != my.gdate(old.field("TimeIn")) || e.field("Que") != old.field("Que") || e.field("Status") != old.field("Status") || e.field("ORType") != old.field("ORType")) {
-      if (e.field("Status") == "Not" || e.field("ORType")​ == "LA") {  // change Status -> Not or ORType -> LA
-        e.set("Que", "00");
-      }
-      // load entry to q
+      // load old entry to q
       this.load(e);
       e.set("Output", q.map(v=>v.field("Que")).join());
+      if (e.field("Status") == "Not" || e.field("ORType")​ == "LA") {  // change Status -> Not or ORType -> LA
+        this.remove(e);
+        e.set("Que", "00");
+      }
+      else {  // change Status -> !Not and ORType -> GA
+        this.insert(e);
+      }
       // sort q by que
       this.sortque(e);
       e.set("Output", e.field("Output")+"\n"+q.map(v=>v.field("Que")).join());
-      if (e.field("Que") != old.field("Que") || e.field("Status") != "Not" && e.field("ORType")​ == "GA") {
+      if (e.field("Que") != old.field("Que")) {
         // insert this entry to q at position que
         this.insert(e);
       }
