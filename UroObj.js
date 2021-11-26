@@ -412,7 +412,7 @@ var que = {
     // order q by TimeIn asc (if any is null, TimeIn is max)
     q = q.sort((a,b)=>{
       let q1 = a.field("TimeIn")? my.gdate(a.field("TimeIn")): 86400000;
-      let q1 = b.field("TimeIn")? my.gdate(b.field("TimeIn")): 86400000;
+      let q2 = b.field("TimeIn")? my.gdate(b.field("TimeIn")): 86400000;
       return q1-q2;
     });
   },
