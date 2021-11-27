@@ -398,7 +398,18 @@ var que = {
     // reorder by TimeIn
     this.sorttime();
     // set new que to every entry
-    q.forEach((v,i)=>v.set("Que", ("0"+(i+1)).slice(-2)));
+    q.forEach((v,i)=>
+      v.set("Que", ("0"+(i+1)).slice(-2));
+      this.oldsave(v);   
+    );
+  },
+  oldsave: function (e) {
+    // get que data
+    let qstr = '"Que":"' + e.field("Que") + '"';
+    // replace to "que":"xx" in previous
+    let previous = e.field("Previous").replace(/"Que":"\d\d"/, qstr);
+    // set new previous
+    e.set("Previous", previous);
   },
   sortque: function(e) {
     // order q by que asc except this entry use old que
