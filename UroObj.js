@@ -398,10 +398,10 @@ var que = {
     // reorder by TimeIn
     this.sorttime();
     // set new que to every entry
-    q.forEach((v,i)=>
+    q.forEach((v,i)=>{
       v.set("Que", ("0"+(i+1)).slice(-2));
-      this.oldsave(v);   
-    );
+      this.oldsave(v);
+    }, this);
   },
   oldsave: function (e) {
     // get que data
