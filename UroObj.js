@@ -453,7 +453,6 @@ var que = {
     if (my.gdate(e.field("TimeIn")) != my.gdate(old.field("TimeIn")) || e.field("Que") != old.field("Que") || e.field("Status") != old.field("Status") || e.field("ORType") != old.field("ORType")) {
       // load old entry to q
       this.load(e);
-      e.set("Output", "load old:"+q.map(v=>v.field("Que")).join());
       // remove old e or insert new e
       if (e.field("Status") == "Not" || e.field("ORType")​ == "LA") {  // change Status -> Not or ORType -> LA
         this.remove(e);
@@ -462,19 +461,15 @@ var que = {
       else {  // change Status -> !Not and ORType -> GA
         this.insert(e);
       }
-      e.set("Output", e.field("Output")+"\nto new:"+q.map(v=>v.field("Que")).join());
       // sort q by que
       this.sortque(e);
-      e.set("Output", e.field("Output")+"\nsort que:"+q.map(v=>v.field("Que")).join());
       // update when Que change and !Not and GA
       if (e.field("Que") != old.field("Que") && e.field("Status") != "Not" && e.field("ORType")​ == "GA") {
         // insert this entry to q at position que
         this.insert(e);
       }
-      e.set("Output", e.field("Output")+"\nupdate que:"+q.map(v=>v.field("Que")).join());
       //reorder by TimeIn -> set new que to every entry
       this.save(e);
-      e.set("Output", e.field("Output")+"\nsort time and save:"+q.map(v=>v.field("Que")).join());
     }
   }
 };
