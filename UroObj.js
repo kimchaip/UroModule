@@ -986,14 +986,11 @@ var pto = {
     }​
     
     let d = 0;
-    if (old.field("YY") != e.field("YY") && e.field("YY") ||
-        old.field("MM") != e.field("MM") ||
-        old.field("DD") != e.field("DD"))​ {
+    if (e.field("YY") && !e.field("Birthday")​)​ {
       let month = e.field("MM")?e.field("MM"):0;
       let day = e.field("DD")?e.field("DD"):0;
       d = Math.round(e.field("YY")*365.2425 + month*30.4375 + day);
       e.set("Birthday", my.dateminus(today, d)​);
-      e.set("Age", e.field("YY")​ + " ปี")​;
     }​
     if (e.field("Birthday")​)​ {
       d = Math.floor((ntoday-my.gdate(e.field("Birthday"))​)/86400000);
@@ -1865,7 +1862,6 @@ var trig = {
     pto.resetdone(all)​;
   }, 
   PatientBeforeLink : function (e)​ {
-    old.load(e);
     pto.age(e)​;
   }, 
   UroOpenEdit : function (e)​ {
