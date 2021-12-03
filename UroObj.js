@@ -947,7 +947,8 @@ var pto = {
       }
     }
   },
-  findLast: function(ptent, date, eid=0) {
+  findLast: function(ptent, date, eid) {
+    eid = eid? eid: 0;
     if (ptent) {
       let orlinks = ptent.linksFrom("UroBase", "Patient") ;
       let bulinks = ptent.linksFrom("Backup", "Patient") ;
