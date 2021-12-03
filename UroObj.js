@@ -118,6 +118,7 @@ var mer = {
     let marr = JSON.parse(e.field("MergeID"));
     this.m = marr.map(o=>{
       o.e = libByName(o.lib).findById(o.e.id);
+      return o;
     });
   },
   save: function(e, mergeobj) {
