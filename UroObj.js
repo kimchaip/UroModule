@@ -199,7 +199,7 @@ var mer = {
       }
       else if (range[i] == "VisitType") {
         if(e.field(range[i])!="Admit")
-          e.set(range[i]), "Admit");
+          e.set(range[i], "Admit");
       }
       else {
         if(e.field(range[i])!=old.field(range[i]))
