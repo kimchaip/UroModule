@@ -117,7 +117,11 @@ var mer = {
   load: function(e) {
     let marr = JSON.parse(e.field("MergeID"));
     this.m = marr.map(o=>{
-      o.e = libByName(o.lib).findById(o.e.id);
+      if(o.e.id == e.id) {
+        o.e =  e;
+      else if(libByName(o.lib) && libByName(o.lib).findById(o.e.id)) {
+        o.e = libByName(o.lib).findById(o.e.id);
+      }
       return o;
     });
   },
