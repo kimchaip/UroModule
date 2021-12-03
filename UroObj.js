@@ -120,14 +120,12 @@ var mer = {
         this.l = value;
         return value;
       }
-      else if (key == "e" && this.l) {
+      else if (key == "e") {
         if (value == e.id) {
-          this.l = null;
           return e;
         }
         else {
           let o = libByName(this.l).findById(value);
-          this.l = null;
           return o;
         }
       }
@@ -135,7 +133,7 @@ var mer = {
         return null;
       }
     });
-    this.m?e.set("Output", JSON.stringify(this.m)): e.set("Output", "null");
+    e.set("Output", this.m?JSON.stringify(this.m): "null");
   },
   save: function(e, mergeobj) {
     let m = mergeobj.map(v=>{
@@ -148,7 +146,7 @@ var mer = {
     e.set("MergeID", JSON.stringify(m));
   },
   findInx: function(e) {
-    if(this.m.length>0)
+    if(this.m && this.m.length>0)
       return this.m.findIndex(v=>v.e.id==e.id);
     else
       return -1;
