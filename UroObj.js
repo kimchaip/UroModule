@@ -118,13 +118,13 @@ var mer = {
     let marr = JSON.parse(e.field("MergeID"));
     this.m = marr.map(o=>{
       let n = new Object();
-      if(o.e.id == e.id) {
+      if(o.e == e.id) {
         n["lib"] = o.lib;
         n["e"] =  e;
       }
       else {
         n["lib"] = o.lib;
-        n["e"] =  libByName(o.lib).findById(o.e.id);
+        n["e"] =  libByName(o.lib).findById(o.e);
       }
       return n;
     });
