@@ -135,6 +135,7 @@ var mer = {
         return null;
       }
     });
+    this.m?e.set("Output", JSON.stringify(this.m)): e.set("Output", "null");
   },
   save: function(e, mergeobj) {
     let m = mergeobj.map(v=>{
