@@ -115,25 +115,10 @@ var mer = {
   m: [],
   l: null,
   load: function(e) {
-    this.m = JSON.parse(e.field("MergeID"), function (key, value) {
-      if (key == "lib") {
-        this.l = value;
-        return value;
-      }
-      else if (key == "e") {
-        if (value == e.id) {
-          return e;
-        }
-        else {
-          let o = libByName(this.l).findById(value);
-          return o;
-        }
-      }
-      else {
-        return null;
-      }
+    let marr = JSON.parse(e.field("MergeID"));
+    this.m = marr.map(o=>{
+      o.e = libByName(o.lib).findById(o.e.id);
     });
-    e.set("Output", this.m?JSON.stringify(this.m): "null");
   },
   save: function(e, mergeobj) {
     let m = mergeobj.map(v=>{
@@ -146,7 +131,7 @@ var mer = {
     e.set("MergeID", JSON.stringify(m));
   },
   findInx: function(e) {
-    if(this.m && this.m.length>0)
+    if(this.m.length>0)
       return this.m.findIndex(v=>v.e.id==e.id);
     else
       return -1;
@@ -706,7 +691,9 @@ var fill = {
     let links = e.field("Patient")​;
     let field1 = "" ;
     if (links.length>0) {
-      let o = mer.findLast(e)​;
+      let ptent = pt.findById(links[0].id);
+        
+      let o = pto.findLast(ptent, today);
       if (o != null)​{
         links[0].set("WardStamp", o.e.field("VisitDate")​);
       }
