@@ -112,282 +112,176 @@ var old = {
 };
 
 var mer = {
-  lastadmit : function (e, date)  {
-    let orlinks = e.linksFrom("UroBase", "Patient") ;
-    let bulinks = e.linksFrom("Backup", "Patient") ;
-    let cslinks = e.linksFrom("Consult", "Patient") ;
-    let o = new Object()​ ;
-    let last = null, s=null, r=null, u=null​;​
-    if (orlinks.length>0) {
-      for (let i in orlinks) {
-        if (orlinks[i].field("VisitType")=="Admit" && orlinks[i].field("VisitDate") > last && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​) {
-          last = orlinks[i].field("VisitDate");
-          r=i;
-        }
+  m: [],
+  l: null,
+  load: function(e) {
+    this.m = JSON.parse(e.field("MergeID"), function (key, value) {
+      if (key == "lib") {
+        this.l = value;
+        return value;
       }
-    }​
-    if (bulinks.length​>0) {
-      for (let i in bulinks) {
-        if (bulinks[i].field("VisitType")=="Admit" && bulinks[i].field("VisitDate")​ > last​ && my.gdate(​bulinks[i].field("VisitDate"))​ <= my.gdate(​date)​) {
-          last = bulinks[i].field("VisitDate");
-          u=i;
-        }
-      }
-    }​
-    if (cslinks.length>0) {
-      for (let i in cslinks) {
-        if (cslinks[i].field("VisitType")=="Admit" && cslinks[i].field("VisitDate")​ > last && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) ) {
-          last = cslinks[i].field("VisitDate");
-          s=i;
-        }
-      }
-    }​
-    if (last != null) {
-      if (r!=null &​& u==null &​& s==null) {
-        o["lib"] = "or" ;
-        o["ent"] = orlinks[r] ;
-      }
-      else if (u!=null &​& s==​null)​ {
-        o["lib"] = "bu" ;
-        o["ent"] = bulinks[u] ;
-      }
-      else if (s!=null) {​
-        o["lib"] = "cs" ;
-        o["ent"] = cslinks[s] ;
-      }
-    }
-    return o ;
-  }, 
-  linklastadmit : function (e, date)  {
-    let links = e.field("Patient")​;
-    if (links.length>0) {
-      let ptent = pt.findById(links[0].id) ;
-      return this.lastadmit(ptent, date)​;
-    }​
-  }, 
-  getmergeid : function (e) {
-    let raw = [], result = []​;
-    if (e.field("MergeID") != "")​ {
-      raw = e.field("MergeID").split(",") ;
-    }​
-    if (raw.length>0)​{
-      for(let i=0; i<raw.length;) {
-        let o = new Object()​ ;
-        o["lib"] = raw[i++] ;
-        o["id"] = raw[i++] ;
-        result.push(o) ;
-      }​
-    }
-    return result;
-  }, 
-  mergelastadmit : function (e)  {
-    let mid = this.getmergeid(e) ;
-    if (mid.length == 0) {
-      let thislib​="" ;
-      if (lib().title=="UroBase") thislib = "or" ;
-      else if (lib().title=="Backup") thislib = "bu";
-      else thislib = "cs" ;
-      let lao = this.linklastadmit(e, my.dateminus(e.field("VisitDate"), 1));
-      let l = lao["lib"], m = lao["ent"] ;
-      if(m != null) {
-        let str = "" ;
-        e.set("VisitDate", m.field("VisitDate"))​ ;
-        e.set("Ward", m.field("Ward")) ;
-        if (m.field("MergeID") == "") {
-          str = l + "," + m.id + "," + thislib + "," + e.id;
+      else if (key == "e" && this.l) {
+        if (value == e.id) {
+          this.l = null;
+          return e;
         }
         else {
-          str = m.field("MergeID") + "," + thislib + "," + e.id;
+          let o = libByName(this.l).findById(value);
+          this.l = null;
+          return o;
         }
-        m.set("Merge", true)​;
-        e.set("MergeID", str) ;
-        let mpos = this.posinmerge(e)​;
-        let k = mpos["pos"];
-        mid = mpos["mar"];
-        this.changeother(e, k, mid, "MergeID")​;
-        if (e.field("DischargeDate") != null)​
-          this.changeother(e, k, mid, "DischargeDate")​;
-        return true;
       }
       else {
-        message("not found last admit, can't merge");
-        e.set("Merge", false) ;
-        return false;
+        return null;
       }
-    }
-    return false;
-  }, 
-  posinmerge : function (e) {
-    let mid = this.getmergeid(e) ;
-    let o = new Object()​;
-    o["found"]​= false;
-    if (mid.length>0) {
-      let thisid = e.id ;
-      for(let i in mid) {
-        if (mid[i]["id"]==thisid) {
-          o["found"] = true ;
-          o["pos"]​ = i ;
-          o["mar"] ​= mid;
-          break;
-        }
+    });
+  },
+  save: function(e, mergeobj) {
+    let m = mergeobj.map(v=>{
+      if(v) {
+        v.e = v.e.id;
       }
-    }​
-    return o;
-  }​, 
-  effect : function (e)  {
-    let mpos = this.posinmerge(e)​;
-    if(mpos["found"]​ == true ) { //parent or child
-      if(my.gdate(old.field("VisitDate")) != my.gdate(e.field("VisitDate"))) {
-        this.changeother(e, mpos["pos"]​, mpos["mar"]​, "VisitDate" ) ;
+      return v;
+    });
+    
+    e.set("MergeID", JSON.stringify(m));
+  },
+  findInx: function(e) {
+    if(this.m.length>0)
+      return this.m.findIndex(v=>v.e.id==e.id);
+    else
+      return -1;
+  },
+  append: function(lib, e) {
+    let o = new Object();
+    o["lib"] = lib;
+    o["e"] = e;
+    
+    this.m.push(o);
+  },
+  newmergeid: function(e) {
+    e.set("MergeID", [{"lib":lib().title, "e":e}]);
+  },
+  sort: function(e) {
+    this.m = this.m.sort((a,b)=>{
+      let q1, q2;
+      if (a.lib!="UroBase") 
+        q1 = my.gdate(a.e.field("Date"));
+      else
+        q1 = my.gdate(a.e.field("ConsultDate"));
+        
+      if (b.lib!="UroBase") 
+        q2 = my.gdate(b.e.field("Date"));
+      else
+        q2 = my.gdate(b.e.field("ConsultDate"));
+      
+      if (q1==q2)
+        return my.qdate(a.e.creationTime)-my.qdate(b.e.creationTime);
+      else
+        return q1-q2;
+    });
+  },
+  setall: function(key, value) {
+    this.m.forEach(o=>{
+      o.e.set(key, value);
+    });
+  },
+  colorall: function(e) {
+    this.m.forEach(o=>fill.color(o.e, o.lib));
+  },
+  fieldall: function(e) {
+    let range = ["VisitDate","PastHx","InvResult","VisitType","Ward","DischargeDate","Track","Summary","Underlying"];
+    for(let i = 0; i<range.length; i++) {
+      let inx = this.findInx(e);
+      if(range[i].indexOf("Date")>-1) {
+        if(my.gdate(e.field(range[i]))!=my.gdate(old.field(range[i])))
+          this.setall(range[i],  e.field(range[i]));
       }
-      if(old.field("Ward") != e.field("Ward") ) {
-        this.changeother(e, mpos["pos"], mpos["mar"], "Ward" ) ;
-      } 
-      if(my.gdate(old.field("DischargeDate")) != my.gdate(e.field("DischargeDate")) ) {
-        this.changeother(e, mpos["pos"], mpos["mar"], "DischargeDate" ) ;
+      else if (range[i] == "VisitType") {
+        if(e.field(range[i])!="Admit")
+          e.set(range[i]), "Admit");
       }
-      if (!old.field("VisitType") || !e.field("VisitType")) {
-        e.set("VisitType", "Admit");
-        this.changeother(e, mpos["pos"], mpos["mar"], "VisitType" ) ;
-      }​
-      else if(old.field("VisitType") != e.field("VisitType") ) {
-        e.set("VisitType", old.field("VisitType"));
-      }
-    } 
-  }, 
-  other : function (e)  {
-    let mpos = this.posinmerge(e)​;
-    if(mpos["found"]​ == true ) { //parent or child
-      this.changeother(e, mpos["pos"], mpos["mar"], "Summary" ) ;
-      this.changeother(e, mpos["pos"], mpos["mar"], "Track" ) ;
-      this.changeother(e, mpos["pos"], mpos["mar"], "Underlying" ) ;
-      this.changeother(e, mpos["pos"], mpos["mar"], "LOS" ) ;
-      this.changeother(e, mpos["pos"], mpos["mar"], "Color" ) ;
-    } 
-  }, 
-  changeother : function (e, pos, mla, field) {
-    for (let i in mla) {
-      if(i != pos) {
-        let lib ="", id="", libcolor="" ;
-        if (mla[i]["lib"] == "or") {
-          lib = "UroBase" ;
-          id = mla[i]["id"] ;
-          libcolor = "uro" ;
-        }
-        else if (mla[i]["lib"] == "bu") {
-          lib = "Backup" ;
-          id = mla[i]["id"] ;
-          libcolor = "backup" ;
-        }
-        else if (mla[i]["lib"] == "cs") {
-          lib = "Consult" ;
-          id = mla[i]["id"] ;
-          libcolor = "consult" ;
-        }
-        let toent = libByName(lib).findById(id) ;
-        if (toent != null) {
-          if (field=="Color")​{
-            fill.color(toent, libcolor)​;
-          }​
-          else {
-            toent.set(field, e.field(field)) ;
-          }​ 
-        }
-      } 
-    } 
-  }, 
-  mlacancel : function (e) {
-    let mpos = this.posinmerge(e)​;
-    if(mpos["found"]​==true)​{
-      let k = mpos["pos"];
-      let mid = mpos["mar"];
-      let field1 = "" ;
-      if (lib().title=="UroBase" || lib().title=="Backup") {
-        field1 = "Date" ;
-      }​
       else {
-        field1 = "ConsultDate" ;
-      }​
-      if (mid.length>2)​ {
-        let tid=[]​;
-        for(let i=mid.length-1; i>k; i--)​ {
-          let o = new Object()​;
-          o["lib"]​=mid[i]["lib"];
-          o["id"]​=mid[i]["id"];​
-          tid.push(​o)​;
-          mid.pop();​
-        }​
-        mid.pop()​;
-        for(let i=tid.length-1; i>=0; i-​-)​ {
-          let o = new Object()​;
-          o["lib"]​=tid[i]["lib"];
-          o["id"]​=tid[i]["id"];​
-          mid.push(o​)​;
-          tid.pop();
-        }​
-        let str = "" ;​
-        for(let i=0; i<mid.length; i++)​ {
-          str+=mid[i]​["lib"]​;
-          str+=",";
-          str+=mid[i]​["id"]​;
-          if (i<mid.length-1)
-            str+=",";
-        }​
-        e.set("MergeID", str)​;​
-        this.changeother(e, mid.length, mid, "MergeID")​;
-        e.set("MergeID", "");
-        if (k>0) {
-          e.set("VisitDate", my.dateminus(e.field(field1), 1)​)​;​
-          e.set("Ward", "Uro" ​)​ ;
-        }​
-      }​
-      else if (mid.length>1) {
-        e.set("MergeID", "")​;​
-        this.changeother(e, k, mid, "Merge")​;
-        this.changeother(e, k, mid, "MergeID")​;
-        if (k>0) {
-          e.set("VisitDate", my.dateminus(e.field(field1), 1)​)​;​
-          e.set("Ward", "Uro" ​)​ ;
-        }​
-        else { //this entry is parent -​> change child as usual
-          let lib ="", id="" ;​
-          if (mid[1]["lib"] == "or") {
-            lib = "UroBase" ;
-            id = mid[1]["id"] ;
-          }
-          else if (mid[1]["lib"] == "bu") {
-            lib = "Backup" ;
-            id = mid[1]["id"] ;
-          }
-          else if (mid[1]["lib"] == "cs") {
-            lib = "Consult" ;
-            id = mid[1]["id"] ;
-          }
-          let toent = libByName(lib).findById(id) ;
-          if (toent != null) {
-            if(lib=="UroBase" || lib=="Backup")​
-              toent.set("VisitDate", my.dateminus(toent.field("Date"), 1)​)​ ;
-            else if(lib=="Consult")​
-              toent.set("VisitDate", my.dateminus(toent.field("ConsultDate"), 1)​)​ ;
-            toent.set("Ward", "Uro")​;
-          }​
-        }​
-      }​
-    } 
-  }, 
-  merge​ : function (e, value) {​
-    let mergedone = false;
-    if (e.field("Merge")​==true)​ {
-      mergedone = mer.mergelastadmit(e)​;
+        if(e.field(range[i])!=old.field(range[i]))
+          this.setall(range[i],  e.field(range[i]));
+      }         
     }
-    else if (value)​ {
-      mer.mlacancel(e)​;
-    }​
-    if (mergedone==false &​& value)​ {
-      mer.effect(e)​;
-    }​
+  },
+  findLast: function(e) {
+    if (e.field("Patient").length>0) {
+      let ptent = pt.findById(e.field("Patient")[0].id);
+      let date = e.field("VisitDate");
+      return pto.findLast(ptent, date, e.id);
+    }
+    return null;
+  },
+  run: function(e) {
+    this.load(e);
+    let mergeobj = this.findLast(e);
+    if (mergeobj) {
+      this.append(mergeobj.lib, mergeobj.e);
+      this.sort(e);
+      this.save(e, this.m);
+      this.setall("MergeID", e.field("MergeID"));
+    }
+    else {
+      message("Can't find Last Admit!");
+    }
+  },
+  cancel: function(e) {
+    this.load(e);
+    this.sort(e);
+    let inx = this.findInx(e);
+    let mergeobj = null;
+    if (inx>-1 && this.m.length>1) {
+      mergeobj = this.m.splice(inx, 1);
+      if (inx==0) {  // cancel parent
+        this.save(e, mergeobj);
+        // other child.VSDate, MergeID is changed
+        let o = this.m[0].e;
+        if (this.m[0].lib!="Consult")
+          this.setall("VisitDate", my.dateminus(o.field("Date"), 1));
+        else
+          this.setall("VisitDate", my.dateminus(o.field("ConsultDate"), 1));
+        
+        this.save(o, this.m);
+        this.setall("MergeID", o.field("MergeID"));
+      }
+      else {  // inx>0: cancel child
+        if (lib().title!="Consult")
+          e.set("VisitDate", my.dateminus(e.field("Date"), 1));
+        else
+          e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1));
+        if (my.gdate(e.field("VisitDate"))>ntoday) {
+          e.field("Ward", "Uro");
+          e.field("DischargeDate", null);
+          e.field("Track", 0);
+          e.field("Summary", false);
+        }
+        this.save(e, mergeobj);
+        // other mergeobj.MergeID is changed
+        let o = this.m[0].e;  // parent
+        this.save(o, this.m);
+        this.setall("MergeID", o.field("MergeID"));
+      }
+    }
+  },
+  merge: function(e) {
+    if (e.field("Merge")​!=old.field("Merge")​)​ {
+      if (e.field("Merge")​) {
+        this.run(e)​;
+      }
+      else {
+        this.cancel(e);
+      }
+    }
+  },
+  effect: function(e) {
+    this.load(e);
+    this.fieldall(e);
+    this.colorall(e);
   }
-}​;
+};
 var que = {
   q: [],​
   load: function(e) {  // load entry to q
@@ -479,37 +373,37 @@ var emx = {
     let libname = "", field1 = "";
     let libfrom = lib().title;
     let min = 0,​ defau = "" ;
-    if (libto == "uro" &​& libfrom == "UroBase") {
+    if (libto == "UroBase" &​& libfrom == "UroBase") {
       libname = "UroBase";
       field1 = "Date" ;
       min = 1;
       defau = "<Default>";
     }​
-    else if (libto == "consult" &​& libfrom == "UroBase")​ {​
+    else if (libto == "Consult" &​& libfrom == "UroBase")​ {​
       libname = "Consult";
       field1 = "ConsultDate" ;
       min = 0;
       defau = "<Default>";
     }​
-    else if (libto == "uro" &​& libfrom == "Backup") {
+    else if (libto == "UroBase" &​& libfrom == "Backup") {
       libname = "UroBase";
       field1 = "Date" ;
       min = 0;
       defau = "<Default>";
     }​
-    else if (libto == "consult" &​& libfrom == "Backup")​ {​
+    else if (libto == "Consult" &​& libfrom == "Backup")​ {​
       libname = "Consult";
       field1 = "ConsultDate" ;
       min = 0;
       defau = "<Default>";
     }​
-    else if (libto == "uro" &​& libfrom == "Consult" ) {​
+    else if (libto == "UroBase" &​& libfrom == "Consult" ) {​
       libname = "UroBase";
       field1 = "Date" ;
       min = 0;
       defau = "Pending";
     }​
-    else if (libto == "consult" &​& libfrom == "Consult") {​
+    else if (libto == "Consult" &​& libfrom == "Consult") {​
       libname = "Consult";
       field1 = "ConsultDate" ;
       min = 1;
@@ -535,7 +429,7 @@ var emx = {
         
         ent​["PastHx"] = e.field("PastHx")​;
         ent​["InvResult"] = e.field("InvResult");
-        if (libto == "uro" &​& libfrom == "UroBase") {
+        if (libto == "UroBase" &​& libfrom == "UroBase") {
           ent​["Op"] = e.field("Operation")​;
           let newdx = fill.mostdxbyop(e.field("Operation"));
           ent["Dx"] = newdx?newdx:e.field("Dx")​;
@@ -553,14 +447,14 @@ var emx = {
           else
             ent​["Future"] = null;
         }​
-        else if (libto == "consult" &​& libfrom == "UroBase") {
+        else if (libto == "Consult" &​& libfrom == "UroBase") {
           ent​["Dx"] = e.field("Dx")​;
           ent​["VisitType"] = "OPD";
           ent​["VisitDate"] = my.date(e.field("AppointDate")​);
           if (e.field("Photo").length>0)​
             ent["Photo"] = e.field("Photo").join()​;
         }​
-        else if (libto == "uro" &​& libfrom == "Backup") {
+        else if (libto == "UroBase" &​& libfrom == "Backup") {
           ent​["Op"] = e.field("Operation")​;
           let newdx = fill.mostdxbyop(e.field("Operation"));
           ent["Dx"] = newdx?newdx:e.field("Dx")​;
@@ -578,14 +472,14 @@ var emx = {
           else
             ent​["Future"] = null;
         }​
-        else if (libto == "consult" &​& libfrom == "Backup") {
+        else if (libto == "Consult" &​& libfrom == "Backup") {
           ent​["Dx"] = e.field("Dx")​;
           ent​["VisitType"] = "OPD";
           ent​["VisitDate"] = my.date(e.field("AppointDate")​);
           if (e.field("Photo").length>0)​
             ent["Photo"] = e.field("Photo").join()​;
         }​
-        else if (libto == "uro" &​& libfrom == "Consult" ) {​
+        else if (libto == "UroBase" &​& libfrom == "Consult" ) {​
           ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
           ent​["RecordDate"] = today​;
 	  ent​["Op"] = e.field("Operation")​;
@@ -598,7 +492,7 @@ var emx = {
           else
             ent​["Future"] = null;
         }​
-        else if (libto == "consult" &​& libfrom == "Consult") {​
+        else if (libto == "Consult" &​& libfrom == "Consult") {​
           ent​["Dx"] = e.field("Dx")​;
           ent["VisitType"]​ = "OPD" ;
           ent["VisitDate"]​ = my.date(e.field("AppointDate"));
@@ -611,8 +505,9 @@ var emx = {
         fill.track(last, libto)​;
         fill.underlying(last)​;
         fill.color(last, libto) ;
+        mer.newmergeid(last)​;
         message("successfully created new Entry") ;
-        if (libto == "uro") ​{
+        if (libto == "UroBase") ​{
           uro.setopextra(last);
           let dxe = uro.createautofill​(last)​;
           uro.setx15(last)​;
@@ -632,7 +527,7 @@ var emx = {
   }, 
   flu : function (e)​ {
     if (e.field("EntryMx")​== "F/U" &&  e.field("AppointDate")) {
-      this.createnew(e, "consult")​;
+      this.createnew(e, "Consult")​.show();
     }​
     else if (e.field("EntryMx")​=="F/U")​ {
       message("Appoint date must not leave blank")​;
@@ -641,7 +536,7 @@ var emx = {
   }, 
   setor : function (e)​ {
     if (e.field("EntryMx")​== "set OR" &&  e.field("AppointDate")) {
-      this.createnew(e, "uro").show()​;
+      this.createnew(e, "UroBase").show()​;
     }​
     else if (e.field("EntryMx")​=="set OR")​ {
       message("Appoint date must not leave blank")​;
@@ -686,7 +581,7 @@ var fill = {
   pasthx : function(e, lib) {
     let links = e.field("Patient");
     let date;
-    if(lib=="consult")
+    if(lib=="Consult")
       date = e.field("ConsultDate")
     else
       date = e.field("Date")
@@ -715,7 +610,7 @@ var fill = {
   },
   track​ : function (e, lib) {
     let field1 = "" ;
-    if(lib=="uro" || lib=="backup") {
+    if(lib=="UroBase" || lib=="Backup") {
       field1 = "Status" ;
     }​
     else {
@@ -811,9 +706,9 @@ var fill = {
     let links = e.field("Patient")​;
     let field1 = "" ;
     if (links.length>0) {
-      let m = mer.linklastadmit(e, today)​["ent"];
-      if (m != null)​{
-        links[0].set("WardStamp", m.field("VisitDate")​);
+      let o = mer.findLast(e)​;
+      if (o != null)​{
+        links[0].set("WardStamp", o.e.field("VisitDate")​);
       }
       else {
         links[0].set("WardStamp",null);
@@ -870,7 +765,7 @@ var fill = {
           }​       
           links[0].set("Descript", str);
         }​
-        else if ((m == null)​ || (m.field("DischargeDate") != null && my.gdate(m.field("DischargeDate"))​ <= ntoday)​ ) {//if future, check last admit :never admit or already D/C of last visit: still
+        else if ((o == null)​ || (o.e.field("DischargeDate") != null && my.gdate(o.e.field("DischargeDate"))​ <= ntoday)​ ) {//if future, check last admit :never admit or already D/C of last visit: still
           links[0].set("Status" ,"Still");
           links[0].set("Ward", "");
         }​
@@ -878,7 +773,7 @@ var fill = {
     }​
   }, 
   color : function (e, lib)​ {
-    if(lib=="uro" || lib=="backup") {
+    if(lib!="Consult") {
       if(e.field("Status")=="Not") {
         if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
       } 
@@ -919,7 +814,7 @@ var fill = {
         } 
       }
     }
-    else { // lib == consult
+    else { // lib == Consult
       if(e.field("EntryMx")=="Not") {
         if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
       } 
@@ -940,7 +835,20 @@ var fill = {
         } 
       }
     }​
-  }​
+  }​,
+  deletept : function (e){
+    //Pt
+    let ptlks = e.field("Patient");
+    if (ptlks.length>0) {
+      let ptent = pt.findById(ptlks[0].id) ;
+      let orlinks = ptent.linksFrom("UroBase", "Patient") ;
+      let bulinks = ptent.linksFrom("Backup", "Patient") ;
+      let cslinks = ptent.linksFrom("Consult", "Patient") ;
+      if(orlinks.length+bulinks.length+cslinks.length==0){
+        ptent.trash();
+      }
+    }
+  }
 }​;
 var pto = {
   rearrangename : function(e) {
@@ -1009,18 +917,19 @@ var pto = {
     }
   }, 
   donesettrack : function (e)​ {
-    let linkedFrom = mer.lastadmit(e, today);
-    if (linkedFrom != null)​ {
-      let toEnt = linkedFrom["ent"]​ ;
+    let o = this.findLast(e, today);
+    if (o)​ {
+      let toEnt = o.e ;
       let statusf;
-      if (linkedFrom["lib"]=="or"  || linkedFrom["lib"]​=="bu")​
+      if (o.lib!="Consult")​
         statusf = "Status";
       else
         statusf = "EntryMx";
       if (e.field("Done") == true &​& toEnt.field("Track") == 1) {
         if (toEnt.field(statusf​) != "Not" && toEnt.field("VisitType") == "Admit" && (toEnt.field("DischargeDate") == null || my.gdate(toEnt.field("DischargeDate"))​ > ntoday)​)​ { // Admit
-          toEnt.set("Track", 2);
-          mer.other(toEnt)​;
+          mer.load(toEnt);
+          mer.setall("Track", 2)​;
+          mer.colorall(toEnt)​;
         }​
       }​
     }​
@@ -1037,6 +946,53 @@ var pto = {
           all[i].set("Done", false) ;
       }
     }
+  },
+  findLast: function(ptent, date, eid=0) {
+    if (ptent) {
+      let orlinks = ptent.linksFrom("UroBase", "Patient") ;
+      let bulinks = ptent.linksFrom("Backup", "Patient") ;
+      let cslinks = ptent.linksFrom("Consult", "Patient") ;
+      let last = null, s=null, r=null, u=null​;​
+      if (orlinks.length>0) {
+        for (let i in orlinks) {
+          if (orlinks[i].field("VisitType")=="Admit" && my.gdate(​orlinks[i].field("VisitDate")) > my.gdate(​last) && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && orlinks[i].id != eid) {
+            last = orlinks[i].field("VisitDate");
+            r=i;
+          }
+        }
+      }​
+      if (bulinks.length​>0) {
+        for (let i in bulinks) {
+          if (bulinks[i].field("VisitType")=="Admit" && my.gdate(​bulinks[i].field("VisitDate"))​ > my.gdate(​last​) && my.gdate(​bulinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && bulinks[i].id != eid) {
+            last = bulinks[i].field("VisitDate");
+            u=i;
+          }
+        }
+      }​
+      if (cslinks.length>0) {
+        for (let i in cslinks) {
+          if (cslinks[i].field("VisitType")=="Admit" && my.gdate(​cslinks[i].field("VisitDate")​) > my.gdate(​last) && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) && cslinks[i].id != eid) {
+            last = cslinks[i].field("VisitDate");
+            s=i;
+          }
+        }
+      }​
+      let o = new Object();
+      if (last != null) {
+        if (r!=null &​& u==null &​& s==null) {
+          o["lib"] = "UroBase";
+        }
+        else if (u!=null &​& s==​null)​ {
+          o["lib"] = "Backup";
+        }
+        else if (s!=null) {​
+          o["lib"] = "Consult";
+        }
+        o["e"] = last;
+        return o;
+      }
+    }
+    return null;
   }
 }​;
 var uro = {
@@ -1224,14 +1180,14 @@ var uro = {
       }​
     }​
   }, 
-  lastDJStamp : function (e, date)  {
-    let orlinks = e.linksFrom("UroBase", "Patient") ;
-    let bulinks = e.linksFrom("Backup", "Patient") ;
+  lastDJStamp : function (ptent, date)  {
+    let orlinks = ptent.linksFrom("UroBase", "Patient") ;
+    let bulinks = ptent.linksFrom("Backup", "Patient") ;
     let o = null ;
     let last = null, r = null, u = null;
     if (orlinks.length>0) {
       for (let i in orlinks) {
-        if (orlinks[i].field("DJstent") && orlinks[i].field("Date") > last && my.gdate(orlinks[i].field("Date")) <= my.gdate(date)​) {
+        if (orlinks[i].field("DJstent") && gdate(orlinks[i].field("Date")) > gdate(last) && my.gdate(orlinks[i].field("Date")) <= my.gdate(date)​) {
           last = orlinks[i].field("Date");
           r=i;
         }
@@ -1239,7 +1195,7 @@ var uro = {
     }​
     if (bulinks.length>0)​ {
       for (let i in bulinks) {
-        if (bulinks[i].field("DJstent") && bulinks[i].field("Date") > last && my.gdate(bulinks[i].field("Date")) <= my.gdate(date)​) {
+        if (bulinks[i].field("DJstent") && gdate(bulinks[i].field("Date")) > gdate(last) && my.gdate(bulinks[i].field("Date")) <= my.gdate(date)​) {
           last = bulinks[i].field("Date");
           u=i;
         }
@@ -1477,19 +1433,6 @@ var uro = {
       opent.set("Count", orlinks.length+bulinks.length)​;​​​​
     }​
   }, 
-  deletept : function (e)​{
-    //Pt
-    let ptlks = e.field("Patient");
-    if (ptlks.length>0)​ {
-      let ptent = pt.findById(ptlks[0].id) ;
-      let orlinks = ptent.linksFrom("UroBase", "Patient") ;
-      let bulinks = ptent.linksFrom("Backup", "Patient") ;
-      let cslinks = ptent.linksFrom("Consult", "Patient") ;
-      if(orlinks.length+bulinks.length+cslinks.length==0)​{
-        ptent.trash()​;
-      }​
-    }
-  },
   updateDJStamp : function (e) {
     let links = e.field("Patient")​;
     if (links.length>0) {
@@ -1512,11 +1455,7 @@ var uro = {
     }
   }, 
   resetcolor : function(all) {
-    let thislib = "" ;
-    if (lib().title=="UroBase")
-      thislib = "uro" ;
-    else
-      thislib = "backup" ;
+    let thislib = lib().title;
     for (let i in all)​ {
       if (ntoday​>my.gdate(all[i]​.lastModifiedTime)) {
         fill.color(all[i]​, thislib)​;
@@ -1559,7 +1498,7 @@ var cso = {
   resetcolor : function(all) {
     for (let i in all)​ {
       if (ntoday​>my.gdate(all[i]​.lastModifiedTime)) {
-        fill.color(all[i]​, "consult")​;
+        fill.color(all[i]​, "Consult")​;
       }
     } 
   }​
@@ -1875,12 +1814,11 @@ var trig = {
     uro.setfuture(e)​;
     uro.setopextra(e)​;
     uro.setvisitdate(e)​;
-    fill.pasthx(e, "uro");
-    fill.track​(e, "uro")​;
+    fill.pasthx(e, "UroBase");
+    fill.track​(e, "UroBase")​;
     if (value=="create")
-      mer.merge(e, false)​;
-    else if (value=="update")​
-      mer.merge(e, true)​;
+      mer.newmergeid(e)​;
+    mer.merge(e)​;
     uro.setDJstent(e)​;
     let dxe = uro.createautofill​(e)​;
     uro.setx15(e)​;
@@ -1894,12 +1832,11 @@ var trig = {
     fill.los(e)​;
     fill.opdatecal(e);
     fill.oplength(e);
+    fill.ptstatus(e)​;
+    mer.effect(e)​;
   }, 
   UroAfterEdit : function (e, value) {
     old.load(e)​;
-    fill.ptstatus(e)​;
-    fill.color(e, "uro")​;
-    mer.other(e)​;
     emx.flu(e)​;
     emx.setor(e)​;
     uro.updateDJStamp(e)​;
@@ -1914,7 +1851,6 @@ var trig = {
     old.save(e)​;
   }, 
   UroBeforeViewCard ​: function (e) {​
-    fill.color(e, "uro")​;
     old.save(e)​;
   }, 
   UroBeforeOpenLib : function (all) {
@@ -1924,20 +1860,20 @@ var trig = {
     old.load(e)​;
     uro.setnewdate(e)​;
     uro.setvisitdate(e)​;
-    fill.track​(e, "uro")​;
+    fill.track​(e, "UroBase")​;
+    mer.merge(e)​;
     que.run(e)​​;
+    fill.ptstatus(e)​;
+    mer.effect(e)​;
   }, 
   UroAfterUpdatingField : function (e) {
-    old.load(e)​;
-    fill.ptstatus(e)​;
-    fill.color(e, "uro")​;
-    mer.other(e)​;
     old.save(e)​;
   }, 
   UroBeforeDelete : function (e)​ {
+    old.load(e)​;
     if (e.field("Merge")​==true)​ {
       e.set("Merge", false)​
-      mer.mlacancel(e)​;
+      mer.merge(e)​;
     }
   }, 
   UroAfterDelete : function (e)​ {
@@ -1945,7 +1881,7 @@ var trig = {
     uro.deletedxop(e)​;
     rpo.deleteold(e)​;
     opu.deleteOp(e);
-    uro.deletept(e)​;
+    fill.deletept(e)​;
   }, 
   BackupOpenEdit : function (e)​ {
     old.save(e)​;
@@ -1958,12 +1894,11 @@ var trig = {
     uro.setfuture(e)​;
     uro.setopextra(e)​;
     uro.setvisitdate(e)​;
-    fill.pasthx(e, "backup");
-    fill.track​(e, "backup")​;
+    fill.pasthx(e, "Backup");
+    fill.track​(e, "Backup")​;
     if (value=="create")
-      mer.merge(e, false)​;
-    else if (value=="update")​
-      mer.merge(e, true)​;
+      mer.newmergeid(e)​;
+    mer.merge(e)​;
     uro.setDJstent(e)​;
     let dxe = uro.createautofill​(e)​;
     uro.setx15(e)​;
@@ -1977,12 +1912,11 @@ var trig = {
     fill.los(e)​;
     fill.opdatecal(e);
     fill.oplength(e);
+    fill.ptstatus(e)​;
+    mer.effect(e)​;
   }, 
   BackupAfterEdit : function (e, value) {
     old.load(e)​;
-    fill.ptstatus(e)​;
-    fill.color(e, "backup")​;
-    mer.other(e)​;
     emx.flu(e)​;
     emx.setor(e)​;
     uro.updateDJStamp(e)​;
@@ -1995,7 +1929,6 @@ var trig = {
     old.save(e)​;
   }, 
   BackupBeforeViewCard ​: function (e) {​
-    fill.color(e, "backup")​;
     old.save(e)​;
   }, 
   BackupBeforeOpenLib : function (all) {
@@ -2005,27 +1938,27 @@ var trig = {
     old.load(e)​;
     uro.setnewdate(e)​;
     uro.setvisitdate(e)​;
-    fill.track​(e, "backup")​;
+    fill.track​(e, "Backup")​;
+    mer.merge(e)​;
     que.run(e)​​;
+    fill.ptstatus(e)​;
+    mer.effect(e)​;
   }, 
   BackupAfterUpdatingField : function (e) {
-    old.load(e)​;
-    fill.ptstatus(e)​;
-    fill.color(e, "backup")​;
-    mer.other(e)​;
     old.save(e)​;
   }, 
   BackupBeforeDelete : function (e)​ {
+    old.load(e)​;
     if (e.field("Merge")​==true)​ {
       e.set("Merge", false)​
-      mer.mlacancel(e)​;
+      mer.merge(e)​;
     }
   }, 
   BackupAfterDelete : function (e)​ {
     old.load(e);
     uro.deletedxop(e)​;
     rpo.deleteold(e)​;
-    uro.deletept(e)​;
+    fill.deletept(e)​;
   }, 
   ConsultOpenEdit : function (e)​ {
     old.save(e)​;
@@ -2034,26 +1967,23 @@ var trig = {
     old.load(e)​;
     cso.setnewdate(e)​;​
     cso.setvisitdate(e)​;
-    fill.pasthx(e, "consult");
-    fill.track​(e, "consult")​;
+    fill.pasthx(e, "Consult");
+    fill.track​(e, "Consult")​;
     if (value=="create")
-      mer.merge(e, false)​;
-    else if (value=="update")​
-      mer.merge(e, true)​;
+      mer.newmergeid(e)​;
+    mer.merge(e)​;
     fill.underlying(e)​;
     fill.los(e)​;
+    fill.ptstatus(e)​;
+    mer.effect(e)​;
   },
   ConsultAfterEdit : function (e, value) {
     old.load(e)​;
-    fill.ptstatus(e)​;
-    fill.color(e, "consult")​;
-    mer.other(e)​;
     emx.flu(e)​;
     emx.setor(e)​;
     old.save(e)​;
   }, 
   ConsultBeforeViewCard ​: function (e) {​
-    fill.color(e, "consult")​;
     old.save(e)​;
   }, 
   ConsultBeforeOpenLib : function (all) {
@@ -2063,23 +1993,23 @@ var trig = {
     old.load(e)​;
     cso.setnewdate(e)​;
     cso.setvisitdate(e)​;
-    fill.track​(e, "consult")​;
+    fill.track​(e, "Consult")​;
+    mer.merge(e)​;
+    fill.ptstatus(e)​;
+    mer.effect(e)​;
   }, 
   ConsultAfterUpdatingField : function (e) {
-    old.load(e)​;
-    fill.ptstatus(e)​;
-    fill.color(e, "consult")​;
-    mer.other(e)​;
     old.save(e)​;
   }, 
   ConsultBeforeDelete : function (e)​ {
+    old.load(e)​;
     if (e.field("Merge")​==true)​ {
       e.set("Merge", false)​
-      mer.mlacancel(e)​;
+      mer.merge(e)​;
     }
   }, 
   ConsultAfterDelete : function (e)​ {
-    uro.deletept(e);
+    fill.deletept(e);
   },
   OpUroBeforeEdit : function (e) {
     opu.setnewdate(e)​;
