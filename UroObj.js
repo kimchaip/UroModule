@@ -137,7 +137,7 @@ var mer = {
         n["lib"] = v.lib;
         n["e"] =  v.e.id;
       }
-      return v;
+      return n;
     });
     
     e.set("MergeID", JSON.stringify(m));
