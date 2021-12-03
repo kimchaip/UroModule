@@ -969,14 +969,16 @@ var pto = {
       if (last != null) {
         if (r!=null &​& u==null &​& s==null) {
           o["lib"] = "UroBase";
+          o["e"] = orlinks[r];
         }
         else if (u!=null &​& s==​null)​ {
           o["lib"] = "Backup";
+          o["e"] = bulinks[u];
         }
         else if (s!=null) {​
           o["lib"] = "Consult";
+          o["e"] = cslinks[s];
         }
-        o["e"] = last;
         return o;
       }
     }
