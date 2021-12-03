@@ -220,6 +220,7 @@ var mer = {
       this.sort(e);
       this.save(e, this.m);
       this.setall("MergeID", e.field("MergeID"));
+      this.setall("Merge", true);
     }
     else {
       message("Can't find Last Admit!");
@@ -243,6 +244,7 @@ var mer = {
         
         this.save(o, this.m);
         this.setall("MergeID", o.field("MergeID"));
+        if (this.m.length==1) o.set("Merge", false);
       }
       else {  // inx>0: cancel child
         if (lib().title!="Consult")
@@ -260,6 +262,7 @@ var mer = {
         let o = this.m[0].e;  // parent
         this.save(o, this.m);
         this.setall("MergeID", o.field("MergeID"));
+        if (this.m.length==1) o.set("Merge", false);
       }
     }
   },
