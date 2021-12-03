@@ -160,7 +160,8 @@ var mer = {
     this.m.push(o);
   },
   newmergeid: function(e) {
-    e.set("MergeID", [{"lib":lib().title, "e":e}]);
+    let o = [{"lib":lib().title, "e":e}];
+    e.set("MergeID", JSON.stringify(o));
   },
   sort: function(e) {
     this.m = this.m.sort((a,b)=>{
