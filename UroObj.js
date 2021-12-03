@@ -153,8 +153,8 @@ var mer = {
     
     this.m.push(o);
   },
-  newmergeid: function(e) {
-    let o = [{"lib":lib().title, "e":e.id}];
+  newmergeid: function(e, libname) {
+    let o = [{"lib":libname, "e":e.id}];
     e.set("MergeID", JSON.stringify(o));
   },
   sort: function(e) {
@@ -500,7 +500,7 @@ var emx = {
         fill.track(last, libto)​;
         fill.underlying(last)​;
         fill.color(last, libto) ;
-        mer.newmergeid(last)​;
+        mer.newmergeid(last, libto);
         message("successfully created new Entry") ;
         if (libto == "UroBase") ​{
           uro.setopextra(last);
@@ -1817,7 +1817,7 @@ var trig = {
     fill.pasthx(e, "UroBase");
     fill.track​(e, "UroBase")​;
     if (value=="create")
-      mer.newmergeid(e)​;
+      mer.newmergeid(e, "UroBase")​;
     mer.merge(e)​;
     uro.setDJstent(e)​;
     let dxe = uro.createautofill​(e)​;
@@ -1897,7 +1897,7 @@ var trig = {
     fill.pasthx(e, "Backup");
     fill.track​(e, "Backup")​;
     if (value=="create")
-      mer.newmergeid(e)​;
+      mer.newmergeid(e, "Backup")​;
     mer.merge(e)​;
     uro.setDJstent(e)​;
     let dxe = uro.createautofill​(e)​;
@@ -1970,7 +1970,7 @@ var trig = {
     fill.pasthx(e, "Consult");
     fill.track​(e, "Consult")​;
     if (value=="create")
-      mer.newmergeid(e)​;
+      mer.newmergeid(e, "Consult")​;
     mer.merge(e)​;
     fill.underlying(e)​;
     fill.los(e)​;
