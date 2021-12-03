@@ -128,7 +128,6 @@ var mer = {
       }
       return n;
     });
-    e.set("Output", e.field("Output") + "\n" + JSON.stringify(this.m));
   },
   save: function(e, mergeobj) {
     let m = mergeobj.map(v=>{
