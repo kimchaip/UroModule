@@ -160,7 +160,7 @@ var mer = {
     this.m.push(o);
   },
   newmergeid: function(e) {
-    let o = [{"lib":lib().title, "e":e}];
+    let o = [{"lib":lib().title, "e":e.id}];
     e.set("MergeID", JSON.stringify(o));
   },
   sort: function(e) {
