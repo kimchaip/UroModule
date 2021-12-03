@@ -186,7 +186,7 @@ var mer = {
     this.m.forEach(o=>fill.color(o.e, o.lib));
   },
   fieldall: function(e) {
-    let range = ["VisitDate","PastHx","InvResult","VisitType","Ward","DischargeDate","Track","Summary","Underlying"];
+    let range = ["VisitDate","PastHx","InvResult","VisitType","Ward","DischargeDate","Track","Summary","Underlying","LOS"];
     for(let i = 0; i<range.length; i++) {
       let inx = this.findInx(e);
       if(range[i].indexOf("Date")>-1) {
