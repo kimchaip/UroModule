@@ -119,6 +119,7 @@ var mer = {
     this.m = marr.map(o=>{
       if(o.e.id == e.id) {
         o.e =  e;
+      }
       else if(libByName(o.lib) && libByName(o.lib).findById(o.e.id)) {
         o.e = libByName(o.lib).findById(o.e.id);
       }
