@@ -132,8 +132,10 @@ var mer = {
   },
   save: function(e, mergeobj) {
     let m = mergeobj.map(v=>{
+      let n = new Object();
       if(v) {
-        v.e = v.e.id;
+        n["lib"] = v.lib;
+        n["e"] =  v.e.id;
       }
       return v;
     });
