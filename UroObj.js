@@ -160,12 +160,12 @@ var mer = {
   sort: function(e) {
     this.m = this.m.sort((a,b)=>{
       let q1, q2;
-      if (a.lib!="UroBase") 
+      if (a.lib!="Consult") 
         q1 = my.gdate(a.e.field("Date"));
       else
         q1 = my.gdate(a.e.field("ConsultDate"));
         
-      if (b.lib!="UroBase") 
+      if (b.lib!="Consult") 
         q2 = my.gdate(b.e.field("Date"));
       else
         q2 = my.gdate(b.e.field("ConsultDate"));
