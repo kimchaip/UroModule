@@ -1191,7 +1191,7 @@ var uro = {
     let last = null, r = null, u = null;
     if (orlinks.length>0) {
       for (let i in orlinks) {
-        if (orlinks[i].field("DJstent") && gdate(orlinks[i].field("Date")) > gdate(last) && my.gdate(orlinks[i].field("Date")) <= my.gdate(date)​) {
+        if (orlinks[i].field("DJstent") && my.gdate(orlinks[i].field("Date")) > my.gdate(last) && my.gdate(orlinks[i].field("Date")) <= my.gdate(date)​) {
           last = orlinks[i].field("Date");
           r=i;
         }
@@ -1199,7 +1199,7 @@ var uro = {
     }​
     if (bulinks.length>0)​ {
       for (let i in bulinks) {
-        if (bulinks[i].field("DJstent") && gdate(bulinks[i].field("Date")) > gdate(last) && my.gdate(bulinks[i].field("Date")) <= my.gdate(date)​) {
+        if (bulinks[i].field("DJstent") && my.gdate(bulinks[i].field("Date")) > my.gdate(last) && my.gdate(bulinks[i].field("Date")) <= my.gdate(date)​) {
           last = bulinks[i].field("Date");
           u=i;
         }
