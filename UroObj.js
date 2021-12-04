@@ -194,7 +194,7 @@ var mer = {
           this.setall(range[i],  e.field(range[i]));
       }
       else if (range[i] == "VisitType") {
-        if(e.field(range[i])!="Admit")
+        if(this.m.length>1 && e.field(range[i])!="Admit")
           e.set(range[i], "Admit");
       }
       else {
