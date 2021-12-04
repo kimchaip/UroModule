@@ -1691,9 +1691,9 @@ var opu = {
         let parr = this.splitPtName(old.field("Patient"));
         for (let s in oss)​{
           if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(my.date(old.field("Date"))))
-            e.set("Output", e.field("Output")+"\n"+​ oss[s].field("Dr") +"==​"+ old.field("Dr") +", "+oss[s].field("OpType")+"=="+​ old.field("ORType") +", "+ oss[s].field("PtName") +"=="+​ parr[0] +", "+ oss[s].field("HN") +"=="+​ parr[2] +", "+ oss[s].field("Dx") +"=="+​ old.field("Dx") +", "+ oss[s].field("Op") +"==​"+ old.field("Op"))​;
+            e.set("Output", e.field("Output")+"\n"+​ oss[s].field("Dr") +"==​"+ old.field("Dr") +", "+oss[s].field("OpType")+"=="+​ old.field("ORType") +", "+ oss[s].field("PtName") +"=="+​ parr[0] +", "+ oss[s].field("HN") +"=="+​ parr[2]?parr[2]:null +", "+ oss[s].field("Dx") +"=="+​ old.field("Dx") +", "+ oss[s].field("Op") +"==​"+ old.field("Op"))​;
             
-          if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(old.field("Date")))​ && oss[s].field("Dr") ==​ old.field("Dr") &​& oss[s].field("OpType") ==​ old.field("ORType") &​& oss[s].field("PtName") ==​ parr[0] && oss[s].field("HN") ==​ Number(parr[2]) &​& oss[s].field("Dx") ==​ old.field("Dx") &​& oss[s].field("Op") ==​ old.field("Op"))​{
+          if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(old.field("Date")))​ && oss[s].field("Dr") ==​ old.field("Dr") &​& oss[s].field("OpType") ==​ old.field("ORType") &​& oss[s].field("PtName") ==​ parr[0] && oss[s].field("HN") ==​ parr[2]?parr[2]:null &​& oss[s].field("Dx") ==​ old.field("Dx") &​& oss[s].field("Op") ==​ old.field("Op"))​{
             oss[s].set("OpDate", my.date(e.field("Date")));
             oss[s].set("Dr", e.field("Dr"));
             oss[s].set("OpType", e.field("ORType")​);
