@@ -505,7 +505,7 @@ var emx = {
         fill.underlying(last)​;
         fill.color(last, libto) ;
         mer.newmergeid(last, libto);
-        message("successfully created new Entry") ;
+        //message("successfully created new Entry") ;
         if (libto == "UroBase") ​{
           uro.setopextra(last);
           let dxe = uro.createautofill​(last)​;
@@ -1251,7 +1251,7 @@ var uro = {
         o["Dx"] = e.field("Dx");
         o["Op"] = e.field("Op")​;​
         dx.create(o);
-        message("Create new AutoFill Successfully​")​;
+        //message("Create new AutoFill Successfully​")​;
         return dx.entries()[0];
       }
       else { // dx and op ever before​
@@ -1690,10 +1690,7 @@ var opu = {
         let link = links[0];
         let parr = this.splitPtName(old.field("Patient"));
         parr[2] = parr[2]?parr[2]:null;
-        for (let s in oss)​{
-          if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(my.date(old.field("Date"))))
-            e.set("Output", e.field("Output")+"\n"+​ oss[s].field("Dr") +"==​"+ old.field("Dr") +", "+oss[s].field("OpType")+"=="+​ old.field("ORType") +", "+ oss[s].field("PtName") +"=="+​ parr[0] +", "+ oss[s].field("HN") +"=="+​ parr[2] +", "+ oss[s].field("Dx") +"=="+​ old.field("Dx") +", "+ oss[s].field("Op") +"==​"+ old.field("Op"))​;
-            
+        for (let s in oss) {
           if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(old.field("Date")))​ && oss[s].field("Dr") ==​ old.field("Dr") &​& oss[s].field("OpType") ==​ old.field("ORType") &​& oss[s].field("PtName") ==​ parr[0] && oss[s].field("HN") ==​ parr[2] &​& oss[s].field("Dx") ==​ old.field("Dx") &​& oss[s].field("Op") ==​ old.field("Op"))​{
             oss[s].set("OpDate", my.date(e.field("Date")));
             oss[s].set("Dr", e.field("Dr"));
@@ -1769,7 +1766,7 @@ var opu = {
           }
         }
         if(count) {
-          message("Update related PtName in OpUroSx!");
+          //message("Update related PtName in OpUroSx!");
         }
       }
     }
