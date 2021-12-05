@@ -195,7 +195,7 @@ var mer = {
       }
       else if (range[i] == "VisitType") {
         if(this.m.length>1 && e.field(range[i])!="Admit")
-          this.setall(range[i], "Admit");
+          e.set(range[i], "Admit");
       }
       else {
         if(e.field(range[i])!=old.field(range[i]))
