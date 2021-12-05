@@ -441,10 +441,6 @@ var emx = {
           ent​["RecordDate"] = today​;
           if (e.field("Photo").length>0)​
             ent["Photo"] = e.field("Photo").join()​;
-          if(my.gdate(ent​[field1])​>=ntoday​)​
-            ent​["Future"] = ​Math.floor((my.gdate(ent​[field1])​-ntoday)​/86400000);
-          else
-            ent​["Future"] = null;
         }​
         else if (libto == "Consult" &​& libfrom == "UroBase") {
           ent​["Dx"] = e.field("Dx")​;
@@ -466,10 +462,6 @@ var emx = {
           ent​["RecordDate"] = today​;
           if (e.field("Photo").length>0)​
             ent["Photo"] = e.field("Photo").join()​;
-          if(my.gdate(ent​[field1])​>=ntoday​)​
-            ent​["Future"] = ​Math.floor((my.gdate(ent​[field1])​-ntoday)​/86400000);
-          else
-            ent​["Future"] = null;
         }​
         else if (libto == "Consult" &​& libfrom == "Backup") {
           ent​["Dx"] = e.field("Dx")​;
@@ -486,10 +478,6 @@ var emx = {
           ent["Dx"] = newdx?newdx:e.field("Dx")​;
           if (e.field("Photo").length>0)​
             ent["Photo"] = e.field("Photo").join()​;
-          if(my.gdate(ent​[field1])​>=ntoday​)​
-            ent​["Future"] = ​Math.floor((my.gdate(ent​[field1])​-ntoday)​/86400000);
-          else
-            ent​["Future"] = null;
         }​
         else if (libto == "Consult" &​& libfrom == "Consult") {​
           ent​["Dx"] = e.field("Dx")​;
@@ -503,7 +491,8 @@ var emx = {
         fill.pasthx(last, libto);
         fill.track(last, libto)​;
         fill.underlying(last)​;
-        fill.color(last, libto) ;
+        fill.color(last, libto);
+        fill.future(last, libto);
         mer.newmergeid(last, libto);
         //message("successfully created new Entry") ;
         if (libto == "UroBase") ​{
@@ -837,6 +826,22 @@ var fill = {
       }
     }​
   }​,
+  future : function(e, lib)​{
+    let dfield = lib != "Consult"? "Date": "ConsultDate";
+    
+    if(my.gdate(e.field(dfield))>=ntoday​)​
+      e.set("Future", Math.floor((my.gdate(e.field(dfield)​)-ntoday)​/86400000))​;
+    else
+      e.set("Future", null)​;
+  }​,
+  futureall : function(all) {
+    let thislib = lib().title;
+    for (let i in all)​ {
+      if (ntoday​>my.gdate(all[i]​.lastModifiedTime)) {
+        fill.future(all[i], thislib)​;​
+      }
+    } 
+  },
   deletept : function (e){
     //Pt
     let ptlks = e.field("Patient");
@@ -1457,22 +1462,7 @@ var uro = {
         }​
       }
     }
-  }, 
-  resetcolor : function(all) {
-    let thislib = lib().title;
-    for (let i in all)​ {
-      if (ntoday​>my.gdate(all[i]​.lastModifiedTime)) {
-        fill.color(all[i]​, thislib)​;
-        this.setfuture(all[i])​;​
-      }
-    } 
-  }, 
-  setfuture : function(e)​{
-    if(my.gdate(e.field("Date"))>=ntoday​)​
-      e.set("Future", Math.floor((my.gdate(e.field("Date")​)-ntoday)​/86400000))​;
-    else
-      e.set("Future", null)​;
-  }​
+  }
 }​;
 
 var cso = {
@@ -1498,14 +1488,7 @@ var cso = {
       else
         e.set("VisitDate", e.field("ConsultDate")​)​;
     }​
-  }, 
-  resetcolor : function(all) {
-    for (let i in all)​ {
-      if (ntoday​>my.gdate(all[i]​.lastModifiedTime)) {
-        fill.color(all[i]​, "Consult")​;
-      }
-    } 
-  }​
+  }
 }​;
 var rpo = {
   createnew : function (e) {
@@ -1817,7 +1800,7 @@ var trig = {
     uro.setnewdate(e)​;​
     uro.setdxop​(e)​;
     uro.opresulteffect(e);
-    uro.setfuture(e)​;
+    fill.future(e, "UroBase")​;
     uro.setopextra(e)​;
     uro.setvisitdate(e)​;
     fill.pasthx(e, "UroBase");
@@ -1860,7 +1843,7 @@ var trig = {
     old.save(e)​;
   }, 
   UroBeforeOpenLib : function (all) {
-    uro.resetcolor(all)​;
+    fill.futureall(all)​;
   }, 
   UroBeforeUpdatingField : function (e) {
     old.load(e)​;
@@ -1897,7 +1880,7 @@ var trig = {
     uro.setnewdate(e)​;​
     uro.setdxop​(e)​;
     uro.opresulteffect(e);
-    uro.setfuture(e)​;
+    fill.future(e, "Backup")​;
     uro.setopextra(e)​;
     uro.setvisitdate(e)​;
     fill.pasthx(e, "Backup");
@@ -1938,7 +1921,7 @@ var trig = {
     old.save(e)​;
   }, 
   BackupBeforeOpenLib : function (all) {
-    uro.resetcolor(all)​;
+    fill.futureall(all)​;
   }, 
   BackupBeforeUpdatingField : function (e) {
     old.load(e)​;
@@ -1972,6 +1955,7 @@ var trig = {
   ConsultBeforeEdit : function (e, value)​ {
     old.load(e)​;
     cso.setnewdate(e)​;​
+    fill.future(e, "Consult")​;
     cso.setvisitdate(e)​;
     fill.pasthx(e, "Consult");
     fill.track​(e, "Consult")​;
@@ -1993,7 +1977,7 @@ var trig = {
     old.save(e)​;
   }, 
   ConsultBeforeOpenLib : function (all) {
-    cso.resetcolor(all)​;
+    fill.futureall(all)​;
   }, 
   ConsultBeforeUpdatingField : function (e) {  
     old.load(e)​;
