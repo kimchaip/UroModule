@@ -113,7 +113,6 @@ var old = {
 
 var mer = {
   m: [],
-  l: null,
   load: function(e) {
     let marr = JSON.parse(e.field("MergeID"));
     this.m = marr.map(o=>{
@@ -1776,15 +1775,8 @@ var trig = {
       opu.ptTrigOpuro(e);
     old.save(e)​;
   }, 
-  PatientUpdatingField ​: function (all) {
-    let e = entry()​;
-    for(let i in all) {
-      // update track
-      if(all[i].id==e.id &​& all[i].field("Done")​==true) {
-        pto.donesettrack(all[i])​;
-        break;
-      }​
-    }​
+  PatientUpdatingField ​: function (e) {
+    pto.donesettrack(e)​;​
   }, 
   PatientBeforeOpenLib : function (all) {
     pto.resetdone(all)​;
