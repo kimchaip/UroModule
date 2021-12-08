@@ -551,6 +551,60 @@ var fill = {
       }​
     }
   },
+  setvisitdate ​: function (e)​ {
+    if(this.lib!="Consult") {
+      if(e.field("Merge")​ && e.field(this.status)!= "Not"){
+        if (e.field("VisitDate") == null) {
+          if (e.field("ORType") == "GA") {
+            e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
+          }​
+          else ​{
+            e.set("VisitDate", my.date(e.field(this.opdate)))​;
+          }​
+        }
+        else if(old.field("ORType")!=e.field("ORType") || my.gdate(old.field(this.opdate))!=my.gdate(e.field(this.opdate))){
+          if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) > my.gdate(my.dateminus(e.field(this.opdate), 1))){
+            e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
+          }
+          else if(e.field("ORType") == "LA" &​& my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate))){
+            e.set("VisitDate", my.date(e.field(this.opdate)))​;
+          }
+        }
+      }
+      else if(!e.field("Merge")​ && e.field(this.status)!= "Not") {
+        if (e.field("VisitDate") == null) {
+          if (e.field("ORType") == "GA") {
+            e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
+            if (e.field("VisitType") == "OPD")​
+              e.set("VisitType", "Admit")​;
+          }​
+          else ​{
+            e.set("VisitDate", my.date(e.field(this.opdate)))​;
+            if (e.field("VisitType") == "Admit")​
+              e.set("VisitType", "OPD")​;
+          }​
+        }
+        else if(old.field("ORType")!=e.field("ORType")) {
+          if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) >= > my.gdate(e.field(this.opdate))) {
+            e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
+            if (e.field("VisitType") == "OPD")​
+              e.set("VisitType", "Admit")​;
+          }
+          else if(e.field("ORType") == "LA" &​& my.gdate(e.field("VisitDate")) >= my.gdate(my.dateminus(e.field(this.opdate), 1))) {
+            e.set("VisitDate", my.date(e.field(this.opdate)))​;
+          }
+        }
+      }
+    }
+    else {  // this.lib == "Consult"
+      if (e.field(this.status)​!= "Not" &​& e.field("VisitDate") == null) {
+        if (e.field("VisitType") == "Admit")​
+          e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1));
+        else
+          e.set("VisitDate", e.field("ConsultDate")​)​;
+      }​
+    }
+  },
   sumpasthx : function (e, date) {
     let orlinks = e.linksFrom("UroBase", "Patient");
     let bulinks = e.linksFrom("Backup", "Patient");
@@ -1025,6 +1079,7 @@ var pto = {
 var uro = {
   lib : "UroBase",
   opdate : "Date",
+  status : "Status",
   checkdx : function (value)​ {
     return value.field("Dx") == this.field("Dx") &​& value.field("Op") ​== this.field("Op");
   }, ​
@@ -1052,53 +1107,7 @@ var uro = {
         e.set("OpExtra", false);
       }
     }
-  }, 
-  setvisitdate ​: function (e)​ {
-    if(e.field("Merge")​){
-      if (e.field("EntryMx")​== "<Default>" &​& e.field("VisitDate") == null) {
-        if (e.field("ORType") == "GA") {
-          if (e.field("VisitType") == "OPD")​
-            e.set("VisitType", "Admit")​;
-          e.set("VisitDate", my.dateminus(e.field("Date"), 1));
-        }​
-        else ​{
-          e.set("VisitDate", my.date(e.field("Date")))​;
-        }​
-      }
-      else if(old.field("ORType")!=e.field("ORType") || my.gdate(old.field("Date"))!=my.gdate(e.field("Date"))){
-        if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) > my.gdate(my.dateminus(e.field("Date"), 1))){
-          if (e.field("VisitType") == "OPD")​
-            e.set("VisitType", "Admit")​;
-          e.set("VisitDate", my.dateminus(e.field("Date"), 1));
-        }
-        else if(e.field("ORType") == "LA" &​& my.gdate(e.field("VisitDate")) > my.gdate(e.field("Date"))){
-          e.set("VisitDate", my.date(e.field("Date")))​;
-        }
-      }
-    }
-    else {
-      if (e.field("EntryMx")​== "<Default>" &​& e.field("VisitDate") == null) {
-        if (e.field("ORType") == "GA") {
-          if (e.field("VisitType") == "OPD")​
-            e.set("VisitType", "Admit")​;
-          e.set("VisitDate", my.dateminus(e.field("Date"), 1));
-        }​
-        else ​{
-          e.set("VisitDate", my.date(e.field("Date")))​;
-        }​
-      }
-      else if(old.field("ORType")!=e.field("ORType") || my.gdate(old.field("Date"))!=my.gdate(e.field("Date"))){
-        if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) != my.gdate(my.dateminus(e.field("Date"), 1))){
-          if (e.field("VisitType") == "OPD")​
-            e.set("VisitType", "Admit")​;
-          e.set("VisitDate", my.dateminus(e.field("Date"), 1));
-        }
-        else if(e.field("ORType") == "LA" &​& my.gdate(e.field("VisitDate")) != my.gdate(e.field("Date"))){
-          e.set("VisitDate", my.date(e.field("Date")))​;
-        }
-      }
-    }
-  }, 
+  },
   opresulteffect : function(e) {
     let opresult = e.field("OpResult").replace(/ +/g, ' ').trim().replace(/\n +/g, '\n');
     e.set("OpResult", opresult);
@@ -1470,14 +1479,7 @@ var uro = {
 var cso = {
   lib : "Consult",
   opdate : "ConsultDate",
-  setvisitdate ​: function (e)​ {
-    if (e.field("EntryMx")​== "Pending" &​& e.field("VisitDate") == null) {
-      if (e.field("VisitType") == "Admit")​
-        e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1));
-      else
-        e.set("VisitDate", e.field("ConsultDate")​)​;
-    }​
-  }
+  status : "EntryMx"
 }​;
 var rpo = {
   createnew : function (e) {
@@ -1784,7 +1786,7 @@ var trig = {
     uro.opresulteffect(e);
     fill.future(e, "UroBase")​;
     uro.setopextra(e)​;
-    uro.setvisitdate(e)​;
+    fill.setvisitdate.call(uro, e)​;
     fill.pasthx(e, "UroBase");
     fill.track​(e, "UroBase")​;
     if (value=="create")
@@ -1830,7 +1832,7 @@ var trig = {
   UroBeforeUpdatingField : function (e) {
     old.load(e)​;
     fill.setnewdate.call(uro, e)​;​
-    uro.setvisitdate(e)​;
+    fill.setvisitdate.call(uro, e)​;
     fill.track​(e, "UroBase")​;
     mer.merge(e)​;
     que.run(e)​​;
@@ -1864,7 +1866,7 @@ var trig = {
     uro.opresulteffect(e);
     fill.future(e, "Backup")​;
     uro.setopextra(e)​;
-    uro.setvisitdate(e)​;
+    fill.setvisitdate.call(uro, e)​;
     fill.pasthx(e, "Backup");
     fill.track​(e, "Backup")​;
     if (value=="create")
@@ -1908,7 +1910,7 @@ var trig = {
   BackupBeforeUpdatingField : function (e) {
     old.load(e)​;
     fill.setnewdate.call(uro, e)​;​
-    uro.setvisitdate(e)​;
+    fill.setvisitdate.call(uro, e)​;
     fill.track​(e, "Backup")​;
     mer.merge(e)​;
     que.run(e)​​;
@@ -1938,7 +1940,7 @@ var trig = {
     old.load(e)​;
     fill.setnewdate.call(cso, e)​;​
     fill.future(e, "Consult")​;
-    cso.setvisitdate(e)​;
+    fill.setvisitdate.call(cso, e)​;
     fill.pasthx(e, "Consult");
     fill.track​(e, "Consult")​;
     if (value=="create")
@@ -1964,7 +1966,7 @@ var trig = {
   ConsultBeforeUpdatingField : function (e) {  
     old.load(e)​;
     fill.setnewdate.call(cso, e)​;​
-    cso.setvisitdate(e)​;
+    fill.setvisitdate.call(cso, e)​;
     fill.track​(e, "Consult")​;
     mer.merge(e)​;
     fill.ptstatus(e)​;
