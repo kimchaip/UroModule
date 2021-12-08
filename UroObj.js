@@ -505,8 +505,8 @@ var emx = {
             uro.updatedxop​(last, "op", ope)​;
           rpo.createnew(last)​;
           opu.createOp(last);
-          ob=last​;
         }​
+        ob=last​;
       }​
     }​
     e.set("EntryMx", defau) ;
