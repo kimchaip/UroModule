@@ -532,6 +532,25 @@ var emx = {
   }​
 }​;
 var fill = {
+  setnewdate: function (e) {
+    if (my.gdate(old.field(this.opdate)) != my.gdate(my.date(​e.field(this.opdate))​)) {
+      e.set(this.opdate, my.date(e.field(this.opdate)));
+    }​
+    if (my.gdate(​old.field("VisitDate")) != my.gdate(​my.date(e.field("VisitDate")))) {
+      e.set("VisitDate", my.date(e.field("VisitDate")));
+    }​
+    if (my.gdate(​old.field("DischargeDate")) != my.gdate(​my.date(e.field("DischargeDate"))​)) {
+      e.set("DischargeDate", my.date(e.field("DischargeDate")));
+    }​
+    if (my.gdate(​old.field("AppointDate")) != my.gdate(​my.date(e.field("AppointDate")))) {
+      e.set("AppointDate", my.date(e.field("AppointDate")));
+    }​
+    if(this.lib!="Consult") {
+      if (my.gdate(​old.field("RecordDate")) != my.gdate(my.date(​e.field("RecordDate"))​)) {
+        e.set("RecordDate", my.date(e.field("RecordDate")));
+      }​
+    }
+  },
   sumpasthx : function (e, date) {
     let orlinks = e.linksFrom("UroBase", "Patient");
     let bulinks = e.linksFrom("Backup", "Patient");
@@ -1004,30 +1023,14 @@ var pto = {
   }
 }​;
 var uro = {
+  lib : "UroBase",
+  opdate : "Date",
   checkdx : function (value)​ {
     return value.field("Dx") == this.field("Dx") &​& value.field("Op") ​== this.field("Op");
   }, ​
   checkop : function (value)​ {
     return value.field("OpFill") == this.field("Op");
-  }, ​
-  setnewdate : function (e) {
-    //---if Date change : set new date
-    if (my.gdate(old.field("Date")) != my.gdate(my.date(​e.field("Date"))​)) {
-      e.set("Date", my.date(e.field("Date")));
-    }​
-    if (my.gdate(​old.field("VisitDate")) != my.gdate(​my.date(e.field("VisitDate")))) {
-      e.set("VisitDate", my.date(e.field("VisitDate")));
-    }​
-    if (my.gdate(​old.field("DischargeDate")) != my.gdate(​my.date(e.field("DischargeDate"))​)) {
-      e.set("DischargeDate", my.date(e.field("DischargeDate")));
-    }​
-    if (my.gdate(​old.field("AppointDate")) != my.gdate(​my.date(e.field("AppointDate")))) {
-      e.set("AppointDate", my.date(e.field("AppointDate")));
-    }​
-    if (my.gdate(​old.field("RecordDate")) != my.gdate(my.date(​e.field("RecordDate"))​)) {
-      e.set("RecordDate", my.date(e.field("RecordDate")));
-    }​
-  }, 
+  },
   setopextra : function (e) {
     let hd = libByName("Holidays")​;
     let hds = hd.entries()​;
@@ -1465,21 +1468,8 @@ var uro = {
 }​;
 
 var cso = {
-  setnewdate : function (e) {
-    //---if Date change : set new date
-    if (my.gdate(old.field("ConsultDate")) != my.gdate(​my.date(e.field("ConsultDate"))​)) {
-      e.set("ConsultDate", my.date(e.field("ConsultDate")));
-    }​
-    if (my.gdate(​old.field("VisitDate")) != my.gdate(​my.date(e.field("VisitDate")))) {
-      e.set("VisitDate", my.date(e.field("VisitDate")));
-    }​
-    if (my.gdate(​old.field("DischargeDate")) != my.gdate(my.date(​e.field("DischargeDate")))​) {
-      e.set("DischargeDate", my.date(e.field("DischargeDate")));
-    }​
-    if (my.gdate(​old.field("AppointDate")) != my.gdate(my.date(​e.field("AppointDate")))) {
-      e.set("AppointDate", my.date(e.field("AppointDate")));
-    }​
-  }, 
+  lib : "Consult",
+  opdate : "ConsultDate",
   setvisitdate ​: function (e)​ {
     if (e.field("EntryMx")​== "Pending" &​& e.field("VisitDate") == null) {
       if (e.field("VisitType") == "Admit")​
@@ -1789,7 +1779,7 @@ var trig = {
   }, 
   UroBeforeEdit : function (e, value)​ {
     old.load(e)​;
-    uro.setnewdate(e)​;​
+    fill.setnewdate.call(uro, e)​;​
     uro.setdxop​(e)​;
     uro.opresulteffect(e);
     fill.future(e, "UroBase")​;
@@ -1839,7 +1829,7 @@ var trig = {
   }, 
   UroBeforeUpdatingField : function (e) {
     old.load(e)​;
-    uro.setnewdate(e)​;
+    fill.setnewdate.call(uro, e)​;​
     uro.setvisitdate(e)​;
     fill.track​(e, "UroBase")​;
     mer.merge(e)​;
@@ -1869,7 +1859,7 @@ var trig = {
   }, 
   BackupBeforeEdit : function (e, value)​ {
     old.load(e)​;
-    uro.setnewdate(e)​;​
+    fill.setnewdate.call(uro, e)​;​
     uro.setdxop​(e)​;
     uro.opresulteffect(e);
     fill.future(e, "Backup")​;
@@ -1917,7 +1907,7 @@ var trig = {
   }, 
   BackupBeforeUpdatingField : function (e) {
     old.load(e)​;
-    uro.setnewdate(e)​;
+    fill.setnewdate.call(uro, e)​;​
     uro.setvisitdate(e)​;
     fill.track​(e, "Backup")​;
     mer.merge(e)​;
@@ -1946,7 +1936,7 @@ var trig = {
   }, 
   ConsultBeforeEdit : function (e, value)​ {
     old.load(e)​;
-    cso.setnewdate(e)​;​
+    fill.setnewdate.call(cso, e)​;​
     fill.future(e, "Consult")​;
     cso.setvisitdate(e)​;
     fill.pasthx(e, "Consult");
@@ -1973,7 +1963,7 @@ var trig = {
   }, 
   ConsultBeforeUpdatingField : function (e) {  
     old.load(e)​;
-    cso.setnewdate(e)​;
+    fill.setnewdate.call(cso, e)​;​
     cso.setvisitdate(e)​;
     fill.track​(e, "Consult")​;
     mer.merge(e)​;
