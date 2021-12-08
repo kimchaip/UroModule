@@ -585,7 +585,7 @@ var fill = {
           }​
         }
         else if(old.field("ORType")!=e.field("ORType")) {
-          if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) >= > my.gdate(e.field(this.opdate))) {
+          if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) >= my.gdate(e.field(this.opdate))) {
             e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
             if (e.field("VisitType") == "OPD")​
               e.set("VisitType", "Admit")​;
