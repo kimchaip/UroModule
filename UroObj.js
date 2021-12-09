@@ -30,7 +30,7 @@ var old = {
     },
     save : function (e) {
       //save field value to Obj and set to Previous
-      if(lib().title=="Patient") {
+      if(this.lib=="Patient") {
         this.d["PtName"] = e.field("PtName"); 
         this.d["Age"] = e.field("Age");
         this.d["YY"] = e.field("YY");
@@ -73,7 +73,7 @@ var old = {
         this.d["Summary"] = e.field("Summary");
         this.d["Track"] = e.field("Track");
       }
-      if(lib().title=="UroBase" || lib().title=="Backup") {
+      if(this.lib=="UroBase" || this.lib=="Backup") {
         this.d["Date"] = e.field("Date")​;
         this.d["DxAutoFill"] = e.field("DxAutoFill").length? e.field("DxAutoFill")[0].title: "";
         this.d["Op"] = e.field("Op");
@@ -95,7 +95,7 @@ var old = {
         this.d["OpDateCal"] = e.field("OpDateCal");
         this.d["OpLength"] = e.field("OpLength");
       }
-      else if(lib().title=="Consult") {
+      else if(this.lib=="Consult") {
         this.d["ConsultDate"] = e.field("ConsultDate");
         this.d["Rx"] = e.field("Rx");
         this.d["Note"] = e.field("Note");
@@ -388,7 +388,7 @@ var emx = {
       if (!found) {
         let ent​ = new Object();
         last = lib.create(ent);
-        old.save(last);
+        old.save.call(this, last);
         
         last.set(this.opdate,  my.date(e.field("AppointDate")​));
         last.link("Patient", links[0]);
@@ -812,6 +812,7 @@ var fill = {
   }
 }​;
 var pto = {
+  lib : "Patient",
   rearrangename : function(e) {
     let newname = e.field("PtName").replace(/\s+/g, ' ').trim();
     e.set("PtName", newname);
@@ -965,6 +966,7 @@ var uro = {
   status : "Status",
   op : "Op",
   result : "OpResult",
+  emxdefault : "<Default>",
   checkdx : function (value)​ {
     return value.field("Dx") == this.field("Dx") &​& value.field("Op") ​== this.field("Op");
   }, ​
@@ -1369,7 +1371,8 @@ var cso = {
   opdate : "ConsultDate",
   status : "EntryMx",
   op : "Rx",
-  result : "Note"
+  result : "Note",
+  emxdefault : "Pending"
 }​;
 var rpo = {
   createnew : function (e) {
@@ -1638,7 +1641,7 @@ var opu = {
 };
 var trig = {
   PatientOpenEdit : function(e) {
-    old.save(e);
+    old.save.call(pto, e);
   },
   PatientBeforeEdit : function (e, value)​ {
     pto.rearrangename(e);
@@ -1655,7 +1658,7 @@ var trig = {
     old.load(e)​;
     if (value=="update")​
       opu.ptTrigOpuro(e);
-    old.save(e)​;
+    old.save.call(pto, e)​;
   }, 
   PatientUpdatingField ​: function (e) {
     pto.donesettrack(e)​;​
@@ -1667,7 +1670,7 @@ var trig = {
     pto.age(e)​;
   }, 
   UroOpenEdit : function (e)​ {
-    old.save(e)​;
+    old.save.call(uro, e)​;
   }, 
   UroBeforeEdit : function (e, value)​ {
     old.load(e)​;
@@ -1710,10 +1713,10 @@ var trig = {
       rpo.updatenew(e);
       opu.updateOp(e)​;
     }
-    old.save(e)​;
+    old.save.call(uro, e)​;
   }, 
   UroBeforeViewCard ​: function (e) {​
-    old.save(e)​;
+    old.save.call(uro, e)​;
   }, 
   UroBeforeOpenLib : function (all) {
     fill.futureall.call(uro, all)​;
@@ -1729,7 +1732,7 @@ var trig = {
     mer.effect(e)​;
   }, 
   UroAfterUpdatingField : function (e) {
-    old.save(e)​;
+    old.save.call(uro, e)​;
   }, 
   UroBeforeDelete : function (e)​ {
     old.load(e)​;
@@ -1746,7 +1749,7 @@ var trig = {
     fill.deletept(e)​;
   }, 
   BackupOpenEdit : function (e)​ {
-    old.save(e)​;
+    old.save.call(uro, e)​;
   }, 
   BackupBeforeEdit : function (e, value)​ {
     old.load(e)​;
@@ -1787,10 +1790,10 @@ var trig = {
     else if (value=="update")​ {
       rpo.updatenew(e);
     }
-    old.save(e)​;
+    old.save.call(uro, e)​;
   }, 
   BackupBeforeViewCard ​: function (e) {​
-    old.save(e)​;
+    old.save.call(uro, e)​;
   }, 
   BackupBeforeOpenLib : function (all) {
     fill.futureall.call(uro, all)​;
@@ -1806,7 +1809,7 @@ var trig = {
     mer.effect(e)​;
   }, 
   BackupAfterUpdatingField : function (e) {
-    old.save(e)​;
+    old.save.call(uro, e)​;
   }, 
   BackupBeforeDelete : function (e)​ {
     old.load(e)​;
@@ -1822,7 +1825,7 @@ var trig = {
     fill.deletept(e)​;
   }, 
   ConsultOpenEdit : function (e)​ {
-    old.save(e)​;
+    old.save.call(cso, e)​;
   }, 
   ConsultBeforeEdit : function (e, value)​ {
     old.load(e)​;
@@ -1842,10 +1845,10 @@ var trig = {
   ConsultAfterEdit : function (e, value) {
     old.load(e)​;
     emx.run.call(cso, e)​;
-    old.save(e)​;
+    old.save.call(cso, e)​;
   }, 
   ConsultBeforeViewCard ​: function (e) {​
-    old.save(e)​;
+    old.save.call(cso, e)​;
   }, 
   ConsultBeforeOpenLib : function (all) {
     fill.futureall.call(cso, all)​;
@@ -1860,7 +1863,7 @@ var trig = {
     mer.effect(e)​;
   }, 
   ConsultAfterUpdatingField : function (e) {
-    old.save(e)​;
+    old.save.call(cso, e)​;
   }, 
   ConsultBeforeDelete : function (e)​ {
     old.load(e)​;
