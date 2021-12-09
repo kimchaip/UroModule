@@ -403,8 +403,8 @@ var emx = {
         }
         else {
           last.set("Dx", e.field("Dx")​);
-          trig.UroBeforeEdit(last, "create");
-          trig.UroAfterEdit(last, "create");
+          trig.ConsultBeforeEdit(last, "create");
+          trig.ConsultAfterEdit(last, "create");
         }
         //message("successfully created new Entry") ;
         return last;
