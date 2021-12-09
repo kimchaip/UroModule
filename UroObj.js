@@ -1069,8 +1069,8 @@ var uro = {
   lib : "UroBase",
   opdate : "Date",
   status : "Status",
-  op = "Op",
-  result = "OpResult",
+  op : "Op",
+  result : "OpResult",
   checkdx : function (value)​ {
     return value.field("Dx") == this.field("Dx") &​& value.field("Op") ​== this.field("Op");
   }, ​
@@ -1471,8 +1471,8 @@ var cso = {
   lib : "Consult",
   opdate : "ConsultDate",
   status : "EntryMx",
-  op = "Rx",
-  result = "Note"
+  op : "Rx",
+  result : "Note"
 }​;
 var rpo = {
   createnew : function (e) {
