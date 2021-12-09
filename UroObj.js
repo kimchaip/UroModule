@@ -491,6 +491,12 @@ var emx = {
         fill.track(last, libto)​;
         fill.underlying(last)​;
         fill.color(last, libto);
+        if(libto == "UroBase") {
+          fill.future.call(uro, e)​;
+        }
+        else {
+          fill.future.call(cso, e)​;
+        }
         fill.future(last, libto);
         mer.newmergeid(last, libto);
         //message("successfully created new Entry") ;
@@ -887,11 +893,9 @@ var fill = {
       }
     }​
   }​,
-  future : function(e, lib)​{
-    let dfield = lib != "Consult"? "Date": "ConsultDate";
-    
-    if(my.gdate(e.field(dfield))>=ntoday​)​
-      e.set("Future", Math.floor((my.gdate(e.field(dfield)​)-ntoday)​/86400000))​;
+  future : function(e)​{
+    if(my.gdate(e.field(this.opdate))>=ntoday​)​
+      e.set("Future", Math.floor((my.gdate(e.field(this.opdate)​)-ntoday)​/86400000))​;
     else
       e.set("Future", null)​;
   }​,
@@ -1780,7 +1784,7 @@ var trig = {
     fill.setnewdate.call(uro, e)​;​
     uro.setdxop​(e)​;
     uro.opresulteffect(e);
-    fill.future(e, "UroBase")​;
+    fill.future.call(uro, e)​;
     uro.setopextra(e)​;
     fill.setvisitdate.call(uro, e)​;
     fill.pasthx(e, "UroBase");
@@ -1860,7 +1864,7 @@ var trig = {
     fill.setnewdate.call(uro, e)​;​
     uro.setdxop​(e)​;
     uro.opresulteffect(e);
-    fill.future(e, "Backup")​;
+    fill.future.call(uro, e)​;
     uro.setopextra(e)​;
     fill.setvisitdate.call(uro, e)​;
     fill.pasthx(e, "Backup");
@@ -1935,7 +1939,7 @@ var trig = {
   ConsultBeforeEdit : function (e, value)​ {
     old.load(e)​;
     fill.setnewdate.call(cso, e)​;​
-    fill.future(e, "Consult")​;
+    fill.future.call(cso, e)​;
     fill.setvisitdate.call(cso, e)​;
     fill.pasthx(e, "Consult");
     fill.track​(e, "Consult")​;
