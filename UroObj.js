@@ -366,56 +366,20 @@ var que = {
   }
 };
 var emx = {
-  createnew : function  (e, libto)​ {
-    let ob = {}​;
-    let libname = "", field1 = "";
+  createnew : function (e)​ {
+    let last = null;
     let libfrom = lib().title;
-    let min = 0,​ defau = "" ;
-    if (libto == "UroBase" &​& libfrom == "UroBase") {
-      libname = "UroBase";
-      field1 = "Date" ;
-      min = 1;
-      defau = "<Default>";
-    }​
-    else if (libto == "Consult" &​& libfrom == "UroBase")​ {​
-      libname = "Consult";
-      field1 = "ConsultDate" ;
-      min = 0;
-      defau = "<Default>";
-    }​
-    else if (libto == "UroBase" &​& libfrom == "Backup") {
-      libname = "UroBase";
-      field1 = "Date" ;
-      min = 0;
-      defau = "<Default>";
-    }​
-    else if (libto == "Consult" &​& libfrom == "Backup")​ {​
-      libname = "Consult";
-      field1 = "ConsultDate" ;
-      min = 0;
-      defau = "<Default>";
-    }​
-    else if (libto == "UroBase" &​& libfrom == "Consult" ) {​
-      libname = "UroBase";
-      field1 = "Date" ;
-      min = 0;
-      defau = "Pending";
-    }​
-    else if (libto == "Consult" &​& libfrom == "Consult") {​
-      libname = "Consult";
-      field1 = "ConsultDate" ;
-      min = 1;
-      defau = "Pending";
-    }​
+    let min = this.lib==libfrom? 1: 0;
+    let defau = libfrom!="Consult"? "<Default>": "Pending";
     let links = e.field("Patient")​;
     if (links.length > 0) {
-      let lib = libByName(libname)​;
+      let lib = this.lib!="Consult"? or: cs;
       let ptent = pt.findById(links[0].id);
-      let entlinks = ptent.linksFrom(libname, "Patient");
+      let entlinks = ptent.linksFrom(this.lib, "Patient");
       let found = false;
       if (entlinks.length > min) {
         for (let i in entlinks) {
-          if (my.gdate(entlinks[i].field(field1))​ == my.gdate(e.field("AppointDate")) &​& entlinks[i].id!=e.id)​{
+          if (my.gdate(entlinks[i].field(this.opdate))​ == my.gdate(e.field("AppointDate")) &​& entlinks[i].id!=e.id)​{
             found = true;
             break ;
           }
@@ -423,118 +387,46 @@ var emx = {
       } 
       if (!found) {
         let ent​ = new Object();
-        ent​[field1] = my.date(e.field("AppointDate")​);
+        last = lib.create(ent);
+        old.save(last);
         
-        ent​["PastHx"] = e.field("PastHx")​;
-        ent​["InvResult"] = e.field("InvResult");
-        if (libto == "UroBase" &​& libfrom == "UroBase") {
-          ent​["Op"] = e.field("Operation")​;
-          let newdx = fill.mostdxbyop(e.field("Operation"));
-          ent["Dx"] = newdx?newdx:e.field("Dx")​;
-          ent​["ORType"] = e.field("ORType")​;
-          ent​["VisitType"] = e.field("VisitType")​;
-          if (e.field("VisitType")​== "Admit")​
-            ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
-          else  
-            ent​["VisitDate"] = my.date(e.field("AppointDate"))​;
-          ent​["RecordDate"] = today​;
-          if (e.field("Photo").length>0)​
-            ent["Photo"] = e.field("Photo").join()​;
-        }​
-        else if (libto == "Consult" &​& libfrom == "UroBase") {
-          ent​["Dx"] = e.field("Dx")​;
-          ent​["VisitType"] = "OPD";
-          ent​["VisitDate"] = my.date(e.field("AppointDate")​);
-          if (e.field("Photo").length>0)​
-            ent["Photo"] = e.field("Photo").join()​;
-        }​
-        else if (libto == "UroBase" &​& libfrom == "Backup") {
-          ent​["Op"] = e.field("Operation")​;
-          let newdx = fill.mostdxbyop(e.field("Operation"));
-          ent["Dx"] = newdx?newdx:e.field("Dx")​;
-          ent​["ORType"] = e.field("ORType")​;
-          ent​["VisitType"] = e.field("VisitType")​;
-          if (e.field("VisitType")​== "Admit")​
-            ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
-          else  
-            ent​["VisitDate"] = my.date(e.field("AppointDate"))​;
-          ent​["RecordDate"] = today​;
-          if (e.field("Photo").length>0)​
-            ent["Photo"] = e.field("Photo").join()​;
-        }​
-        else if (libto == "Consult" &​& libfrom == "Backup") {
-          ent​["Dx"] = e.field("Dx")​;
-          ent​["VisitType"] = "OPD";
-          ent​["VisitDate"] = my.date(e.field("AppointDate")​);
-          if (e.field("Photo").length>0)​
-            ent["Photo"] = e.field("Photo").join()​;
-        }​
-        else if (libto == "UroBase" &​& libfrom == "Consult" ) {​
-          ent​["VisitDate"] = my.dateminus(e.field("AppointDate"), 1)​;
-          ent​["RecordDate"] = today​;
-	  ent​["Op"] = e.field("Operation")​;
-          let newdx = fill.mostdxbyop(e.field("Operation"));
-          ent["Dx"] = newdx?newdx:e.field("Dx")​;
-          if (e.field("Photo").length>0)​
-            ent["Photo"] = e.field("Photo").join()​;
-        }​
-        else if (libto == "Consult" &​& libfrom == "Consult") {​
-          ent​["Dx"] = e.field("Dx")​;
-          ent["VisitType"]​ = "OPD" ;
-          ent["VisitDate"]​ = my.date(e.field("AppointDate"));
-          if (e.field("Photo").length>0)​
-            ent["Photo"] = e.field("Photo").join()​;
-        }​
-        let last = lib.create(ent);
+        last.set(this.opdate,  my.date(e.field("AppointDate")​));
         last.link("Patient", links[0]);
-        fill.pasthx(last, libto);
-        fill.track(last, libto)​;
-        fill.underlying(last)​;
-        fill.color(last, libto);
-        if(libto == "UroBase") {
-          fill.future.call(uro, e);
+        if (e.field("Photo").length>0)​
+            last.set("Photo", e.field("Photo").join()​);
+        if(this.lib!="Consult") {
+          last.set(​this.op, e.field("Operation")​);
+          let newdx = fill.mostdxbyop(e.field("Operation"));
+          last.set("Dx", newdx?newdx:e.field("Dx")​);
+          trig.UroBeforeEdit(last, "create");
+          trig.UroAfterEdit(last, "create");
         }
         else {
-          fill.future.call(cso, e)​;
+          last.set("Dx", e.field("Dx")​);
+          trig.UroBeforeEdit(last, "create");
+          trig.UroAfterEdit(last, "create");
         }
-        mer.newmergeid(last, libto);
         //message("successfully created new Entry") ;
-        if (libto == "UroBase") ​{
-          uro.setopextra(last);
-          let dxe = uro.createautofill​(last)​;
-          uro.setx15(last)​;
-          let ope = uro.createoplist(last)​;
-          if(dxe!=undefined)​
-            uro.updatedxop​(last, "dx", dxe)​;
-          if(ope!=undefined)​
-            uro.updatedxop​(last, "op", ope)​;
-          rpo.createnew(last)​;
-          opu.createOp(last);
-        }​
-        ob=last​;
-      }​
+        return last;
+      }
     }​
     e.set("EntryMx", defau) ;
-    return ob;
+    return last;
   }, 
-  flu : function (e)​ {
+  run : function (e)​ {
     if (e.field("EntryMx")​== "F/U" &&  e.field("AppointDate")) {
-      this.createnew(e, "Consult")​.show();
+      let last = emx.createnew.call(cso, e)​;
+      if(last) last.show();
     }​
-    else if (e.field("EntryMx")​=="F/U")​ {
+    else if (e.field("EntryMx")​== "set OR" &&  e.field("AppointDate")) {
+      let last = emx.createnew.call(uro, e);
+      if(last) last.show()​;
+    }
+    else if (e.field("EntryMx")​=="F/U" || e.field("EntryMx")​=="set OR")​ {
       message("Appoint date must not leave blank")​;
-      e.set("EntryMx", "<Default>")​;
+      e.set("EntryMx", this.emxdefault)​;
     }​
-  }, 
-  setor : function (e)​ {
-    if (e.field("EntryMx")​== "set OR" &&  e.field("AppointDate")) {
-      this.createnew(e, "UroBase").show()​;
-    }​
-    else if (e.field("EntryMx")​=="set OR")​ {
-      message("Appoint date must not leave blank")​;
-      e.set("EntryMx", "<Default>")​;
-    }​
-  }​
+  }
 }​;
 var fill = {
   setnewdate: function (e) {
@@ -1808,8 +1700,7 @@ var trig = {
   }, 
   UroAfterEdit : function (e, value) {
     old.load(e)​;
-    emx.flu(e)​;
-    emx.setor(e)​;
+    emx.run.call(uro, e)​;
     uro.updateDJStamp(e)​;
     if (value=="create") {
       rpo.createnew(e);
@@ -1888,8 +1779,7 @@ var trig = {
   }, 
   BackupAfterEdit : function (e, value) {
     old.load(e)​;
-    emx.flu(e)​;
-    emx.setor(e)​;
+    emx.run.call(uro, e)​;
     uro.updateDJStamp(e)​;
     if (value=="create") {
       rpo.createnew(e);
@@ -1951,8 +1841,7 @@ var trig = {
   },
   ConsultAfterEdit : function (e, value) {
     old.load(e)​;
-    emx.flu(e)​;
-    emx.setor(e)​;
+    emx.run.call(cso, e)​;
     old.save(e)​;
   }, 
   ConsultBeforeViewCard ​: function (e) {​
