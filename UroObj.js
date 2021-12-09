@@ -31,77 +31,77 @@ var old = {
     save : function (e) {
       //save field value to Obj and set to Previous
       if(this.lib=="Patient") {
-        this.d["PtName"] = e.field("PtName"); 
-        this.d["Age"] = e.field("Age");
-        this.d["YY"] = e.field("YY");
-        this.d["MM"] = e.field("MM");
-        this.d["DD"] = e.field("DD"); 
-        this.d["Birthday"] = e.field("Birthday");
-        this.d["HN"] = e.field("HN");
-        this.d["HNBar"] = e.field("HNBar");
-        this.d["Underlying"] = e.field("Underlying");
-        this.d["VIP"] = e.field("VIP");
-        this.d["Allergies"] = e.field("Allergies");
-        this.d["DJstent"] = e.field("DJstent");
-        this.d["DJStamp"] = e.field("DJStamp");
-        this.d["Status"] = e.field("Status");
-        this.d["Done"] = e.field("Done");
-        this.d["Ward"] = e.field("Ward");
-        this.d["WardStamp"] = e.field("WardStamp");
-        this.d["Address"] = e.field("Address");
-        this.d["Phone"] = e.field("Phone");
-        this.d["Contact"] = e.field("Contact");
-        this.d["Descript"] = e.field("Descript");
+        old.d["PtName"] = e.field("PtName"); 
+        old.d["Age"] = e.field("Age");
+        old.d["YY"] = e.field("YY");
+        old.d["MM"] = e.field("MM");
+        old.d["DD"] = e.field("DD"); 
+        old.d["Birthday"] = e.field("Birthday");
+        old.d["HN"] = e.field("HN");
+        old.d["HNBar"] = e.field("HNBar");
+        old.d["Underlying"] = e.field("Underlying");
+        old.d["VIP"] = e.field("VIP");
+        old.d["Allergies"] = e.field("Allergies");
+        old.d["DJstent"] = e.field("DJstent");
+        old.d["DJStamp"] = e.field("DJStamp");
+        old.d["Status"] = e.field("Status");
+        old.d["Done"] = e.field("Done");
+        old.d["Ward"] = e.field("Ward");
+        old.d["WardStamp"] = e.field("WardStamp");
+        old.d["Address"] = e.field("Address");
+        old.d["Phone"] = e.field("Phone");
+        old.d["Contact"] = e.field("Contact");
+        old.d["Descript"] = e.field("Descript");
       }
       else {
-        this.d["Patient"] = e.field("Patient").length? e.field("Patient")​[0].title: ""; 
-        this.d["PastHx"] = e.field("PastHx");
-        this.d["InvResult"] = e.field("InvResult");
-        this.d["Dx"] = e.field("Dx");
-        this.d["VisitType"] = e.field("VisitType");
-        this.d["VisitDate"] = e.field("VisitDate");
-        this.d["Ward"] = e.field("Ward");
-        this.d["Merge"] = e.field("Merge");
-        this.d["EntryMx"] = e.field("EntryMx");
-        this.d["AppointDate"] = e.field("AppointDate");
-        this.d["Operation"] = e.field("Operation");
-        this.d["Color"] = e.field("Color");
-        this.d["MergeID"] = e.field("MergeID");
-        this.d["Photo"] = e.field("Photo"); 
-        this.d["DischargeDate"] = e.field("DischargeDate");
-        this.d["LOS"] = e.field("LOS");
-        this.d["Summary"] = e.field("Summary");
-        this.d["Track"] = e.field("Track");
+        old.d["Patient"] = e.field("Patient").length? e.field("Patient")​[0].title: ""; 
+        old.d["PastHx"] = e.field("PastHx");
+        old.d["InvResult"] = e.field("InvResult");
+        old.d["Dx"] = e.field("Dx");
+        old.d["VisitType"] = e.field("VisitType");
+        old.d["VisitDate"] = e.field("VisitDate");
+        old.d["Ward"] = e.field("Ward");
+        old.d["Merge"] = e.field("Merge");
+        old.d["EntryMx"] = e.field("EntryMx");
+        old.d["AppointDate"] = e.field("AppointDate");
+        old.d["Operation"] = e.field("Operation");
+        old.d["Color"] = e.field("Color");
+        old.d["MergeID"] = e.field("MergeID");
+        old.d["Photo"] = e.field("Photo"); 
+        old.d["DischargeDate"] = e.field("DischargeDate");
+        old.d["LOS"] = e.field("LOS");
+        old.d["Summary"] = e.field("Summary");
+        old.d["Track"] = e.field("Track");
       }
       if(this.lib=="UroBase" || this.lib=="Backup") {
-        this.d["Date"] = e.field("Date")​;
-        this.d["DxAutoFill"] = e.field("DxAutoFill").length? e.field("DxAutoFill")[0].title: "";
-        this.d["Op"] = e.field("Op");
-        this.d["OperationList"] = e.field("OperationList").length? e.field("OperationList")​[0].title: "";
-        this.d["AutoOpExtra"] = e.field("AutoOpExtra");
-        this.d["OpExtra"] = e.field("OpExtra");
-        this.d["x1.5"] = e.field("x1.5");
-        this.d["Bonus"] = e.field("Bonus");
-        this.d["ORType"] = e.field("ORType");
-        this.d["Que"] = e.field("Que");
-        this.d["Dr"] = e.field("Dr");
-        this.d["RecordDate"] = e.field("RecordDate");
-        this.d["Future"] = e.field("Future");
-        this.d["Status"] = e.field("Status");
-        this.d["OpResult"] = e.field("OpResult");
-        this.d["DJstent"] = e.field("DJstent");
-        this.d["TimeIn"] = e.field("TimeIn");
-        this.d["TimeOut"] = e.field("TimeOut");
-        this.d["OpDateCal"] = e.field("OpDateCal");
-        this.d["OpLength"] = e.field("OpLength");
+        old.d["Date"] = e.field("Date")​;
+        old.d["DxAutoFill"] = e.field("DxAutoFill").length? e.field("DxAutoFill")[0].title: "";
+        old.d["Op"] = e.field("Op");
+        old.d["OperationList"] = e.field("OperationList").length? e.field("OperationList")​[0].title: "";
+        old.d["AutoOpExtra"] = e.field("AutoOpExtra");
+        old.d["OpExtra"] = e.field("OpExtra");
+        old.d["x1.5"] = e.field("x1.5");
+        old.d["Bonus"] = e.field("Bonus");
+        old.d["ORType"] = e.field("ORType");
+        old.d["Que"] = e.field("Que");
+        old.d["Dr"] = e.field("Dr");
+        old.d["RecordDate"] = e.field("RecordDate");
+        old.d["Future"] = e.field("Future");
+        old.d["Status"] = e.field("Status");
+        old.d["OpResult"] = e.field("OpResult");
+        old.d["DJstent"] = e.field("DJstent");
+        old.d["TimeIn"] = e.field("TimeIn");
+        old.d["TimeOut"] = e.field("TimeOut");
+        old.d["OpDateCal"] = e.field("OpDateCal");
+        old.d["OpLength"] = e.field("OpLength");
       }
       else if(this.lib=="Consult") {
-        this.d["ConsultDate"] = e.field("ConsultDate");
-        this.d["Rx"] = e.field("Rx");
-        this.d["Note"] = e.field("Note");
+        old.d["ConsultDate"] = e.field("ConsultDate");
+        old.d["Rx"] = e.field("Rx");
+        old.d["Note"] = e.field("Note");
       }
       
-      e.set("Previous", JSON.stringify(this.d));
+      e.set("Previous", JSON.stringify(old.d));
     },
     field : function (fieldname) {
       //get data by field
