@@ -764,7 +764,6 @@ var fill = {
   },
   ptstatus : function (e) {
     let links = e.field("Patient")​;
-    let field1 = "" ;
     if (links.length>0) {
       let ptent = pt.findById(links[0].id);
         
@@ -776,16 +775,6 @@ var fill = {
         links[0].set("WardStamp",null);
       }​
       //--set pt.status, pt.ward, wardStamp and Description
-      if (lib().title=="UroBase" || lib().title=="Backup") {
-        field1 = "Status" ;
-        field2 = "Op" ;
-        field3 = "OpResult" ;
-      }​
-      else {
-        field1 = "EntryMx" ;
-        field2 = "Rx" ;
-        field3 = "Note" ;
-      }​
       if ((links[0].field("WardStamp")​ == null || my.gdate(e.field("VisitDate")​) >= my.gdate(links[0].field("WardStamp"))​) && 
 (links[0].field("Status")​ == "Still" || links[0].field("Status")​ == "Active")​​)​ {
         if (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) ) {//Admit
@@ -795,15 +784,15 @@ var fill = {
           let str = "" ;
           if (e.field("Dx")!="")​
             str = e.field("Dx");
-          if (e.field(field2)!="")​ {
+          if (e.field(this.op)!="")​ {
             if (str!="" )
               str += " -​> " ;
-            str += e.field(field2);
+            str += e.field(this.op);
           }​      
           links[0].set("Descript", str);
         }
         else if (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ ) { // D/C
-          let dead = e.field(field3).match(/dead|death/ig);
+          let dead = e.field(this.result).match(/dead|death/ig);
           dead = dead?dead.length​:0;
           if(dead>0){
             links[0].set("Status" ,"Dead");
@@ -815,15 +804,15 @@ var fill = {
           let str = "" ;
           if (e.field("Dx")!="")​
             str = e.field("Dx");
-          if (e.field(field2)!="")​ {
+          if (e.field(this.op)!="")​ {
             if (str!="")
               str += " -​> " ;
-            str += e.field(field2);
+            str += e.field(this.op);
           }​
-          if (e.field(field3)!="")​ {
+          if (e.field(this.result)!="")​ {
             if (str!="")
               str += " -​> " ;
-            str += e.field(field3);
+            str += e.field(this.result);
           }​       
           links[0].set("Descript", str);
         }​
@@ -832,7 +821,7 @@ var fill = {
           links[0].set("Ward", "");
         }​
       }​
-    }​
+    }​​
   }, 
   color : function (e, lib)​ {
     if(lib!="Consult") {
@@ -1805,7 +1794,7 @@ var trig = {
     fill.los(e)​;
     fill.opdatecal(e);
     fill.oplength(e);
-    fill.ptstatus(e)​;
+    fill.ptstatus.call(uro, e)​;
     mer.effect(e)​;
   }, 
   UroAfterEdit : function (e, value) {
@@ -1836,7 +1825,7 @@ var trig = {
     fill.track​(e, "UroBase")​;
     mer.merge(e)​;
     que.run(e)​​;
-    fill.ptstatus(e)​;
+    fill.ptstatus.call(uro, e)​;
     mer.effect(e)​;
   }, 
   UroAfterUpdatingField : function (e) {
@@ -1885,7 +1874,7 @@ var trig = {
     fill.los(e)​;
     fill.opdatecal(e);
     fill.oplength(e);
-    fill.ptstatus(e)​;
+    fill.ptstatus.call(uro, e)​;
     mer.effect(e)​;
   }, 
   BackupAfterEdit : function (e, value) {
@@ -1914,7 +1903,7 @@ var trig = {
     fill.track​(e, "Backup")​;
     mer.merge(e)​;
     que.run(e)​​;
-    fill.ptstatus(e)​;
+    fill.ptstatus.call(uro, e)​;
     mer.effect(e)​;
   }, 
   BackupAfterUpdatingField : function (e) {
@@ -1948,7 +1937,7 @@ var trig = {
     mer.merge(e)​;
     fill.underlying(e)​;
     fill.los(e)​;
-    fill.ptstatus(e)​;
+    fill.ptstatus.call(cso, e)​;
     mer.effect(e)​;
   },
   ConsultAfterEdit : function (e, value) {
@@ -1969,7 +1958,7 @@ var trig = {
     fill.setvisitdate.call(cso, e)​;
     fill.track​(e, "Consult")​;
     mer.merge(e)​;
-    fill.ptstatus(e)​;
+    fill.ptstatus.call(cso, e)​;
     mer.effect(e)​;
   }, 
   ConsultAfterUpdatingField : function (e) {
