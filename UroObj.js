@@ -1101,6 +1101,10 @@ var uro = {
   },
   opresulteffect : function(e) {
     let opresult = e.field("OpResult").replace(/ +/g, ' ').trim().replace(/\n +/g, '\n');
+    if(my.gdate(e.field("Date"))<=ntoday​)​ {
+      let d = Math.floor((ntoday-my.gdate(e.field("Date")​))​/86400000);
+      opresult = opresult.replace("today", "P/O day" +d+ ":");
+    }
     e.set("OpResult", opresult);
     if(opresult && old.field("OpResult") != opresult ) {
       let ondj = opresult.match(/dj/i);
@@ -1145,8 +1149,7 @@ var uro = {
           e.set("VisitType", "Admit")​;
       }​
     }
-  }, 
-  
+  },
   setDJstent : function (e) {
     let links = e.field("Patient")​;
     if (links.length>0) {
