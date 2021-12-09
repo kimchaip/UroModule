@@ -492,12 +492,11 @@ var emx = {
         fill.underlying(last)​;
         fill.color(last, libto);
         if(libto == "UroBase") {
-          fill.future.call(uro, e)​;
+          fill.future.call(uro, e);
         }
         else {
           fill.future.call(cso, e)​;
         }
-        fill.future(last, libto);
         mer.newmergeid(last, libto);
         //message("successfully created new Entry") ;
         if (libto == "UroBase") ​{
@@ -900,10 +899,9 @@ var fill = {
       e.set("Future", null)​;
   }​,
   futureall : function(all) {
-    let thislib = lib().title;
     for (let i in all)​ {
       if (ntoday​>my.gdate(all[i]​.lastModifiedTime)) {
-        fill.future(all[i], thislib)​;​
+        fill.future.call(this, all[i])​;​
       }
     } 
   },
@@ -1827,7 +1825,7 @@ var trig = {
     old.save(e)​;
   }, 
   UroBeforeOpenLib : function (all) {
-    fill.futureall(all)​;
+    fill.futureall.call(uro, all)​;
   }, 
   UroBeforeUpdatingField : function (e) {
     old.load(e)​;
@@ -1905,7 +1903,7 @@ var trig = {
     old.save(e)​;
   }, 
   BackupBeforeOpenLib : function (all) {
-    fill.futureall(all)​;
+    fill.futureall.call(uro, all)​;
   }, 
   BackupBeforeUpdatingField : function (e) {
     old.load(e)​;
@@ -1961,7 +1959,7 @@ var trig = {
     old.save(e)​;
   }, 
   ConsultBeforeOpenLib : function (all) {
-    fill.futureall(all)​;
+    fill.futureall.call(cso, all)​;
   }, 
   ConsultBeforeUpdatingField : function (e) {  
     old.load(e)​;
