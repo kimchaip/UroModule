@@ -1780,7 +1780,6 @@ var trig = {
   UroBeforeEdit : function (e, value)​ {
     old.load(e)​;
     fill.setnewdate.call(uro, e)​;​
-    fill.test(e);
     uro.setdxop​(e)​;
     uro.opresulteffect(e);
     fill.future.call(uro, e)​;
