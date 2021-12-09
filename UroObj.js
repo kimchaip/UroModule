@@ -537,6 +537,11 @@ var emx = {
   }​
 }​;
 var fill = {
+  test : function (e) {
+    let o = new Object();
+    let last = or.create(o);
+    old.save(last);
+  },
   setnewdate: function (e) {
     if (my.gdate(old.field(this.opdate)) != my.gdate(my.date(​e.field(this.opdate))​)) {
       e.set(this.opdate, my.date(e.field(this.opdate)));
@@ -1780,6 +1785,7 @@ var trig = {
   UroBeforeEdit : function (e, value)​ {
     old.load(e)​;
     fill.setnewdate.call(uro, e)​;​
+    fill.test(e);
     uro.setdxop​(e)​;
     uro.opresulteffect(e);
     fill.future.call(uro, e)​;
