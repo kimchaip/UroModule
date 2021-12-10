@@ -547,19 +547,46 @@ var fill = {
     }
   },
   ortypebyop : function (e) {
-    let arr = [or, bu];
-    for (let l=0; l<arr.length; l++) {
-      let ors = arr[l].find(e.field("Operation"));
+    let libs = [or, bu];
+    let matchs = [];
+    for (let l=0; l<libs.length; l++) {
+      let ors = libs[l].find(e.field("Operation"));
       if(ors.length>0) {
         for (let i=0; i<ors.length; i++) {
           if(ors[i].field("Dx")==e.field("Diagnosis") && ors[i].field("Op")==e.field("Operation") && ors[i].id!=e.id) {
-            e.set("Output", e.field("Output")+","+ors[i].field("Patient")[0].title);
-            return ors[i].field("ORType");
+            let o = new Object();
+            o["dx"] = ors[i].field("Dx");
+            o["op"] = ors[i].field("Op");
+            o["type"] = ors[i].field("ORType");
+            matchs.push(o);
           }
         }
       }
     }
-    return "GA"
+    if(matchs.length>0) {
+      let group = {};
+
+      matches.forEach(v => {
+        group[v.dx+";"+v.op+";"+v.type] = (group[v.dx+";"+v.op+";"+v.type] || 0) + 1;
+
+     });
+      let results = Object.keys(group).map(key => {
+        let arr = key.split(";");
+        return {
+          dx: arr[0],
+          op: arr[1],
+
+         type: arr[2],
+
+         count: group[key]
+
+       }
+
+     });
+      return results.sort((a,b)=>b.count-a.count)[0].type;
+    }
+    else
+      return "GA"
   },
   track​ : function (e, lib) {
     let field1 = "" ;
