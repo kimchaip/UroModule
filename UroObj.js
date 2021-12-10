@@ -549,7 +549,7 @@ var fill = {
   ortypebyop : function (e) {
     let arr = [or, bu];
     arr.forEach(lib=>{
-      let ors = lib.find(e.field("Op"));
+      let ors = lib.find(e.field("Operation"));
       if(ors.length>0) {
         for (let i in ors) {
           if(ors[i].field("Dx")==e.field("Diagnosis") && ors[i].field("Op")==e.field("Operation") && ors[i].id!=e.id) {
