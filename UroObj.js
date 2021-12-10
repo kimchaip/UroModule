@@ -567,22 +567,17 @@ var fill = {
       let group = {};
 
       matches.forEach(v => {
-        group[v.dx+";"+v.op+";"+v.type] = (group[v.dx+";"+v.op+";"+v.type] || 0) + 1;
-
-     });
+        group[v.dx+">"+v.op+">"+v.type] = (group[v.dx+">"+v.op+">"+v.type] || 0) + 1;
+      });
       let results = Object.keys(group).map(key => {
-        let arr = key.split(";");
+        let arr = key.split(">");
         return {
           dx: arr[0],
           op: arr[1],
-
-         type: arr[2],
-
-         count: group[key]
-
-       }
-
-     });
+          type: arr[2],
+          count: group[key]
+        }
+      });
       return results.sort((a,b)=>b.count-a.count)[0].type;
     }
     else
