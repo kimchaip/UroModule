@@ -553,6 +553,7 @@ var fill = {
       if(ors.length>0) {
         for (let i in ors) {
           if(ors[i].field("Dx")==e.field("Diagnosis") && ors[i].field("Op")==e.field("Operation") && ors[i].id!=e.id) {
+            e.set("Output", e.field("Output")+","+ors[i].field("Patient")[0].title);
             return ors[i].field("ORType");
           }
         }
