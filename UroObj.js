@@ -548,7 +548,7 @@ var fill = {
   },
   ortypebyop : function (e) {
     let libs = [or, bu];
-    let matchs = [];
+    let matches = [];
     for (let l=0; l<libs.length; l++) {
       let ors = libs[l].find(e.field("Operation"));
       if(ors.length>0) {
@@ -563,7 +563,7 @@ var fill = {
         }
       }
     }
-    if(matchs.length>0) {
+    if(matches.length>0) {
       let group = {};
 
       matches.forEach(v => {
