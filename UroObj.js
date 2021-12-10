@@ -552,7 +552,7 @@ var fill = {
       let ors = lib.find(e.field("Op"));
       if(ors.length>0) {
         for (let i in ors) {
-          if(ors[i].field("Dx")==e.field("Dx") && ors[i].field("Op")==e.field("Op") && ors[i].id!=e.id) {
+          if(ors[i].field("Dx")==e.field("Diagnosis") && ors[i].field("Op")==e.field("Operation") && ors[i].id!=e.id) {
             return ors[i].field("ORType");
           }
         }
