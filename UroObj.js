@@ -563,6 +563,7 @@ var fill = {
         }
       }
     }
+    e.set("Output", JSON.stringify(matches));
     if(matches.length>0) {
       let group = {};
 
@@ -578,10 +579,12 @@ var fill = {
         o["count"] = group[key];
         return o;
       });
-      return results.sort((a,b)=>b.count-a.count)[0].type;
+      results.sort((a,b)=>{return b.count-a.count});
+      return results[0].type;
     }
-    else
+    else {
       return "GA"
+    }
   },
   track​ : function (e, lib) {
     let field1 = "" ;
