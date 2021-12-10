@@ -413,12 +413,13 @@ var emx = {
     return last;
   }, 
   run : function (e)​ {
+    let last = null;
     if (e.field("EntryMx")​== "F/U" &&  e.field("AppointDate")) {
-      let last = emx.createnew.call(cso, e)​;
+      last = emx.createnew.call(cso, e)​;
       if(last) last.show();
     }​
     else if (e.field("EntryMx")​== "set OR" &&  e.field("AppointDate")) {
-      let last = emx.createnew.call(uro, e);
+      last = emx.createnew.call(uro, e);
       if(last) last.show()​;
     }
     else if (e.field("EntryMx")​=="F/U" || e.field("EntryMx")​=="set OR")​ {
@@ -563,7 +564,7 @@ var fill = {
         }
       }
     }
-    e.set("Output", JSON.stringify(matches));
+    e.set("Output", e.field("Output")+"\n"+JSON.stringify(matches));
     if(matches.length>0) {
       let group = {};
 
