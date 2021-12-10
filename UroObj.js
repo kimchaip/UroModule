@@ -580,7 +580,6 @@ var fill = {
         return o;
       });
       results.sort((a,b)=>{return b.count-a.count});
-      e.set("Output", JSON.stringify(results));
       return results[0].type;
     }
     else {
