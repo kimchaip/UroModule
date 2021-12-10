@@ -407,7 +407,6 @@ var emx = {
           trig.ConsultAfterEdit(last, "create");
         }
         //message("successfully created new Entry") ;
-        return last;
       }
     }​
     e.set("EntryMx", defau) ;
