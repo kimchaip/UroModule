@@ -564,10 +564,9 @@ var fill = {
         }
       }
     }
-    e.set("Output", e.field("Output")+"\n"+JSON.stringify(matches));
+    
     if(matches.length>0) {
       let group = {};
-
       matches.forEach(v => {
         group[v.dx+">"+v.op+">"+v.type] = (group[v.dx+">"+v.op+">"+v.type] || 0) + 1;
       });
@@ -581,6 +580,7 @@ var fill = {
         return o;
       });
       results.sort((a,b)=>{return b.count-a.count});
+      e.set("Output", JSON.stringify(results));
       return results[0].type;
     }
     else {
