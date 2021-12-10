@@ -395,14 +395,14 @@ var emx = {
         if (e.field("Photo").length>0)​
             last.set("Photo", e.field("Photo").join()​);
         if(this.lib!="Consult") {
-          last.set(​this.op, e.field("Operation")​);
-          let newdx = fill.mostdxbyop(e.field("Operation"));
-          last.set("Dx", newdx?newdx:e.field("Dx")​);
+          last.set("Op", e.field("Operation")​);
+          last.set("Dx", e.field("Diagnosis"));
+          last.set("ORType", fill.ortypebyop(e));
           trig.UroBeforeEdit(last, "create");
           trig.UroAfterEdit(last, "create");
         }
         else {
-          last.set("Dx", e.field("Dx")​);
+          last.set("Dx", e.field("Diagnosis")​);
           trig.ConsultBeforeEdit(last, "create");
           trig.ConsultAfterEdit(last, "create");
         }
@@ -534,35 +534,31 @@ var fill = {
     }
     return str;
   },
-  pasthx : function(e, lib) {
+  pasthx : function (e, lib) {
     let links = e.field("Patient");
     let date;
     if(lib=="Consult")
       date = e.field("ConsultDate")
     else
       date = e.field("Date")
-
     if(links.length && !e.field("PastHx")){
       let ptent = pt.findById(links[0].id) ;
       e.set("PastHx", this.sumpasthx(ptent, my.dateminus(date, 1)));
     }
   },
-  mostdxbyop : function (op) {
-    let dx = libByName("DxAutoFill");
-    let dxs = dx.entries();
-    let list = dxs.filter((e)=>e.field("Op")==op);
-    if(list.length){
-      results = list.sort((a, b) => {
-        if(a.field("count")>b.field("count"))
-          return -1;
-        else if(a.field("count")<b.field("count"))
-          return 1;
-        else
-          return 0;
-      });
-      return results[0].field("Dx");
-    }
-    return "";
+  ortypebyop : function (e) {
+    let arr = [or, bu];
+    arr.forEach(lib=>{
+      let ors = lib.find(e.field("Op"));
+      if(ors.length>0) {
+        for (let i in ors) {
+          if(ors[i].field("Dx")==e.field("Dx") && ors[i].field("Op")==e.field("Op") && ors[i].id!=e.id) {
+            return ors[i].field("ORType");
+          }
+        }
+      }
+    });
+    return "GA"
   },
   track​ : function (e, lib) {
     let field1 = "" ;
