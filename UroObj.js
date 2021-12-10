@@ -571,12 +571,12 @@ var fill = {
       });
       let results = Object.keys(group).map(key => {
         let arr = key.split(">");
-        return {
-          dx: arr[0],
-          op: arr[1],
-          type: arr[2],
-          count: group[key]
-        }
+        let o = new Object();
+        o["dx"] = arr[0];
+        o["op"] = arr[1];
+        o["type"] = arr[2];
+        o["count"] = group[key];
+        return o;
       });
       return results.sort((a,b)=>b.count-a.count)[0].type;
     }
