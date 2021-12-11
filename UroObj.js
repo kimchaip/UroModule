@@ -615,6 +615,10 @@ var fill = {
         if(e.field(this.status)!="Plan")
           e.set(this.status, "Plan");
       }
+      else {
+        if(e.field(this.status)!="Pending")
+          e.set(this.status, "Pending");
+      }
     }
   },
   djbyresult : function(e) {
