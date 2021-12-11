@@ -586,6 +586,93 @@ var fill = {
       return "GA"
     }
   },
+  statusbyresult : function(e) {
+    let opresult = e.field(this.result);
+    let notonly = opresult.match(this.notonly);
+    let notdone = opresult.match(this.notdone);
+    notonly = notonly==null?0:notonly.length;
+    notdone = notdone==null?0:notdone.length;
+    
+    if(opresult && old.field(this.result) != opresult ) {
+      if(notdone>0)​ {
+        e.set(this.status, "Not")​;
+        let links = e.field("Patient");
+        if(links.length>0 && links[0].field("Status")=="Active") {
+          links[0].set("Status", "Still")​;
+        }
+      }
+      else if(notonly>0)​
+        e.set(this.status, "Not")​;
+      else {
+        if(this.lib!="Consult") {
+          if(e.field(this.status)!="Done")
+            e.set(this.status, "Done");
+        }
+      }
+    }
+    else if(old.field(this.result) && opresult == ""){
+      if(this.lib!="Consult") {
+        if(e.field(this.status)!="Plan")
+          e.set(this.status, "Plan");
+      }
+    }
+  },
+  djbyresult : function(e) {
+    let opresult = e.field(this.result);
+    if(this.lib!="Consult") {
+      if(opresult && old.field("OpResult") != opresult ) {
+        let ondj = opresult.match(/dj/i);
+        ondj = ondj==null?0:ondj.length;
+        let opon = e.field("Op").match(/dj/i);
+        opon = opon==null?0:opon.length;
+        let offdj = opresult.match(/((off)(\s+)[a-z]*(\s*)(dj))/ig);
+        offdj = offdj==null?0:offdj.length;
+        let opoff = e.field("Op").match(/((off)(\s+)[a-z]*(\s*)(dj))/ig);
+        opoff = opoff==null?0:opoff.length;
+        let changedj = opresult.match(/((change)(\s+)[a-z]*(\s*)(dj))/ig);
+        changedj = changedj==null?0:changedj.length;
+        let opchange = e.field("Op").match(/((change)(\s+)[a-z]*(\s*)(dj))/ig);
+        opchange = opchange==null?0:opchange.length;
+        
+        if(changedj>0||opchange>0)
+          e.set("DJstent", "change DJ");
+        else if(offdj>0||opoff>0)
+          e.set("DJstent", "off DJ");
+        else if(ondj>0||opon>0)
+          e.set("DJstent", "on DJ");
+        else
+          e.set("DJstent", null);
+      }
+      else if(old.field(this.result) && !opresult){
+        e.set("DJstent", null);
+      }
+    }
+  },
+  resultbydate : function(e) {
+    let opresult = e.field(this.result);
+    
+    if(opresult && old.field("OpResult") != opresult ) {
+      if(this.lib!="Consult") {
+        if(my.gdate(e.field("Date"))<=ntoday​)​ {
+          let d = Math.floor((ntoday-my.gdate(e.field("Date")​))​/86400000);
+          opresult = opresult.replace("today", "P/O day" +d+ ":");
+        }
+      }
+      else {
+        if(my.gdate(e.field("VisitDate"))<=ntoday​)​ {
+          let d = Math.floor((ntoday-my.gdate(e.field("VisitDate")​))​/86400000);
+          opresult = opresult.replace("today", "P/V day" +d+ ":");
+        }
+      }
+      e.set(this.result, opresult);
+    }
+  },
+  resulteffect : function(e) {
+    let opresult = e.field(this.result).replace(/ +/g, ' ').trim().replace(/\n +/g, '\n');
+    e.set(this.result, opresult);
+    fill.djbyresult.call(this, e);
+    fill.statusbyresult.call(this, e);
+  },
   track​ : function (e, lib) {
     let field1 = "" ;
     if(lib=="UroBase" || lib=="Backup") {
@@ -988,6 +1075,8 @@ var uro = {
   op : "Op",
   result : "OpResult",
   emxdefault : "<Default>",
+  notonly : /งดเพราะ/,
+  notdone : /ไม่ทำเพราะ/,
   checkdx : function (value)​ {
     return value.field("Dx") == this.field("Dx") &​& value.field("Op") ​== this.field("Op");
   }, ​
@@ -1014,57 +1103,6 @@ var uro = {
       else {
         e.set("OpExtra", false);
       }
-    }
-  },
-  opresulteffect : function(e) {
-    let opresult = e.field("OpResult").replace(/ +/g, ' ').trim().replace(/\n +/g, '\n');
-    if(my.gdate(e.field("Date"))<=ntoday​)​ {
-      let d = Math.floor((ntoday-my.gdate(e.field("Date")​))​/86400000);
-      opresult = opresult.replace("today", "P/O day" +d+ ":");
-    }
-    e.set("OpResult", opresult);
-    if(opresult && old.field("OpResult") != opresult ) {
-      let ondj = opresult.match(/dj/i);
-      ondj = ondj==null?0:ondj.length;
-      let opon = e.field("Op").match(/dj/i);
-      opon = opon==null?0:opon.length;
-      let offdj = opresult.match(/((off)(\s+)[a-z]*(\s*)(dj))/ig);
-      offdj = offdj==null?0:offdj.length;
-      let opoff = e.field("Op").match(/((off)(\s+)[a-z]*(\s*)(dj))/ig);
-      opoff = opoff==null?0:opoff.length;
-      let changedj = opresult.match(/((change)(\s+)[a-z]*(\s*)(dj))/ig);
-      changedj = changedj==null?0:changedj.length;
-      let opchange = e.field("Op").match(/((change)(\s+)[a-z]*(\s*)(dj))/ig);
-      opchange = opchange==null?0:opchange.length;
-      let notonly = opresult.match(/งดเพราะ/ig);
-      notonly = notonly==null?0:notonly.length;
-      let notdone = opresult.match(/ไม่ทำเพราะ/ig);
-      notdone = notdone==null?0:notdone.length;
-
-      if(notdone>0)​ {
-        e.set("VisitType", "OPD")​;
-        e.set("Status", "Not")​;
-      }
-      else if(notonly>0)​
-        e.set("Status", "Not")​;
-      else if(e.field("Status")!="Done")
-        e.set("Status", "Done");
-
-      if(changedj>0||opchange>0)
-        e.set("DJstent", "change DJ");
-      else if(offdj>0||opoff>0)
-        e.set("DJstent", "off DJ");
-      else if(ondj>0||opon>0)
-        e.set("DJstent", "on DJ");
-      else
-        e.set("DJstent", null);
-    }
-    else if(old.field("OpResult") && opresult == ""){
-      e.set("Status", "Plan");
-      if (e.field("ORType") == "GA") {
-        if (e.field("VisitType") == "OPD")​
-          e.set("VisitType", "Admit")​;
-      }​
     }
   },
   setDJstent : function (e) {
@@ -1393,7 +1431,9 @@ var cso = {
   status : "EntryMx",
   op : "Rx",
   result : "Note",
-  emxdefault : "Pending"
+  emxdefault : "Pending",
+  notonly : /ไม่ดูเพราะ/,
+  notdone : /ไม่มาเพราะ/
 }​;
 var rpo = {
   createnew : function (e) {
@@ -1697,10 +1737,11 @@ var trig = {
     old.load(e)​;
     fill.setnewdate.call(uro, e)​;​
     uro.setdxop​(e)​;
-    uro.opresulteffect(e);
+    fill.resulteffect.call(uro, e);
     fill.future.call(uro, e)​;
     uro.setopextra(e)​;
     fill.setvisitdate.call(uro, e)​;
+    fill.resultbydate.call(uro, e);
     fill.pasthx(e, "UroBase");
     fill.track​(e, "UroBase")​;
     if (value=="create")
@@ -1776,10 +1817,11 @@ var trig = {
     old.load(e)​;
     fill.setnewdate.call(uro, e)​;​
     uro.setdxop​(e)​;
-    uro.opresulteffect(e);
+    fill.resulteffect.call(uro, e);
     fill.future.call(uro, e)​;
     uro.setopextra(e)​;
     fill.setvisitdate.call(uro, e)​;
+    fill.resultbydate.call(uro, e);
     fill.pasthx(e, "Backup");
     fill.track​(e, "Backup")​;
     if (value=="create")
@@ -1851,8 +1893,10 @@ var trig = {
   ConsultBeforeEdit : function (e, value)​ {
     old.load(e)​;
     fill.setnewdate.call(cso, e)​;​
+    fill.resulteffect.call(cso, e);
     fill.future.call(cso, e)​;
     fill.setvisitdate.call(cso, e)​;
+    fill.resultbydate.call(cso, e);
     fill.pasthx(e, "Consult");
     fill.track​(e, "Consult")​;
     if (value=="create")
