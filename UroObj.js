@@ -1656,6 +1656,7 @@ var opu = {
   deleteOp : function (e) {
     if(old.field("OpExtra") && old.field("Status") != "Not"){
       let oss = os.entries();
+      e.set("Output", e.field("Output")+"\nOOpExtra="+old.field("OpExtra") + ", OStatus="+old.field("Status")+", OpExtra="+e.field("OpExtra") + ", Status="+e.field("Status"));
       if(oss.length>0){
         let parr = this.splitPtName(old.field("Patient"));
         parr[2] = parr[2]?parr[2]:null;
