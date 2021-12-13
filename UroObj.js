@@ -1597,7 +1597,7 @@ var opu = {
       let links = e.field("Patient");
       if(links.length>0){
         let link = links[0];
-        e.set("Output", "OpExtra="+e.field("OpExtra") + ", Status="+e.field("Status")+", Patient="+link.title);
+        e.set("Output", "OOpExtra="+old.field("OpExtra") + ", OStatus="+old.field("Status")+", OpExtra="+e.field("OpExtra") + ", Status="+e.field("Status")+", Patient="+link.title);
         ent["OpDate"] = my.date(e.field("Date")) ;
         ent["Dr"] =  e.field("Dr");
         ent["OpType"] =  e.field("ORType")​;
