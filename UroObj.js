@@ -1592,12 +1592,12 @@ var opu = {
     return arr;
   },
   createOp : function (e) {
-    e.set("Output", "OpExtra="+e.field("OpExtra") + ", Status="+e.field("Status"));
     if(e.field("OpExtra") && e.field("Status") != "Not"){
       let ent = new Object()​ ;
       let links = e.field("Patient");
       if(links.length>0){
         let link = links[0];
+        e.set("Output", "OpExtra="+e.field("OpExtra") + ", Status="+e.field("Status")+", Patient="+link.title);
         ent["OpDate"] = my.date(e.field("Date")) ;
         ent["Dr"] =  e.field("Dr");
         ent["OpType"] =  e.field("ORType")​;
