@@ -1770,8 +1770,8 @@ var trig = {
     mer.effect(e)​;
   }, 
   UroAfterEdit : function (e, value) {
-    old.load(e)​;
     emx.run.call(uro, e)​;
+    old.load(e);
     uro.updateDJStamp(e)​;
     if (value=="create") {
       rpo.createnew(e);
@@ -1850,8 +1850,8 @@ var trig = {
     mer.effect(e)​;
   }, 
   BackupAfterEdit : function (e, value) {
-    old.load(e)​;
     emx.run.call(uro, e)​;
+    old.load(e)​;
     uro.updateDJStamp(e)​;
     if (value=="create") {
       rpo.createnew(e);
@@ -1914,8 +1914,8 @@ var trig = {
     mer.effect(e)​;
   },
   ConsultAfterEdit : function (e, value) {
-    old.load(e)​;
     emx.run.call(cso, e)​;
+    old.load(e)​;
     old.save.call(cso, e)​;
   }, 
   ConsultBeforeViewCard ​: function (e) {​
