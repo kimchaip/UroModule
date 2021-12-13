@@ -1597,7 +1597,6 @@ var opu = {
       let links = e.field("Patient");
       if(links.length>0){
         let link = links[0];
-        e.set("Output", "OOpExtra="+old.field("OpExtra") + ", OStatus="+old.field("Status")+", OpExtra="+e.field("OpExtra") + ", Status="+e.field("Status")+", Patient="+link.title);
         ent["OpDate"] = my.date(e.field("Date")) ;
         ent["Dr"] =  e.field("Dr");
         ent["OpType"] =  e.field("ORType")​;
@@ -1656,7 +1655,6 @@ var opu = {
   deleteOp : function (e) {
     if(old.field("OpExtra") && old.field("Status") != "Not"){
       let oss = os.entries();
-      e.set("Output", e.field("Output")+"\nOOpExtra="+old.field("OpExtra") + ", OStatus="+old.field("Status")+", OpExtra="+e.field("OpExtra") + ", Status="+e.field("Status"));
       if(oss.length>0){
         let parr = this.splitPtName(old.field("Patient"));
         parr[2] = parr[2]?parr[2]:null;
