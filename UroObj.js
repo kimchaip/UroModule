@@ -1592,6 +1592,7 @@ var opu = {
     return arr;
   },
   createOp : function (e) {
+    e.set("Output", "OpExtra="+e.field("OpExtra") + ", Status="+e.field("Status"));
     if(e.field("OpExtra") && e.field("Status") != "Not"){
       let ent = new Object()​ ;
       let links = e.field("Patient");
