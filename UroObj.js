@@ -1704,43 +1704,7 @@ var opu = {
     }
   }
 };
-var autofill = {
-  findresult : function (query, libName, title, desc) {
-    // filter
-    let dx = libByName(libName);
-    let dxs =  lib.entries();
-    let qarr = query.replace(/\s+/i, ";").split(";");
-    dxs = dxs.filter(e=>{
-      for(let q=0; q<qarr.length; q++) {
-        if(e.field(title).toLowerCase().indexOf(qarr[q].toLowerCase())>-1)
-          return true;
-      }
-      return false;
-    });
-    // grouping
-    let group = {};
-    for(let i in dxs) {
-      let ent = [];
-      ent.push(dxs[i].field(title));
-      if(desc && desc.length>0)
-        ent = ent.concat(desc.map(v=>dxs[i].field(v)));
-      let key = ent.join(";");
-      group[key] = (group[key] || 0) + 1;
-    }
-    // to object
-    let result = Object.keys(group).map(k=>{
-      let o = new Object()​;
-      let a = k.split(";");
-      o["title"] = a.splice(0, 1);
-      o["desc"] = a.join();
-      o["count"] = group[k];
-      return o;
-    });
-    // sort by count
-    result.sort((a,b)=>b.count-a.count);
-    return result;
-  }
-};
+
 var trig = {
   PatientOpenEdit : function(e) {
     old.save.call(pto, e);
