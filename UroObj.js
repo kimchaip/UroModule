@@ -830,7 +830,7 @@ var fill = {
       }​
     }​​
   }, 
-  color : function (e, lib)​ {
+  color : function (e)​ {
     if(this.lib!="Consult") {
       if(e.field("Status")=="Not") {
         if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
