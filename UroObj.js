@@ -2,6 +2,8 @@ var pt = libByName("Patient") ;​
 var or = libByName("UroBase") ;​
 var cs = libByName("Consult") ;
 var bu = libByName("Backup") ;
+var dx = libByName("DxAutoFill") ;
+var op = libByName("OperationList") ;
 var rp = libByName("Report")​;
 var os = libByName("OpUroSx");
 
@@ -1321,61 +1323,31 @@ var uro = {
     return undefined;
   }​,
   updatedxop : function (e, dxop)​ {​
-    if (this.lib=="DxAutoFill")​{
-      if(dxop!=undefined)​{
-        e.set(this.lib, dxop)​;
+    if(dxop!=undefined)​{
+      e.set(this.lib, dxop)​;
         
-        let orlink = dxop.linksFrom("UroBase", this.lib);
-        let bulink = dxop.linksFrom("Backup", this.lib);​
-        dxop.set("Count", orlink.length+bulink.length)​;​​​​
-      }​
-      if((old.field(this.link) != e.field(this.link)​ &​& old.field(this.link))​ || 
-          (old.field("Op") != e.field("Op")​ &​& old.field("Op"))​)​ { //update old dx in dxautofill
-        let dx = libByName(this.lib);
-        let dxs = dx.find(old.field(this.link))​;
-        let find = undefined;
-        if (dxs.length > 0) {
-          for(let i in dxs)​{
-            if(dxs[i]​.field(this.title)​==old.field(this.link) ​&& this.lib!=dxs[i]​.field("Op")​==old.field("Op")​)​
-              find = dxs[i]​ ;​
-          }​
-        }​
-        if (find != undefined)​ { // found old dx -​> update count in dxautofill
-          let orlink = find.linksFrom("UroBase", this.lib);
-          let bulink = find.linksFrom("Backup", this.lib);​
-          find.set("Count", orlink.length+bulink.length)​;​​​​
-          if(find.field("Count")​==0)​
-            find.trash()​;
-        }​
-      }
+      let orlink = dxop.linksFrom("UroBase", this.lib);
+      let bulink = dxop.linksFrom("Backup", this.lib);​
+      dxop.set("Count", orlink.length+bulink.length)​;​​​​
     }​
-    else { //type=="op"
-      if(dxop!=undefined)​{
-        e.set("OperationList", dxop)​;​
-        
-        let orlink = dxop.linksFrom("UroBase", "OperationList");
-        let bulink = dxop.linksFrom("Backup", "OperationList");​
-        dxop.set("Count", orlink.length+bulink.length)​;​​​​
-      }​
-      if(old.field(this.link) != e.field(this.link)​ &​& old.field(this.link))​ { //update old op in oplist
-        let op = libByName("OperationList")​;
-        let ops = op.find(old.field(this.link))​;
-        let find = undefined;
-        if (ops.length > 0) {
-          for(let i in ops)​{
-            if(ops[i]​.field("OpFill")​==old.field(this.link)​)​
-              find = ops[i]​ ;​
-          }
-        }​
-        if (find != undefined)​ { // found old op -​> update count in oplist
-          let orlink = find.linksFrom("UroBase", "OperationList");
-          let bulink = find.linksFrom("Backup", "OperationList");​
-          find.set("Count", orlink.length+bulink.length)​;​​​​
-          if(find.field("Count")​==0)​
-            find.trash()​;​
+    if(this.link.some(v=>old.field(v) != e.field(v) && old.field(v))) { //update dxop
+      let lb = this.lib=="DxAutoFill"? dx: op;
+      let lbs = lb.find(old.field(this.link[0]))​;
+      let find = undefined;
+      if (lbs.length > 0) {
+        for(let i in lbs)​{
+          if(this.title.every((v,j)=>lbs[i].field(v)==old.field(this.link[j]))) 
+            find = lbs[i]​ ;​
         }​
       }​
-    }​
+      if (find)​ { // found old dx -​> update count in dxautofill
+        let orlink = find.linksFrom("UroBase", this.lib);
+        let bulink = find.linksFrom("Backup", this.lib);​
+        find.set("Count", orlink.length+bulink.length)​;​​​​
+        if(find.field("Count")​==0)​
+          find.trash()​;
+      }​
+    }
   }, 
   deletedxop : function (e)​{
     //Dx
