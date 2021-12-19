@@ -1321,7 +1321,7 @@ var uro = {
     return undefined;
   }​,
   updatedxop : function (e, dxop)​ {​
-    if (type==this.link)​{
+    if (this.lib=="DxAutoFill")​{
       if(dxop!=undefined)​{
         e.set(this.lib, dxop)​;
         
