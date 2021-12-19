@@ -677,18 +677,11 @@ var fill = {
     fill.djbyresult.call(this, e);
     fill.statusbyresult.call(this, e);
   },
-  track​ : function (e, lib) {
-    let field1 = "" ;
-    if(lib=="UroBase" || lib=="Backup") {
-      field1 = "Status" ;
-    }​
-    else {
-      field1 = "EntryMx" ;
-    }​
+  track : function (e) {
     if (e.field("Summary") == true) {
       e.set("Track", 3);
     }​​
-    else if (e.field(field1​) != "Not" && e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) ) {//Admit
+    else if (e.field(this.status​)) != "Not" && e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) ) {//Admit
       if (e.field("Track") == 0) {
         e.set("Track", 1) ;
       }​
@@ -696,7 +689,7 @@ var fill = {
         e.set("Track", 2) ;
       }​
     }​
-    else if (e.field(field1​) != "Not" &​& e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ ) { // D/C
+    else if (e.field(this.status​) != "Not" &​& e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ ) { // D/C
       if (e.field("Track") == 3) {​
         e.set("Track", 2) ;
       }​
@@ -707,7 +700,7 @@ var fill = {
     else if (my.gdate(e.field("VisitDate")​) > ntoday) {​
       e.set("Track", 0) ;
     }​
-    else if (e.field(field1​) == "Not")​ {
+    else if (e.field(this.status​) == "Not")​ {
       if (my.gdate(e.field("VisitDate")​) > ntoday) {​ // 
         if (e.field("Track") != 0) {​
           e.set("Track", 0) ;
@@ -1748,7 +1741,7 @@ var trig = {
     fill.setvisitdate.call(uro, e)​;
     fill.resultbydate.call(uro, e);
     fill.pasthx(e, "UroBase");
-    fill.track​(e, "UroBase")​;
+    fill.track.call("uro", e)​;
     if (value=="create")
       mer.newmergeid(e, "UroBase")​;
     mer.merge(e)​;
@@ -1792,7 +1785,7 @@ var trig = {
     old.load(e)​;
     fill.setnewdate.call(uro, e)​;​
     fill.setvisitdate.call(uro, e)​;
-    fill.track​(e, "UroBase")​;
+    fill.track.call("uro", e)​;
     mer.merge(e)​;
     que.run(e)​​;
     fill.ptstatus.call(uro, e)​;
@@ -1828,7 +1821,7 @@ var trig = {
     fill.setvisitdate.call(uro, e)​;
     fill.resultbydate.call(uro, e);
     fill.pasthx(e, "Backup");
-    fill.track​(e, "Backup")​;
+    fill.track.call("uro", e)​;
     if (value=="create")
       mer.newmergeid(e, "Backup")​;
     mer.merge(e)​;
@@ -1870,7 +1863,7 @@ var trig = {
     old.load(e)​;
     fill.setnewdate.call(uro, e)​;​
     fill.setvisitdate.call(uro, e)​;
-    fill.track​(e, "Backup")​;
+    fill.track.call("uro", e)​;
     mer.merge(e)​;
     que.run(e)​​;
     fill.ptstatus.call(uro, e)​;
@@ -1903,7 +1896,7 @@ var trig = {
     fill.setvisitdate.call(cso, e)​;
     fill.resultbydate.call(cso, e);
     fill.pasthx(e, "Consult");
-    fill.track​(e, "Consult")​;
+    fill.track.call("cso", e)​;
     if (value=="create")
       mer.newmergeid(e, "Consult")​;
     mer.merge(e)​;
@@ -1927,7 +1920,7 @@ var trig = {
     old.load(e)​;
     fill.setnewdate.call(cso, e)​;​
     fill.setvisitdate.call(cso, e)​;
-    fill.track​(e, "Consult")​;
+    fill.track.call("cso", e)​;
     mer.merge(e)​;
     fill.ptstatus.call(cso, e)​;
     mer.effect(e)​;
