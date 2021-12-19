@@ -1406,13 +1406,13 @@ var cso = {
 }​;
 var dxo = {
   lib : "DxAutoFill",
-  link : "Dx",
-  title : "Dx"
+  link : ["Dx","Op"],
+  title : ["Dx","Op"]
 };
 var opo = {
   lib : "OperationList",
-  link : "Op",
-  title : "OpFill"
+  link : ["Op"],
+  title : ["OpFill"]
 };
 var rpo = {
   createnew : function (e) {
