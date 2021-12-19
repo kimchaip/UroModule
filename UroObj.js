@@ -184,9 +184,9 @@ var mer = {
   colorall: function(e) {
     this.m.forEach(o=>{
       if(o.lib!="Consult")
-        fill.color.call("uro", o.e);
+        fill.color.call(uro, o.e);
       else
-        fill.color.call("cso", o.e);
+        fill.color.call(cso, o.e);
     });
   },
   fieldall: function(e) {
@@ -1746,7 +1746,7 @@ var trig = {
     fill.setvisitdate.call(uro, e)​;
     fill.resultbydate.call(uro, e);
     fill.pasthx(e, "UroBase");
-    fill.track.call("uro", e)​;
+    fill.track.call(uro, e)​;
     if (value=="create")
       mer.newmergeid(e, "UroBase")​;
     mer.merge(e)​;
@@ -1790,7 +1790,7 @@ var trig = {
     old.load(e)​;
     fill.setnewdate.call(uro, e)​;​
     fill.setvisitdate.call(uro, e)​;
-    fill.track.call("uro", e)​;
+    fill.track.call(uro, e)​;
     mer.merge(e)​;
     que.run(e)​​;
     fill.ptstatus.call(uro, e)​;
@@ -1826,7 +1826,7 @@ var trig = {
     fill.setvisitdate.call(uro, e)​;
     fill.resultbydate.call(uro, e);
     fill.pasthx(e, "Backup");
-    fill.track.call("uro", e)​;
+    fill.track.call(uro, e)​;
     if (value=="create")
       mer.newmergeid(e, "Backup")​;
     mer.merge(e)​;
@@ -1868,7 +1868,7 @@ var trig = {
     old.load(e)​;
     fill.setnewdate.call(uro, e)​;​
     fill.setvisitdate.call(uro, e)​;
-    fill.track.call("uro", e)​;
+    fill.track.call(uro, e)​;
     mer.merge(e)​;
     que.run(e)​​;
     fill.ptstatus.call(uro, e)​;
@@ -1901,7 +1901,7 @@ var trig = {
     fill.setvisitdate.call(cso, e)​;
     fill.resultbydate.call(cso, e);
     fill.pasthx(e, "Consult");
-    fill.track.call("cso", e)​;
+    fill.track.call(cso, e)​;
     if (value=="create")
       mer.newmergeid(e, "Consult")​;
     mer.merge(e)​;
@@ -1925,7 +1925,7 @@ var trig = {
     old.load(e)​;
     fill.setnewdate.call(cso, e)​;​
     fill.setvisitdate.call(cso, e)​;
-    fill.track.call("cso", e)​;
+    fill.track.call(cso, e)​;
     mer.merge(e)​;
     fill.ptstatus.call(cso, e)​;
     mer.effect(e)​;
