@@ -182,7 +182,12 @@ var mer = {
     });
   },
   colorall: function(e) {
-    this.m.forEach(o=>fill.color(o.e, o.lib));
+    this.m.forEach(o=>{
+      if(o.lib!="Consult")
+        fill.color.call("uro", o.e);
+      else
+        fill.color.call("cso", o.e);
+    });
   },
   fieldall: function(e) {
     let range = ["VisitDate","PastHx","InvResult","VisitType","Ward","DischargeDate","Track","Summary","Underlying","LOS","Dr"];
@@ -826,7 +831,7 @@ var fill = {
     }​​
   }, 
   color : function (e, lib)​ {
-    if(lib!="Consult") {
+    if(this.lib!="Consult") {
       if(e.field("Status")=="Not") {
         if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
       } 
