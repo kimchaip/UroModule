@@ -540,16 +540,11 @@ var fill = {
     }
     return str;
   },
-  pasthx : function (e, lib) {
+  pasthx : function (e) {
     let links = e.field("Patient");
-    let date;
-    if(lib=="Consult")
-      date = e.field("ConsultDate")
-    else
-      date = e.field("Date")
     if(links.length && !e.field("PastHx")){
       let ptent = pt.findById(links[0].id) ;
-      e.set("PastHx", this.sumpasthx(ptent, my.dateminus(date, 1)));
+      e.set("PastHx", this.sumpasthx(ptent, my.dateminus(this.opdate, 1)));
     }
   },
   ortypebyop : function (e) {
@@ -1745,7 +1740,7 @@ var trig = {
     uro.setopextra(e)​;
     fill.setvisitdate.call(uro, e)​;
     fill.resultbydate.call(uro, e);
-    fill.pasthx(e, "UroBase");
+    fill.pasthx.call(uro, e);
     fill.track.call(uro, e)​;
     if (value=="create")
       mer.newmergeid(e, "UroBase")​;
@@ -1825,7 +1820,7 @@ var trig = {
     uro.setopextra(e)​;
     fill.setvisitdate.call(uro, e)​;
     fill.resultbydate.call(uro, e);
-    fill.pasthx(e, "Backup");
+    fill.pasthx.call(uro, e);
     fill.track.call(uro, e)​;
     if (value=="create")
       mer.newmergeid(e, "Backup")​;
@@ -1900,7 +1895,7 @@ var trig = {
     fill.future.call(cso, e)​;
     fill.setvisitdate.call(cso, e)​;
     fill.resultbydate.call(cso, e);
-    fill.pasthx(e, "Consult");
+    fill.pasthx.call(cso, e);
     fill.track.call(cso, e)​;
     if (value=="create")
       mer.newmergeid(e, "Consult")​;
