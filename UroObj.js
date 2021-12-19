@@ -1703,7 +1703,7 @@ var trig = {
     uro.setx15(e)​;
     let ope = uro.createoplist(e)​;
     if(dxe!=undefined)​
-      uro.updatedxop​.call(dxo, e, dxe)​;
+      uro.updatedxop.call(dxo, e, dxe)​;
     if(ope!=undefined)​
       uro.updatedxop​.call(opo, e, ope)​;
     que.run(e)​;
@@ -1783,9 +1783,9 @@ var trig = {
     uro.setx15(e)​;
     let ope = uro.createoplist(e)​;
     if(dxe!=undefined)​
-      uro.updatedxop​.call(dxo, e, dxe)​;
+      uro.updatedxop.call(dxo, e, dxe)​;
     if(ope!=undefined)​
-      uro.updatedxop​.call(opo, e, ope)​;
+      uro.updatedxop.call(opo, e, ope)​;
     que.run(e)​​;
     fill.underlying(e)​;
     fill.los(e)​;
