@@ -686,7 +686,7 @@ var fill = {
     if (e.field("Summary") == true) {
       e.set("Track", 3);
     }​​
-    else if (e.field(this.status​)) != "Not" && e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) ) {//Admit
+    else if (e.field(this.status​) != "Not" && e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) ) {//Admit
       if (e.field("Track") == 0) {
         e.set("Track", 1) ;
       }​
