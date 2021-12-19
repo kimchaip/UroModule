@@ -1378,12 +1378,12 @@ var cso = {
 var dxo = {
   lib : "DxAutoFill",
   link : "Dx",
-  title ; "Dx"
+  title : "Dx"
 };
 var opo = {
   lib : "OperationList",
   link : "Op",
-  title ; "OpFill"
+  title : "OpFill"
 };
 var rpo = {
   createnew : function (e) {
