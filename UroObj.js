@@ -1320,63 +1320,6 @@ var uro = {
     }​
     return undefined;
   }​,
-  updatedxop : function (e, type, dxop)​ {​
-    if (type=="dx")​{
-      if(dxop!=undefined)​{
-        e.set("DxAutoFill", dxop)​;
-        
-        let orlink = dxop.linksFrom("UroBase", "DxAutoFill");
-        let bulink = dxop.linksFrom("Backup", "DxAutoFill");​
-        dxop.set("Count", orlink.length+bulink.length)​;​​​​
-      }​
-      if((old.field("Dx") != e.field("Dx")​ &​& old.field("Dx"))​ || 
-          (old.field("Op") != e.field("Op")​ &​& old.field("Op"))​)​ { //update old dx in dxautofill
-        let dx = libByName("DxAutoFill");
-        let dxs = dx.find(old.field("Dx"))​;
-        let find = undefined;
-        if (dxs.length > 0) {
-          for(let i in dxs)​{
-            if(dxs[i]​.field("Dx")​==old.field("Dx") ​&& dxs[i]​.field("Op")​==old.field("Op")​)​
-              find = dxs[i]​ ;​
-          }​
-        }​
-        if (find != undefined)​ { // found old dx -​> update count in dxautofill
-          let orlink = find.linksFrom("UroBase", "DxAutoFill");
-          let bulink = find.linksFrom("Backup", "DxAutoFill");​
-          find.set("Count", orlink.length+bulink.length)​;​​​​
-          if(find.field("Count")​==0)​
-            find.trash()​;
-        }​
-      }
-    }​
-    else { //type=="op"
-      if(dxop!=undefined)​{
-        e.set("OperationList", dxop)​;​
-        
-        let orlink = dxop.linksFrom("UroBase", "OperationList");
-        let bulink = dxop.linksFrom("Backup", "OperationList");​
-        dxop.set("Count", orlink.length+bulink.length)​;​​​​
-      }​
-      if(old.field("Op") != e.field("Op")​ &​& old.field("Op"))​ { //update old op in oplist
-        let op = libByName("OperationList")​;
-        let ops = op.find(old.field("Op"))​;
-        let find = undefined;
-        if (ops.length > 0) {
-          for(let i in ops)​{
-            if(ops[i]​.field("OpFill")​==old.field("Op")​)​
-              find = ops[i]​ ;​
-          }
-        }​
-        if (find != undefined)​ { // found old op -​> update count in oplist
-          let orlink = find.linksFrom("UroBase", "OperationList");
-          let bulink = find.linksFrom("Backup", "OperationList");​
-          find.set("Count", orlink.length+bulink.length)​;​​​​
-          if(find.field("Count")​==0)​
-            find.trash()​;​
-        }​
-      }​
-    }​
-  }, 
   deletedxop : function (e)​{
     //Dx
     let dx = libByName("DxAutoFill")​;
@@ -1432,6 +1375,16 @@ var cso = {
   notonly : /ไม่ดูเพราะ/,
   notdone : /ไม่มาเพราะ/
 }​;
+var dxo = {
+  lib : "DxAutoFill",
+  link : "Dx",
+  title ; "Dx"
+};
+var opo = {
+  lib : "OperationList",
+  link : "Op",
+  title ; "OpFill"
+};
 var rpo = {
   createnew : function (e) {
     if(e.field("Status") != "Not"){
@@ -1750,9 +1703,9 @@ var trig = {
     uro.setx15(e)​;
     let ope = uro.createoplist(e)​;
     if(dxe!=undefined)​
-      uro.updatedxop​(e, "dx", dxe)​;
+      uro.updatedxop​.call(dxo, e, dxe)​;
     if(ope!=undefined)​
-      uro.updatedxop​(e, "op", ope)​;
+      uro.updatedxop​.call(opo, e, ope)​;
     que.run(e)​;
     fill.underlying(e)​;
     fill.los(e)​;
@@ -1830,9 +1783,9 @@ var trig = {
     uro.setx15(e)​;
     let ope = uro.createoplist(e)​;
     if(dxe!=undefined)​
-      uro.updatedxop​(e, "dx", dxe)​;
+      uro.updatedxop​.call(dxo, e, dxe)​;
     if(ope!=undefined)​
-      uro.updatedxop​(e, "op", ope)​;
+      uro.updatedxop​.call(opo, e, ope)​;
     que.run(e)​​;
     fill.underlying(e)​;
     fill.los(e)​;
