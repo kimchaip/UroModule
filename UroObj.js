@@ -11,6 +11,7 @@ var old = {
     d : {}, 
     load : function (e) {
       //get Previous to Obj
+      message(e.id);
       this.d = JSON.parse(e.field("Previous"), function (key, value) {
         if (value) {
           if (typeof value == "string" && value.match(/\d+\-\d+\-\d+T\d+/)) {
