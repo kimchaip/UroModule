@@ -271,8 +271,9 @@ var mer = {
       }
     }
   },
-  merge: function(e) {
+  merge : function(e) {
     if (e.field("Merge")​!=old.field("Merge")​)​ {
+      message(e.field("Merge")​+" !=old "+old.field("Merge")​);
       if (e.field("Merge")​) {
         this.run(e)​;
       }
