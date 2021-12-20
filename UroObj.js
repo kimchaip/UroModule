@@ -231,7 +231,7 @@ var mer = {
       message("Can't find Last Admit!");
     }
   },
-  cancel: function(e) {
+  cancel : function(e) {
     this.load(e);
     this.sort(e);
     let inx = this.findInx(e);
@@ -273,7 +273,6 @@ var mer = {
   },
   merge : function(e) {
     if (e.field("Merge")​!=old.field("Merge")​)​ {
-      message(e.field("Merge")​+" !=old "+old.field("Merge")​);
       if (e.field("Merge")​) {
         this.run(e)​;
       }
@@ -1778,10 +1777,8 @@ var trig = {
     old.save.call(uro, e)​;
   }, 
   UroBeforeDelete : function (e)​ {
-    old.load(e)​;
     if (e.field("Merge")​==true)​ {
-      e.set("Merge", false)​
-      mer.merge(e)​;
+      mer.cancel(e)​;
     }
   }, 
   UroAfterDelete : function (e)​ {
@@ -1856,10 +1853,8 @@ var trig = {
     old.save.call(uro, e)​;
   }, 
   BackupBeforeDelete : function (e)​ {
-    old.load(e)​;
     if (e.field("Merge")​==true)​ {
-      e.set("Merge", false)​
-      mer.merge(e)​;
+      mer.cancel(e)​;
     }
   }, 
   BackupAfterDelete : function (e)​ {
@@ -1912,10 +1907,8 @@ var trig = {
     old.save.call(cso, e)​;
   }, 
   ConsultBeforeDelete : function (e)​ {
-    old.load(e)​;
     if (e.field("Merge")​==true)​ {
-      e.set("Merge", false)​
-      mer.merge(e)​;
+      mer.cancel(e)​;
     }
   }, 
   ConsultAfterDelete : function (e)​ {
