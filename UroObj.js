@@ -546,7 +546,7 @@ var fill = {
     let links = e.field("Patient");
     if(links.length && !e.field("PastHx")){
       let ptent = pt.findById(links[0].id) ;
-      e.set("PastHx", fill.sumpasthx(ptent, my.dateminus(this.opdate, 1)));
+      e.set("PastHx", fill.sumpasthx(ptent, my.dateminus(e.field(this.opdate), 1)));
     }
   },
   ortypebyop : function (e) {
