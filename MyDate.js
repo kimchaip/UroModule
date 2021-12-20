@@ -24,7 +24,6 @@ var my = {
   },
   dateminus : function (value, minus)  {
     if (value) {
-      message(value);
       this.d = new Date(value.getTime() -​ (minus*86400000))​;
       this.d = this.date(this.d) ;
       return this.d;
