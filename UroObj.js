@@ -480,8 +480,8 @@ var dxop = {
     }
     
     if(e.field(this.lib).length>0) {
+      let oldlink = e.field(this.lib)[0];
       if(oldlink.id!=found.id) { // change link
-        let oldlink = e.field(this.lib)[0];
         e.set(this.lib, [])​;
         dxop.countdown(oldlink);
         e.link(this.lib, found);
