@@ -475,7 +475,7 @@ var dxop = {
         e.set("Bonus", found.field("Price")​)​;
       }
     }
-    else if(!e.field("OpExtra")​){
+    else if(this.lib=="OperationList" && !e.field("OpExtra")​){
       e.set("Bonus", 0);
     }
     
