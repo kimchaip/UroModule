@@ -482,14 +482,13 @@ var dxop = {
     if(e.field(this.lib).length>0) {
       let oldlink = e.field(this.lib)[0];
       if(oldlink.id!=found.id) { // change link
-        e.set(this.lib, "")​;
         dxop.countdown(oldlink);
-        e.link(this.lib, found);
+        e.set(this.lib, found.title);
         found.set("Count", found.field("Count")+1);
       }
     }
     else { // old link is []
-      e.link(this.lib, found);
+      e.set(this.lib, found.title);
       found.set("Count", found.field("Count")+1);
     }
   },
@@ -514,10 +513,12 @@ var dxop = {
     
     if(e.field(this.lib).length>0) {
       let oldlink = e.field(this.lib)[0];
-      e.set(this.lib, "")​;
       dxop.countdown(oldlink);
+      e.set(this.lib, found.title);
     }
-    e.link(this.lib, found);
+    else {
+      e.set(this.lib, found.title);
+    }
   },
   cancel : function (e) {
     if(e.field(this.lib).length>0) {
