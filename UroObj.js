@@ -217,7 +217,7 @@ var mer = {
     }
     return null;
   },
-  run: function(e) {
+  run : function(e) {
     this.load(e);
     let mergeobj = this.findLast(e);
     if (mergeobj) {
@@ -348,8 +348,8 @@ var que = {
       q.splice(inx, 1);
     
   },
-  run: function (e) {
-    if (my.gdate(e.field("TimeIn")) != my.gdate(old.field("TimeIn")) || e.field("Que") != old.field("Que") || e.field("Status") != old.field("Status") || e.field("ORType") != old.field("ORType")) {
+  run : function (e) {
+    if (my.gdate(e.field("TimeIn")) != my.gdate(old.field("TimeIn")) || e.field("Que") != old.field("Que") || e.field("Status") != old.field("Status") || e.field("ORType") != old.field("ORType") || (e.field("Que") == "00" && e.field("Status") != "Not" && e.field("ORType")​ == "GA")) {
       // load old entry to q
       this.load(e);
       // remove old e or insert new e
