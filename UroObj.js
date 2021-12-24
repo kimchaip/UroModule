@@ -406,14 +406,12 @@ var emx = {
           last.set("Op", e.field("Operation")​);
           last.set("Dx", e.field("Diagnosis"));
           last.set("ORType", fill.ortypebyop(e));
-          trig.UroBeforeEdit(last, "create");
-          trig.UroAfterEdit(last, "create");
         }
         else {
           last.set("Dx", e.field("Diagnosis")​);
-          trig.ConsultBeforeEdit(last, "create");
-          trig.ConsultAfterEdit(last, "create");
         }
+        trig.BeforeEdit.call(this, last, "create");
+        trig.AfterEdit.call(this, last, "create");
         //message("successfully created new Entry") ;
       }
     }​
