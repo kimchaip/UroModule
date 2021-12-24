@@ -1647,202 +1647,93 @@ var trig = {
   PatientBeforeLink : function (e)​ {
     pto.age(e)​;
   }, 
-  UroOpenEdit : function (e)​ {
-    old.save.call(uro, e)​;
+  OpenEdit : function (e)​ {
+    old.save.call(this, e)​;
   }, 
-  UroBeforeEdit : function (e, value)​ {
+  BeforeEdit : function (e, value)​ {
     old.load(e)​;
-    fill.setnewdate.call(uro, e)​;​
-    fill.resulteffect.call(uro, e);
-    fill.future.call(uro, e)​;
-    uro.setopextra(e)​;
-    fill.setvisitdate.call(uro, e)​;
-    fill.resultbydate.call(uro, e);
-    fill.pasthx.call(uro, e);
-    fill.track.call(uro, e)​;
+    fill.setnewdate.call(this, e)​;​
+    fill.resulteffect.call(this, e);
+    fill.future.call(this, e)​;
+    if (this.lib!="Consult")
+      uro.setopextra(e)​;
+    fill.setvisitdate.call(this, e)​;
+    fill.resultbydate.call(this, e);
+    fill.pasthx.call(this, e);
+    fill.track.call(this, e)​;
     if (value=="create")
-      mer.newmergeid.call(uro, e)​;
-    mer.merge.call(uro, e)​;
-    uro.setDJstent(e)​;
-    uro.setx15(e)​;
-    dxop.run.call(dxo, e)​;
-    dxop.run.call(opo, e)​;
-    que.run.call(uro, e)​;
+      mer.newmergeid.call(this, e)​;
+    mer.merge.call(this, e)​;
+    if (this.lib!="Consult") {
+      uro.setDJstent(e)​;
+      uro.setx15(e)​;
+      dxop.run.call(dxo, e)​;
+      dxop.run.call(opo, e)​;
+      que.run.call(this, e)​;
+    }
     fill.underlying(e)​;
     fill.los(e)​;
-    fill.opdatecal(e);
-    fill.oplength(e);
-    fill.ptstatus.call(uro, e)​;
+    if (this.lib!="Consult") {
+      fill.opdatecal(e);
+      fill.oplength(e);
+    }
+    fill.ptstatus.call(this, e)​;
     mer.effect(e)​;
   }, 
-  UroAfterEdit : function (e, value) {
-    emx.run.call(uro, e)​;
+  AfterEdit : function (e, value) {
+    emx.run.call(this, e)​;
     old.load(e);
-    uro.updateDJStamp(e)​;
-    if (value=="create") {
-      rpo.createnew(e);
-      opu.createOp(e)​;
+    if (this.lib!="Consult") {
+      uro.updateDJStamp(e)​;
+      if (value=="create") {
+        rpo.createnew(e);
+        if (this.lib=="UroBase")
+          opu.createOp(e)​;
+      }
+      else if (value=="update")​ {
+        rpo.updatenew(e);
+        if (this.lib=="UroBase")
+          opu.updateOp(e)​;
+      }
     }
-    else if (value=="update")​ {
-      rpo.updatenew(e);
-      opu.updateOp(e)​;
-    }
-    old.save.call(uro, e)​;
+    old.save.call(this, e)​;
   }, 
-  UroBeforeViewCard ​: function (e) {​
-    old.save.call(uro, e)​;
+  BeforeViewCard ​: function (e) {​
+    old.save.call(this, e)​;
   }, 
-  UroBeforeOpenLib : function (all) {
-    fill.futureall.call(uro, all)​;
+  BeforeOpenLib : function (all) {
+    fill.futureall.call(this, all)​;
   }, 
-  UroBeforeUpdatingField : function (e) {
+  BeforeUpdatingField : function (e) {
     old.load(e)​;
-    fill.setnewdate.call(uro, e)​;​
-    fill.setvisitdate.call(uro, e)​;
-    fill.track.call(uro, e)​;
-    mer.merge.call(uro, e)​;
-    que.run.call(uro, e)​;
-    fill.ptstatus.call(uro, e)​;
+    fill.setnewdate.call(this, e)​;​
+    fill.setvisitdate.call(this, e)​;
+    fill.track.call(this, e)​;
+    mer.merge.call(this, e)​;
+    if (this.lib!="Consult")
+      que.run.call(this, e)​;
+    fill.ptstatus.call(this, e)​;
     mer.effect(e)​;
   }, 
-  UroAfterUpdatingField : function (e) {
-    old.save.call(uro, e)​;
+  AfterUpdatingField : function (e) {
+    old.save.call(this, e)​;
   }, 
-  UroBeforeDelete : function (e)​ {
+  BeforeDelete : function (e)​ {
     if (e.field("Merge")​==true)​ {
-      mer.cancel.call(uro, e)​;
+      mer.cancel.call(this, e)​;
     }
   }, 
-  UroAfterDelete : function (e)​ {
-    old.load(e);
-    dxop.cancel.call(dxo, e)​;
-    dxop.cancel.call(opo, e)​;
-    rpo.deleteold(e)​;
-    opu.deleteOp(e);
+  AfterDelete : function (e)​ {
+    if (this.lib!="Consult") {
+      old.load(e);
+      dxop.cancel.call(dxo, e)​;
+      dxop.cancel.call(opo, e)​;
+      rpo.deleteold(e)​;
+      if (this.lib=="UroBase")
+        opu.deleteOp(e);
+    }
     fill.deletept(e)​;
   }, 
-  BackupOpenEdit : function (e)​ {
-    old.save.call(uro, e)​;
-  }, 
-  BackupBeforeEdit : function (e, value)​ {
-    old.load(e)​;
-    fill.setnewdate.call(uro, e)​;​
-    fill.resulteffect.call(uro, e);
-    fill.future.call(uro, e)​;
-    uro.setopextra(e)​;
-    fill.setvisitdate.call(uro, e)​;
-    fill.resultbydate.call(uro, e);
-    fill.pasthx.call(uro, e);
-    fill.track.call(uro, e)​;
-    if (value=="create")
-      mer.newmergeid.call(buo, e)​;
-    mer.merge.call(buo, e)​;
-    uro.setDJstent(e)​;
-    uro.setx15(e)​;
-    dxop.run.call(dxo, e)​;
-    dxop.run.call(opo, e)​;
-    que.run.call(buo, e)​;
-    fill.underlying(e)​;
-    fill.los(e)​;
-    fill.opdatecal(e);
-    fill.oplength(e);
-    fill.ptstatus.call(uro, e)​;
-    mer.effect(e)​;
-  }, 
-  BackupAfterEdit : function (e, value) {
-    emx.run.call(uro, e)​;
-    old.load(e)​;
-    uro.updateDJStamp(e)​;
-    if (value=="create") {
-      rpo.createnew(e);
-    }
-    else if (value=="update")​ {
-      rpo.updatenew(e);
-    }
-    old.save.call(uro, e)​;
-  }, 
-  BackupBeforeViewCard ​: function (e) {​
-    old.save.call(uro, e)​;
-  }, 
-  BackupBeforeOpenLib : function (all) {
-    fill.futureall.call(uro, all)​;
-  }, 
-  BackupBeforeUpdatingField : function (e) {
-    old.load(e)​;
-    fill.setnewdate.call(uro, e)​;​
-    fill.setvisitdate.call(uro, e)​;
-    fill.track.call(uro, e)​;
-    mer.merge.call(buo, e)​;
-    que.run.call(buo, e)​;
-    fill.ptstatus.call(uro, e)​;
-    mer.effect(e)​;
-  }, 
-  BackupAfterUpdatingField : function (e) {
-    old.save.call(uro, e)​;
-  }, 
-  BackupBeforeDelete : function (e)​ {
-    if (e.field("Merge")​==true)​ {
-      mer.cancel.call(buo, e)​;
-    }
-  }, 
-  BackupAfterDelete : function (e)​ {
-    old.load(e);
-    dxop.cancel.call(dxo, e)​;
-    dxop.cancel.call(opo, e)​;
-    rpo.deleteold(e)​;
-    fill.deletept(e)​;
-  }, 
-  ConsultOpenEdit : function (e)​ {
-    old.save.call(cso, e)​;
-  }, 
-  ConsultBeforeEdit : function (e, value)​ {
-    old.load(e)​;
-    fill.setnewdate.call(cso, e)​;​
-    fill.resulteffect.call(cso, e);
-    fill.future.call(cso, e)​;
-    fill.setvisitdate.call(cso, e)​;
-    fill.resultbydate.call(cso, e);
-    fill.pasthx.call(cso, e);
-    fill.track.call(cso, e)​;
-    if (value=="create")
-      mer.newmergeid.call(cso, e)​;
-    mer.merge.call(cso, e)​;
-    fill.underlying(e)​;
-    fill.los(e)​;
-    fill.ptstatus.call(cso, e)​;
-    mer.effect(e)​;
-  },
-  ConsultAfterEdit : function (e, value) {
-    emx.run.call(cso, e)​;
-    old.load(e)​;
-    old.save.call(cso, e)​;
-  }, 
-  ConsultBeforeViewCard ​: function (e) {​
-    old.save.call(cso, e)​;
-  }, 
-  ConsultBeforeOpenLib : function (all) {
-    fill.futureall.call(cso, all)​;
-  }, 
-  ConsultBeforeUpdatingField : function (e) {  
-    old.load(e)​;
-    fill.setnewdate.call(cso, e)​;​
-    fill.setvisitdate.call(cso, e)​;
-    fill.track.call(cso, e)​;
-    mer.merge.call(cso, e)​;
-    fill.ptstatus.call(cso, e)​;
-    mer.effect(e)​;
-  }, 
-  ConsultAfterUpdatingField : function (e) {
-    old.save.call(cso, e)​;
-  }, 
-  ConsultBeforeDelete : function (e)​ {
-    if (e.field("Merge")​==true)​ {
-      mer.cancel.call(cso, e)​;
-    }
-  }, 
-  ConsultAfterDelete : function (e)​ {
-    fill.deletept(e);
-  },
   OpUroBeforeEdit : function (e) {
     opu.setnewdate(e)​;
   }, 
