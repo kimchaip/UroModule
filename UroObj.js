@@ -290,7 +290,8 @@ var mer = {
 var que = {
   q: [],​
   load: function(e) {  // load entry to q
-    all = lib().entries();
+    let lib = this.lib=="UroBase"? or: bu;
+    all = lib.entries();
     q = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(e.field("Date")) && v.field("ORType")=="GA" && v.field("Status")!="Not");
   },
   save: function(e) {
@@ -351,24 +352,24 @@ var que = {
   run : function (e) {
     if (my.gdate(e.field("TimeIn")) != my.gdate(old.field("TimeIn")) || e.field("Que") != old.field("Que") || e.field("Status") != old.field("Status") || e.field("ORType") != old.field("ORType") || (e.field("Que") == "00" && e.field("Status") != "Not" && e.field("ORType")​ == "GA")) {
       // load old entry to q
-      this.load(e);
+      que.load.call(this, e);
       // remove old e or insert new e
       if (e.field("Status") == "Not" || e.field("ORType")​ == "LA") {  // change Status -> Not or ORType -> LA
-        this.remove(e);
+        que.remove(e);
         e.set("Que", "00");
       }
       else {  // change Status -> !Not and ORType -> GA
-        this.insert(e);
+        que.insert(e);
       }
       // sort q by que
-      this.sortque(e);
+      que.sortque(e);
       // update when Que change and !Not and GA
       if (e.field("Que") != old.field("Que") && e.field("Status") != "Not" && e.field("ORType")​ == "GA") {
         // insert this entry to q at position que
-        this.insert(e);
+        que.insert(e);
       }
       //reorder by TimeIn -> set new que to every entry
-      this.save(e);
+      que.save(e);
     }
   }
 };
@@ -1320,7 +1321,9 @@ var uro = {
     }
   }
 }​;
-
+var buo = {
+  lib : "Backup"
+}
 var cso = {
   lib : "Consult",
   opdate : "ConsultDate",
@@ -1657,7 +1660,7 @@ var trig = {
     uro.setx15(e)​;
     dxop.run.call(dxo, e)​;
     dxop.run.call(opo, e)​;
-    que.run(e)​;
+    que.run.call(uro, e)​;
     fill.underlying(e)​;
     fill.los(e)​;
     fill.opdatecal(e);
@@ -1691,7 +1694,7 @@ var trig = {
     fill.setvisitdate.call(uro, e)​;
     fill.track.call(uro, e)​;
     mer.merge(e)​;
-    que.run(e)​​;
+    que.run.call(uro, e)​;
     fill.ptstatus.call(uro, e)​;
     mer.effect(e)​;
   }, 
@@ -1731,7 +1734,7 @@ var trig = {
     uro.setx15(e)​;
     dxop.run.call(dxo, e)​;
     dxop.run.call(opo, e)​;
-    que.run(e)​​;
+    que.run.call(buo, e)​;
     fill.underlying(e)​;
     fill.los(e)​;
     fill.opdatecal(e);
@@ -1763,7 +1766,7 @@ var trig = {
     fill.setvisitdate.call(uro, e)​;
     fill.track.call(uro, e)​;
     mer.merge(e)​;
-    que.run(e)​​;
+    que.run.call(buo, e)​;
     fill.ptstatus.call(uro, e)​;
     mer.effect(e)​;
   }, 
