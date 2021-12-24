@@ -252,7 +252,7 @@ var mer = {
         if (this.m.length==1) o.set("Merge", false);
       }
       else {  // inx>0: cancel child
-        if (lib().title!="Consult")
+        if (this.lib!="Consult")
           e.set("VisitDate", my.dateminus(e.field("Date"), 1));
         else
           e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1));
@@ -274,10 +274,10 @@ var mer = {
   merge : function(e) {
     if (e.field("Merge")​!=old.field("Merge")​)​ {
       if (e.field("Merge")​) {
-        this.run(e)​;
+        mer.run(e)​;
       }
       else {
-        this.cancel(e);
+        mer.cancel.call(this, e);
       }
     }
   },
@@ -1322,7 +1322,14 @@ var uro = {
   }
 }​;
 var buo = {
-  lib : "Backup"
+  lib : "Backup",
+  opdate : "Date",
+  status : "Status",
+  op : "Op",
+  result : "OpResult",
+  emxdefault : "<Default>",
+  notonly : /งดเพราะ/,
+  notdone : /ไม่ทำเพราะ/
 }
 var cso = {
   lib : "Consult",
@@ -1655,7 +1662,7 @@ var trig = {
     fill.track.call(uro, e)​;
     if (value=="create")
       mer.newmergeid.call(uro, e)​;
-    mer.merge(e)​;
+    mer.merge.call(uro, e)​;
     uro.setDJstent(e)​;
     uro.setx15(e)​;
     dxop.run.call(dxo, e)​;
@@ -1693,7 +1700,7 @@ var trig = {
     fill.setnewdate.call(uro, e)​;​
     fill.setvisitdate.call(uro, e)​;
     fill.track.call(uro, e)​;
-    mer.merge(e)​;
+    mer.merge.call(uro, e)​;
     que.run.call(uro, e)​;
     fill.ptstatus.call(uro, e)​;
     mer.effect(e)​;
@@ -1703,7 +1710,7 @@ var trig = {
   }, 
   UroBeforeDelete : function (e)​ {
     if (e.field("Merge")​==true)​ {
-      mer.cancel(e)​;
+      mer.cancel.call(uro, e)​;
     }
   }, 
   UroAfterDelete : function (e)​ {
@@ -1729,7 +1736,7 @@ var trig = {
     fill.track.call(uro, e)​;
     if (value=="create")
       mer.newmergeid.call(buo, e)​;
-    mer.merge(e)​;
+    mer.merge.call(buo, e)​;
     uro.setDJstent(e)​;
     uro.setx15(e)​;
     dxop.run.call(dxo, e)​;
@@ -1765,7 +1772,7 @@ var trig = {
     fill.setnewdate.call(uro, e)​;​
     fill.setvisitdate.call(uro, e)​;
     fill.track.call(uro, e)​;
-    mer.merge(e)​;
+    mer.merge.call(buo, e)​;
     que.run.call(buo, e)​;
     fill.ptstatus.call(uro, e)​;
     mer.effect(e)​;
@@ -1775,7 +1782,7 @@ var trig = {
   }, 
   BackupBeforeDelete : function (e)​ {
     if (e.field("Merge")​==true)​ {
-      mer.cancel(e)​;
+      mer.cancel.call(buo, e)​;
     }
   }, 
   BackupAfterDelete : function (e)​ {
@@ -1799,7 +1806,7 @@ var trig = {
     fill.track.call(cso, e)​;
     if (value=="create")
       mer.newmergeid.call(cso, e)​;
-    mer.merge(e)​;
+    mer.merge.call(cso, e)​;
     fill.underlying(e)​;
     fill.los(e)​;
     fill.ptstatus.call(cso, e)​;
@@ -1821,7 +1828,7 @@ var trig = {
     fill.setnewdate.call(cso, e)​;​
     fill.setvisitdate.call(cso, e)​;
     fill.track.call(cso, e)​;
-    mer.merge(e)​;
+    mer.merge.call(cso, e)​;
     fill.ptstatus.call(cso, e)​;
     mer.effect(e)​;
   }, 
@@ -1830,7 +1837,7 @@ var trig = {
   }, 
   ConsultBeforeDelete : function (e)​ {
     if (e.field("Merge")​==true)​ {
-      mer.cancel(e)​;
+      mer.cancel.call(cso, e)​;
     }
   }, 
   ConsultAfterDelete : function (e)​ {
