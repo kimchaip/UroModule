@@ -155,8 +155,8 @@ var mer = {
     
     this.m.push(o);
   },
-  newmergeid: function(e, libname) {
-    let o = [{"lib":libname, "e":e.id}];
+  newmergeid: function(e) {
+    let o = [{"lib":this.lib, "e":e.id}];
     e.set("MergeID", JSON.stringify(o));
   },
   sort: function(e) {
@@ -1654,7 +1654,7 @@ var trig = {
     fill.pasthx.call(uro, e);
     fill.track.call(uro, e)​;
     if (value=="create")
-      mer.newmergeid(e, "UroBase")​;
+      mer.newmergeid.call(uro, e)​;
     mer.merge(e)​;
     uro.setDJstent(e)​;
     uro.setx15(e)​;
@@ -1728,7 +1728,7 @@ var trig = {
     fill.pasthx.call(uro, e);
     fill.track.call(uro, e)​;
     if (value=="create")
-      mer.newmergeid(e, "Backup")​;
+      mer.newmergeid.call(buo, e)​;
     mer.merge(e)​;
     uro.setDJstent(e)​;
     uro.setx15(e)​;
@@ -1798,7 +1798,7 @@ var trig = {
     fill.pasthx.call(cso, e);
     fill.track.call(cso, e)​;
     if (value=="create")
-      mer.newmergeid(e, "Consult")​;
+      mer.newmergeid.call(cso, e)​;
     mer.merge(e)​;
     fill.underlying(e)​;
     fill.los(e)​;
