@@ -232,27 +232,27 @@ var mer = {
     }
   },
   cancel : function(e) {
-    this.load(e);
-    this.sort(e);
-    let inx = this.findInx(e);
+    mer.load(e);
+    mer.sort(e);
+    let inx = mer.findInx(e);
     let mergeobj = null;
-    if (inx>-1 && this.m.length>1) {
-      mergeobj = this.m.splice(inx, 1);
+    if (inx>-1 && mer.m.length>0) {
+      mergeobj = mer.m.splice(inx, 1);
       if (inx==0) {  // cancel parent
-        this.save(e, mergeobj);
+        mer.save(e, mergeobj);
         // other child.VSDate, MergeID is changed
-        let o = this.m[0].e;
-        if (this.m[0].lib!="Consult")
-          this.setall("VisitDate", my.dateminus(o.field("Date"), 1));
+        let o = mer.m[0].e;
+        if (mer.m[0].lib!="Consult")
+          mer.setall("VisitDate", my.dateminus(o.field("Date"), 1));
         else
-          this.setall("VisitDate", my.dateminus(o.field("ConsultDate"), 1));
+          mer.setall("VisitDate", my.dateminus(o.field("ConsultDate"), 1));
         
-        this.save(o, this.m);
-        this.setall("MergeID", o.field("MergeID"));
-        if (this.m.length==1) o.set("Merge", false);
+        mer.save(o, mer.m);
+        mer.setall("MergeID", o.field("MergeID"));
+        if (mer.m.length==1) o.set("Merge", false);
       }
       else {  // inx>0: cancel child
-        if (this.lib!="Consult")
+        if (mer.lib!="Consult")
           e.set("VisitDate", my.dateminus(e.field("Date"), 1));
         else
           e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1));
@@ -262,12 +262,12 @@ var mer = {
           e.field("Track", 0);
           e.field("Summary", false);
         }
-        this.save(e, mergeobj);
+        mer.save(e, mergeobj);
         // other mergeobj.MergeID is changed
-        let o = this.m[0].e;  // parent
-        this.save(o, this.m);
-        this.setall("MergeID", o.field("MergeID"));
-        if (this.m.length==1) o.set("Merge", false);
+        let o = mer.m[0].e;  // parent
+        mer.save(o, mer.m);
+        mer.setall("MergeID", o.field("MergeID"));
+        if (mer.m.length==1) o.set("Merge", false);
       }
     }
   },
