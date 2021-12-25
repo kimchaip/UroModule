@@ -227,6 +227,11 @@ var mer = {
       this.setall("MergeID", e.field("MergeID"));
       this.setall("Merge", true);
       this.setall("VisitDate", mergeobj.e.field("VisitDate"));
+      this.setall("Ward", mergeobj.e.field("Ward"));
+      this.setall("DischargeDate", mergeobj.e.field("DischargeDate"));
+      this.setall("Track", mergeobj.e.field("Track"));
+      this.setall("Summary", mergeobj.e.field("Summary"));
+      this.setall("LOS", mergeobj.e.field("LOS"));
     }
     else {
       message("Can't find Last Admit!");
@@ -262,6 +267,7 @@ var mer = {
           e.field("DischargeDate", null);
           e.field("Track", 0);
           e.field("Summary", false);
+          e.field("LOS", null);
         }
         mer.save(e, mergeobj);
         // other mergeobj.MergeID is changed
