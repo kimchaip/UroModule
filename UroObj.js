@@ -130,7 +130,7 @@ var mer = {
       return n;
     });
   },
-  save: function(e, mergeobj) {
+  save : function(e, mergeobj) {
     let m = mergeobj.map(v=>{
       let n = new Object();
       if(v) {
@@ -209,7 +209,7 @@ var mer = {
       }         
     }
   },
-  findLast: function(e) {
+  findLast : function(e) {
     if (e.field("Patient").length>0) {
       let ptent = pt.findById(e.field("Patient")[0].id);
       let date = e.field("VisitDate");
@@ -226,6 +226,7 @@ var mer = {
       this.save(e, this.m);
       this.setall("MergeID", e.field("MergeID"));
       this.setall("Merge", true);
+      this.setall("VisitDate", mergeobj.e.field("VisitDate"));
     }
     else {
       message("Can't find Last Admit!");
@@ -294,7 +295,7 @@ var que = {
     all = lib.entries();
     q = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(e.field("Date")) && v.field("ORType")=="GA" && v.field("Status")!="Not");
   },
-  save: function(e) {
+  save : function(e) {
     // reorder by TimeIn
     this.sorttime();
     // set new que to every entry
@@ -303,7 +304,7 @@ var que = {
       this.oldsave(v);
     }, this);
   },
-  oldsave: function (e) {
+  oldsave : function (e) {
     // get que data
     let qstr = '"Que":"' + e.field("Que") + '"';
     // replace to "que":"xx" in previous
@@ -1121,7 +1122,7 @@ var pto = {
       }
     }
   },
-  findLast: function(ptent, date, eid) {
+  findLast : function(ptent, date, eid) {
     eid = eid? eid: 0;
     if (ptent) {
       let orlinks = ptent.linksFrom("UroBase", "Patient") ;
