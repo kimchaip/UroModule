@@ -593,7 +593,7 @@ var fill = {
               e.set("VisitType", "OPD")​;
           }​
         }
-        else if(old.field("ORType")!=e.field("ORType")) {
+        else if(old.field("ORType")!=e.field("ORType") || my.gdate(old.field(this.opdate))!=my.gdate(e.field(this.opdate))) {
           if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) >= my.gdate(e.field(this.opdate))) {
             e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
             if (e.field("VisitType") == "OPD")​
