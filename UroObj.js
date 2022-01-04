@@ -173,7 +173,7 @@ var mer = {
         q2 = my.gdate(b.e.field("ConsultDate"));
       
       if (q1==q2)
-        return my.qdate(a.e.creationTime)-my.qdate(b.e.creationTime);
+        return my.gdate(a.e.creationTime)-my.gdate(b.e.creationTime);
       else
         return q1-q2;
     });
