@@ -219,8 +219,8 @@ var mer = {
   },
   run : function(e) {
     let mergeobj = mer.findLast(e);
-    mer.load(mergeobj.e);
     if (mergeobj) {
+      mer.load(mergeobj.e);
       mer.append(this.lib, e);
       mer.sort(e);
       mer.save(e, mer.m);
