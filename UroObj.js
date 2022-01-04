@@ -1666,7 +1666,7 @@ var trig = {
     fill.resultbydate.call(this, e);
     fill.pasthx.call(this, e);
     fill.track.call(this, e)​;
-    if (value=="create" || !e.field(MergeID))
+    if (value=="create" || !e.field("MergeID"))
       mer.newmergeid.call(this, e)​;
     mer.merge.call(this, e)​;
     if (this.lib!="Consult") {
