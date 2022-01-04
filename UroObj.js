@@ -218,10 +218,10 @@ var mer = {
     return null;
   },
   run : function(e) {
-    this.load(e);
     let mergeobj = this.findLast(e);
+    this.load(mergeobj.e);
     if (mergeobj) {
-      this.append(mergeobj.lib, mergeobj.e);
+      this.append(lib(), e);
       this.sort(e);
       this.save(e, this.m);
       this.setall("MergeID", e.field("MergeID"));
