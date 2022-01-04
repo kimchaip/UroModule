@@ -218,20 +218,20 @@ var mer = {
     return null;
   },
   run : function(e) {
-    let mergeobj = this.findLast(e);
-    this.load(mergeobj.e);
+    let mergeobj = mer.findLast(e);
+    mer.load(mergeobj.e);
     if (mergeobj) {
-      this.append(lib(), e);
-      this.sort(e);
-      this.save(e, this.m);
-      this.setall("MergeID", e.field("MergeID"));
-      this.setall("Merge", true);
-      this.setall("VisitDate", mergeobj.e.field("VisitDate"));
-      this.setall("Ward", mergeobj.e.field("Ward"));
-      this.setall("DischargeDate", mergeobj.e.field("DischargeDate"));
-      this.setall("Track", mergeobj.e.field("Track"));
-      this.setall("Summary", mergeobj.e.field("Summary"));
-      this.setall("LOS", mergeobj.e.field("LOS"));
+      mer.append(this.lib, e);
+      mer.sort(e);
+      mer.save(e, mer.m);
+      mer.setall("MergeID", e.field("MergeID"));
+      mer.setall("Merge", true);
+      mer.setall("VisitDate", mergeobj.e.field("VisitDate"));
+      mer.setall("Ward", mergeobj.e.field("Ward"));
+      mer.setall("DischargeDate", mergeobj.e.field("DischargeDate"));
+      mer.setall("Track", mergeobj.e.field("Track"));
+      mer.setall("Summary", mergeobj.e.field("Summary"));
+      mer.setall("LOS", mergeobj.e.field("LOS"));
     }
     else {
       message("Can't find Last Admit!");
@@ -281,7 +281,7 @@ var mer = {
   merge : function(e) {
     if (e.field("Merge")​!=old.field("Merge")​)​ {
       if (e.field("Merge")​) {
-        mer.run(e)​;
+        mer.run.call(this, e)​;
       }
       else {
         mer.cancel.call(this, e);
