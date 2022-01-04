@@ -235,6 +235,7 @@ var mer = {
     }
     else {
       message("Can't find Last Admit!");
+      e.set("Merge", false);
     }
   },
   cancel : function(e) {
