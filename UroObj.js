@@ -1740,6 +1740,47 @@ var trig = {
     }
     fill.deletept(e)​;
   }, 
+  OpListBeforeEdit : function (e, value) {
+    e.set("OpFill", e.field("OpFill").trim()​)​;
+    e.set("OpList", e.field("OpList").trim()​)​;
+
+    if(e.field("Price")​ > 0 &​& e.field("PriceExtra")​ == 0) {
+      e.set("PriceExtra", e.field("Price")​*1.5)​;
+    }
+    else if(e.field("Price")​ == 0 &​& e.field("PriceExtra")​ > 0) {
+      e.set("Price", e.field("PriceExtra")​*2/3)​;
+    }​
+    else if(e.field("Price")​ > 0 &​& e.field("PriceExtra")​ > 0 &​& e.field("Price")​*1.5 != e.field("PriceExtra")​) {
+      e.set("PriceExtra", e.field("Price")​*1.5)​;
+    }​
+
+    let orlinks = e.linksFrom("UroBase", "OperationList") ;
+    let bulinks = e.linksFrom("Backup", "OperationList") ;
+    e.set("Count", orlinks.length+bulinks.length​)​;
+
+    if (orlinks.length>0) {
+      for(let i in orlinks) {
+        if (orlinks[i].field("Op") != e.field("OpFill")​)​ {
+          orlinks[i].set("Op", e.field("OpFill"))​;
+            
+          this.BeforeEdit.call(uro, orlinks[i], "update");
+          this.AfterEdit.call(uro, orlinks[i], "update");
+        }
+      }​
+    }​
+    if (bulinks.length>0) {
+      for(let i in bulinks) {
+        if (bulinks[i].field("Op") != e.field("OpFill")​)​ {
+          bulinks[i].set("Op", e.field("OpFill"))​;
+      
+          this.BeforeEdit.call(buo, bulinks[i], "update");
+          this.AfterEdit.call(buo, bulinks[i], "update");
+        }
+      }​
+    }​
+    if(e.field("Count")​==0 && value=="update")​
+      e.trash()​;
+  }, 
   OpUroBeforeEdit : function (e) {
     opu.setnewdate(e)​;
   }, 
