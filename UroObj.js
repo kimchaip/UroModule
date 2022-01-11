@@ -911,7 +911,7 @@ var fill = {
           }​      
           links[0].set("Descript", str);
         }
-        else if (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ ) { // D/C
+        else if (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ || e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) <= ntoday) { // D/C
           let dead = e.field(this.result).match(/dead|death/ig);
           dead = dead?dead.length​:0;
           if(dead>0){
