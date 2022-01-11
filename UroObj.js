@@ -766,6 +766,9 @@ var fill = {
         e.set("DJstent", null);
       }
     }
+    else if(e.field(this.status) == "Not") {
+      e.set("DJstent", null);
+    }
   },
   resultbydate : function(e) {
     let opresult = e.field(this.result);
