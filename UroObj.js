@@ -738,7 +738,7 @@ var fill = {
   },
   djbyresult : function(e) {
     let opresult = e.field(this.result);
-    if(this.lib!="Consult") {
+    if(this.lib!="Consult" && e.field(this.status) != "Not") {
       if(opresult && old.field("OpResult") != opresult ) {
         let ondj = opresult.match(/dj/i);
         ondj = ondj==null?0:ondj.length;
@@ -789,8 +789,8 @@ var fill = {
   resulteffect : function(e) {
     let opresult = e.field(this.result).replace(/ +/g, ' ').trim().replace(/\n +/g, '\n');
     e.set(this.result, opresult);
-    fill.djbyresult.call(this, e);
     fill.statusbyresult.call(this, e);
+    fill.djbyresult.call(this, e);
   },
   track : function (e) {
     if (e.field("Summary") == true) {
