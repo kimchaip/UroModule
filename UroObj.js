@@ -725,7 +725,7 @@ var fill = {
         }
       }
     }
-    else if(opresult == ""){
+    else if(!opresult){
       if(this.lib!="Consult") {
         if(e.field(this.status)!="Plan")
           e.set(this.status, "Plan");
@@ -739,7 +739,7 @@ var fill = {
   djbyresult : function(e) {
     let opresult = e.field(this.result);
     if(this.lib!="Consult" && e.field(this.status) != "Not") {
-      if(opresult && old.field("OpResult") != opresult ) {
+      if(opresult) {
         let ondj = opresult.match(/dj/i);
         ondj = ondj==null?0:ondj.length;
         let opon = e.field("Op").match(/dj/i);
@@ -762,7 +762,7 @@ var fill = {
         else
           e.set("DJstent", null);
       }
-      else if(old.field(this.result) && !opresult){
+      else if(!opresult){
         e.set("DJstent", null);
       }
     }
@@ -773,7 +773,7 @@ var fill = {
   resultbydate : function(e) {
     let opresult = e.field(this.result);
     
-    if(opresult && old.field("OpResult") != opresult ) {
+    if(opresult) {
       if(this.lib!="Consult") {
         if(my.gdate(e.field("Date"))<=ntoday​)​ {
           let d = Math.floor((ntoday-my.gdate(e.field("Date")​))​/86400000);
