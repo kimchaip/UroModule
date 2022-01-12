@@ -883,33 +883,50 @@ var fill = {
     }
   },
   ptstatus : function (e) {
+    let opresult = e.field(this.result);
+    let notdone = opresult.match(this.notdone);
+    notdone = notdone==null?0:notdone.length;
+    
     let links = e.field("Patient")​;
     if (links.length>0) {
       let ptent = pt.findById(links[0].id);
         
       let o = pto.findLast(ptent, today);
+      let str = "" ;
       if (o != null)​{
         links[0].set("WardStamp", o.e.field("VisitDate")​);
+        if (o.e.field("Dx")!="")​
+          str = e.field("Dx");
+        if (o.e.field(this.op)!="")​ {
+          if (str!="")
+            str += " -​> " ;
+          str += o.e.field(this.op);
+        }​
+        if (o.e.field(this.result)!="")​ {
+          if (str!="")
+            str += " -​> " ;
+          str += e.field(this.result);
+        }​       
+        links[0].set("Descript", str);
       }
       else {
         links[0].set("WardStamp",null);
+        links[0].set("Ward",  "");
+        links[0].set("Descript", "");
       }​
+      
       //--set pt.status, pt.ward, wardStamp and Description
       if ((links[0].field("WardStamp")​ == null || my.gdate(e.field("VisitDate")​) >= my.gdate(links[0].field("WardStamp"))​) && 
 (links[0].field("Status")​ == "Still" || links[0].field("Status")​ == "Active")​​)​ {
         if (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) ) {//Admit
-          links[0].set("Status" ,"Active");
-          links[0].set("Ward",e.field("Ward"));
-          links[0].set("WardStamp", e.field("VisitDate")​)​;
-          let str = "" ;
-          if (e.field("Dx")!="")​
-            str = e.field("Dx");
-          if (e.field(this.op)!="")​ {
-            if (str!="" )
-              str += " -​> " ;
-            str += e.field(this.op);
-          }​      
-          links[0].set("Descript", str);
+          if(notdone>0)​ { //but notvisit
+            links[0].set("Status", "Still")​;
+            links[0].set("Ward", "");
+          }
+          else {
+            links[0].set("Status" ,"Active");
+            links[0].set("Ward", e.field("Ward"));
+          }
         }
         else if (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ || e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) <= ntoday) { // D/C
           let dead = e.field(this.result).match(/dead|death/ig);
@@ -920,28 +937,14 @@ var fill = {
           else {
             links[0].set("Status" ,"Still");
           }
-          links[0].set("Ward", "");
-          let str = "" ;
-          if (e.field("Dx")!="")​
-            str = e.field("Dx");
-          if (e.field(this.op)!="")​ {
-            if (str!="")
-              str += " -​> " ;
-            str += e.field(this.op);
-          }​
-          if (e.field(this.result)!="")​ {
-            if (str!="")
-              str += " -​> " ;
-            str += e.field(this.result);
-          }​       
-          links[0].set("Descript", str);
+          links[0].set("Ward", "");   
         }​
         else if ((o == null)​ || (o.e.field("DischargeDate") != null && my.gdate(o.e.field("DischargeDate"))​ <= ntoday)​ ) {//if future, check last admit :never admit or already D/C of last visit: still
           links[0].set("Status" ,"Still");
           links[0].set("Ward", "");
         }​
       }​
-    }​​
+    }​​​​
   }, 
   color : function (e)​ {
     if(this.lib!="Consult") {
@@ -1141,7 +1144,9 @@ var pto = {
       let last = null, s=null, r=null, u=null​;​
       if (orlinks.length>0) {
         for (let i in orlinks) {
-          if (orlinks[i].field("VisitType")=="Admit" && my.gdate(​orlinks[i].field("VisitDate")) > my.gdate(​last) && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && orlinks[i].id != eid) {
+          let notdone = orlinks[i].field(uro.result).match(uro.notdone);
+          notdone = notdone==null?0:notdone.length;
+          if (orlinks[i].field("VisitType")=="Admit" && !notdone && my.gdate(​orlinks[i].field("VisitDate")) > my.gdate(​last) && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && orlinks[i].id != eid) {
             last = orlinks[i].field("VisitDate");
             r=i;
           }
@@ -1149,7 +1154,9 @@ var pto = {
       }​
       if (bulinks.length​>0) {
         for (let i in bulinks) {
-          if (bulinks[i].field("VisitType")=="Admit" && my.gdate(​bulinks[i].field("VisitDate"))​ > my.gdate(​last​) && my.gdate(​bulinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && bulinks[i].id != eid) {
+          let notdone = bulinks[i].field(buo.result).match(buo.notdone);
+          notdone = notdone==null?0:notdone.length;
+          if (bulinks[i].field("VisitType")=="Admit" && !notdone && my.gdate(​bulinks[i].field("VisitDate"))​ > my.gdate(​last​) && my.gdate(​bulinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && bulinks[i].id != eid) {
             last = bulinks[i].field("VisitDate");
             u=i;
           }
@@ -1157,7 +1164,9 @@ var pto = {
       }​
       if (cslinks.length>0) {
         for (let i in cslinks) {
-          if (cslinks[i].field("VisitType")=="Admit" && my.gdate(​cslinks[i].field("VisitDate")​) > my.gdate(​last) && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) && cslinks[i].id != eid) {
+          let notdone = cslinks[i].field(cso.result).match(cso.notdone);
+          notdone = notdone==null?0:notdone.length;
+          if (cslinks[i].field("VisitType")=="Admit" && !notdone && my.gdate(​cslinks[i].field("VisitDate")​) > my.gdate(​last) && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) && cslinks[i].id != eid) {
             last = cslinks[i].field("VisitDate");
             s=i;
           }
