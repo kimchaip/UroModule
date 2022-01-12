@@ -708,7 +708,7 @@ var fill = {
     notonly = notonly==null?0:notonly.length;
     notdone = notdone==null?0:notdone.length;
     
-    if(opresult && old.field(this.result) != opresult ) {
+    if(opresult) {
       if(notdone>0)​ {
         e.set(this.status, "Not")​;
         let links = e.field("Patient");
@@ -725,7 +725,7 @@ var fill = {
         }
       }
     }
-    else if(old.field(this.result) && opresult == ""){
+    else if(opresult == ""){
       if(this.lib!="Consult") {
         if(e.field(this.status)!="Plan")
           e.set(this.status, "Plan");
