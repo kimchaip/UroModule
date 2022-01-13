@@ -898,7 +898,7 @@ var fill = {
         if (o.e.field("Dx")!="")​
           str = e.field("Dx");
 
-        let lib;
+        var lib;
         if(o.lib=="UroBase") {
           lib = uro;
         }
