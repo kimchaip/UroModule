@@ -916,7 +916,7 @@ var fill = {
         if (o.e.field(lib.result)!="")​ {
           if (str!="")
             str += " -​> " ;
-          str += e.field(lib.result);
+          str += o.e.field(lib.result);
         }​       
         links[0].set("Descript", str);
       }
