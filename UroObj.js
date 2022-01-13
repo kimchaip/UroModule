@@ -409,7 +409,7 @@ var emx = {
         
         last.set(this.opdate,  my.date(e.field("AppointDate")​));
         last.link("Patient", links[0]);
-        last.link("Dr", e.field("Dr")​);
+        last.set("Dr", e.field("Dr")​);
         if (e.field("Photo").length>0)​
             last.set("Photo", e.field("Photo").join()​);
         if(this.lib!="Consult") {
