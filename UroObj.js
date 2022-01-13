@@ -54,6 +54,7 @@ var old = {
         old.d["Phone"] = e.field("Phone");
         old.d["Contact"] = e.field("Contact");
         old.d["Descript"] = e.field("Descript");
+        old.d["Dr"] = e.field("Dr");
       }
       else {
         old.d["Patient"] = e.field("Patient").length? e.field("Patient")​[0].title: ""; 
@@ -69,6 +70,7 @@ var old = {
         old.d["Operation"] = e.field("Operation");
         old.d["Color"] = e.field("Color");
         old.d["MergeID"] = e.field("MergeID");
+        old.d["Dr"] = e.field("Dr");
         old.d["Photo"] = e.field("Photo"); 
         old.d["DischargeDate"] = e.field("DischargeDate");
         old.d["LOS"] = e.field("LOS");
@@ -86,7 +88,6 @@ var old = {
         old.d["Bonus"] = e.field("Bonus");
         old.d["ORType"] = e.field("ORType");
         old.d["Que"] = e.field("Que");
-        old.d["Dr"] = e.field("Dr");
         old.d["RecordDate"] = e.field("RecordDate");
         old.d["Future"] = e.field("Future");
         old.d["Status"] = e.field("Status");
@@ -408,6 +409,7 @@ var emx = {
         
         last.set(this.opdate,  my.date(e.field("AppointDate")​));
         last.link("Patient", links[0]);
+        last.link("Dr", e.field("Dr")​);
         if (e.field("Photo").length>0)​
             last.set("Photo", e.field("Photo").join()​);
         if(this.lib!="Consult") {
@@ -957,6 +959,15 @@ var fill = {
       }​
     }​​​​
   }, 
+  ptdr : function (e) {
+    let dr = e.field("Dr");
+    
+    let links = e.field("Patient")​;
+    if (links.length>0) {
+      if(links[0].field("Dr")!=dr) 
+        links[0].set("Dr", dr);
+    }
+  },
   color : function (e)​ {
     if(this.lib!="Consult") {
       if(e.field("Status")=="Not") {
@@ -1390,6 +1401,7 @@ var rpo = {
       ent["Op"]​ = e.field("Op");
       ent["ORType"] = e.field("ORType");
       ent["Extra"]​ = e.field("OpExtra");
+      ent["Dr"]​ = e.field("Dr");
       ent["LOS"]​ = e.field("LOS");
       ent["OpDateCal"] = e.field("OpDateCal");
       ent["OpLength"] = e.field("OpLength");
@@ -1432,6 +1444,7 @@ var rpo = {
               rpt.set("Op", e.field("Op"));
               rpt.set("ORType", e.field("ORType"));
               rpt.set("Extra", e.field("OpExtra"));
+              rpt.set("Dr", e.field("Dr"));
               rpt.set("LOS", e.field("LOS"));
               rpt.set("OpDateCal", e.field("OpDateCal"));
               rpt.set("OpLength", e.field("OpLength"));
@@ -1706,6 +1719,7 @@ var trig = {
       fill.opdatecal(e);
       fill.oplength(e);
     }
+    fill.ptdr(e);
     fill.ptstatus.call(this, e)​;
     mer.effect(e)​;
   }, 
@@ -1741,6 +1755,7 @@ var trig = {
     mer.merge.call(this, e)​;
     if (this.lib!="Consult")
       que.run.call(this, e)​;
+    fill.ptdr(e);
     fill.ptstatus.call(this, e)​;
     mer.effect(e)​;
   }, 
