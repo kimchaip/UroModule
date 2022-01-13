@@ -897,15 +897,26 @@ var fill = {
         links[0].set("WardStamp", o.e.field("VisitDate")​);
         if (o.e.field("Dx")!="")​
           str = e.field("Dx");
-        if (o.e.field(this.op)!="")​ {
+
+        let lib;
+        if(o.lib=="UroBase") {
+          lib = uro;
+        }
+        else if(o.lib=="Backup") {
+          lib = buo;
+        }
+        else if(o.lib=="Consult") {
+          lib = cso
+        }
+        if (o.e.field(lib.op)!="")​ {
           if (str!="")
             str += " -​> " ;
-          str += o.e.field(this.op);
+          str += o.e.field(lib.op);
         }​
-        if (o.e.field(this.result)!="")​ {
+        if (o.e.field(lib.result)!="")​ {
           if (str!="")
             str += " -​> " ;
-          str += e.field(this.result);
+          str += e.field(lib.result);
         }​       
         links[0].set("Descript", str);
       }
