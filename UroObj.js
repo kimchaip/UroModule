@@ -742,7 +742,7 @@ var fill = {
     let opresult = e.field(this.result);
     if(this.lib!="Consult" && e.field(this.status) != "Not") {
       if(opresult) {
-        let ondj = opresult.match(/dj/i);
+        let ondj = opresult.replace(/no +dj/i, "").match(/dj/i);
         ondj = ondj==null?0:ondj.length;
         let opon = e.field("Op").match(/dj/i);
         opon = opon==null?0:opon.length;
