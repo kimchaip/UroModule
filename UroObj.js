@@ -390,7 +390,6 @@ var emx = {
     let defau = libfrom!="Consult"? "<Default>": "Pending";
     let links = e.field("Patient")​;
     if (links.length > 0) {
-      e.set("Output", e.field("Output")+","+this.lib);
       let lib = this.lib!="Consult"? or: cs;
       let ptent = pt.findById(links[0].id);
       let entlinks = ptent.linksFrom(this.lib, "Patient");
@@ -431,6 +430,7 @@ var emx = {
   }, 
   run : function (e)​ {
     let last = null;
+    e.set("Output", e.field("Output")+","+e.field("EntryMx")+":"+e.field("AppointDate"));
     if (e.field("EntryMx")​== "F/U" &&  e.field("AppointDate")) {
       last = emx.createnew.call(cso, e)​;
       if(last) last.show();
