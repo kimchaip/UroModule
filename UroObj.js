@@ -390,6 +390,7 @@ var emx = {
     let defau = libfrom!="Consult"? "<Default>": "Pending";
     let links = e.field("Patient")​;
     if (links.length > 0) {
+      e.set("Output", e.field("Output")+","+this.lib);
       let lib = this.lib!="Consult"? or: cs;
       let ptent = pt.findById(links[0].id);
       let entlinks = ptent.linksFrom(this.lib, "Patient");
