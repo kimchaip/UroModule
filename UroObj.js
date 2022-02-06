@@ -733,7 +733,7 @@ var fill = {
           e.set(this.status, "Plan");
       }
       else {
-        if(e.field(this.status)!="Pending")
+        if(e.field(this.status)=="Not")
           e.set(this.status, "Pending");
       }
     }
