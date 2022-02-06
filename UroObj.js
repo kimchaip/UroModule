@@ -430,7 +430,6 @@ var emx = {
   }, 
   run : function (e)​ {
     let last = null;
-    e.set("Output", e.field("Output")+","+e.field("EntryMx")+":"+e.field("AppointDate"));
     if (e.field("EntryMx")​== "F/U" &&  e.field("AppointDate")) {
       last = emx.createnew.call(cso, e)​;
       if(last) last.show();
