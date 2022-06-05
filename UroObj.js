@@ -628,9 +628,8 @@ var fill = {
           e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
         }​
         else if(my.gdate(old.field(this.opdate))!=my.gdate(e.field(this.opdate))){
-          if(my.gdate(e.field("VisitDate")) > my.gdate(my.dateminus(e.field(this.opdate), 1))){
-            e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
-          }
+          if(my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate)))
+            e.set("VisitDate", my.date(e.field(this.opdate)));
         }
       }
       else if (!e.field("Merge")​ && e.field(this.status)​!= "Not") {
@@ -642,8 +641,8 @@ var fill = {
         }​
         else if(my.gdate(old.field(this.opdate))!=my.gdate(e.field(this.opdate))) {
           if (e.field("VisitType") == "Admit")​ {
-            if (my.gdate(e.field("VisitDate")) >= my.gdate(e.field(this.opdate)))
-              e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
+            if (my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate)))
+              e.set("VisitDate", my.date(e.field(this.opdate)));
           }
           else { // OPD
             if (my.gdate(e.field("VisitDate")) != my.gdate(e.field(this.opdate)))
