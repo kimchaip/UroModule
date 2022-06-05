@@ -621,12 +621,36 @@ var fill = {
       }
     }
     else {  // this.lib == "Consult"
-      if (e.field(this.status)​!= "Not" &​& e.field("VisitDate") == null) {
-        if (e.field("VisitType") == "Admit")​
-          e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1));
-        else
-          e.set("VisitDate", e.field("ConsultDate")​)​;
-      }​
+      if (e.field("Merge")​ && e.field(this.status)​!= "Not") {
+        if (e.field("VisitType") == "OPD")​
+          e.set("VisitType", "Admit")​;
+        if (e.field("VisitDate") == null) {
+          e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
+        }​
+        else if(my.gdate(old.field(this.opdate))!=my.gdate(e.field(this.opdate))){
+          if(my.gdate(e.field("VisitDate")) > my.gdate(my.dateminus(e.field(this.opdate), 1))){
+            e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
+          }
+        }
+      }
+      else if (!e.field("Merge")​ && e.field(this.status)​!= "Not") {
+        if (e.field("VisitDate") == null) {
+          if (e.field("VisitType") == "Admit")​
+            e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
+          else
+            e.set("VisitDate", my.date(e.field(this.opdate)​))​;
+        }​
+        else if(my.gdate(old.field(this.opdate))!=my.gdate(e.field(this.opdate))) {
+          if (e.field("VisitType") == "Admit")​ {
+            if (my.gdate(e.field("VisitDate")) >= my.gdate(e.field(this.opdate)))
+              e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
+          }
+          else { // OPD
+            if (my.gdate(e.field("VisitDate")) != my.gdate(e.field(this.opdate)))
+              e.set("VisitDate", my.date(e.field(this.opdate)));
+          }
+        }
+      }
     }
   },
   sumpasthx : function (e, date) {
