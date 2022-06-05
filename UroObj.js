@@ -610,7 +610,7 @@ var fill = {
               e.set("VisitType", "Admit")​;
           }
           else if(e.field("ORType") == "LA" ) {
-            if(e.field("VisitType") == "OPD" && my.gdate(e.field("VisitDate")) <> my.gdate(my.date(e.field(this.opdate))))
+            if(e.field("VisitType") == "OPD" && my.gdate(e.field("VisitDate")) != my.gdate(my.date(e.field(this.opdate))))
               e.set("VisitDate", my.date(e.field(this.opdate)))​;
             if(e.field("VisitType") == "Admit" && my.gdate(e.field("VisitDate")) >= my.gdate(my.dateminus(e.field(this.opdate), 1)))
               e.set("VisitDate", my.dateminus(e.field(this.opdate), 1))​;
