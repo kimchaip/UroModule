@@ -573,6 +573,8 @@ var fill = {
   setvisitdate ​: function (e)​ {
     if(this.lib!="Consult") {
       if(e.field("Merge")​ && e.field(this.status)!= "Not"){
+        if (e.field("VisitType") == "OPD")​
+          e.set("VisitType", "Admit")​;
         if (e.field("VisitDate") == null) {
           if (e.field("ORType") == "GA") {
             e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
