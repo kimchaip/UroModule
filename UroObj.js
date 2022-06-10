@@ -415,7 +415,6 @@ var emx = {
         if(this.lib!="Consult") {
           last.set("Op", e.field("Operation")​);
           last.set("Dx", e.field("Diagnosis"));
-          last.set("ORType", fill.ortypebyop(e));
         }
         else {
           last.set("Dx", e.field("Diagnosis")​);
@@ -570,6 +569,10 @@ var fill = {
       }​
     }
   },
+  setortype : function (e) {
+    if(old.field("Op")!=e.field("Op") && e.field("Op"))
+      e.set("ORType",  fill.ortypebyop(e));
+  } ,
   setvisitdate ​: function (e)​ {
     if(this.lib!="Consult") {
       if(e.field("Merge")​ && e.field(this.status)!= "Not"){
@@ -1790,8 +1793,10 @@ var trig = {
     fill.setnewdate.call(this, e)​;​
     fill.resulteffect.call(this, e);
     fill.future.call(this, e)​;
-    if (this.lib!="Consult")
+    if (this.lib!="Consult") {
       uro.setopextra(e)​;
+      fill.setortype(e);
+    }
     fill.setvisitdate.call(this, e)​;
     fill.resultbydate.call(this, e);
     fill.pasthx.call(this, e);
