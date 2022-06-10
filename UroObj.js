@@ -699,10 +699,10 @@ var fill = {
     let libs = [or, bu];
     let matches = [];
     for (let l=0; l<libs.length; l++) {
-      let ors = libs[l].find(e.field("Operation"));
+      let ors = libs[l].find(e.field("Op"));
       if(ors.length>0) {
         for (let i=0; i<ors.length; i++) {
-          if(ors[i].field("Dx")==e.field("Diagnosis") && ors[i].field("Op")==e.field("Operation") && ors[i].id!=e.id) {
+          if(ors[i].field("Dx")==e.field("Dx") && ors[i].field("Op")==e.field("Op") && ors[i].id!=e.id) {
             let o = new Object();
             o["dx"] = ors[i].field("Dx");
             o["op"] = ors[i].field("Op");
