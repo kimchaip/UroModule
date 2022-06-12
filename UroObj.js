@@ -570,88 +570,34 @@ var fill = {
     }
   },
   setortype : function (e) {
-    if(old.field("Op")!=e.field("Op") && e.field("Op"))
+    isetortype : function (e) {
+    if(old.field("Op")!=e.field("Op") && e.field("Op") && old.field("ORType") == e.field("ORType"))
       e.set("ORType",  fill.ortypebyop(e));
+  } ,
+  setvisittype : function (e) {
+    if(e.field("Merge")​ && e.field("VisitType") == "OPD")
+      e.set("VisitType", "Admit")​;
+    else if(old.field("Dx")!=e.field("Dx") && e.field("Dx") && old.field("VisitType") == e.field("VisitType"))
+      e.set("VisitType",  fill.visittypebydx.call(this, e));
   } ,
   setvisitdate ​: function (e)​ {
     if(this.lib!="Consult") {
-      if(e.field("Merge")​ && e.field(this.status)!= "Not"){
-        if (e.field("VisitType") == "OPD")​
-          e.set("VisitType", "Admit")​;
-        if (e.field("VisitDate") == null) {
-          if (e.field("ORType") == "GA") {
-            e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
-          }​
-          else ​{
-            e.set("VisitDate", my.date(e.field(this.opdate)))​;
-          }​
-        }
-        else if(old.field("ORType")!=e.field("ORType") || my.gdate(old.field(this.opdate))!=my.gdate(e.field(this.opdate))){
-          if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) > my.gdate(my.dateminus(e.field(this.opdate), 1))){
-            e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
-          }
-          else if(e.field("ORType") == "LA" &​& my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate))){
-            e.set("VisitDate", my.date(e.field(this.opdate)))​;
-          }
-        }
+      if(e.field("ORType") == "LA" &​& e.field("VisitType") == "OPD" && my.gdate(e.field("VisitDate")) != my.gdate(e.field(this.opdate))) {
+        e.set("VisitDate", my.date(e.field(this.opdate)))​;
       }
-      else if(!e.field("Merge")​ && e.field(this.status)!= "Not") {
-        if (e.field("VisitDate") == null) {
-          if (e.field("ORType") == "GA") {
-            e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
-            if (e.field("VisitType") == "OPD")​
-              e.set("VisitType", "Admit")​;
-          }​
-          else ​{
-            e.set("VisitDate", my.date(e.field(this.opdate)))​;
-            if (e.field("VisitType") == "Admit")​
-              e.set("VisitType", "OPD")​;
-          }​
-        }
-        else if(old.field("ORType")!=e.field("ORType") || my.gdate(old.field(this.opdate))!=my.gdate(e.field(this.opdate))) {
-          if(e.field("ORType") == "GA" &​& my.gdate(e.field("VisitDate")) >= my.gdate(e.field(this.opdate))) {
-            e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
-            if (e.field("VisitType") == "OPD")​
-              e.set("VisitType", "Admit")​;
-          }
-          else if(e.field("ORType") == "LA" ) {
-            if(e.field("VisitType") == "OPD" && my.gdate(e.field("VisitDate")) != my.gdate(my.date(e.field(this.opdate))))
-              e.set("VisitDate", my.date(e.field(this.opdate)))​;
-            if(e.field("VisitType") == "Admit" && my.gdate(e.field("VisitDate")) >= my.gdate(my.dateminus(e.field(this.opdate), 1)))
-              e.set("VisitDate", my.dateminus(e.field(this.opdate), 1))​;
-          }
-        }
+      else if(e.field("ORType") == "LA" &​& e.field("VisitType") == "Admit" && my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate))) {
+        e.set("VisitDate", my.date(e.field(this.opdate)))​;
+      }
+      else if(e.field("ORType") == "GA" &​& e.field("VisitType") == "Admit" && my.gdate(e.field("VisitDate")) >= my.gdate(e.field(this.opdate))) {
+        e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
       }
     }
-    else {  // this.lib == "Consult"
-      if (e.field("Merge")​ && e.field(this.status)​!= "Not") {
-        if (e.field("VisitType") == "OPD")​
-          e.set("VisitType", "Admit")​;
-        if (e.field("VisitDate") == null) {
-          e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
-        }​
-        else if(my.gdate(old.field(this.opdate))!=my.gdate(e.field(this.opdate))){
-          if(my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate)))
-            e.set("VisitDate", my.date(e.field(this.opdate)));
-        }
+    else { // this.lib == "Consult"
+      if(e.field("VisitType") == "OPD" && my.gdate(e.field("VisitDate")) != my.gdate(e.field(this.opdate))) {
+        e.set("VisitDate", my.date(e.field(this.opdate)))​;
       }
-      else if (!e.field("Merge")​ && e.field(this.status)​!= "Not") {
-        if (e.field("VisitDate") == null) {
-          if (e.field("VisitType") == "Admit")​
-            e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
-          else
-            e.set("VisitDate", my.date(e.field(this.opdate)​))​;
-        }​
-        else if(my.gdate(old.field(this.opdate))!=my.gdate(e.field(this.opdate))) {
-          if (e.field("VisitType") == "Admit")​ {
-            if (my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate)))
-              e.set("VisitDate", my.date(e.field(this.opdate)));
-          }
-          else { // OPD
-            if (my.gdate(e.field("VisitDate")) != my.gdate(e.field(this.opdate)))
-              e.set("VisitDate", my.date(e.field(this.opdate)));
-          }
-        }
+      else if(e.field("VisitType") == "Admit" && my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate))) {
+        e.set("VisitDate", my.date(e.field(this.opdate)))​;
       }
     }
   },
@@ -732,6 +678,51 @@ var fill = {
     }
     else {
       return "GA"
+    }
+  },
+  visittypebydx : function (e) {
+    let libs = [or, bu, cs];
+    let matches = [];
+    for (let l=0; l<libs.length; l++) {
+      let ors = libs[l].find(e.field("Dx"));
+      if(ors.length>0) {
+        for (let i=0; i<ors.length; i++) {
+          if(ors[i].field("Dx")==e.field("Dx")  && ors[i].id!=e.id) {
+            let o = new Object();
+            o["dx"] = ors[i].field("Dx");
+            o["type"] = ors[i].field("VisitType");
+            matches.push(o);
+          }
+        }
+      }
+    }
+    
+    if(matches.length>0) {
+      let group = {};
+      matches.forEach(v => {
+        group[v.dx+">"+v.type] = (group[v.dx+">"+v.type] || 0) + 1;
+      });
+      let results = Object.keys(group).map(key => {
+        let arr = key.split(">");
+        let o = new Object();
+        o["dx"] = arr[0];
+        o["type"] = arr[1];
+        o["count"] = group[key];
+        return o;
+      });
+      results.sort((a,b)=>{return b.count-a.count});
+      return results[0].type;
+    }
+    else {
+      if(this.lib!="Consult") {
+        if(e.field("ORType")=="LA")
+          return "OPD";
+        else if(e.field("ORType")=="GA")
+          return "Admit";
+      }
+      else {
+        return "Admit";
+      }
     }
   },
   statusbyresult : function(e) {
@@ -1797,6 +1788,7 @@ var trig = {
       uro.setopextra(e)​;
       fill.setortype(e);
     }
+    fill.setvisittype.call(this, e);
     fill.setvisitdate.call(this, e)​;
     fill.resultbydate.call(this, e);
     fill.pasthx.call(this, e);
