@@ -569,8 +569,7 @@ var fill = {
       }​
     }
   },
-  setortype : function (e) {
-    isetortype : function (e) {
+  setortype : function (e) 
     if(old.field("Op")!=e.field("Op") && e.field("Op") && old.field("ORType") == e.field("ORType"))
       e.set("ORType",  fill.ortypebyop(e));
   } ,
