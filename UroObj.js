@@ -587,7 +587,7 @@ var fill = {
       else if(e.field("ORType") == "LA" &​& e.field("VisitType") == "Admit" && (my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate)) || !e.field("VisitDate"))) {
         e.set("VisitDate", my.date(e.field(this.opdate)))​;
       }
-      else if(e.field("ORType") == "GA" &​& e.field("VisitType") == "Admit" && (my.gdate(e.field("VisitDate")) >= my.gdate(e.field(this.opdate)) || !e.field("VisitDate"))) {
+      else if(e.field("ORType") == "GA" &​& e.field("VisitType") == "Admit" && (my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate)) || !e.field("VisitDate"))) {
         e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
       }
     }
