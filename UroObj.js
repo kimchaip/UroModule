@@ -1840,6 +1840,10 @@ var trig = {
   BeforeUpdatingField : function (e) {
     old.load(e)​;
     fill.setnewdate.call(this, e)​;​
+    if (this.lib!="Consult") {
+      fill.setortype(e);
+    }
+    fill.setvisittype.call(this, e);
     fill.setvisitdate.call(this, e)​;
     fill.track.call(this, e)​;
     fill.correctMergeID.call(this, e);
