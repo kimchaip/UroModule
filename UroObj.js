@@ -581,21 +581,21 @@ var fill = {
   } ,
   setvisitdate ​: function (e)​ {
     if(this.lib!="Consult") {
-      if(e.field("ORType") == "LA" &​& e.field("VisitType") == "OPD" && my.gdate(e.field("VisitDate")) != my.gdate(e.field(this.opdate))) {
+      if(e.field("ORType") == "LA" &​& e.field("VisitType") == "OPD" && my.gdate(e.field("VisitDate")) != my.gdate(e.field(this.opdate)) || !e.field("VisitDate")) {
         e.set("VisitDate", my.date(e.field(this.opdate)))​;
       }
-      else if(e.field("ORType") == "LA" &​& e.field("VisitType") == "Admit" && my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate))) {
+      else if(e.field("ORType") == "LA" &​& e.field("VisitType") == "Admit" && my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate)) || !e.field("VisitDate")) {
         e.set("VisitDate", my.date(e.field(this.opdate)))​;
       }
-      else if(e.field("ORType") == "GA" &​& e.field("VisitType") == "Admit" && my.gdate(e.field("VisitDate")) >= my.gdate(e.field(this.opdate))) {
+      else if(e.field("ORType") == "GA" &​& e.field("VisitType") == "Admit" && my.gdate(e.field("VisitDate")) >= my.gdate(e.field(this.opdate)) || !e.field("VisitDate")) {
         e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
       }
     }
     else { // this.lib == "Consult"
-      if(e.field("VisitType") == "OPD" && my.gdate(e.field("VisitDate")) != my.gdate(e.field(this.opdate))) {
+      if(e.field("VisitType") == "OPD" && my.gdate(e.field("VisitDate")) != my.gdate(e.field(this.opdate)) || !e.field("VisitDate")) {
         e.set("VisitDate", my.date(e.field(this.opdate)))​;
       }
-      else if(e.field("VisitType") == "Admit" && my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate))) {
+      else if(e.field("VisitType") == "Admit" && my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate)) || !e.field("VisitDate")) {
         e.set("VisitDate", my.date(e.field(this.opdate)))​;
       }
     }
