@@ -1677,7 +1677,7 @@ var opu = {
             let underly = link.field("Underlying").join().toLowerCase();
             note = note.map(v=>v.trim());
             note = note.filter(v=>underly.indexOf(v.trim().toLowerCase())==-1);
-            note = link.field("Underlying").concat(note);
+            //note = link.field("Underlying").concat(note);
             oss[s].set("Note", note.join(", "));
             
             if(!oss[s].field("CreationTime"))
