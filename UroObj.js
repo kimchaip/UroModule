@@ -1672,7 +1672,14 @@ var opu = {
             oss[s].set("HN", link.field("HN"));
             oss[s].set("Dx", e.field("Dx")​);
             oss[s].set("Op", e.field("Op")​);
-            oss[s].set("Note", link.field("Underlying").join());
+            
+            let note = oss[s].field("Note").split(",");
+            let underly = link.field("Underlying").join().toLowerCase();
+            note = note.map(v=>v.trim());
+            note = note.filter(v=>underly.indexOf(v.trim().toLowerCase())==-1);
+            note = link.field("Underlying").concat(note);
+            oss[s].set("Note", note.join(", "));
+            
             if(!oss[s].field("CreationTime"))
               oss[s].set("CreationTime", e.creationTime);
             if(my.gdate(oss[s].field("ModifiedTime"))<my.gdate(e.lastModifiedTime))
