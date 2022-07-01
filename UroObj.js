@@ -1677,7 +1677,7 @@ var opu = {
             let underly = link.field("Underlying").join().toLowerCase();
             note = note.map(v=>v.trim());
             note = note.filter(v=>underly.indexOf(v.trim().toLowerCase())==-1);
-            let udnote = JSON.parse(link.field("Underlying"));
+            let udnote = link.field("Underlying")[0];
             udnote = udnote.concat(note);
             udnote = udnote.filter(v=>v);
             oss[s].set("Note", udnote.join(", "));
