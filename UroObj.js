@@ -387,7 +387,6 @@ var emx = {
     let last = null;
     let libfrom = lib().title;
     let min = this.lib==libfrom? 1: 0;
-    let defau = libfrom!="Consult"? "<Default>": "Pending";
     let links = e.field("Patient")​;
     if (links.length > 0) {
       let lib = this.lib!="Consult"? or: cs;
@@ -424,7 +423,6 @@ var emx = {
         //message("successfully created new Entry") ;
       }
     }​
-    e.set("EntryMx", defau) ;
     return last;
   }, 
   run : function (e)​ {
@@ -432,15 +430,17 @@ var emx = {
     if (e.field("EntryMx")​== "F/U" &&  e.field("AppointDate")) {
       last = emx.createnew.call(cso, e)​;
       if(last) last.show();
+      else message("This appoint date have ever been used");
     }​
     else if (e.field("EntryMx")​== "set OR" &&  e.field("AppointDate")) {
       last = emx.createnew.call(uro, e);
       if(last) last.show()​;
+      else message("This appoint date have ever been used");
     }
     else if (e.field("EntryMx")​=="F/U" || e.field("EntryMx")​=="set OR")​ {
       message("Appoint date must not leave blank")​;
-      e.set("EntryMx", this.emxdefault)​;
     }​
+    e.set("EntryMx", this.emxdefault)​;
   }
 }​;
 var dxop = {
