@@ -71,6 +71,7 @@ var old = {
         old.d["Color"] = e.field("Color");
         old.d["MergeID"] = e.field("MergeID");
         old.d["Dr"] = e.field("Dr");
+        old.d["Status"] = e.field("Status");
         old.d["Photo"] = e.field("Photo"); 
         old.d["DischargeDate"] = e.field("DischargeDate");
         old.d["LOS"] = e.field("LOS");
@@ -90,7 +91,6 @@ var old = {
         old.d["Que"] = e.field("Que");
         old.d["RecordDate"] = e.field("RecordDate");
         old.d["Future"] = e.field("Future");
-        old.d["Status"] = e.field("Status");
         old.d["OpResult"] = e.field("OpResult");
         old.d["DJstent"] = e.field("DJstent");
         old.d["TimeIn"] = e.field("TimeIn");
@@ -440,7 +440,7 @@ var emx = {
     else if (e.field("EntryMx")​=="F/U" || e.field("EntryMx")​=="set OR")​ {
       message("Appoint date must not leave blank")​;
     }​
-    e.set("EntryMx", this.emxdefault)​;
+    e.set("EntryMx", "<Default>")​;
   }
 }​;
 var dxop = {
@@ -733,35 +733,27 @@ var fill = {
     
     if(opresult) {
       if(notdone>0)​ {
-        e.set(this.status, "Not")​;
+        e.set("Status", "Not")​;
         let links = e.field("Patient");
         if(links.length>0 && links[0].field("Status")=="Active") {
           links[0].set("Status", "Still")​;
         }
       }
       else if(notonly>0)​
-        e.set(this.status, "Not")​;
+        e.set("Status", "Not")​;
       else {
-        if(this.lib!="Consult") {
-          if(e.field(this.status)!="Done")
-            e.set(this.status, "Done");
-        }
+        if(e.field("Status")!="Done")
+          e.set("Status", "Done");
       }
     }
     else if(!opresult){
-      if(this.lib!="Consult") {
-        if(e.field(this.status)!="Plan")
-          e.set(this.status, "Plan");
-      }
-      else {
-        if(e.field(this.status)=="Not")
-          e.set(this.status, "Pending");
-      }
+      if(e.field("Status")!="Plan")
+        e.set("Status", "Plan");
     }
   },
   djbyresult : function(e) {
     let opresult = e.field(this.result);
-    if(this.lib!="Consult" && e.field(this.status) != "Not") {
+    if(this.lib!="Consult" && e.field("Status") != "Not") {
       if(opresult) {
         let ondj = opresult.replace(/no +dj/i, "").match(/dj/i);
         ondj = ondj==null?0:ondj.length;
@@ -789,7 +781,7 @@ var fill = {
         e.set("DJstent", null);
       }
     }
-    else if(this.lib!="Consult" &&e.field(this.status) == "Not") {
+    else if(this.lib!="Consult" && e.field("Status") == "Not") {
       e.set("DJstent", null);
     }
   },
@@ -822,7 +814,7 @@ var fill = {
     if (e.field("Summary") == true) {
       e.set("Track", 3);
     }​​
-    else if (e.field(this.status​) != "Not" && e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) ) {//Admit
+    else if (e.field("Status"​) != "Not" && e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) ) {//Admit
       if (e.field("Track") == 0) {
         e.set("Track", 1) ;
       }​
@@ -830,7 +822,7 @@ var fill = {
         e.set("Track", 2) ;
       }​
     }​
-    else if (e.field(this.status​) != "Not" &​& e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ ) { // D/C
+    else if (e.field("Status"​) != "Not" &​& e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ ) { // D/C
       if (e.field("Track") == 3) {​
         e.set("Track", 2) ;
       }​
@@ -841,7 +833,7 @@ var fill = {
     else if (my.gdate(e.field("VisitDate")​) > ntoday) {​
       e.set("Track", 0) ;
     }​
-    else if (e.field(this.status​) == "Not")​ {
+    else if (e.field("Status"​) == "Not")​ {
       if (my.gdate(e.field("VisitDate")​) > ntoday) {​ // 
         if (e.field("Track") != 0) {​
           e.set("Track", 0) ;
@@ -1032,7 +1024,7 @@ var fill = {
       }
     }
     else { // lib == Consult
-      if(e.field("EntryMx")=="Not") {
+      if(e.field("Status")=="Not") {
         if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
       } 
       else if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​)​{
@@ -1216,13 +1208,8 @@ var pto = {
     let o = this.findLast(e, today);
     if (o)​ {
       let toEnt = o.e ;
-      let statusf;
-      if (o.lib!="Consult")​
-        statusf = "Status";
-      else
-        statusf = "EntryMx";
       if (e.field("Done") == true &​& toEnt.field("Track") == 1) {
-        if (toEnt.field(statusf​) != "Not" && toEnt.field("VisitType") == "Admit" && (toEnt.field("DischargeDate") == null || my.gdate(toEnt.field("DischargeDate"))​ > ntoday)​)​ { // Admit
+        if (toEnt.field("Status"​) != "Not" && toEnt.field("VisitType") == "Admit" && (toEnt.field("DischargeDate") == null || my.gdate(toEnt.field("DischargeDate"))​ > ntoday)​)​ { // Admit
           mer.load(toEnt);
           mer.setall("Track", 2)​;
           mer.colorall(toEnt)​;
@@ -1303,10 +1290,8 @@ var pto = {
 var uro = {
   lib : "UroBase",
   opdate : "Date",
-  status : "Status",
   op : "Op",
   result : "OpResult",
-  emxdefault : "<Default>",
   notonly : /งดเพราะ/,
   notdone : /ไม่ทำเพราะ/,
   setopextra : function (e) {
@@ -1450,20 +1435,16 @@ var uro = {
 var buo = {
   lib : "Backup",
   opdate : "Date",
-  status : "Status",
   op : "Op",
   result : "OpResult",
-  emxdefault : "<Default>",
   notonly : /งดเพราะ/,
   notdone : /ไม่ทำเพราะ/
 }
 var cso = {
   lib : "Consult",
   opdate : "ConsultDate",
-  status : "EntryMx",
   op : "Rx",
   result : "Note",
-  emxdefault : "Pending",
   notonly : /ไม่ดูเพราะ/,
   notdone : /ไม่มาเพราะ/
 }​;
