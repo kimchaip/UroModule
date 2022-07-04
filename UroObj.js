@@ -789,7 +789,7 @@ var fill = {
         e.set("DJstent", null);
       }
     }
-    else if(e.field(this.status) == "Not") {
+    else if(this.lib!="Consult" &&e.field(this.status) == "Not") {
       e.set("DJstent", null);
     }
   },
