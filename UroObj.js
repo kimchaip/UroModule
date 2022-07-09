@@ -921,7 +921,7 @@ var fill = {
           lib = buo;
         }
         else if(o.lib=="Consult") {
-          lib = cso
+          lib = cso;
         }
         if (o.e.field(lib.op)!="")​ {
           if (str!="")
