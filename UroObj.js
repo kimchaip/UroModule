@@ -1459,39 +1459,41 @@ var opo = {
   title : ["OpFill"]
 };
 var rpo = {
+  setAll : function (r, e) {
+    //---Date, Patient, Dx, Op, ORType, Extra, LOS
+    r.set("OpDate", e.field("Date"));
+    r.set("Dx", e.field("Dx"));
+    r.set("Op", e.field("Op"));
+    r.set("ORType", e.field("ORType"));
+    r.set("Extra", e.field("OpExtra"));
+    r.set("Dr", e.field("Dr"));
+    r.set("LOS", e.field("LOS"));
+    r.set("OpDateCal", e.field("OpDateCal"));
+    r.set("OpLength", e.field("OpLength"));
+
+    //---OpGroup, Organ
+    if (e.field("OperationList").length>0)​{
+      r.set("OpGroup", e.field("OperationList")[0].field("OpList"));
+      r.set("Organ", e.field("OperationList")[0].field("OpGroup").join(" ")​);
+    }​
+      ​
+    //---WeekDay
+    r.set("WeekDay", my.wkname(my.gday(e.field("Date")​)​ ))​;
+    //---Dead
+    if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
+      r.set("Dead","Dead");
+    else
+      r.set("Dead","Alive");
+  },
   createnew : function (e) {
     if(e.field("Status") != "Not"){
       let ent = new Object();
-      //---Date, Patient, Dx, Op, ORType, Extra, LOS
-      ent["OpDate"] = e.field("Date");
-      ent["Dx"]​ = e.field("Dx");
-      ent["Op"]​ = e.field("Op");
-      ent["ORType"] = e.field("ORType");
-      ent["Extra"]​ = e.field("OpExtra");
-      ent["Dr"]​ = e.field("Dr");
-      ent["LOS"]​ = e.field("LOS");
-      ent["OpDateCal"] = e.field("OpDateCal");
-      ent["OpLength"] = e.field("OpLength");
-
-      //---OpGroup, Organ
-      if (e.field("OperationList").length>0)​{
-        ent["OpGroup"] = e.field("OperationList")[0].field("OpList");
-        ent["Organ"]​ = e.field("OperationList")[0].field("OpGroup").join(" ")​;
-      }​
+      let r = rp.create(ent);
       
-      //---WeekDay
-      ent["WeekDay"]​ =  my.wkname(my.gday(e.field("Date")​))​ ;
-      
-      //---Dead
-      if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
-        ent["Dead"]​ = "Dead";
-      else
-        ent["Dead"]​ = "Alive";
-        
-      let rplast = rp.create(ent);
       if(e.field("Patient").length>0){
-        rplast.link("Patient", e.field("Patient")​[0]);
+        r.link("Patient", e.field("Patient")​[0]);
       }​
+      rpo.setAll(r, e);
     }
   },
   updatenew : function (e) {
@@ -1502,34 +1504,10 @@ var rpo = {
         let ptent = pt.findById(ptlks[0].id);
         let rps = ptent.linksFrom("Report", "Patient")​;
         if (rps.length>0) {
-          for (let r in rps)​{
-            if (my.gdate(my.date(rps[r].field("OpDate"))​) == my.gdate(my.date(old.field("Date"))​) && rps[r].field("ORType") ==​ old.field("ORType") &​& rps[r].field("Dx") ==​ old.field("Dx") &​& rps[r].field("Op") ==​ old.field("Op"))​{
-              let rpt = rps[r]​;
-              //---Date, Patient, Dx, Op, ORType, Extra, LOS
-              rpt.set("OpDate", e.field("Date"));
-              rpt.set("Dx", e.field("Dx"));
-              rpt.set("Op", e.field("Op"));
-              rpt.set("ORType", e.field("ORType"));
-              rpt.set("Extra", e.field("OpExtra"));
-              rpt.set("Dr", e.field("Dr"));
-              rpt.set("LOS", e.field("LOS"));
-              rpt.set("OpDateCal", e.field("OpDateCal"));
-              rpt.set("OpLength", e.field("OpLength"));
-
-              //---OpGroup, Organ
-              if (e.field("OperationList").length>0)​{
-                rpt.set("OpGroup", e.field("OperationList")[0].field("OpList"));
-                rpt.set("Organ", e.field("OperationList")[0].field("OpGroup").join(" ")​);
-              }​
-      ​
-              //---WeekDay
-              rpt.set("WeekDay", my.wkname(my.gday(e.field("Date")​)​ ))​;
-              //---Dead
-              if(e.field("Patient").length>0 && e.field("Patient")​[0].field("Status")=="Dead")
-                rpt.set("Dead","Dead");
-              else
-                rpt.set("Dead","Alive");
-                
+          for (let r of rps)​{
+            if (my.gdate(my.date(r.field("OpDate"))​) == my.gdate(my.date(old.field("Date"))​) && r.field("ORType") ==​ old.field("ORType") &​& r.field("Dx") ==​ old.field("Dx") &​& r.field("Op") ==​ old.field("Op"))​{
+              rpo.setAll(r, e);
+              
               break;
             }
           }​
