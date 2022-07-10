@@ -1504,8 +1504,8 @@ var rpo = {
         let ptent = pt.findById(ptlks[0].id);
         let rps = ptent.linksFrom("Report", "Patient")​;
         if (rps.length>0) {
-          for (let r of rps)​{
-            if (my.gdate(my.date(r.field("OpDate"))​) == my.gdate(my.date(old.field("Date"))​) && r.field("ORType") ==​ old.field("ORType") &​& r.field("Dx") ==​ old.field("Dx") &​& r.field("Op") ==​ old.field("Op"))​{
+          for (let r=0; r<rps.length; i++)​ {
+            if (my.gdate(my.date(rps[r].field("OpDate"))​) == my.gdate(my.date(old.field("Date"))​) && rps[r].field("ORType") ==​ old.field("ORType") &​& rps[r].field("Dx") ==​ old.field("Dx") &​& rps[r].field("Op") ==​ old.field("Op"))​{
               rpo.setAll(r, e);
               
               break;
