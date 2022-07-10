@@ -394,7 +394,7 @@ var emx = {
       let entlinks = ptent.linksFrom(this.lib, "Patient");
       let found = false;
       if (entlinks.length > min) {
-        for (let i in entlinks) {
+        for (let i=0; i<entlinks.length; i++) {
           if (my.gdate(entlinks[i].field(this.opdate))​ == my.gdate(e.field("AppointDate")) &​& entlinks[i].id!=e.id)​{
             found = true;
             break ;
@@ -606,14 +606,14 @@ var fill = {
     let list = [] ;
     let str = "";
     if (orlinks.length>0) {
-      for (let i in orlinks) {
+      for (let i=0; i<orlinks.length; i++) {
         if (orlinks[i].field("Status")=="Done" && my.gdate(orlinks[i].field("Date")) <= my.gdate(date)) {
           list.push(orlinks[i]);
         }
       }
     }​
     if (bulinks.length>0)​ {
-      for (let i in bulinks) {
+      for (let i=0; i<bulinks.length; i++) {
         if (bulinks[i].field("Status")=="Done"  && my.gdate(bulinks[i].field("Date")) <= my.gdate(date)) {
           list.push(bulinks[i]);
         }
@@ -627,7 +627,7 @@ var fill = {
       else
         return 0;
     });
-    for(let i in list){
+    for(let i=0; i<list.length; i++){
       if(str) str += "\n";
       str += list[i].field("Dx") + " > " + list[i].field("Op") + " " + list[i].field("Date").toDateString().replace(/mon|tue|wed|thu|fri|sat|sun/ig,"");
     }
@@ -1052,7 +1052,7 @@ var fill = {
       e.set("Future", null)​;
   }​,
   futureall : function(all) {
-    for (let i in all)​ {
+    for (let i=0; i<all.length; i++)​ {
       if (ntoday​>my.gdate(all[i]​.lastModifiedTime)) {
         fill.future.call(this, all[i])​;​
       }
@@ -1094,14 +1094,14 @@ var fill = {
             let orlinks = ptent.linksFrom("UroBase", "Patient");
             let bulinks = ptent.linksFrom("Backup", "Patient");
             if (orlinks.length>0) {
-              for (let i in orlinks) {
+              for (let i=0; i<orlinks.length; i++) {
                 if (orlinks[i].field("VisitType")=="Admit" && my.gdate(orlinks[i].field("Date")) >= my.gdate(vsdate) && (!dcdate || my.gdate(orlinks[i].field("Date")) <= my.gdate(dcdate))) {
                   list.push(orlinks[i]);
                 }
               }
             }​
             if (bulinks.length>0) {
-              for (let i in bulinks) {
+              for (let i=0; i<bulinks.length; i++) {
                 if (bulinks[i].field("VisitType")=="Admit" && my.gdate(bulinks[i].field("Date")) >= my.gdate(vsdate) && (!dcdate || my.gdate(bulinks[i].field("Date")) <= my.gdate(dcdate))) {
                   list.push(bulinks[i]);
                 }
@@ -1218,7 +1218,7 @@ var pto = {
     }​
   }, 
   resetdone : function (all)​ {
-    for (let i in all)​ {
+    for (let i=0; i<all.length; i++)​ {
       if (all[i].field("Done")==true) {
         if (all[i].field("Status") == "Active") {
           if (my.gdate(all[i]​.lastModifiedTime)​ < ntoday) {
@@ -1238,7 +1238,7 @@ var pto = {
       let cslinks = ptent.linksFrom("Consult", "Patient") ;
       let last = null, s=null, r=null, u=null​;​
       if (orlinks.length>0) {
-        for (let i in orlinks) {
+        for (let i=0; i<orlinks.length; i++) {
           let notdone = orlinks[i].field(uro.result).match(uro.notdone);
           notdone = notdone==null?0:notdone.length;
           if (orlinks[i].field("VisitType")=="Admit" && !notdone && my.gdate(​orlinks[i].field("VisitDate")) > my.gdate(​last) && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && orlinks[i].id != eid) {
@@ -1248,7 +1248,7 @@ var pto = {
         }
       }​
       if (bulinks.length​>0) {
-        for (let i in bulinks) {
+        for (let i=0; i<bulinks.length; i++) {
           let notdone = bulinks[i].field(buo.result).match(buo.notdone);
           notdone = notdone==null?0:notdone.length;
           if (bulinks[i].field("VisitType")=="Admit" && !notdone && my.gdate(​bulinks[i].field("VisitDate"))​ > my.gdate(​last​) && my.gdate(​bulinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && bulinks[i].id != eid) {
@@ -1258,7 +1258,7 @@ var pto = {
         }
       }​
       if (cslinks.length>0) {
-        for (let i in cslinks) {
+        for (let i=0; i<cslinks.length; i++) {
           let notdone = cslinks[i].field(cso.result).match(cso.notdone);
           notdone = notdone==null?0:notdone.length;
           if (cslinks[i].field("VisitType")=="Admit" && !notdone && my.gdate(​cslinks[i].field("VisitDate")​) > my.gdate(​last) && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) && cslinks[i].id != eid) {
@@ -1302,7 +1302,7 @@ var uro = {
     if(e.field("TimeIn")!=null)​
       if(e.field("TimeIn").getHours()<8 || e.field("TimeIn").getHours()>=16)​
         timeout = true;
-    for(let i in hds)​ {
+    for(let i=0; i<hds.length; i++)​ {
       if(my.gdate(hds[i].field("Date"))==my.gdate(e.field("Date"))​ &​& hds[i].field("Holiday") == true)​{
         holiday = true;
       }​
@@ -1366,7 +1366,7 @@ var uro = {
     let o = null ;
     let last = null, r = null, u = null;
     if (orlinks.length>0) {
-      for (let i in orlinks) {
+      for (let i=0; i<orlinks.length; i++) {
         if (orlinks[i].field("DJstent") && my.gdate(orlinks[i].field("Date")) > my.gdate(last) && my.gdate(orlinks[i].field("Date")) <= my.gdate(date)​) {
           last = orlinks[i].field("Date");
           r=i;
@@ -1374,7 +1374,7 @@ var uro = {
       }
     }​
     if (bulinks.length>0)​ {
-      for (let i in bulinks) {
+      for (let i=0; i<bulinks.length; i++) {
         if (bulinks[i].field("DJstent") && my.gdate(bulinks[i].field("Date")) > my.gdate(last) && my.gdate(bulinks[i].field("Date")) <= my.gdate(date)​) {
           last = bulinks[i].field("Date");
           u=i;
@@ -1530,7 +1530,7 @@ var rpo = {
         let ptent = pt.findById(ptlks[0].id);
         let rps = ptent.linksFrom("Report", "Patient")​;
         if (rps.length>0) {
-          for (let r in rps)​{
+          for (let r=0;  r<rps.length; r++)​{
             if (my.gdate(rps[r].field("OpDate"))​ == my.gdate(old.field("Date"))​ &​& rps[r].field("Dx") ==​ old.field("Dx") &​& rps[r].field("Op") ==​ old.field("Op"))​{
               rps[r].trash();
               break;
@@ -1682,12 +1682,12 @@ var opu = {
       let bulinks = e.linksFrom("Backup", "Patient");
       let found = [];
       if(orlinks.length+bulinks.length>0) {
-        for (let i in orlinks) {
+        for (let i=0; i<orlinks.length; i++) {
           if (orlinks[i].field("OpExtra")==true) {
             found.push(orlinks[i]);
           }
         }
-        for (let i in bulinks) {
+        for (let i=0; i<bulinks.length; i++) {
           if (bulinks[i].field("OpExtra")==true) {
             found.push(bulinks[i]);
           }
@@ -1697,7 +1697,7 @@ var opu = {
         //update OpUroSx
         let oss = os.entries();
         let count = 0;
-        for(let i in oss) {
+        for(let i=0; i<oss.length; i++) {
           if(old.field("PtName") == oss[i].field("PtName") && old.field("HN") == oss[i].field("HN")) {
             oss[i].set("PtName", e.field("PtName"));
             oss[i].set("Age", Number(e.field("Age").replace(/\s*ปี/,"")));
@@ -1861,7 +1861,7 @@ var trig = {
     e.set("Count", orlinks.length+bulinks.length​)​;
 
     if (orlinks.length>0) {
-      for(let i in orlinks) {
+      for(let i=0; i<orlinks.length; i++) {
         if (orlinks[i].field("Op") != e.field("OpFill")​)​ {
           orlinks[i].set("Op", e.field("OpFill"))​;
             
@@ -1871,7 +1871,7 @@ var trig = {
       }​
     }​
     if (bulinks.length>0) {
-      for(let i in bulinks) {
+      for(let i=0; i<bulinks.length; i++) {
         if (bulinks[i].field("Op") != e.field("OpFill")​)​ {
           bulinks[i].set("Op", e.field("OpFill"))​;
       
