@@ -1163,7 +1163,7 @@ var pto = {
     let HN = e.field("HN")​;;
     if (HN != null) {
       let entries = pt.entries();​​
-      for (let ent in entries) {
+      for (let ent=0; ent<entries.length; ent++) {
         if (entries[ent].field("HN") === HN)
           if (entries[ent].id != e.id || value) 
             unique = false;
@@ -1621,7 +1621,7 @@ var opu = {
         let link = links[0];
         let parr = this.splitPtName(old.field("Patient"));
         parr[2] = parr[2]?parr[2]:null;
-        for (let s in oss) {
+        for (let s=0; s<oss.length; s++) {
           if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(old.field("Date")))​ && oss[s].field("Dr") ==​ old.field("Dr") &​& oss[s].field("OpType") ==​ old.field("ORType") &​& oss[s].field("PtName") ==​ parr[0] && oss[s].field("HN") ==​ parr[2] &​& oss[s].field("Dx") ==​ old.field("Dx") &​& oss[s].field("Op") ==​ old.field("Op"))​{
             oss[s].set("OpDate", my.date(e.field("Date")));
             oss[s].set("Dr", e.field("Dr"));
@@ -1666,7 +1666,7 @@ var opu = {
       if(oss.length>0){
         let parr = this.splitPtName(old.field("Patient"));
         parr[2] = parr[2]?parr[2]:null;
-        for (let s in oss)​{
+        for (let s=0; s<oss.length; s++)​{
           if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(old.field("Date")))​ &​& oss[s].field("Dr") ==​ old.field("Dr") &​& oss[s].field("OpType") ==​ old.field("ORType") &​& oss[s].field("PtName") ==​ parr[0] && oss[s].field("HN") ==​ parr[2] &​& oss[s].field("Dx") ==​ old.field("Dx") &​& oss[s].field("Op") ==​ old.field("Op"))​{
             oss[s].trash();
             //message("delete OpUroSx!");
