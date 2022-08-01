@@ -1230,6 +1230,13 @@ var pto = {
       }
     }
   },
+  resetage : function(all) {
+    for (let i=0; i<all.length; i++)​ {
+      if (!all[i].field("Age")) {
+        pto.age(all[i]);
+      }
+    }
+  },
   findLast : function(ptent, date, eid) {
     eid = eid? eid: 0;
     if (ptent) {
@@ -1739,6 +1746,7 @@ var trig = {
   }, 
   PatientBeforeOpenLib : function (all) {
     pto.resetdone(all)​;
+    pto.resetage(all);
   }, 
   PatientBeforeLink : function (e)​ {
     pto.age(e)​;
