@@ -1051,11 +1051,10 @@ var fill = {
     else
       e.set("Future", null)​;
   }​,
-  futureall : function(all) {
+  updateall : function(all) {
     for (let i=0; i<all.length; i++)​ {
-      if (ntoday​>my.gdate(all[i]​.lastModifiedTime)) {
-        fill.future.call(this, all[i])​;​
-      }
+      fill.color.call(this, all[i]);
+      fill.future.call(this, all[i])​;​
     } 
   },
   deletept : function (e){
@@ -1176,11 +1175,6 @@ var pto = {
   }, 
   //Age
   age : function​ (e) {
-    if (e.field("MM")​>12 || e.field("DD")​>30)​ {
-      message("MM must <= 12, DD <= 30") ;
-      cancel() ;
-    }​
-    
     let d = 0;
     if (e.field("YY") && !e.field("Birthday")​)​ {
       let month = e.field("MM")?e.field("MM"):0;
@@ -1188,9 +1182,10 @@ var pto = {
       d = Math.round(e.field("YY")*365.2425 + month*30.4375 + day);
       e.set("Birthday", my.dateminus(today, d)​);
     }​
-    if (e.field("Birthday")​)​ {
+    else if (e.field("Birthday")​)​ {
       d = Math.floor((ntoday-my.gdate(e.field("Birthday"))​)/86400000);
-      this.agetext(e, d)​;
+      if (parseInt(e.field("Age")) != d)
+        pto.agetext(e, d)​;
     }​
   }, 
   //Status
@@ -1217,7 +1212,7 @@ var pto = {
       }​
     }​
   }, 
-  resetdone : function (all)​ {
+  updatefields : function (all)​ {
     for (let i=0; i<all.length; i++)​ {
       if (all[i].field("Done")==true) {
         if (all[i].field("Status") == "Active") {
@@ -1228,13 +1223,7 @@ var pto = {
         else
           all[i].set("Done", false) ;
       }
-    }
-  },
-  resetage : function(all) {
-    for (let i=0; i<all.length; i++)​ {
-      if (!all[i].field("Age")) {
-        pto.age(all[i]);
-      }
+      pto.age(all[i]);
     }
   },
   findLast : function(ptent, date, eid) {
@@ -1745,8 +1734,7 @@ var trig = {
     pto.donesettrack(e)​;​
   }, 
   PatientBeforeOpenLib : function (all) {
-    pto.resetdone(all)​;
-    pto.resetage(all);
+    pto.updatefields​(all);
   }, 
   PatientBeforeLink : function (e)​ {
     pto.age(e)​;
@@ -1811,7 +1799,7 @@ var trig = {
     old.save.call(this, e)​;
   }, 
   BeforeOpenLib : function (all) {
-    fill.futureall.call(this, all)​;
+    fill.updateall.call(this, all)​;
   }, 
   BeforeUpdatingField : function (e) {
     old.load(e)​;
