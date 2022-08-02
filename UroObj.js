@@ -1053,8 +1053,10 @@ var fill = {
   }​,
   updateall : function(all) {
     for (let i=0; i<all.length; i++)​ {
-      fill.color.call(this, all[i]);
-      fill.future.call(this, all[i])​;​
+      if (my.gdate(all[i]​.lastModifiedTime)​ < ntoday) {
+        fill.color.call(this, all[i]);
+        fill.future.call(this, all[i])​;​
+      }
     } 
   },
   deletept : function (e){
@@ -1213,17 +1215,23 @@ var pto = {
     }​
   }, 
   updatefields : function (all)​ {
+    let mod = false;
     for (let i=0; i<all.length; i++)​ {
       if (all[i].field("Done")==true) {
         if (all[i].field("Status") == "Active") {
           if (my.gdate(all[i]​.lastModifiedTime)​ < ntoday) {
             all[i].set("Done", false)​ ;
+            mod = true;
           }​
         }​
-        else
+        else {
           all[i].set("Done", false) ;
+          mod = true;
+        }
       }
-      pto.age(all[i]);
+      if (mod || my.gdate(all[i]​.lastModifiedTime)​ < ntoday) {
+        pto.age(all[i]);
+      }
     }
   },
   findLast : function(ptent, date, eid) {
