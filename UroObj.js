@@ -1055,7 +1055,7 @@ var fill = {
   active : function(e)​{
     if((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) == ntoday) ) {//Admit or OPD visit today
       if (e.field("VisitType")=="Admit") {
-        e.set("Active", Math.floor((my.gdate(e.field("VisitDate")​)-ntoday)​/86400000))​;
+        e.set("Active", Math.floor((ntoday-my.gdate(e.field("VisitDate")​))​/86400000))​;
       }
       else if (e.field("VisitType")​=="OPD") {
         e.set("Active", 0);
