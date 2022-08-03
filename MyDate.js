@@ -69,3 +69,4 @@ var my = {
 
 var today = my.date(new Date())​;
 var ntoday = my.gdate(today);​
+var hour = new Date().getHour();
