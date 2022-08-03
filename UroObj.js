@@ -1056,10 +1056,8 @@ var fill = {
     let opresult = e.field(this.result);
     let notdone = opresult.match(this.notdone);
     notdone = notdone==null?0:notdone.length;
-    let dead = e.field(this.result).match(/dead|death/ig);
-    dead = dead?dead.length​:0;
     
-    if( !notdone && !dead && ( (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) == ntoday) ) ) {//Admit or OPD visit today
+    if( !notdone && ( (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) == ntoday) ) ) {//Admit or OPD visit today
       if (e.field("VisitType")=="Admit") {
         e.set("Active", Math.floor((ntoday-my.gdate(e.field("VisitDate")​))​/86400000))​;
       }
