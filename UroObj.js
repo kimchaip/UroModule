@@ -1053,7 +1053,7 @@ var fill = {
   }​,
   updateall : function(all) {
     for (let i=0; i<all.length; i++)​ {
-      if (my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
+      if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
         fill.color.call(this, all[i]);
         fill.future.call(this, all[i])​;​
       }
@@ -1219,7 +1219,7 @@ var pto = {
     for (let i=0; i<all.length; i++)​ {
       if (all[i].field("Done")==true) {
         if (all[i].field("Status") == "Active") {
-          if (my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
+          if (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
             all[i].set("Done", false)​ ;
             mod = true;
           }​
@@ -1229,7 +1229,7 @@ var pto = {
           mod = true;
         }
       }
-      if (mod || my.gdate(my.date(all[i]​.lastModifiedTime)​) < ntoday) {
+      if (mod || (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime)​) < ntoday)) {
         pto.age(all[i]);
       }
     }
