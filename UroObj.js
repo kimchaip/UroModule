@@ -1076,7 +1076,7 @@ var fill = {
       //if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
         fill.color.call(this, all[i]);
         fill.future.call(this, all[i])​;​
-        fill.active(all[i]);
+        fill.active.call(this, all[i]);
       //}
     } 
   },
@@ -1803,7 +1803,7 @@ var trig = {
       fill.oplength(e);
     }
     fill.ptdr(e);
-    fill.active(e);
+    fill.active.call(this, e);
     fill.ptstatus.call(this, e)​;
     mer.effect(e)​;
   }, 
