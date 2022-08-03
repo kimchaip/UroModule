@@ -3,7 +3,7 @@ var my = {
   nd : 0,
   date : function (value)  {
     if (value) {
-      value = new date(value);
+      value = new Date(value);
       this.d = new Date(value.getFullYear(), value.getMonth(),value.getDate(), 7) ;
       return this.d;
     }
