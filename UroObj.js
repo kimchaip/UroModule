@@ -1071,11 +1071,11 @@ var fill = {
   }​,
   updateall : function(all) {
     for (let i=0; i<all.length; i++)​ {
-      //if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
+      if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
         fill.color.call(this, all[i]);
         fill.future.call(this, all[i])​;​
         fill.active.call(this, all[i]);
-      //}
+      }
     } 
   },
   deletept : function (e){
