@@ -1053,7 +1053,7 @@ var fill = {
       e.set("Future", null)​;
   }​,
   active : function(e)​{
-    if(e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) == ntoday) ) {//Admit or OPD visit today
+    if((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) == ntoday) ) {//Admit or OPD visit today
       if (e.field("VisitType")=="Admit") {
         e.set("Active", Math.floor((my.gdate(e.field(VisitDate)​)-ntoday)​/86400000))​;
       }
