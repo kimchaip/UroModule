@@ -97,6 +97,7 @@ var old = {
         old.d["TimeOut"] = e.field("TimeOut");
         old.d["OpDateCal"] = e.field("OpDateCal");
         old.d["OpLength"] = e.field("OpLength");
+        old.d["Active"] = e.field("Active");
       }
       else if(this.lib=="Consult") {
         old.d["ConsultDate"] = e.field("ConsultDate");
@@ -944,7 +945,7 @@ var fill = {
       //--set pt.status, pt.ward, wardStamp and Description
       if ((links[0].field("WardStamp")​ == null || my.gdate(e.field("VisitDate")​) >= my.gdate(links[0].field("WardStamp"))​) && 
 (links[0].field("Status")​ == "Still" || links[0].field("Status")​ == "Active")​​)​ {
-        if (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) ) {//Admit
+        if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) == ntoday) ) {//Admit or OPD visit today
           if(notdone>0)​ { //but notvisit
             links[0].set("Status", "Still")​;
             links[0].set("Ward", "");
@@ -954,7 +955,7 @@ var fill = {
             links[0].set("Ward", e.field("Ward"));
           }
         }
-        else if (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ || e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) <= ntoday) { // D/C
+        else if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​) || (e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) != ntoday) ) { // D/C or OPD not visit today
           let dead = e.field(this.result).match(/dead|death/ig);
           dead = dead?dead.length​:0;
           if(dead>0){
@@ -965,7 +966,7 @@ var fill = {
           }
           links[0].set("Ward", "");   
         }​
-        else if ((o == null)​ || (o.e.field("DischargeDate") != null && my.gdate(o.e.field("DischargeDate"))​ <= ntoday)​ ) {//if future, check last admit :never admit or already D/C of last visit: still
+        else if ((o == null)​ || (o.e.field("DischargeDate") && my.gdate(o.e.field("DischargeDate"))​ <= ntoday)​ ) {//if future, check last admit :never admit or already D/C of last visit: still
           links[0].set("Status" ,"Still");
           links[0].set("Ward", "");
         }​
@@ -1051,11 +1052,25 @@ var fill = {
     else
       e.set("Future", null)​;
   }​,
+  active : function(e)​{
+    if(e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) == ntoday) ) {//Admit or OPD visit today
+      if (e.field("VisitType")=="Admit") {
+        e.set("Active", Math.floor((my.gdate(e.field(VisitDate)​)-ntoday)​/86400000))​;
+      }
+      else if (e.field("VisitType")​=="OPD") {
+        e.set("Active", 0);
+      }
+    }
+    else {
+      e.set("Active", null)​;
+    }
+  }​,
   updateall : function(all) {
     for (let i=0; i<all.length; i++)​ {
       if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
         fill.color.call(this, all[i]);
         fill.future.call(this, all[i])​;​
+        fill.active(all[i]);
       }
     } 
   },
@@ -1782,6 +1797,7 @@ var trig = {
       fill.oplength(e);
     }
     fill.ptdr(e);
+    fill.active(e);
     fill.ptstatus.call(this, e)​;
     mer.effect(e)​;
   }, 
