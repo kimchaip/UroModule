@@ -945,7 +945,7 @@ var fill = {
       //--set pt.status, pt.ward, wardStamp and Description
       if ((links[0].field("WardStamp")​ == null || my.gdate(e.field("VisitDate")​) >= my.gdate(links[0].field("WardStamp"))​) && 
 (links[0].field("Status")​ == "Still" || links[0].field("Status")​ == "Active")​​)​ {
-        if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) == ntoday) ) {//Admit or OPD visit today
+        if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) || (e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) == ntoday) ) {//Admit or OPD visit today
           if(notdone>0)​ { //but notvisit
             links[0].set("Status", "Still")​;
             links[0].set("Ward", "");
@@ -1053,7 +1053,7 @@ var fill = {
       e.set("Future", null)​;
   }​,
   active : function(e)​{
-    if(e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) == ntoday) ) {//Admit or OPD visit today
+    if(e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) || (e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) == ntoday) ) {//Admit or OPD visit today
       if (e.field("VisitType")=="Admit") {
         e.set("Active", Math.floor((my.gdate(e.field(VisitDate)​)-ntoday)​/86400000))​;
       }
