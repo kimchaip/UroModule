@@ -471,16 +471,7 @@ var dxop = {
     let lbs = lb.find(e.field(this.link[0])​);
     let found = null;
     if (lbs.length > 0) {
-        found = lbs.find(d=>this.title.every((v,i)=>(d.field(v)==e.field(this.link[i]))));
-        var txt = "";
-        for(let i=0; i<this.link.length; i++) {
-          txt+=found.field(this.title[i]) + "=" + e.field(this.link[i]);
-          if (i%2)
-            txt+=", ";
-          else
-            txt+="\n";
-        }
-        message(txt);
+      found = lbs.find(d=>this.title.every((v,i)=>(d.field(v)==e.field(this.link[i]))));
     }​
     return found;
   },
@@ -504,7 +495,7 @@ var dxop = {
         e.set(this.lib, found.title);
         found.set("Count", found.field("Count")+1);
       }
-      message(oldlink.title + "=" +found.title);
+      message(oldlink.title +":"+oldlink.id+ "=" +found.title + ":" +found.id);
     }
     else { // old link is []
       e.set(this.lib, found.title);
