@@ -448,15 +448,17 @@ var dxop = {
   run : function (e) {
     dxop.validate(e);
     if(e.field("Status")​ == "Not" || this.link.some(v=>!e.field(v)))​ { // status not, fill Dx/Op not complete
-      dxop.cancel.call(this, e);
+      dxop.deletelink.call(this, e);
     }
     else if(this.link.every(v=>e.field(v)​)​) { // status plan/done, and fill dx/op complete
       let found = dxop.findlink.call(this, e);
       if(found) {
         dxop.autofill.call(this, e, found);
+        dxop.updatelink.call(this, e, found);
       }
       else {
-        dxop.create.call(this, e);
+        found = dxop.create.call(this, e);
+        dxop.updatelink.call(this, e, found);
       }
     }
   },
@@ -487,19 +489,21 @@ var dxop = {
     else if(this.lib=="OperationList" && !e.field("OpExtra")​){
       e.set("Bonus", 0);
     }
-    
+  },
+  updatelink : function (e, found) {
     if(e.field(this.lib).length>0) {
       let oldlink = e.field(this.lib)[0];
       if(oldlink.id!=found.id) { // change link
-        dxop.countdown(oldlink);
-        e.set(this.lib, found.title);
-        found.set("Count", found.field("Count")+1);
+        e.unlink(this.lib, oldlink);
+        e.link(this.lib, found);
+        dxop.count.call(this, oldlink);
+        dxop.count.call(this, found);
       }
       message(oldlink.title +":"+oldlink.id+ "=" +found.title + ":" +found.id);
     }
     else { // old link is []
-      e.set(this.lib, found.title);
-      found.set("Count", found.field("Count")+1);
+      e.link(this.lib, found);
+      dxop.count.call(this, found);
     }
   },
   create : function (e) {
@@ -520,34 +524,27 @@ var dxop = {
     }
     let found = lb.create(o);
     message("Create new " + this.lib + " Successfully​")​;
-    
-    if(e.field(this.lib).length>0) {
-      let oldlink = e.field(this.lib)[0];
-      dxop.countdown(oldlink);
-      e.set(this.lib, found.title);
-    }
-    else {
-      e.set(this.lib, found.title);
-    }
+    return found;
   },
-  cancel : function (e) {
+  deletelink : function (e) {
     if(e.field(this.lib).length>0) {
       let oldlink = e.field(this.lib)[0];
-      e.set(this.lib, "");
-      dxop.countdown(oldlink);
+      e.unlink(this.lib, oldlink);
+      dxop.count.call(this, oldlink);
     
       if(this.lib == "OperationList")
         e.set("Bonus", 0)​;
     }
   },
-  countdown : function (e) {
-    if(e) { // old link not null
-      if(e.field("Count")>1) {
-        e.set("Count", e.field("Count")-1);
-      }
-      else {
-        e.trash()​;
-      }
+  count : function (e) {
+    let lb = this.lib=="DxAutoFill"? dx: op;
+    let linkuro = lb.linksFrom("UroBase", this.lib);
+    let linkbup = lb.linksFrom("Backup", this.lib);
+    if(linkuro.length+linkbup.length>0) {
+      e.set("Count", linkuro.length+linkbup.length);
+    }
+    else {
+      e.trash()​;
     }
   }
 };
@@ -1859,8 +1856,8 @@ var trig = {
   AfterDelete : function (e)​ {
     if (this.lib!="Consult") {
       old.load(e);
-      dxop.cancel.call(dxo, e)​;
-      dxop.cancel.call(opo, e)​;
+      dxop.deletelink.call(dxo, e)​;
+      dxop.deletelink.call(opo, e)​;
       rpo.deleteold(e)​;
       if (this.lib=="UroBase")
         opu.deleteOp(e);
