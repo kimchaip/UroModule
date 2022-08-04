@@ -504,6 +504,7 @@ var dxop = {
         e.set(this.lib, found.title);
         found.set("Count", found.field("Count")+1);
       }
+      message(oldlink.id!=found.id + ", " +found.title);
     }
     else { // old link is []
       e.set(this.lib, found.title);
