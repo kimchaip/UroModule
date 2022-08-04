@@ -542,6 +542,7 @@ var dxop = {
       e.set("Count", linkuro.length+linkbup.length);
     }
     else {
+      e.set("Count", 0);
       e.trash()​;
     }
   }
@@ -1498,6 +1499,7 @@ var dxo = {
       e.set("Count", orlinks.length+bulinks.length);
     }
     else {
+      e.set("Count", 0);
       e.trash()​;
     }
   }
@@ -1543,6 +1545,7 @@ var opo = {
       e.set("Count", orlinks.length+bulinks.length);
     }
     else if (value=="update") {
+      e.set("Count", 0);
       e.trash()​;
     }
   }
