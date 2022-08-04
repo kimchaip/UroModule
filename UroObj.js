@@ -473,7 +473,13 @@ var dxop = {
     if (lbs.length > 0) {
         found = lbs.find(d=>this.title.every((v,i)=>(d.field(v)==e.field(this.link[i]))));
         var txt = "";
-        lbs.forEach(d=>this.title.forEach((v,i)=>(txt+=d.field(v) + "=" + e.field(this.link[i]) + ", ")));
+        for(let i=0; i<this.link.length; i++) {
+          txt+=found.field(this.title[i]) + "=" + e.field(this.link[i]);
+          if (i%2)
+            txt+=", ";
+          else
+            txt+="\n";
+        }
         log(txt);
     }​
     return found;
