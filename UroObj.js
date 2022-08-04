@@ -480,7 +480,7 @@ var dxop = {
           else
             txt+="\n";
         }
-        log(txt);
+        message(txt);
     }​
     return found;
   },
