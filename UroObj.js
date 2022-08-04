@@ -472,7 +472,7 @@ var dxop = {
     let found = null;
     if (lbs.length > 0) {
         found = lbs.find(d=>this.title.every((v,i)=>(d.field(v)==e.field(this.link[i]))));
-        log(JSON.stringify(found)+"\n");
+        found.forEach(r=>log(r.field(this.title[0]) + ", " + r.field(this.title[1]) + "\n"));
     }​
     return found;
   },
