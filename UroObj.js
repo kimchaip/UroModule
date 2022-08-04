@@ -499,7 +499,6 @@ var dxop = {
         dxop.count.call(this, oldlink);
         dxop.count.call(this, found);
       }
-      message(oldlink.title +":"+oldlink.id+ "=" +found.title + ":" +found.id);
     }
     else { // old link is []
       e.link(this.lib, found);
