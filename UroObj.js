@@ -1470,12 +1470,82 @@ var cso = {
 var dxo = {
   lib : "DxAutoFill",
   link : ["Dx","Op"],
-  title : ["Dx","Op"]
+  title : ["Dx","Op"],
+  validate : function(e){
+    e.set("Dx", e.field("Dx").trim()​)​;
+    e.set("Op", e.field("Op").trim()​)​;
+  },
+  effect : function(e){
+    let orlinks = e.linksFrom("UroBase", "DxAutoFill") ;
+    let bulinks = e.linksFrom("Backup", "DxAutoFill") ;​
+    if (orlinks.length>0) {
+      for(let i=0; i<orlinks.length; i++) {
+        if ((e.field("Dx") && orlinks[i].field("Dx") != e.field("Dx"))​ || (e.field("Op") && orlinks[i].field("Op") != e.field("Op"))​)​ {
+          orlinks[i].set("Dx", e.field("Dx"))​;
+          orlinks[i].set("Op", e.field("Op"))​;
+        }​
+      }​
+    }​
+    if (bulinks.length>0) {
+      for(let i=0; i<bulinks.length; i++) {
+        if ((e.field("Dx") && bulinks[i].field("Dx") != e.field("Dx")​) || (e.field("Op") && bulinks[i].field("Op") != e.field("Op")​))​ {
+          bulinks[i].set("Dx", e.field("Dx"))​;
+          bulinks[i].set("Op", e.field("Op"))​;​
+        }​
+      }​
+    }
+    if(orlinks.length+bulinks.length>0) {
+      e.set("Count", orlinks.length+bulinks.length);
+    }
+    else {
+      e.trash()​;
+    }
+  }
 };
 var opo = {
   lib : "OperationList",
   link : ["Op"],
-  title : ["OpFill"]
+  title : ["OpFill"],
+  validate : function(e){
+    e.set("OpFill", e.field("OpFill").trim()​)​;
+    e.set("OpList", e.field("OpList").trim()​)​;
+
+    if(e.field("Price")​ > 0 &​& e.field("PriceExtra")​ == 0) {
+      e.set("PriceExtra", e.field("Price")​*1.5)​;
+    }
+    else if(e.field("Price")​ == 0 &​& e.field("PriceExtra")​ > 0) {
+      e.set("Price", e.field("PriceExtra")​*2/3)​;
+    }​
+    else if(e.field("Price")​ > 0 &​& e.field("PriceExtra")​ > 0 &​& e.field("Price")​*1.5 != e.field("PriceExtra")​) {
+      e.set("PriceExtra", e.field("Price")​*1.5)​;
+    }​
+  },
+  effect : function(e){
+    let orlinks = e.linksFrom("UroBase", "OperationList") ;
+    let bulinks = e.linksFrom("Backup", "OperationList") ;
+
+    if (orlinks.length>0) {
+      for(let i=0; i<orlinks.length; i++) {
+        if (e.field("OpFill") && orlinks[i].field("Op") != e.field("OpFill")​)​ {
+          orlinks[i].set("Op", e.field("OpFill"))​;
+        }
+      }​
+    }​
+    if (bulinks.length>0) {
+      for(let i=0; i<bulinks.length; i++) {
+        if (e.field("OpFill") && bulinks[i].field("Op") != e.field("OpFill")​)​ {
+          bulinks[i].set("Op", e.field("OpFill"))​;
+        }
+      }​
+    }​
+   
+    if(orlinks.length+bulinks.length>0) {
+      e.set("Count", orlinks.length+bulinks.length);
+    }
+    else if (value=="update") {
+      e.trash()​;
+    }
+  }
 };
 var rpo = {
   setAll : function (r, e) {
@@ -1862,46 +1932,13 @@ var trig = {
     }
     fill.deletept(e)​;
   }, 
+  DxBeforeEdit : function (e, value)​ {
+    dxo.validate(e);
+    dxo.effect(e);
+  },
   OpListBeforeEdit : function (e, value) {
-    e.set("OpFill", e.field("OpFill").trim()​)​;
-    e.set("OpList", e.field("OpList").trim()​)​;
-
-    if(e.field("Price")​ > 0 &​& e.field("PriceExtra")​ == 0) {
-      e.set("PriceExtra", e.field("Price")​*1.5)​;
-    }
-    else if(e.field("Price")​ == 0 &​& e.field("PriceExtra")​ > 0) {
-      e.set("Price", e.field("PriceExtra")​*2/3)​;
-    }​
-    else if(e.field("Price")​ > 0 &​& e.field("PriceExtra")​ > 0 &​& e.field("Price")​*1.5 != e.field("PriceExtra")​) {
-      e.set("PriceExtra", e.field("Price")​*1.5)​;
-    }​
-
-    let orlinks = e.linksFrom("UroBase", "OperationList") ;
-    let bulinks = e.linksFrom("Backup", "OperationList") ;
-    e.set("Count", orlinks.length+bulinks.length​)​;
-
-    if (orlinks.length>0) {
-      for(let i=0; i<orlinks.length; i++) {
-        if (orlinks[i].field("Op") != e.field("OpFill")​)​ {
-          orlinks[i].set("Op", e.field("OpFill"))​;
-            
-          this.BeforeEdit.call(uro, orlinks[i], "update");
-          this.AfterEdit.call(uro, orlinks[i], "update");
-        }
-      }​
-    }​
-    if (bulinks.length>0) {
-      for(let i=0; i<bulinks.length; i++) {
-        if (bulinks[i].field("Op") != e.field("OpFill")​)​ {
-          bulinks[i].set("Op", e.field("OpFill"))​;
-      
-          this.BeforeEdit.call(buo, bulinks[i], "update");
-          this.AfterEdit.call(buo, bulinks[i], "update");
-        }
-      }​
-    }​
-    if(e.field("Count")​==0 && value=="update")​
-      e.trash()​;
+    opo.validate(e);
+    opo.effect(e);
   }, 
   OpUroBeforeEdit : function (e) {
     opu.setnewdate(e)​;
