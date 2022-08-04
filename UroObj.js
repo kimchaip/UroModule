@@ -537,9 +537,8 @@ var dxop = {
     }
   },
   count : function (e) {
-    let lb = this.lib=="DxAutoFill"? dx: op;
-    let linkuro = lb.linksFrom("UroBase", this.lib);
-    let linkbup = lb.linksFrom("Backup", this.lib);
+    let linkuro = e.linksFrom("UroBase", this.lib);
+    let linkbup = e.linksFrom("Backup", this.lib);
     if(linkuro.length+linkbup.length>0) {
       e.set("Count", linkuro.length+linkbup.length);
     }
