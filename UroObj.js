@@ -1872,6 +1872,7 @@ var trig = {
     fill.ptdr(e);
     fill.active.call(this, e);
     fill.ptstatus.call(this, e)​;
+    fill.color.call(this, e);
     mer.effect(e)​;
   }, 
   AfterEdit : function (e, value) {
@@ -1894,6 +1895,8 @@ var trig = {
   }, 
   BeforeViewCard ​: function (e) {​
     old.save.call(this, e)​;
+    fill.future.call(this, e)​;​
+    fill.active.call(this, e);
   }, 
   BeforeOpenLib : function (all) {
     fill.updateall.call(this, all)​;
