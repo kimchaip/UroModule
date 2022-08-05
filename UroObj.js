@@ -501,6 +501,7 @@ var dxop = {
       }
     }
     else { // old link is []
+      message(e.field(this.lib));
       e.link(this.lib, found);
       dxop.count.call(this, found);
     }
