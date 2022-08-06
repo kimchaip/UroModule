@@ -1270,7 +1270,7 @@ var pto = {
             e.set("WardStamp", o.e.field("VisitDate")​);
             let str = "";
             if (o.e.field("Dx")!="")​
-              str = e.field("Dx");
+              str = o.e.field("Dx");
             if (o.e.field(o.ob.op)!="")​ {
               if (str!="")
                 str += " -​> " ;
@@ -1286,7 +1286,7 @@ var pto = {
         }
         else {
           e.set("Status", "Still");
-          e.set("Ward", e.field("Ward"));
+          e.set("Ward", o.e.field("Ward"));
         }
 
         if (!notdone && o.e.field("Merge")) { 
