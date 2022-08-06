@@ -1067,16 +1067,13 @@ var fill = {
     }
   }​,
   updateall : function(all) {
-   let txt = "";
     for (let i=0; i<all.length; i++)​ {
-      txt += "hour="+hour+", lastMod="+my.date(all[i].lastModifiedTime).toString()+", today="+today.toString()+"\n";
       if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) { 
         fill.color.call(this, all[i]);
         fill.future.call(this, all[i])​;​
         fill.active.call(this, all[i]);
       }
     }
-    message (txt);
   },
   deletept : function (e){
     //Pt
@@ -1256,6 +1253,7 @@ var pto = {
           o["e"] = cslinks[s];
         }
       }
+
       if (o.ob) {
         let notdone = o.e.field(o.ob.result).match(o.ob.notdone);
         notdone = notdone==null?0:notdone.length;
@@ -1264,6 +1262,10 @@ var pto = {
         }
         else {
           e.set("Status", "Still");
+        }
+        if (o.e.field("Merge")) { 
+          mer.load(o.e);
+          mer.colorall(o.e);
         }
       }
     }
@@ -1301,8 +1303,8 @@ var pto = {
         }
       }
       if (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime)​) < ntoday) {
-        pto.status(all[i]);
         pto.age(all[i]);
+        pto.status(all[i]);
       }
     }
   },
