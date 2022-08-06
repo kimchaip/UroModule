@@ -1312,7 +1312,7 @@ var pto = {
       }
       //if (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime)​) < ntoday) {
         pto.age(all[i]);
-        if(e) e.set("Output", e.field("Output")+", "+ all[i].field("Patient")[0].title);
+        if(e) e.set("Output", e.field("Output")+", "+ all[i].field("PtName"));
         pto.status(all[i]);
       //}
     }
