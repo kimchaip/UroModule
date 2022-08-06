@@ -1299,7 +1299,7 @@ var pto = {
     let txt="";
     let e=null;
     for (let i=0; i<all.length; i++)​ {
-      if (all[i].field("HN)==1222041) e=all[i];
+      if (all[i].field("HN")==1222041) e=all[i];
       if (all[i].field("Done")==true) {
         if (all[i].field("Status") == "Active") {
           if (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
