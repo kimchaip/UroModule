@@ -1253,8 +1253,11 @@ var pto = {
           o["e"] = cslinks[s];
         }
       }
+      else {
+        o = null;
+      }
 
-      if (o.ob) {
+      if (o) {
         let notdone = o.e.field(o.ob.result).match(o.ob.notdone);
         notdone = notdone==null?0:notdone.length;
         if (!notdone && ((o.e.field("VisitType")=="Admit" && my.gdate(o.e.field("VisitDate")) <= ntoday && (o.e.field("DischargeDate") == null || my.gdate(o.e.field("DischargeDate")) > ntoday)) || (o.e.field("VisitType")=="OPD" && my.gdate(o.e.field("VisitDate")) == ntoday)) ) {
@@ -1263,7 +1266,7 @@ var pto = {
         else {
           e.set("Status", "Still");
         }
-        if (o.e.field("Merge")) { 
+        if (!notdone && o.e.field("Merge")) { 
           mer.load(o.e);
           mer.colorall(o.e);
         }
