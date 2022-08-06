@@ -1302,10 +1302,10 @@ var pto = {
           all[i].set("Done", false) ;
         }
       }
-      if (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime)​) < ntoday) {
+      //if (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime)​) < ntoday) {
         pto.age(all[i]);
         pto.status(all[i]);
-      }
+      //}
     }
   },
   findLast : function(ptent, date, eid) {
