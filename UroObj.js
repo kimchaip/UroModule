@@ -1265,6 +1265,7 @@ var pto = {
         notdone = notdone==null?0:notdone.length;
         if (!notdone && ((o.e.field("VisitType")=="Admit" && my.gdate(o.e.field("VisitDate")) <= ntoday && (o.e.field("DischargeDate") == null || my.gdate(o.e.field("DischargeDate")) > ntoday)) || (o.e.field("VisitType")=="OPD" && my.gdate(o.e.field("VisitDate")) == ntoday)) ) {
           e.set("Status", "Active");
+          e.set("Ward", "");
           if (o.e.field("VisitType")=="Admit") {
             e.set("Ward", o.e.field("Ward"));
             e.set("WardStamp", o.e.field("VisitDate")​);
@@ -1286,7 +1287,7 @@ var pto = {
         }
         else {
           e.set("Status", "Still");
-          e.set("Ward", o.e.field("Ward"));
+          e.set("Ward", "");
         }
 
         if (!notdone && o.e.field("Merge")) { 
