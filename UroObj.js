@@ -1070,7 +1070,7 @@ var fill = {
    let txt = "";
     for (let i=0; i<all.length; i++)​ {
       txt += "hour="+hour+", lastMod="+all[i].lastModifiedTime+", today="+today.toString()+"\n";
-      if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
+      if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) { 
         fill.color.call(this, all[i]);
         fill.future.call(this, all[i])​;​
         fill.active.call(this, all[i]);
