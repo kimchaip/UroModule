@@ -1,11 +1,22 @@
+function dateIsValid(date) {
+  return date instanceof Date && !isNaN(date);
+}
+
 var my = {
   d : null, 
   nd : 0,
   date : function (value)  {
     if (value) {
+      if (dateIsValid(value)) {
+        this.d = new Date(value.getFullYear(), value.getMonth(),value.getDate(), 7) ;
+        return this.d;
+      }
+      else {
+        value = new Date(value.getTime());
+        this.d = new Date(value.getFullYear(), value.getMonth(),value.getDate(), 7) ;
+        return this.d;
+      }
       value = new Date(value);
-      this.d = new Date(value.getFullYear(), value.getMonth(),value.getDate(), 7) ;
-      return this.d;
     }
     else {
       this.d = null;
