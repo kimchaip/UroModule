@@ -1069,7 +1069,7 @@ var fill = {
   updateall : function(all) {
    let txt = "";
     for (let i=0; i<all.length; i++)​ {
-      txt += "hour="+hour+", lastMod="+dateIsValid(my.date(all[i].lastModifiedTime))+", today="+today.toString()+"\n";
+      txt += "hour="+hour+", lastMod="+my.date(all[i].lastModifiedTime).toString()+", today="+today.toString()+"\n";
       if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) { 
         fill.color.call(this, all[i]);
         fill.future.call(this, all[i])​;​
@@ -1157,9 +1157,6 @@ var fill = {
     }
   }
 }​;
-function dateIsValid(date) {
-  return date instanceof Date && !isNaN(date);
-}
 var pto = {
   lib : "Patient",
   rearrangename : function(e) {
@@ -1214,8 +1211,62 @@ var pto = {
   }, 
   //Status
   status : function (e) {
-    if (e.field("Status")​ != "Active")
-      e.set("Ward","");
+    if (e.field("Status")!="Dead") {
+      let orlinks = e.linksFrom("UroBase", "Patient") ;
+      let bulinks = e.linksFrom("Backup", "Patient") ;
+      let cslinks = e.linksFrom("Consult", "Patient") ;
+      let last = null, s=null, r=null, u=null​;​
+      if (orlinks.length>0) {
+        for (let i=0; i<orlinks.length; i++) {
+          if (my.gdate(​orlinks[i].field("VisitDate")) > my.gdate(last) && my.gdate(​orlinks[i].field("VisitDate"))​ <= ntoday​) {
+            last = orlinks[i].field("VisitDate");
+            r=i;
+          }
+        }
+      }​
+      if (bulinks.length​>0) {
+        for (let i=0; i<bulinks.length; i++) {
+          if (my.gdate(​bulinks[i].field("VisitDate"))​ > my.gdate(​last​) && my.gdate(​bulinks[i].field("VisitDate"))​ <= ntoday) {
+            last = bulinks[i].field("VisitDate");
+            u=i;
+          }
+        }
+      }​
+      if (cslinks.length>0) {
+        for (let i=0; i<cslinks.length; i++) {
+          if (my.gdate(​cslinks[i].field("VisitDate")​) > my.gdate(​last) && my.gdate(​cslinks[i].field("VisitDate"))​ <= ntoday) {
+            last = cslinks[i].field("VisitDate");
+            s=i;
+          }
+        }
+      }
+
+      let o = new Object();
+      if (last != null) {
+        if (r!=null &​& u==null &​& s==null) {
+          o["ob"] = uro;
+          o["e"] = orlinks[r];
+        }
+        else if (u!=null &​& s==​null)​ {
+          o["ob"] = buo;
+          o["e"] = bulinks[u];
+        }
+        else if (s!=null) {​
+          o["ob"] = cso;
+          o["e"] = cslinks[s];
+        }
+      }
+      if (o.ob) {
+        let notdone = o.e.field(o.ob.result).match(o.ob.notdone);
+        notdone = notdone==null?0:notdone.length;
+        if (!notdone && ((o.e.field("VisitType")=="Admit" && my.gdate(o.e.field("VisitDate")) <= ntoday && (o.e.field("DischargeDate") == null || my.gdate(o.e.field("DischargeDate")) > ntoday)) || (o.e.field("VisitType")=="OPD" && my.gdate(o.e.field("VisitDate")) == ntoday)) ) {
+          e.set("Status", "Active");
+        }
+        else {
+          e.set("Status", "Still");
+        }
+      }
+    }
   }, 
   //DJ stent
   dj : function (e) {
@@ -1243,15 +1294,14 @@ var pto = {
         if (all[i].field("Status") == "Active") {
           if (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
             all[i].set("Done", false)​ ;
-            mod = true;
           }​
         }​
         else {
           all[i].set("Done", false) ;
-          mod = true;
         }
       }
-      if (mod || (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime)​) < ntoday)) {
+      if (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime)​) < ntoday) {
+        pto.status(all[i]);
         pto.age(all[i]);
       }
     }
