@@ -1241,14 +1241,17 @@ var pto = {
       let o = new Object();
       if (last != null) {
         if (r!=null &​& u==null &​& s==null) {
+          o["lib"] = "UroBase";
           o["ob"] = uro;
           o["e"] = orlinks[r];
         }
         else if (u!=null &​& s==​null)​ {
+          o["lib"] = "Backup";
           o["ob"] = buo;
           o["e"] = bulinks[u];
         }
         else if (s!=null) {​
+          o["lib"] = "Consult";
           o["ob"] = cso;
           o["e"] = cslinks[s];
         }
