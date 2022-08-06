@@ -1069,7 +1069,7 @@ var fill = {
   updateall : function(all) {
    let txt = "";
     for (let i=0; i<all.length; i++)​ {
-      txt += "hour="+hour+", lastMod="+all[i].lastModifiedTime+", today="+today.toString()+"\n";
+      txt += "hour="+hour+", lastMod="+dateIsValid(my.date(all[i].lastModifiedTime))+", today="+today.toString()+"\n";
       if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) { 
         fill.color.call(this, all[i]);
         fill.future.call(this, all[i])​;​
@@ -1157,6 +1157,9 @@ var fill = {
     }
   }
 }​;
+function dateIsValid(date) {
+  return date instanceof Date && !isNaN(date);
+}
 var pto = {
   lib : "Patient",
   rearrangename : function(e) {
