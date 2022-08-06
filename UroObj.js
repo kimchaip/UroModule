@@ -186,7 +186,6 @@ var mer = {
     });
   },
   colorall: function(e) {
-    message(e.field("VisitDate").toDateString()+e.field("Patient")[0].title+", ");
     this.m.forEach(o=>{
       if(o.lib!="Consult")
         fill.color.call(uro, o.e);
@@ -1297,7 +1296,6 @@ var pto = {
     }​
   }, 
   updatefields : function (all)​ {
-    let mod = false;
     for (let i=0; i<all.length; i++)​ {
       if (all[i].field("Done")==true) {
         if (all[i].field("Status") == "Active") {
