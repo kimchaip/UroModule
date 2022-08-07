@@ -1068,7 +1068,7 @@ var fill = {
   }​,
   updateall : function(all) {
     for (let i=0; i<all.length; i++)​ {
-      if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) { 
+      if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday && (my.gdate(all[i]​.field("VisitDate")) >= ntoday || all[i]​.field("Active"))) { 
         fill.color.call(this, all[i]);
         fill.future.call(this, all[i])​;​
         fill.active.call(this, all[i]);
@@ -1206,97 +1206,6 @@ var pto = {
         pto.agetext(e, d)​;
     }​
   }, 
-  //Status
-  status : function (e) {
-    if (e.field("Status")!="Dead") {
-      let orlinks = e.linksFrom("UroBase", "Patient") ;
-      let bulinks = e.linksFrom("Backup", "Patient") ;
-      let cslinks = e.linksFrom("Consult", "Patient") ;
-      let last = null, s=null, r=null, u=null​;​
-      if (orlinks.length>0) {
-        for (let i=0; i<orlinks.length; i++) {
-          if (my.gdate(​orlinks[i].field("VisitDate")) > my.gdate(last) && my.gdate(​orlinks[i].field("VisitDate"))​ <= ntoday​) {
-            last = orlinks[i].field("VisitDate");
-            r=i;
-          }
-        }
-      }​
-      if (bulinks.length​>0) {
-        for (let i=0; i<bulinks.length; i++) {
-          if (my.gdate(​bulinks[i].field("VisitDate"))​ > my.gdate(​last​) && my.gdate(​bulinks[i].field("VisitDate"))​ <= ntoday) {
-            last = bulinks[i].field("VisitDate");
-            u=i;
-          }
-        }
-      }​
-      if (cslinks.length>0) {
-        for (let i=0; i<cslinks.length; i++) {
-          if (my.gdate(​cslinks[i].field("VisitDate")​) > my.gdate(​last) && my.gdate(​cslinks[i].field("VisitDate"))​ <= ntoday) {
-            last = cslinks[i].field("VisitDate");
-            s=i;
-          }
-        }
-      }
-
-      let o = new Object();
-      if (last != null) {
-        if (r!=null &​& u==null &​& s==null) {
-          o["lib"] = "UroBase";
-          o["ob"] = uro;
-          o["e"] = orlinks[r];
-        }
-        else if (u!=null &​& s==​null)​ {
-          o["lib"] = "Backup";
-          o["ob"] = buo;
-          o["e"] = bulinks[u];
-        }
-        else if (s!=null) {​
-          o["lib"] = "Consult";
-          o["ob"] = cso;
-          o["e"] = cslinks[s];
-        }
-      }
-      else {
-        o = null;
-      }
-
-      if (o) {
-        let notdone = o.e.field(o.ob.result).match(o.ob.notdone);
-        notdone = notdone==null?0:notdone.length;
-        if (!notdone && ((o.e.field("VisitType")=="Admit" && my.gdate(o.e.field("VisitDate")) <= ntoday && (o.e.field("DischargeDate") == null || my.gdate(o.e.field("DischargeDate")) > ntoday)) || (o.e.field("VisitType")=="OPD" && my.gdate(o.e.field("VisitDate")) == ntoday)) ) {
-          e.set("Status", "Active");
-          e.set("Ward", "");
-          if (o.e.field("VisitType")=="Admit") {
-            e.set("Ward", o.e.field("Ward"));
-            e.set("WardStamp", o.e.field("VisitDate")​);
-            let str = "";
-            if (o.e.field("Dx")!="")​
-              str = o.e.field("Dx");
-            if (o.e.field(o.ob.op)!="")​ {
-              if (str!="")
-                str += " -​> " ;
-              str += o.e.field(o.ob.op);
-            }​
-            if (o.e.field(o.ob.result)!="")​ {
-              if (str!="")
-                str += " -​> " ;
-              str += o.e.field(o.ob.result);
-            }​       
-            e.set("Descript", str);
-          }
-        }
-        else {
-          e.set("Status", "Still");
-          e.set("Ward", "");
-        }
-
-        if (!notdone && o.e.field("Merge")) { 
-          mer.load(o.e);
-          mer.colorall(o.e);
-        }
-      }
-    }
-  }, 
   //DJ stent
   dj : function (e) {
     if (!e.field("DJstent"))​ {
@@ -1317,9 +1226,7 @@ var pto = {
     }​
   }, 
   updatefields : function (all)​ {
-    //let e=null;
     for (let i=0; i<all.length; i++)​ {
-      //if (all[i].field("HN")==1222401) e=all[i];
       if (all[i].field("Done")==true) {
         if (all[i].field("Status") == "Active") {
           if (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
@@ -1332,10 +1239,12 @@ var pto = {
       }
       if (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime)​) < ntoday) {
         pto.age(all[i]);
-        //if(e) e.set("Output", e.field("Output")+", "+ all[i].field("PtName"));
-        pto.status(all[i]);
       }
     }
+    let ura = or.entries();
+    fill.updateall(ura);
+    let csa = cs.entries();
+    fill.updateall(csa);
   },
   findLast : function(ptent, date, eid) {
     eid = eid? eid: 0;
@@ -1904,7 +1813,6 @@ var trig = {
     else if (value=="update")​
       pto.uniqueHN(e, false)​;
     pto.age(e)​;
-    pto.status(e)​;
     pto.dj(e)​;
   }, 
   PatientAfterEdit : function (e, value) {
