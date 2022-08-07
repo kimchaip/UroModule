@@ -1244,9 +1244,9 @@ var pto = {
       }
     }
     let ura = or.entries();
-    fill.updateall(ura);
+    fill.updateall.call(uro, ura);
     let csa = cs.entries();
-    fill.updateall(csa);
+    fill.updateall.call(cso, csa);
   },
   findLast : function(ptent, date, eid) {
     eid = eid? eid: 0;
@@ -1896,7 +1896,8 @@ var trig = {
     fill.active.call(this, e);
   }, 
   BeforeOpenLib : function (all) {
-    fill.updateall.call(this, all)​;
+    if (this.lib!="Backup")
+      fill.updateall.call(this, all)​;
   }, 
   BeforeUpdatingField : function (e) {
     old.load(e)​;
