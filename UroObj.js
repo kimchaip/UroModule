@@ -1231,10 +1231,12 @@ var pto = {
         if (all[i].field("Status") == "Active") {
           if (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
             all[i].set("Done", false)​ ;
+            pto.age(all[i]);
           }​
         }​
         else {
           all[i].set("Done", false) ;
+          pto.age(all[i]);
         }
       }
       if (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime)​) < ntoday) {
