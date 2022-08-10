@@ -985,7 +985,7 @@ var fill = {
         if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
       } 
       else if(e.field("Status")=="Plan") {
-        if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​)​{
+        if (e.field("Active")​>=0​)​{
           if (e.field("VisitType")=="OPD") {
             if(e.field("Color")​!="#A7FF87") e.set("Color", "#A7FF87"); 
           } 
@@ -1003,7 +1003,7 @@ var fill = {
         } 
       }
       else if(e.field("Status")=="Done") {
-        if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​)​{
+        if (e.field("Active")​>=0​)​{
           if (e.field("VisitType")=="OPD") {
             if(e.field("Color")​!="#6EB73D") e.set("Color", "#6EB73D"); 
           } 
@@ -1025,7 +1025,7 @@ var fill = {
       if(e.field("Status")=="Not") {
         if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
       } 
-      else if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")=="OPD" &​& my.gdate(e.field("VisitDate"))​== ntoday)​)​{
+      else if (e.field("Active")​>=0​)​{
         if (e.field("VisitType")=="OPD")​{
           if(e.field("Color")​!="#6EB73D") e.set("Color", "#6EB73D");
         }​
@@ -1069,9 +1069,9 @@ var fill = {
   updateall : function(all) {
     for (let i=0; i<all.length; i++)​ {
       if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday && (my.gdate(all[i]​.field("VisitDate")) >= ntoday || all[i]​.field("Active")>=0)) { 
-        fill.color.call(this, all[i]);
         fill.future.call(this, all[i])​;​
         fill.active.call(this, all[i]);
+        fill.color.call(this, all[i]);
       }
     }
   },
@@ -1894,6 +1894,7 @@ var trig = {
     old.save.call(this, e)​;
     fill.future.call(this, e)​;​
     fill.active.call(this, e);
+    fill.color.call(this, e);
   }, 
   BeforeOpenLib : function (all) {
     if (this.lib!="Backup")
