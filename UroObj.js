@@ -194,7 +194,7 @@ var mer = {
     });
   },
   fieldall: function(e) {
-    let range = ["VisitDate","PastHx","InvResult","VisitType","Ward","DischargeDate","Track","Summary","Underlying","LOS","Dr"];
+    let range = ["VisitDate","PastHx","InvResult","VisitType","Ward","DischargeDate","Track","Summary","Underlying","LOS","Dr","Active"];
     for(let i = 0; i<range.length; i++) {
       let inx = this.findInx(e);
       if(range[i].indexOf("Date")>-1) {
@@ -229,11 +229,17 @@ var mer = {
       mer.setall("MergeID", e.field("MergeID"));
       mer.setall("Merge", true);
       mer.setall("VisitDate", mergeobj.e.field("VisitDate"));
+      mer.setall("PastHx", mergeobj.e.field("PastHx"));
+      mer.setall("InvResult", mergeobj.e.field("InvResult"));
+      mer.setall("VisitType", mergeobj.e.field("VisitType"))
       mer.setall("Ward", mergeobj.e.field("Ward"));
       mer.setall("DischargeDate", mergeobj.e.field("DischargeDate"));
       mer.setall("Track", mergeobj.e.field("Track"));
       mer.setall("Summary", mergeobj.e.field("Summary"));
+      mer.setall("Underlying", mergeobj.e.field("Underlying"));
       mer.setall("LOS", mergeobj.e.field("LOS"));
+      mer.setall("Dr", mergeobj.e.field("Dr"));
+      mer.setall("Active", mergeobj.e.field("Active"));
     }
     else {
       message("Can't find Last Admit!");
@@ -292,9 +298,10 @@ var mer = {
     }
   },
   effect: function(e) {
-    this.load(e);
-    this.fieldall(e);
-    this.colorall(e);
+    if (this.m.length>1) {
+      this.fieldall(e);
+      this.colorall(e);
+    }
   }
 };
 var que = {
@@ -1072,6 +1079,7 @@ var fill = {
         fill.future.call(this, all[i])​;​
         fill.active.call(this, all[i]);
         fill.color.call(this, all[i]);
+        
       }
     }
   },
@@ -1892,9 +1900,6 @@ var trig = {
   }, 
   BeforeViewCard ​: function (e) {​
     old.save.call(this, e)​;
-    fill.future.call(this, e)​;​
-    fill.active.call(this, e);
-    fill.color.call(this, e);
   }, 
   BeforeOpenLib : function (all) {
     if (this.lib!="Backup")
