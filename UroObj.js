@@ -575,14 +575,20 @@ var fill = {
     }
   },
   setortype : function (e) {
-    if(old.field("Op")!=e.field("Op") && e.field("Op") && old.field("ORType") == e.field("ORType"))
-      e.set("ORType",  fill.ortypebyop(e));
+    if(old.field("Op")!=e.field("Op") && e.field("Op") && old.field("ORType") == e.field("ORType")) {
+      let ortype = fill.ortypebyop(e);
+      if (ortype)
+        e.set("ORType", ortype);
+    }
   } ,
   setvisittype : function (e) {
     if(e.field("Merge")​ && e.field("VisitType") == "OPD")
       e.set("VisitType", "Admit")​;
-    else if(old.field("Dx")!=e.field("Dx") && e.field("Dx") && old.field("VisitType") == e.field("VisitType"))
-      e.set("VisitType",  fill.visittypebydx.call(this, e));
+    if(old.field("Dx")!=e.field("Dx") && e.field("Dx") && old.field("VisitType") == e.field("VisitType")) {
+      let vstype = fill.visittypebydx.call(this, e);
+      if (vstype)
+        e.set("VisitType", vstype);
+    }
   } ,
   setvisitdate ​: function (e)​ {
     if(this.lib!="Consult") {
@@ -681,7 +687,7 @@ var fill = {
       return results[0].type;
     }
     else {
-      return "GA"
+      return null;
     }
   },
   visittypebydx : function (e) {
@@ -725,33 +731,33 @@ var fill = {
           return "Admit";
       }
       else {
-        return "Admit";
+        return null;
       }
     }
   },
   statusbyresult : function(e) {
     let opresult = e.field(this.result);
-    let notonly = opresult.match(this.notonly);
-    let notdone = opresult.match(this.notdone);
+    let notonly = opresult.match(this.notonlyreg);
+    let notdone = opresult.match(this.notdonereg);
     notonly = notonly==null?0:notonly.length;
-    notdone = notdone==null?0:notdone.length;
+    this.notdone = notdone==null?0:notdone.length;
     
     if(opresult) {
-      if(notdone>0)​ {
+      if(this.notdone)​ {
         e.set("Status", "Not")​;
         let links = e.field("Patient");
         if(links.length>0 && links[0].field("Status")=="Active") {
           links[0].set("Status", "Still")​;
         }
       }
-      else if(notonly>0)​
+      else if(notonly)​
         e.set("Status", "Not")​;
       else {
         if(e.field("Status")!="Done")
           e.set("Status", "Done");
       }
     }
-    else if(!opresult){
+    else {
       if(e.field("Status")!="Plan")
         e.set("Status", "Plan");
     }
@@ -782,7 +788,7 @@ var fill = {
         else
           e.set("DJstent", null);
       }
-      else if(!opresult){
+      else {
         e.set("DJstent", null);
       }
     }
@@ -903,10 +909,6 @@ var fill = {
     }
   },
   ptstatus : function (e) {
-    let opresult = e.field(this.result);
-    let notdone = opresult.match(this.notdone);
-    notdone = notdone==null?0:notdone.length;
-    
     let links = e.field("Patient")​;
     if (links.length>0) {
       let ptent = pt.findById(links[0].id);
@@ -950,7 +952,7 @@ var fill = {
       if ((links[0].field("WardStamp")​ == null || my.gdate(e.field("VisitDate")​) >= my.gdate(links[0].field("WardStamp"))​) && 
 (links[0].field("Status")​ == "Still" || links[0].field("Status")​ == "Active")​​)​ {
         if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) == ntoday) ) {//Admit or OPD visit today
-          if(notdone>0)​ { //but notvisit
+          if(this.notdone)​ { //but notvisit
             links[0].set("Status", "Still")​;
             links[0].set("Ward", "");
           }
@@ -1057,11 +1059,7 @@ var fill = {
       e.set("Future", null)​;
   }​,
   active : function(e)​{
-    let opresult = e.field(this.result);
-    let notdone = opresult.match(this.notdone);
-    notdone = notdone==null?0:notdone.length;
-    
-    if( !notdone && ( (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) == ntoday) ) ) {//Admit or OPD visit today
+    if( !this.notdone && ( (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) == ntoday) ) ) {//Admit or OPD visit today
       if (e.field("VisitType")=="Admit") {
         e.set("Active", Math.floor((ntoday-my.gdate(e.field("VisitDate")​))​/86400000))​;
       }
@@ -1264,7 +1262,7 @@ var pto = {
       let last = null, s=null, r=null, u=null​;​
       if (orlinks.length>0) {
         for (let i=0; i<orlinks.length; i++) {
-          let notdone = orlinks[i].field(uro.result).match(uro.notdone);
+          let notdone = orlinks[i].field(uro.result).match(uro.notdonereg);
           notdone = notdone==null?0:notdone.length;
           if (orlinks[i].field("VisitType")=="Admit" && !notdone && my.gdate(​orlinks[i].field("VisitDate")) > my.gdate(​last) && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && orlinks[i].id != eid) {
             last = orlinks[i].field("VisitDate");
@@ -1274,7 +1272,7 @@ var pto = {
       }​
       if (bulinks.length​>0) {
         for (let i=0; i<bulinks.length; i++) {
-          let notdone = bulinks[i].field(buo.result).match(buo.notdone);
+          let notdone = bulinks[i].field(buo.result).match(buo.notdonereg);
           notdone = notdone==null?0:notdone.length;
           if (bulinks[i].field("VisitType")=="Admit" && !notdone && my.gdate(​bulinks[i].field("VisitDate"))​ > my.gdate(​last​) && my.gdate(​bulinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && bulinks[i].id != eid) {
             last = bulinks[i].field("VisitDate");
@@ -1284,7 +1282,7 @@ var pto = {
       }​
       if (cslinks.length>0) {
         for (let i=0; i<cslinks.length; i++) {
-          let notdone = cslinks[i].field(cso.result).match(cso.notdone);
+          let notdone = cslinks[i].field(cso.result).match(cso.notdonereg);
           notdone = notdone==null?0:notdone.length;
           if (cslinks[i].field("VisitType")=="Admit" && !notdone && my.gdate(​cslinks[i].field("VisitDate")​) > my.gdate(​last) && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) && cslinks[i].id != eid) {
             last = cslinks[i].field("VisitDate");
@@ -1317,8 +1315,9 @@ var uro = {
   opdate : "Date",
   op : "Op",
   result : "OpResult",
-  notonly : /งดเพราะ/,
-  notdone : /ไม่ทำเพราะ/,
+  notonlyreg : /งดเพราะ/,
+  notdonereg : /ไม่ทำเพราะ/,
+  notdone : null,
   setopextra : function (e) {
     let hd = libByName("Holidays")​;
     let hds = hd.entries()​;
@@ -1462,16 +1461,18 @@ var buo = {
   opdate : "Date",
   op : "Op",
   result : "OpResult",
-  notonly : /งดเพราะ/,
-  notdone : /ไม่ทำเพราะ/
+  notonlyreg : /งดเพราะ/,
+  notdonereg : /ไม่ทำเพราะ/,
+  notdone : null
 }
 var cso = {
   lib : "Consult",
   opdate : "ConsultDate",
   op : "Rx",
   result : "Note",
-  notonly : /ไม่ดูเพราะ/,
-  notdone : /ไม่มาเพราะ/
+  notonlyreg : /ไม่ดูเพราะ/,
+  notdonereg : /ไม่มาเพราะ/,
+  notdone : null
 }​;
 var dxo = {
   lib : "DxAutoFill",
