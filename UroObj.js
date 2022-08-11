@@ -987,7 +987,6 @@ var fill = {
     }
   },
   color : function (e)​ {
-    message(this.lib+","+e.field("Status")+","+e.field("Active")+","+e.field("VisitType")+","+e.field("Color"));
     if(this.lib!="Consult") {
       if(e.field("Status")=="Not") {
         if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
@@ -1076,11 +1075,11 @@ var fill = {
   }​,
   updateall : function(all) {
     for (let i=0; i<all.length; i++)​ {
-      //if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday && (my.gdate(all[i]​.field("VisitDate")) >= ntoday || all[i]​.field("Active")!=null)) { 
+      if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday && (my.gdate(all[i]​.field("VisitDate")) >= ntoday || all[i]​.field("Active")!=null)) { 
         fill.future.call(this, all[i])​;​
         fill.active.call(this, all[i]);
         fill.color.call(this, all[i]);
-      //}
+      }
     }
   },
   deletept : function (e){
