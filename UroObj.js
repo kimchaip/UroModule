@@ -987,7 +987,7 @@ var fill = {
     }
   },
   color : function (e)​ {
-    message(this.lib+","+e.field(""Status")+","+e.field("Active")+","+e.field("VisitType")+","+e.field("Color"));
+    message(this.lib+","+e.field("Status")+","+e.field("Active")+","+e.field("VisitType")+","+e.field("Color"));
     if(this.lib!="Consult") {
       if(e.field("Status")=="Not") {
         if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
