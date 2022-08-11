@@ -908,6 +908,13 @@ var fill = {
       e.set("OpLength", null)​;
     }
   },
+  descripttxt : function (e) {
+    let arr = [];
+    if (e.field("Dx")) arr.push(e.field("Dx"));
+    if (e.field(this.op)) arr.push(e.field(this.op));
+    if (e.field(this.result)) arr.push(e.field(this.result));
+    return arr.join("->");
+  },
   ptstatus : function (e) {
     let links = e.field("Patient")​;
     if (links.length>0) {
@@ -915,68 +922,44 @@ var fill = {
         
       let o = pto.findLast(ptent, today);
       let str = "" ;
-      if (o != null)​{
-        links[0].set("WardStamp", o.e.field("VisitDate")​);
-        if (o.e.field("Dx")!="")​
-          str = e.field("Dx");
-
-        var lib;
-        if(o.lib=="UroBase") {
-          lib = uro;
-        }
-        else if(o.lib=="Backup") {
-          lib = buo;
-        }
-        else if(o.lib=="Consult") {
-          lib = cso;
-        }
-        if (o.e.field(lib.op)!="")​ {
-          if (str!="")
-            str += " -​> " ;
-          str += o.e.field(lib.op);
-        }​
-        if (o.e.field(lib.result)!="")​ {
-          if (str!="")
-            str += " -​> " ;
-          str += o.e.field(lib.result);
-        }​       
-        links[0].set("Descript", str);
-      }
-      else {
+      if (!o) { // never admit
         links[0].set("WardStamp",null);
         links[0].set("Ward",  "");
         links[0].set("Descript", "");
-      }​
-      
-      //--set pt.status, pt.ward, wardStamp and Description
-      if ((links[0].field("WardStamp")​ == null || my.gdate(e.field("VisitDate")​) >= my.gdate(links[0].field("WardStamp"))​) && 
-(links[0].field("Status")​ == "Still" || links[0].field("Status")​ == "Active")​​)​ {
-        if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday)) || (e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) == ntoday) ) {//Admit or OPD visit today
-          if(this.notdone)​ { //but notvisit
-            links[0].set("Status", "Still")​;
+      }
+      else { // ever admit
+        if (my.gdate(links[0].field("WardStamp")) != my.gdate(o.e.field("VisitDate")​)) ​{
+          links[0].set("WardStamp", o.e.field("VisitDate")​);
+        
+          let lib;
+          if(o.lib=="UroBase") lib = uro;
+          else if(o.lib=="Backup") lib = buo;
+          else if(o.lib=="Consult") lib = cso;
+          
+          str = fill.descripttxt.call(lib, o.e);
+          links[0].set("Descript", str);
+        }
+
+        let dead = e.field(this.result).match(/dead|death/ig);
+        dead = dead?dead.length​:0;
+        if (o.id​​ == e.id)​ {
+          if (dead) { // dead
+            links[0].set("Status" ,"Dead");
             links[0].set("Ward", "");
           }
-          else {
+          else if (e.field("Active")​!=null) { //Admit or OPD visit today
             links[0].set("Status" ,"Active");
-            links[0].set("Ward", e.field("Ward"));
+            if (e.field("VisitType")=="Admit")
+              links[0].set("Ward", e.field("Ward"));
+            else
+              links[0].set("Ward", e.field(""));
           }
-        }
-        else if ((e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​) || (e.field("VisitType")​=="OPD" && my.gdate(e.field("VisitDate")) != ntoday) ) { // D/C or OPD not visit today
-          let dead = e.field(this.result).match(/dead|death/ig);
-          dead = dead?dead.length​:0;
-          if(dead>0){
-            links[0].set("Status" ,"Dead");
-          }
-          else {
-            links[0].set("Status" ,"Still");
-          }
-          links[0].set("Ward", "");   
+          else { // notvisit, not active
+            links[0].set("Status", "Still")​;
+            links[0].set("Ward", "");
+          }​
         }​
-        else if ((o == null)​ || (o.e.field("DischargeDate") && my.gdate(o.e.field("DischargeDate"))​ <= ntoday)​ ) {//if future, check last admit :never admit or already D/C of last visit: still
-          links[0].set("Status" ,"Still");
-          links[0].set("Ward", "");
-        }​
-      }​
+      }
     }​​​​
   }, 
   ptdr : function (e) {
