@@ -993,7 +993,7 @@ var fill = {
         if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
       } 
       else if(e.field("Status")=="Plan") {
-        if (e.field("Active")​>=0​)​{
+        if (e.field("Active")​!=null)​{
           if (e.field("VisitType")=="OPD") {
             if(e.field("Color")​!="#A7FF87") e.set("Color", "#A7FF87"); 
           } 
@@ -1011,7 +1011,7 @@ var fill = {
         } 
       }
       else if(e.field("Status")=="Done") {
-        if (e.field("Active")​>=0​)​{
+        if (e.field("Active")​!=null​)​{
           if (e.field("VisitType")=="OPD") {
             if(e.field("Color")​!="#6EB73D") e.set("Color", "#6EB73D"); 
           } 
@@ -1033,7 +1033,7 @@ var fill = {
       if(e.field("Status")=="Not") {
         if(e.field("Color")​!="#5B5B5B") e.set("Color", "#5B5B5B")​;
       } 
-      else if (e.field("Active")​>=0​)​{
+      else if (e.field("Active")​!=null​)​{
         if (e.field("VisitType")=="OPD")​{
           if(e.field("Color")​!="#6EB73D") e.set("Color", "#6EB73D");
         }​
