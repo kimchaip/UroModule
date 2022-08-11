@@ -873,7 +873,7 @@ var fill = {
       e.set("LOS", diff)​;
     }​
     else {
-      e.set("LOS", undefined)​;
+      e.set("LOS", null)​;
     }​
   }, 
   opdatecal : function (e) {
