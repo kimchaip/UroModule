@@ -1076,12 +1076,11 @@ var fill = {
   }​,
   updateall : function(all) {
     for (let i=0; i<all.length; i++)​ {
-      if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday && (my.gdate(all[i]​.field("VisitDate")) >= ntoday || all[i]​.field("Active")>=0)) { 
+      //if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday && (my.gdate(all[i]​.field("VisitDate")) >= ntoday || all[i]​.field("Active")!=null)) { 
         fill.future.call(this, all[i])​;​
         fill.active.call(this, all[i]);
         fill.color.call(this, all[i]);
-        
-      }
+      //}
     }
   },
   deletept : function (e){
