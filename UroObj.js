@@ -396,7 +396,7 @@ var emx = {
     let libfrom = lib().title;
     let min = this.lib==libfrom? 1: 0;
     let links = e.field("Patient")​;
-    if (links.length > 0) {
+    if (links.length && links[0].field("Status")!="Dead") {
       let lib = this.lib!="Consult"? or: cs;
       let ptent = pt.findById(links[0].id);
       let entlinks = ptent.linksFrom(this.lib, "Patient");
@@ -438,12 +438,12 @@ var emx = {
     if (e.field("EntryMx")​== "F/U" &&  e.field("AppointDate")) {
       last = emx.createnew.call(cso, e)​;
       if(last) last.show();
-      else message("This appoint date have ever been used");
+      else message("check appoint date or Pt Status");
     }​
     else if (e.field("EntryMx")​== "set OR" &&  e.field("AppointDate")) {
       last = emx.createnew.call(uro, e);
       if(last) last.show()​;
-      else message("This appoint date have ever been used");
+      else message("check appoint date or Pt Status");
     }
     else if (e.field("EntryMx")​=="F/U" || e.field("EntryMx")​=="set OR")​ {
       message("Appoint date must not leave blank")​;
@@ -958,7 +958,7 @@ var fill = {
             links[0].set("Status", "Still")​;
             links[0].set("Ward", "");
           }​
-        }​
+        }
       }
     }​​​​
   }, 
@@ -1236,8 +1236,7 @@ var pto = {
     let csa = cs.entries();
     fill.updateall.call(cso, csa);
   },
-  findLast : function(ptent, date, eid) {
-    eid = eid? eid: 0;
+  findLast : function(ptent, date, eid=0) {
     if (ptent) {
       let orlinks = ptent.linksFrom("UroBase", "Patient") ;
       let bulinks = ptent.linksFrom("Backup", "Patient") ;
