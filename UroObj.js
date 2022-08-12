@@ -939,7 +939,7 @@ var fill = {
         links[0].set("Descript", str);
         links[0].set("WardStamp", o.e.field("VisitDate")​);
         
-        if (my.gdate(links[0].field("WardStamp")) == my.gdate(e.field("VisitDate")​))​ {
+        if (o.e.id == e.id)​ {
           let dead = e.field(this.result).match(/dead|death/ig);
           dead = dead?dead.length​:0;
           if (dead) { // dead
