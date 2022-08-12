@@ -1290,7 +1290,7 @@ var pto = {
       let vsdlist = all.map(o=>{return o.vsd});
       let lastvsd = Math.max.apply(null, vsdlist);
       // filter by max visitDate
-      all = all.filter(o=>my.gdate(o.vsd) == my.gdate(lastvsd));
+      all = all.filter(o=>my.gdate(o.vsd) == lastvsd);
       // sort by opdate
       all = all.sort((a,b)=>{
         return my.gdate(b.opd)-my.gdate(a.opd);
