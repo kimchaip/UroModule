@@ -930,19 +930,19 @@ var fill = {
       else { // ever admit
         if (my.gdate(links[0].field("WardStamp")) != my.gdate(o.e.field("VisitDate")​)) ​{
           links[0].set("WardStamp", o.e.field("VisitDate")​);
-        
-          let lib;
-          if(o.lib=="UroBase") lib = uro;
-          else if(o.lib=="Backup") lib = buo;
-          else if(o.lib=="Consult") lib = cso;
-          
-          str = fill.descripttxt.call(lib, o.e);
-          links[0].set("Descript", str);
         }
-
+        let lib;
+        if(o.lib=="UroBase") lib = uro;
+        else if(o.lib=="Backup") lib = buo;
+        else if(o.lib=="Consult") lib = cso;
+          
+        str = fill.descripttxt.call(lib, o.e);
+        links[0].set("Descript", str);
+        
         let dead = e.field(this.result).match(/dead|death/ig);
         dead = dead?dead.length​:0;
         if (o.id​​ == e.id)​ {
+message(dead);
           if (dead) { // dead
             links[0].set("Status" ,"Dead");
             links[0].set("Ward", "");
