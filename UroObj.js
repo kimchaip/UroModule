@@ -1245,10 +1245,10 @@ var pto = {
       let cslinks = ptent.linksFrom("Consult", "Patient") ;
       if (orlinks.length>0) {
         for (let i=0; i<orlinks.length; i++) {
+          let o = new Object();
           let notdone = orlinks[i].field(uro.result).match(uro.notdonereg);
           o["nd"] = notdone==null?0:notdone.length;
           if (orlinks[i].field("VisitType")=="Admit" && !o.nd && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && orlinks[i].id != eid) {
-            let o = new Object();
             o["vsd"] = orlinks[i].field("VisitDate");
             o["opd"] = orlinks[i].field(uro.opdate);
             o["lib"] = "UroBase";
@@ -1259,10 +1259,10 @@ var pto = {
       }​
       if (bulinks.length​>0) {
         for (let i=0; i<bulinks.length; i++) {
+          let o = new Object();
           let notdone = bulinks[i].field(buo.result).match(buo.notdonereg);
           o["nd"] = notdone==null?0:notdone.length;
           if (bulinks[i].field("VisitType")=="Admit" && !o.nd && my.gdate(​bulinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && bulinks[i].id != eid) {
-            let o = new Object();
             o["vsd"] = bulinks[i].field("VisitDate");
             o["opd"] = bulinks[i].field(buo.opdate);
             o["lib"] = "Backup";
@@ -1273,6 +1273,7 @@ var pto = {
       }​
       if (cslinks.length>0) {
         for (let i=0; i<cslinks.length; i++) {
+          let o = new Object();
           let notdone = cslinks[i].field(cso.result).match(cso.notdonereg);
           o["nd"] = notdone==null?0:notdone.length;
           if (cslinks[i].field("VisitType")=="Admit" && !o.nd && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) && cslinks[i].id != eid) {
