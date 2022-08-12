@@ -935,11 +935,9 @@ var fill = {
           
         str = fill.descripttxt.call(lib, o.e);
         links[0].set("Descript", str);
+        links[0].set("WardStamp", o.e.field("VisitDate")​);
         
-        if (my.gdate(links[0].field("WardStamp")) != my.gdate(o.e.field("VisitDate")​)) ​{
-          links[0].set("WardStamp", o.e.field("VisitDate")​);
-        }
-        else​ {
+        if (my.gdate(links[0].field("WardStamp")) == my.gdate(e.field("VisitDate")​))​ {
           let dead = e.field(this.result).match(/dead|death/ig);
           dead = dead?dead.length​:0;
           if (dead) { // dead
