@@ -217,11 +217,12 @@ var mer = {
       let date = e.field("VisitDate");
       return pto.findLast(ptent, date, e.id);
     }
-    return null;
+    return [];
   },
   run : function(e) {
-    let mergeobj = mer.findLast(e);
-    if (mergeobj) {
+    let mergearr = mer.findLast(e);
+    if (mergearr.length>0) {
+      let mergeobj = mergearr[0];
       mer.load(mergeobj.e);
       mer.append(this.lib, e);
       mer.sort(e);
@@ -920,7 +921,8 @@ var fill = {
     if (links.length>0) {
       let ptent = pt.findById(links[0].id);
         
-      let o = pto.findLast(ptent, today);
+      let a = pto.findLast(ptent, today);
+      let o = a.length>0?a[0]:null;
       let str = "" ;
       if (!o) { // never admit
         links[0].set("WardStamp",null);
@@ -1198,7 +1200,8 @@ var pto = {
     }
   }, 
   donesettrack : function (e)​ {
-    let o = this.findLast(e, today);
+    let a = this.findLast(e, today);
+    let o = a.length>0?a[0]:null;
     if (o)​ {
       let toEnt = o.e ;
       if (e.field("Done") == true &​& toEnt.field("Track") == 1) {
@@ -1235,59 +1238,64 @@ var pto = {
   },
   findLast : function(ptent, date, eid) {
     eid=eid?eid:0;
+    let all = [];
     if (ptent) {
       let orlinks = ptent.linksFrom("UroBase", "Patient") ;
       let bulinks = ptent.linksFrom("Backup", "Patient") ;
       let cslinks = ptent.linksFrom("Consult", "Patient") ;
-      let last = null, s=null, r=null, u=null​;​
       if (orlinks.length>0) {
         for (let i=0; i<orlinks.length; i++) {
           let notdone = orlinks[i].field(uro.result).match(uro.notdonereg);
-          notdone = notdone==null?0:notdone.length;
-          if (orlinks[i].field("VisitType")=="Admit" && !notdone && my.gdate(​orlinks[i].field("VisitDate")) > my.gdate(​last) && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && orlinks[i].id != eid) {
-            last = orlinks[i].field("VisitDate");
-            r=i;
+          o["nd"] = notdone==null?0:notdone.length;
+          if (orlinks[i].field("VisitType")=="Admit" && !o.nd && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && orlinks[i].id != eid) {
+            let o = new Object();
+            o["vsd"] = orlinks[i].field("VisitDate");
+            o["opd"] = orlinks[i].field(uro.opdate);
+            o["lib"] = "UroBase";
+            o["e"] = orlinks[i];
+            all.push(o);
           }
         }
       }​
       if (bulinks.length​>0) {
         for (let i=0; i<bulinks.length; i++) {
           let notdone = bulinks[i].field(buo.result).match(buo.notdonereg);
-          notdone = notdone==null?0:notdone.length;
-          if (bulinks[i].field("VisitType")=="Admit" && !notdone && my.gdate(​bulinks[i].field("VisitDate"))​ > my.gdate(​last​) && my.gdate(​bulinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && bulinks[i].id != eid) {
-            last = bulinks[i].field("VisitDate");
-            u=i;
+          o["nd"] = notdone==null?0:notdone.length;
+          if (bulinks[i].field("VisitType")=="Admit" && !o.nd && my.gdate(​bulinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && bulinks[i].id != eid) {
+            let o = new Object();
+            o["vsd"] = bulinks[i].field("VisitDate");
+            o["opd"] = bulinks[i].field(buo.opdate);
+            o["lib"] = "Backup";
+            o["e"] = bulinks[i];
+            all.push(o);
           }
         }
       }​
       if (cslinks.length>0) {
         for (let i=0; i<cslinks.length; i++) {
           let notdone = cslinks[i].field(cso.result).match(cso.notdonereg);
-          notdone = notdone==null?0:notdone.length;
-          if (cslinks[i].field("VisitType")=="Admit" && !notdone && my.gdate(​cslinks[i].field("VisitDate")​) > my.gdate(​last) && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) && cslinks[i].id != eid) {
-            last = cslinks[i].field("VisitDate");
-            s=i;
+          o["nd"] = notdone==null?0:notdone.length;
+          if (cslinks[i].field("VisitType")=="Admit" && !o.nd && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) && cslinks[i].id != eid) {
+            let o = new Object();
+            o["vsd"] = cslinks[i].field("VisitDate");
+            o["opd"] = cslinks[i].field(cso.opdate);
+            o["lib"] = "Consult";
+            o["e"] = cslinks[i];
+            all.push(o);
           }
         }
-      }​
-      let o = new Object();
-      if (last != null) {
-        if (r!=null &​& u==null &​& s==null) {
-          o["lib"] = "UroBase";
-          o["e"] = orlinks[r];
-        }
-        else if (u!=null &​& s==​null)​ {
-          o["lib"] = "Backup";
-          o["e"] = bulinks[u];
-        }
-        else if (s!=null) {​
-          o["lib"] = "Consult";
-          o["e"] = cslinks[s];
-        }
-        return o;
       }
+      // find max VisitDate
+      let vsdlist = all.map(o=>{return o.vsd});
+      let lastvsd = Math.max.apply(null, vsdlist);
+      // filter by max visitDate
+      all = all.filter(o=>my.gdate(o.vsd) == my.gdate(lastvsd));
+      // sort by opdate
+      all = all.sort((a,b)=>{
+        return my.gdate(b.opd)-my.gdate(a.opd);
+      });
     }
-    return null;
+    return all;
   }
 }​;
 var uro = {
