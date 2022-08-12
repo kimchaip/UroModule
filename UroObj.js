@@ -941,8 +941,9 @@ var fill = {
         
         let dead = e.field(this.result).match(/dead|death/ig);
         dead = dead?dead.length​:0;
-        if (o.id​​ == e.id)​ {
-message(dead);
+message(dead+","+o.e.id​​+" == "+e.id);
+        if (o.e.id​​ == e.id)​ {
+
           if (dead) { // dead
             links[0].set("Status" ,"Dead");
             links[0].set("Ward", "");
