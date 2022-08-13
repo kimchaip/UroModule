@@ -803,7 +803,7 @@ var fill = {
       if(this.lib!="Consult") {
         if(my.gdate(e.field("Date"))<=ntoday​)​ {
           let d = Math.floor((ntoday-my.gdate(e.field("Date")​))​/86400000);
-          let found = opresult.match(/today\s?[+-]\s?[\d\s]+/ig);
+          let found = opresult.match(/today\s?[+-]?[\d\s]+/ig);
           if (found) {
             let txtarr = found.map((v, i)=>{
               let num = parseInt(v.replace(/\s+/g, "").replace(/today/i, ""));
@@ -819,7 +819,7 @@ var fill = {
       else {
         if(my.gdate(e.field("VisitDate"))<=ntoday​)​ {
           let d = Math.floor((ntoday-my.gdate(e.field("VisitDate")​))​/86400000);
-          let found = opresult.match(/today\s?[+-]\s?[\d\s]+/ig);
+          let found = opresult.match(/today\s?[+-]?[\d\s]+/ig);
           if (found) {
             let txtarr = found.map((v, i)=>{
               let num = parseInt(v.replace(/\s+/g, "").replace(/today/i, ""));
