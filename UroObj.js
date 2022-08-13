@@ -803,13 +803,25 @@ var fill = {
       if(this.lib!="Consult") {
         if(my.gdate(e.field("Date"))<=ntoday​)​ {
           let d = Math.floor((ntoday-my.gdate(e.field("Date")​))​/86400000);
-          opresult = opresult.replace("today", "P/O day" +d+ ":");
+          let found = opresult.match(/today\s?[+-]\s?[\d\s]+/i);
+          if (found) {
+            let txt = found[0];
+            let num = txt.replace(/today/i, "0");
+            d += parseInt(num);
+            opresult = opresult.replace(txt, "P/O day" +d+ ":");
+          }
         }
       }
       else {
         if(my.gdate(e.field("VisitDate"))<=ntoday​)​ {
           let d = Math.floor((ntoday-my.gdate(e.field("VisitDate")​))​/86400000);
-          opresult = opresult.replace("today", "P/V day" +d+ ":");
+          let found = opresult.match(/today\s?[+-]\s?[\d\s]+/i);
+          if (found) {
+            let txt = found[0];
+            let num = txt.replace(/today/i, "0");
+            d += parseInt(num);
+            opresult = opresult.replace(txt, "P/V day" +d+ ":");
+          }
         }
       }
       e.set(this.result, opresult);
