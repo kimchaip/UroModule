@@ -803,24 +803,32 @@ var fill = {
       if(this.lib!="Consult") {
         if(my.gdate(e.field("Date"))<=ntoday​)​ {
           let d = Math.floor((ntoday-my.gdate(e.field("Date")​))​/86400000);
-          let found = opresult.match(/today\s?[+-]\s?[\d\s]+/i);
+          let found = opresult.match(/today\s?[+-]\s?[\d\s]+/ig);
           if (found) {
-            let txt = found[0];
-            let num = txt.replace(/today/i, "0");
-            d += parseInt(num);
-            opresult = opresult.replace(txt, "P/O day" +d+ ":");
+            let txtarr = found.map((v, i)=>{
+              let num = parseInt(v.replace(/\s+/g, "").replace(/today/i, ""));
+              num = isNaN(num)?0:num;
+              return {"txt" : v, "inx" : i, "num" : num+d};
+            });
+            opresult = txtarr.reduce((t,v)=>{
+              return t.replace(v.txt, "P/O day" + v.num + ": ");
+            }, opresult);
           }
         }
       }
       else {
         if(my.gdate(e.field("VisitDate"))<=ntoday​)​ {
           let d = Math.floor((ntoday-my.gdate(e.field("VisitDate")​))​/86400000);
-          let found = opresult.match(/today\s?[+-]\s?[\d\s]+/i);
+          let found = opresult.match(/today\s?[+-]\s?[\d\s]+/ig);
           if (found) {
-            let txt = found[0];
-            let num = txt.replace(/today/i, "0");
-            d += parseInt(num);
-            opresult = opresult.replace(txt, "P/V day" +d+ ":");
+            let txtarr = found.map((v, i)=>{
+              let num = parseInt(v.replace(/\s+/g, "").replace(/today/i, ""));
+              num = isNaN(num)?0:num;
+              return {"txt" : v, "inx" : i, "num" : num+d};
+            });
+            opresult = txtarr.reduce((t,v)=>{
+              return t.replace(v.txt, "P/V day" + v.num + ": ");
+            }, opresult);
           }
         }
       }
