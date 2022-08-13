@@ -102,7 +102,6 @@ var old = {
       else if(this.lib=="Consult") {
         old.d["ConsultDate"] = e.field("ConsultDate");
         old.d["Rx"] = e.field("Rx");
-        old.d["Note"] = e.field("Note");
       }
       
       e.set("Previous", JSON.stringify(old.d));
@@ -913,7 +912,7 @@ var fill = {
     let arr = [];
     if (e.field("Dx")) arr.push(e.field("Dx"));
     if (e.field(this.op)) arr.push(e.field(this.op));
-    if (e.field(this.result)) arr.push(e.field(this.result));
+    if (this.lib=="UroBase" && e.field(this.result)) arr.push(e.field(this.result));
     return arr.join("->");
   },
   ptstatus : function (e) {
@@ -1458,7 +1457,7 @@ var cso = {
   lib : "Consult",
   opdate : "ConsultDate",
   op : "Rx",
-  result : "Note",
+  result : "Rx",
   notonlyreg : /ไม่ดูเพราะ/,
   notdonereg : /ไม่มาเพราะ/,
   notdone : null
