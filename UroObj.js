@@ -1072,16 +1072,6 @@ var fill = {
       e.set("Active", null)​;
     }
   }​,
-  updateall : function(all) {
-    for (let i=0; i<all.length; i++)​ {
-      if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday && (my.gdate(all[i]​.field("VisitDate")) >= ntoday || all[i]​.field("Active")!=null)) { 
-        fill.future.call(this, all[i])​;​
-        fill.active.call(this, all[i]);
-        fill.ptstatus.call(this, all[i]);
-        fill.color.call(this, all[i]);
-      }
-    }
-  },
   deletept : function (e){
     //Pt
     let ptlks = e.field("Patient");
@@ -1233,29 +1223,6 @@ var pto = {
       }​
     }​
   }, 
-  updatefields : function (all)​ {
-    for (let i=0; i<all.length; i++)​ {
-      if (all[i].field("Done")==true) {
-        if (all[i].field("Status") == "Active") {
-          if (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
-            all[i].set("Done", false)​ ;
-            pto.age(all[i]);
-          }​
-        }​
-        else {
-          all[i].set("Done", false) ;
-          pto.age(all[i]);
-        }
-      }
-      if (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime)​) < ntoday) {
-        pto.age(all[i]);
-      }
-    }
-    let ura = or.entries();
-    fill.updateall.call(uro, ura);
-    let csa = cs.entries();
-    fill.updateall.call(cso, csa);
-  },
   findLast : function(ptent, date, eid) {
     eid=eid?eid:0;
     let all = [];
@@ -1844,7 +1811,27 @@ var trig = {
     pto.donesettrack(e)​;​
   }, 
   PatientBeforeOpenLib : function (all) {
-    pto.updatefields​(all);
+    for (let i=0; i<all.length; i++)​ {
+      if (all[i].field("Done")==true) {
+        if (all[i].field("Status") == "Active") {
+          if (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
+            all[i].set("Done", false)​ ;
+            pto.age(all[i]);
+          }​
+        }​
+        else {
+          all[i].set("Done", false) ;
+          pto.age(all[i]);
+        }
+      }
+      if (hour < 8 && my.gdate(my.date(all[i]​.lastModifiedTime)​) < ntoday) {
+        pto.age(all[i]);
+      }
+    }
+    let ura = or.entries();
+    trig.BeforeOpenLib.call(uro, ura);
+    let csa = cs.entries();
+    trig.BeforeOpenLib.call(cso, csa);
   }, 
   PatientBeforeLink : function (e)​ {
     pto.age(e)​;
@@ -1911,8 +1898,14 @@ var trig = {
     old.save.call(this, e)​;
   }, 
   BeforeOpenLib : function (all) {
-    if (this.lib!="Backup")
-      fill.updateall.call(this, all)​;
+    for (let i=0; i<all.length; i++)​ {
+      if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday && (my.gdate(all[i]​.field("VisitDate")) >= ntoday || all[i]​.field("Active")!=null)) { 
+        fill.future.call(this, all[i])​;​
+        fill.active.call(this, all[i]);
+        fill.ptstatus.call(this, all[i]);
+        fill.color.call(this, all[i]);
+      }
+    }
   }, 
   BeforeUpdatingField : function (e) {
     old.load(e)​;
