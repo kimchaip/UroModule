@@ -1077,6 +1077,7 @@ var fill = {
       if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday && (my.gdate(all[i]​.field("VisitDate")) >= ntoday || all[i]​.field("Active")!=null)) { 
         fill.future.call(this, all[i])​;​
         fill.active.call(this, all[i]);
+        fill.ptstatus.call(this, all[i]);
         fill.color.call(this, all[i]);
       }
     }
