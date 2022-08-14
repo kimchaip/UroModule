@@ -766,7 +766,18 @@ var fill = {
     let opresult = e.field(this.result);
     if(this.lib!="Consult" && e.field("Status") != "Not") {
       if(opresult) {
-        let notdj = opresult.match(/no\s+dj|not\s+on\s+dj|don't\s+on\s+dj|can't\s+on\s+dj/i);
+        Array.prototype.match = function (a2) {
+          let arr = [];
+          this.forEach(v=>{a2.forEach(u=>{arr.push(v+" "+u)});});
+          return arr;
+        };
+        let arr1 = ["can't","don't","not"];
+        let arr2 = ["on","retain","change"];
+        let arr3 = ["dj"];
+        let arr4 = ["no"];
+        let txt = arr4.match(arr3).concat(arr1.match(arr2).match(arr3)).join(`|`).replace(/ /g,`\\s+`);
+        let reg = new RegExp(txt,"i");
+        let notdj = opresult.match(reg);
         notdj = notdj==null?0:notdj.length;
         let ondj = opresult.match(/dj/i);
         ondj = ondj==null?0:ondj.length;
