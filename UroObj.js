@@ -766,7 +766,9 @@ var fill = {
     let opresult = e.field(this.result);
     if(this.lib!="Consult" && e.field("Status") != "Not") {
       if(opresult) {
-        let ondj = opresult.replace(/no +dj/i, "").match(/dj/i);
+        let notdj = opresult.match(/no\s+dj|not\s+on\s+dj|don't\s+on\s+dj|can't\s+on\s+dj/i);
+        notdj = notdj==null?0:notdj.length;
+        let ondj = opresult.match(/dj/i);
         ondj = ondj==null?0:ondj.length;
         let opon = e.field("Op").match(/dj/i);
         opon = opon==null?0:opon.length;
@@ -779,17 +781,15 @@ var fill = {
         let opchange = e.field("Op").match(/((change)(\s+)[a-z]*(\s*)(dj))/ig);
         opchange = opchange==null?0:opchange.length;
         
-        if(changedj>0||opchange>0)
-          e.set("DJstent", "change DJ");
-        else if(offdj>0||opoff>0)
-          e.set("DJstent", "off DJ");
-        else if(ondj>0||opon>0)
-          e.set("DJstent", "on DJ");
-        else
-          e.set("DJstent", null);
-      }
-      else {
         e.set("DJstent", null);
+        if(!notdj) {
+          if(changedj>0||opchange>0)
+            e.set("DJstent", "change DJ");
+          else if(offdj>0||opoff>0)
+            e.set("DJstent", "off DJ");
+          else if(ondj>0||opon>0)
+            e.set("DJstent", "on DJ");
+        }
       }
     }
     else if(this.lib!="Consult" && e.field("Status") == "Not") {
