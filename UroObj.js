@@ -968,25 +968,25 @@ var fill = {
         str = fill.descripttxt.call(lib, o.e);
         links[0].set("Descript", str);
         links[0].set("WardStamp", o.e.field("VisitDate")​);
-        
-        if (o.e.id == e.id)​ {
-          let dead = e.field(this.result).match(/dead|death/ig);
-          dead = dead?dead.length​:0;
-          if (dead) { // dead
-            links[0].set("Status" ,"Dead");
-            links[0].set("Ward", "");
-          }
-          else if (e.field("Active")​!=null) { //Admit or OPD visit today
-            links[0].set("Status" ,"Active");
-            if (e.field("VisitType")=="Admit")
-              links[0].set("Ward", e.field("Ward"));
-            else
-              links[0].set("Ward", e.field(""));
-          }
-          else { // notvisit, not active
-            links[0].set("Status", "Still")​;
-            links[0].set("Ward", "");
-          }​
+      }
+
+      if ((o && o.e.id == e.id) || (!o && e.field("Active")!=null))​ {
+        let dead = e.field(this.result).match(/dead|death/ig);
+        dead = dead?dead.length​:0;
+        if (dead) { // dead
+          links[0].set("Status" ,"Dead");
+          links[0].set("Ward", "");
+        }
+        else if (e.field("Active")​!=null) { //Admit or OPD visit today
+          links[0].set("Status" ,"Active");
+          if (e.field("VisitType")=="Admit")
+            links[0].set("Ward", e.field("Ward"));
+          else
+            links[0].set("Ward", e.field(""));
+        }
+        else { // notvisit, not active
+          links[0].set("Status", "Still")​;
+          links[0].set("Ward", "");
         }
       }
     }​​​​
