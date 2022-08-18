@@ -856,7 +856,7 @@ var fill = {
     if (e.field("Summary") == true) {
       e.set("Track", 3);
     }​​
-    else if (e.field("Status"​) != "Not" && e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) ) {//Admit
+    else if (!this.notdone && e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) ) {//Admit
       if (e.field("Track") == 0) {
         e.set("Track", 1) ;
       }​
@@ -864,7 +864,7 @@ var fill = {
         e.set("Track", 2) ;
       }​
     }​
-    else if (e.field("Status"​) != "Not" &​& e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ ) { // D/C
+    else if (!this.notdone &​& e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ ) { // D/C
       if (e.field("Track") == 3) {​
         e.set("Track", 2) ;
       }​
@@ -875,7 +875,7 @@ var fill = {
     else if (my.gdate(e.field("VisitDate")​) > ntoday) {​
       e.set("Track", 0) ;
     }​
-    else if (e.field("Status"​) == "Not")​ {
+    else if (this.notdone)​ {
       if (my.gdate(e.field("VisitDate")​) > ntoday) {​ // 
         if (e.field("Track") != 0) {​
           e.set("Track", 0) ;
