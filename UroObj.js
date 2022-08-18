@@ -1698,7 +1698,6 @@ var opu = {
     }
   },
   updateOp : function (e) {
-    message("OpExtra:" + old.field("OpExtra") + "->"+ e.field("OpExtra") + ", Status:" + old.field("Status") + "->"+e.field("Status"))
     if(old.field("OpExtra") == true && old.field("Status") != "Not" && e.field("OpExtra") == true && e.field("Status") != "Not"){
       //update
       let oss = os.entries();
@@ -1748,6 +1747,7 @@ var opu = {
   },
   deleteOp : function (e) {
     if(old.field("OpExtra") && old.field("Status") != "Not"){
+      message("OpExtra:" + old.field("OpExtra") + "->"+ e.field("OpExtra") + ", Status:" + old.field("Status") + "->"+e.field("Status"));
       let oss = os.entries();
       if(oss.length>0){
         let parr = this.splitPtName(old.field("Patient"));
