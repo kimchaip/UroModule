@@ -1747,7 +1747,6 @@ var opu = {
   },
   deleteOp : function (e) {
     if(old.field("OpExtra") && old.field("Status") != "Not"){
-      message("OpExtra:" + old.field("OpExtra") + "->"+ e.field("OpExtra") + ", Status:" + old.field("Status") + "->"+e.field("Status"));
       let oss = os.entries();
       if(oss.length>0){
         let parr = this.splitPtName(old.field("Patient"));
@@ -1763,7 +1762,7 @@ var opu = {
     }
   },
   ptTrigOpuro : function (e) {
-    if(old.field("PtName") != e.field("PtName") || old.field("YY") != e.field("YY") || old.field("MM") != e.field("MM")  || old.field("DD") != e.field("DD") || my.gdate(my.date(old.field("Birthday"))) != my.gdate(my.date(e.field("Birthday"))) || old.field("HN") != e.field("HN") ){
+    if(old.field("PtName") != e.field("PtName") || old.field("Age") != e.field("Age") || old.field("YY") != e.field("YY") || old.field("MM") != e.field("MM")  || old.field("DD") != e.field("DD") || my.gdate(my.date(old.field("Birthday"))) != my.gdate(my.date(e.field("Birthday"))) || old.field("HN") != e.field("HN") ){
       let orlinks = e.linksFrom("UroBase", "Patient");
       let bulinks = e.linksFrom("Backup", "Patient");
       let found = [];
@@ -1784,7 +1783,7 @@ var opu = {
         let oss = os.entries();
         let count = 0;
         for(let i=0; i<oss.length; i++) {
-          if(old.field("PtName") == oss[i].field("PtName") && old.field("HN") == oss[i].field("HN")) {
+          if(old.field("PtName") && old.field("PtName") == oss[i].field("PtName") || old.field("HN") && old.field("HN") == oss[i].field("HN")) {
             oss[i].set("PtName", e.field("PtName"));
             oss[i].set("Age", Number(e.field("Age").replace(/\s*ปี/,"")));
             oss[i].set("HN", e.field("HN"));
