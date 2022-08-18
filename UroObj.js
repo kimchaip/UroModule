@@ -951,26 +951,25 @@ var fill = {
     if (links.length>0) {
       let ptent = pt.findById(links[0].id);
         
-      let a = pto.findLast(ptent, today);
-      let o = a.length>0?a[0]:null;
+      let o = pto.findLast(ptent, today);
       let str = "" ;
-      if (!o) { // never admit
+      if (o.length==0) { // never admit
         links[0].set("WardStamp",null);
         links[0].set("Ward",  "");
         links[0].set("Descript", "");
       }
       else { // ever admit
         let lib;
-        if(o.lib=="UroBase") lib = uro;
-        else if(o.lib=="Backup") lib = buo;
-        else if(o.lib=="Consult") lib = cso;
+        if(o[0].lib=="UroBase") lib = uro;
+        else if(o[0].lib=="Backup") lib = buo;
+        else if(o[0].lib=="Consult") lib = cso;
           
-        str = fill.descripttxt.call(lib, o.e);
+        str = fill.descripttxt.call(lib, o[0].e);
         links[0].set("Descript", str);
-        links[0].set("WardStamp", o.e.field("VisitDate")​);
+        links[0].set("WardStamp", o[0].e.field("VisitDate")​);
       }
 
-      if ((o && o.e.id == e.id) || (!o && e.field("Active")!=null))​ {
+      if ((o.length>0 && o.some(l=>l.e.id == e.id)) || (o.length==0 && e.field("Active")!=null))​ {
         let dead = e.field(this.result).match(/dead|death/ig);
         dead = dead?dead.length​:0;
         if (dead) { // dead
