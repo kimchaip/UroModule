@@ -1219,20 +1219,6 @@ var pto = {
       e.set("DJStamp", null);
     }
   }, 
-  donesettrack : function (e)​ {
-    let a = this.findLast(e, today);
-    let o = a.length>0?a[0]:null;
-    if (o)​ {
-      let toEnt = o.e ;
-      if (e.field("Done") == true &​& toEnt.field("Track") == 1) {
-        if (toEnt.field("Status"​) != "Not" && toEnt.field("VisitType") == "Admit" && (toEnt.field("DischargeDate") == null || my.gdate(toEnt.field("DischargeDate"))​ > ntoday)​)​ { // Admit
-          mer.load(toEnt);
-          mer.setall("Track", 2)​;
-          mer.colorall(toEnt)​;
-        }​
-      }​
-    }​
-  }, 
   findLast : function(ptent, date, eid) {
     eid=eid?eid:0;
     let all = [];
@@ -1818,7 +1804,16 @@ var trig = {
     old.save.call(pto, e)​;
   }, 
   PatientUpdatingField ​: function (e) {
-    pto.donesettrack(e)​;​
+    let o = this.findLast(e, today);
+    if (o.length>0)​ {
+      if (e.field("Done") &​& o[0].e.field("Track") == 1) {
+        if (o[0].e.field("Active"​) != null)​ { // Admit
+          for (let i=0; i<o.length; i++) {
+            o[i].e.set("Track", 2);
+          }
+        }​
+      }​
+    }​
   }, 
   PatientBeforeOpenLib : function (all) {
     for (let i=0; i<all.length; i++)​ {
