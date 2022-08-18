@@ -1804,7 +1804,7 @@ var trig = {
     old.save.call(pto, e)​;
   }, 
   PatientUpdatingField ​: function (e) {
-    let o = this.findLast(e, today);
+    let o = pto.findLast(e, today);
     if (o.length>0)​ {
       if (e.field("Done") &​& o[0].e.field("Track") == 1) {
         if (o[0].e.field("Active"​) != null)​ { // Admit
