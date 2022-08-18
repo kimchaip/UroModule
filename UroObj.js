@@ -1806,8 +1806,8 @@ var trig = {
   PatientUpdatingField ​: function (e) {
     let o = pto.findLast(e, today);
     if (o.length>0)​ {
-      if (e.field("Done") &​& o[0].e.field("Track") == 1) {
-        if (o[0].e.field("Active"​) != null)​ { // Admit
+      if (e.field("Done") &​& o.some(l=>l.e.field("Track") == 1)) {
+        if (o.some(l=>l.e.field("Active"​) != null))​ { // Admit
           for (let i=0; i<o.length; i++) {
             o[i].e.set("Track", 2);
           }
