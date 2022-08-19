@@ -298,6 +298,7 @@ var mer = {
     }
   },
   effect: function(e) {
+    mer.load(e);
     if (this.m.length>1) {
       this.fieldall(e);
       this.colorall(e);
