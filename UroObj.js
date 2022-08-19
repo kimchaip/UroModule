@@ -1906,7 +1906,10 @@ var trig = {
   BeforeOpenLib : function (all) {
     for (let i=0; i<all.length; i++)​ {
       if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday && (my.gdate(all[i]​.field("VisitDate")) >= ntoday || all[i]​.field("Active")!=null)) { 
+        let notdone = all[i].field(this.result).match(this.notdonereg);
+        this.notdone = notdone==null?0:notdone.length;
         fill.future.call(this, all[i])​;​
+        fill.track.call(this, all[i])​;​
         fill.active.call(this, all[i]);
         fill.ptstatus.call(this, all[i]);
         fill.color.call(this, all[i]);
