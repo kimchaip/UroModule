@@ -982,7 +982,7 @@ var fill = {
           if (e.field("VisitType")=="Admit")
             links[0].set("Ward", e.field("Ward"));
           else
-            links[0].set("Ward", e.field(""));
+            links[0].set("Ward", "");
         }
         else { // notvisit, not active
           links[0].set("Status", "Still")​;
