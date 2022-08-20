@@ -970,7 +970,7 @@ var fill = {
         links[0].set("WardStamp", o[0].e.field("VisitDate")​);
       }
 
-      if ((o.length>0 && o.some(l=>l.e.id == e.id)) || (o.length==0 && e.field("Active")!=null))​ {
+      if ((o.length>0 && (o.some(l=>l.e.id == e.id) || e.field("VisitType")=="OPD")) || (o.length==0 && e.field("Active")!=null))​ {
         let dead = e.field(this.result).match(/dead|death/ig);
         dead = dead?dead.length​:0;
         if (dead) { // dead
@@ -982,7 +982,7 @@ var fill = {
           if (e.field("VisitType")=="Admit")
             links[0].set("Ward", e.field("Ward"));
           else
-            links[0].set("Ward", "");
+            links[0].set("Ward", "OPD");
         }
         else { // notvisit, not active
           links[0].set("Status", "Still")​;
