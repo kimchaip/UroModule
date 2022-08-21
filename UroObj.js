@@ -214,7 +214,7 @@ var mer = {
     if (e.field("Patient").length>0) {
       let ptent = pt.findById(e.field("Patient")[0].id);
       let date = e.field("VisitDate");
-      return pto.findLast(ptent, date, e.id);
+      return pto.findLast(false, ptent, date, e.id);
     }
     return [];
   },
@@ -952,7 +952,7 @@ var fill = {
     if (links.length>0) {
       let ptent = pt.findById(links[0].id);
         
-      let o = pto.findLast(ptent, today);
+      let o = pto.findLast(false, ptent, today);
       let str = "" ;
       if (o.length==0) { // never admit
         links[0].set("WardStamp",null);
@@ -970,7 +970,8 @@ var fill = {
         links[0].set("WardStamp", o[0].e.field("VisitDate")​);
       }
 
-      if ((o.length>0 && (o.some(l=>l.e.id == e.id) || e.field("VisitType")=="OPD")) || (o.length==0 && (e.field("Active")!=null || e.field("VisitType")=="OPD")))​ {
+      o = pto.findLast(true, ptent, today);
+      if ((o.length>0 && o.some(l=>l.e.id == e.id)) || (o.length==0 && e.field("Active")!=null))​ {
         let dead = e.field(this.result).match(/dead|death/ig);
         dead = dead?dead.length​:0;
         if (dead) { // dead
@@ -1220,7 +1221,7 @@ var pto = {
       e.set("DJStamp", null);
     }
   }, 
-  findLast : function(ptent, date, eid) {
+  findLast : function(allvisit, ptent, date, eid) {
     eid=eid?eid:0;
     let all = [];
     if (ptent) {
@@ -1232,7 +1233,7 @@ var pto = {
           let o = new Object();
           let notdone = orlinks[i].field(uro.result).match(uro.notdonereg);
           o["nd"] = notdone==null?0:notdone.length;
-          if (orlinks[i].field("VisitType")=="Admit" && !o.nd && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && orlinks[i].id != eid) {
+          if ((allvisit || orlinks[i].field("VisitType")=="Admit") && !o.nd && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && orlinks[i].id != eid) {
             o["vsd"] = orlinks[i].field("VisitDate");
             o["opd"] = orlinks[i].field(uro.opdate);
             o["lib"] = "UroBase";
@@ -1246,7 +1247,7 @@ var pto = {
           let o = new Object();
           let notdone = bulinks[i].field(buo.result).match(buo.notdonereg);
           o["nd"] = notdone==null?0:notdone.length;
-          if (bulinks[i].field("VisitType")=="Admit" && !o.nd && my.gdate(​bulinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && bulinks[i].id != eid) {
+          if ((allvisit || bulinks[i].field("VisitType")=="Admit") && !o.nd && my.gdate(​bulinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && bulinks[i].id != eid) {
             o["vsd"] = bulinks[i].field("VisitDate");
             o["opd"] = bulinks[i].field(buo.opdate);
             o["lib"] = "Backup";
@@ -1260,7 +1261,7 @@ var pto = {
           let o = new Object();
           let notdone = cslinks[i].field(cso.result).match(cso.notdonereg);
           o["nd"] = notdone==null?0:notdone.length;
-          if (cslinks[i].field("VisitType")=="Admit" && !o.nd && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) && cslinks[i].id != eid) {
+          if ((allvisit || cslinks[i].field("VisitType")=="Admit") && !o.nd && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) && cslinks[i].id != eid) {
             let o = new Object();
             o["vsd"] = cslinks[i].field("VisitDate");
             o["opd"] = cslinks[i].field(cso.opdate);
@@ -1805,7 +1806,7 @@ var trig = {
     old.save.call(pto, e)​;
   }, 
   PatientUpdatingField ​: function (e) {
-    let o = pto.findLast(e, today);
+    let o = pto.findLast(false, e, today);
     if (o.length>0)​ {
       if (e.field("Done") &​& o.some(l=>l.e.field("Track") == 1)) {
         if (o.some(l=>l.e.field("Active"​) != null))​ { // Admit
