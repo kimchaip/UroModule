@@ -952,7 +952,7 @@ var fill = {
     if (links.length>0) {
       let ptent = pt.findById(links[0].id);
         
-      let o = pto.findLast(false, ptent, today);
+      let o = pto.findLast(true, ptent, today);
       let str = "" ;
       if (o.length==0) { // never admit
         links[0].set("WardStamp",null);
@@ -970,7 +970,6 @@ var fill = {
         links[0].set("WardStamp", o[0].e.field("VisitDate")​);
       }
 
-      o = pto.findLast(true, ptent, today);
       if ((o.length>0 && o.some(l=>l.e.id == e.id)) || (o.length==0 && e.field("Active")!=null))​ {
         let dead = e.field(this.result).match(/dead|death/ig);
         dead = dead?dead.length​:0;
