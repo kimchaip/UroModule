@@ -1797,6 +1797,15 @@ var trig = {
       pto.uniqueHN(e, false)​;
     pto.age(e)​;
     pto.dj(e)​;
+
+    let contact = e.field("Contact")​;
+    if (old.field("Phone") != e.field("Phone") && e.field("Phone")) {
+      AndroidContacts.create(e.field("PtName"), 
+        {phone:e.field("Phone")});
+    }​
+    else if(old.field("Phone") != contact && contact) {
+      e.set("Phone", contact.phone)​;
+    }​
   }, 
   PatientAfterEdit : function (e, value) {
     old.load(e)​;
