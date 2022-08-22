@@ -1815,7 +1815,6 @@ var trig = {
   }, 
   PatientUpdatingField ​: function (all) {
     let e = entry()​;
-    let all = lib().entries();
     for(let i in all) {
       // update track
       if(all[i].id==e.id &​& all[i].field("Done")​==true) {
