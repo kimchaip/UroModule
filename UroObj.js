@@ -1905,9 +1905,18 @@ var trig = {
   }, 
   BeforeOpenLib : function (all) {
     for (let i=0; i<all.length; i++)​ {
-      if (hour<8 && my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday && (my.gdate(all[i]​.field("VisitDate")) >= ntoday || all[i]​.field("Active")!=null)) { 
-        let notdone = all[i].field(this.result).match(this.notdonereg);
-        this.notdone = notdone==null?0:notdone.length;
+      let start = my.dateminus(all[i]​.field("VisitDate"), 1);
+      let end = null;
+      let notdone = all[i].field(this.result).match(this.notdonereg);
+      this.notdone = notdone==null?0:notdone.length;
+      if (all[i].field("VisitType")=="OPD" || this.notdone)
+        end = my.dateadd(all[i].field("VisitDate"),1);
+      else if (all[i].field("VisitType")=="Admit" && all[i].field("DischargeDate")==null)
+        end = today;
+      else
+        end = my.dateadd(all[i].field("DischargeDate"),1);
+        
+      if (my.gdate(start) >= ntoday && my.gdate(end) <= ntoday ) { 
         fill.future.call(this, all[i])​;​
         fill.track.call(this, all[i])​;​
         fill.active.call(this, all[i]);
