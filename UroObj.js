@@ -1813,15 +1813,23 @@ var trig = {
       opu.ptTrigOpuro(e);
     old.save.call(pto, e)​;
   }, 
-  PatientUpdatingField ​: function (e) {
-    let o = pto.findLast(false, e, today);
-    if (o.length>0)​ {
-      if (e.field("Done") &​& o.some(l=>l.e.field("Track") == 1)) {
-        if (o.some(l=>l.e.field("Active"​) != null))​ { // Admit
-          for (let i=0; i<o.length; i++) {
-            o[i].e.set("Track", 2);
-          }
+  PatientUpdatingField ​: function (all) {
+    let e = entry()​;
+    let all = lib().entries();
+    for(let i in all) {
+      // update track
+      if(all[i].id==e.id &​& all[i].field("Done")​==true) {
+        let o = pto.findLast(false, e, today);
+        if (o.length>0)​ {
+          if (e.field("Done") &​& o.some(l=>l.e.field("Track") == 1)) {
+            if (o.some(l=>l.e.field("Active"​) != null))​ { // Admit
+              for (let i=0; i<o.length; i++) {
+                o[i].e.set("Track", 2);
+              }
+            }​
+          }​
         }​
+        break;
       }​
     }​
   }, 
