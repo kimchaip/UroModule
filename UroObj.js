@@ -1924,7 +1924,7 @@ var trig = {
         else
           end = my.dateadd(all[i].field("DischargeDate"),1);
         
-        if (my.gdate(start) >= ntoday && my.gdate(end) <= ntoday ) { 
+        if (my.gdate(start) <= ntoday && my.gdate(end) >= ntoday ) { 
           fill.future.call(this, all[i])​;​
           fill.track.call(this, all[i])​;​
           fill.active.call(this, all[i]);
