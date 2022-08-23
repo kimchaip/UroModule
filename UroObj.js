@@ -1912,7 +1912,7 @@ var trig = {
   }, 
   BeforeOpenLib : function (all) {
     for (let i=0; i<all.length; i++)​ {
-      if (my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
+      //if (my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
         let start = my.dateminus(all[i]​.field("VisitDate"), 1);
         let end = null;
         let notdone = all[i].field(this.result).match(this.notdonereg);
@@ -1931,7 +1931,7 @@ var trig = {
           fill.ptstatus.call(this, all[i]);
           fill.color.call(this, all[i]);
         }
-      }
+      //}
     }
   }, 
   BeforeUpdatingField : function (e) {
