@@ -498,7 +498,7 @@ var dxop = {
       else if(!e.field("OpExtra")​){
         e.set("Bonus", 0);
       }
-      if (!e.field("OpLength")​) {
+      if (!fill.oplength(e)​) {
         e.set("OpLength", found.field("Optime")​)​;
       }
     }
@@ -533,7 +533,7 @@ var dxop = {
       o["Price"] = 0;
       o["PriceExtra"] = 0;
       o["Count"] = 1;
-      o["Optime"] = e.field("OpLength");
+      o["Optime"] = fill.oplength(e);
     }
     let found = lb.create(o);
     message("Create new " + this.lib + " Successfully​")​;
@@ -559,8 +559,9 @@ var dxop = {
       e.set("Count", all.length);
       let total =0;
       for (let i=0; i<all.length; i++) {
-        if(all[i].field("OpLength")) {
-          total+=all[i].field("OpLength");
+        let oplength = fill.oplength(all[i]);
+        if(oplength) {
+          total+=oplength;
         }
       }
       e.set("Optime", Math.floor(total/all.length));
@@ -947,13 +948,13 @@ var fill = {
   },
   oplength : function (e) {
     if (e.field("TimeOut") > e.field("TimeIn"))​ {
-      e.set("OpLength", e.field("TimeOut")-e.field("TimeIn"))​;
+      return e.field("TimeOut")-e.field("TimeIn")​;
     }​
     else if (e.field("TimeIn") > e.field("TimeOut"))​ {
-      e.set("OpLength", 86400000-(e.field("TimeIn")-e.field("TimeOut"))​);
+      return 86400000-(e.field("TimeIn")-e.field("TimeOut"))​;
     }​
     else {
-      e.set("OpLength", null)​;
+      return null​;
     }
   },
   descripttxt : function (e) {
@@ -1877,7 +1878,7 @@ var trig = {
     if (this.lib!="Consult") {
       uro.setDJstent(e)​;
       uro.setx15(e)​;
-      fill.oplength(e);
+      e.set("OpLength", fill.oplength(e));
       dxop.run.call(dxo, e)​;
       dxop.run.call(opo, e)​;
       que.run.call(this, e)​;
