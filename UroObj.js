@@ -486,16 +486,21 @@ var dxop = {
     return found;
   },
   autofill : function (e, found) {
-    if(this.lib=="OperationList" && e.field("OpExtra")​) {
-      if(e.field("x1.5")​) {
-        e.set("Bonus", found.field("PriceExtra")​)​;
+    if(this.lib=="OperationList") {
+      if (e.field("OpExtra")​) {
+        if(e.field("x1.5")​) {
+          e.set("Bonus", found.field("PriceExtra")​)​;
+        }
+        else {
+          e.set("Bonus", found.field("Price")​)​;
+        }
       }
-      else {
-        e.set("Bonus", found.field("Price")​)​;
+      else if(!e.field("OpExtra")​){
+        e.set("Bonus", 0);
       }
-    }
-    else if(this.lib=="OperationList" && !e.field("OpExtra")​){
-      e.set("Bonus", 0);
+      if (!e.field("OpLength")​) {
+        e.set("OpLength", found.field("Optime")​)​;
+      }
     }
   },
   updatelink : function (e, found) {
@@ -528,6 +533,7 @@ var dxop = {
       o["Price"] = 0;
       o["PriceExtra"] = 0;
       o["Count"] = 1;
+      o["Optime"] = e.field("OpLength");
     }
     let found = lb.create(o);
     message("Create new " + this.lib + " Successfully​")​;
@@ -539,15 +545,25 @@ var dxop = {
       e.unlink(this.lib, oldlink);
       dxop.count.call(this, oldlink);
     
-      if(this.lib == "OperationList")
+      if(this.lib == "OperationList") {
         e.set("Bonus", 0)​;
+        e.set("OpLength", fill.oplength(e))​;
+      }
     }
   },
   count : function (e) {
     let linkuro = e.linksFrom("UroBase", this.lib);
     let linkbup = e.linksFrom("Backup", this.lib);
-    if(linkuro.length+linkbup.length>0) {
-      e.set("Count", linkuro.length+linkbup.length);
+    let all = linkuro.concat(linkbup);
+    if(all.length>0) {
+      e.set("Count", all.length);
+      let total =0;
+      for (let i=0; i<all.length; i++) {
+        if(all[i].field("OpLength")) {
+          total+=all[i].field("OpLength");
+        }
+      }
+      e.set("Optime", Math.floor(total/all.length));
     }
     else {
       e.set("Count", 0);
@@ -1458,24 +1474,18 @@ var dxo = {
   effect : function(e){
     let orlinks = e.linksFrom("UroBase", "DxAutoFill") ;
     let bulinks = e.linksFrom("Backup", "DxAutoFill") ;​
-    if (orlinks.length>0) {
-      for(let i=0; i<orlinks.length; i++) {
-        if ((e.field("Dx") && orlinks[i].field("Dx") != e.field("Dx"))​ || (e.field("Op") && orlinks[i].field("Op") != e.field("Op"))​)​ {
-          orlinks[i].set("Dx", e.field("Dx"))​;
-          orlinks[i].set("Op", e.field("Op"))​;
+    let all = orlinks.concat(bulinks);
+    if (all.length>0) {
+      for(let i=0; i<all.length; i++) {
+        if ((e.field("Dx") && all[i].field("Dx") != e.field("Dx"))​ || (e.field("Op") && all[i].field("Op") != e.field("Op"))​)​ {
+          all[i].set("Dx", e.field("Dx"))​;
+          all[i].set("Op", e.field("Op"))​;
         }​
       }​
     }​
-    if (bulinks.length>0) {
-      for(let i=0; i<bulinks.length; i++) {
-        if ((e.field("Dx") && bulinks[i].field("Dx") != e.field("Dx")​) || (e.field("Op") && bulinks[i].field("Op") != e.field("Op")​))​ {
-          bulinks[i].set("Dx", e.field("Dx"))​;
-          bulinks[i].set("Op", e.field("Op"))​;​
-        }​
-      }​
-    }
-    if(orlinks.length+bulinks.length>0) {
-      e.set("Count", orlinks.length+bulinks.length);
+    
+    if(all.length>0) {
+      e.set("Count", all.length);
     }
     else {
       e.set("Count", 0);
@@ -1503,28 +1513,22 @@ var opo = {
   },
   effect : function(e){
     let orlinks = e.linksFrom("UroBase", "OperationList") ;
-    let bulinks = e.linksFrom("Backup", "OperationList") ;
-
-    if (orlinks.length>0) {
-      for(let i=0; i<orlinks.length; i++) {
-        if (e.field("OpFill") && orlinks[i].field("Op") != e.field("OpFill")​)​ {
-          orlinks[i].set("Op", e.field("OpFill"))​;
-        }
-      }​
-    }​
-    if (bulinks.length>0) {
-      for(let i=0; i<bulinks.length; i++) {
-        if (e.field("OpFill") && bulinks[i].field("Op") != e.field("OpFill")​)​ {
-          bulinks[i].set("Op", e.field("OpFill"))​;
+    let bulinks = e.linksFrom("Backup", "OperationList")
+    let all = orlinks.concat(bulinks);
+    if (all.length>0) {
+      for(let i=0; i<all.length; i++) {
+        if (e.field("OpFill") && all[i].field("Op") != e.field("OpFill")​)​ {
+          all[i].set("Op", e.field("OpFill"))​;
         }
       }​
     }​
    
-    if(orlinks.length+bulinks.length>0) {
-      e.set("Count", orlinks.length+bulinks.length);
+    if(all.length>0) {
+      e.set("Count", all.length);
     }
     else if (value=="update") {
       e.set("Count", 0);
+      e.set("Optime", null);
       e.trash()​;
     }
   }
@@ -1873,16 +1877,14 @@ var trig = {
     if (this.lib!="Consult") {
       uro.setDJstent(e)​;
       uro.setx15(e)​;
+      fill.oplength(e);
       dxop.run.call(dxo, e)​;
       dxop.run.call(opo, e)​;
       que.run.call(this, e)​;
+      fill.opdatecal(e);
     }
     fill.underlying(e)​;
     fill.los(e)​;
-    if (this.lib!="Consult") {
-      fill.opdatecal(e);
-      fill.oplength(e);
-    }
     fill.ptdr(e);
     fill.active.call(this, e);
     fill.ptstatus.call(this, e)​;
