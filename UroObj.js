@@ -564,13 +564,18 @@ var dxop = {
     if(all.length>0) {
       e.set("Count", all.length);
       let total =0;
+      let count =0;
       for (let i=0; i<all.length; i++) {
         let oplength = fill.oplength(all[i]);
         if(oplength) {
           total+=oplength;
+          count++;
         }
       }
-      e.set("Optime", Math.floor(total/all.length));
+      if (count>0)
+        e.set("Optime", Math.floor(total/count));
+      else
+        e.set("Optime", null);
     }
     else {
       e.set("Count", 0);
