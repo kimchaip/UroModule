@@ -554,7 +554,13 @@ var dxop = {
   count : function (e) {
     let linkuro = e.linksFrom("UroBase", this.lib);
     let linkbup = e.linksFrom("Backup", this.lib);
-    let all = linkuro.concat(linkbup);
+    let all = [];
+    for(let i=0; i<linkuro.length; i++) {
+      all.push(linkuro[i]);
+    }​
+    for(let i=0; i<linkbup.length; i++) {
+      all.push(linkbup[i]);
+    }​
     if(all.length>0) {
       e.set("Count", all.length);
       let total =0;
@@ -1475,7 +1481,13 @@ var dxo = {
   effect : function(e){
     let orlinks = e.linksFrom("UroBase", "DxAutoFill") ;
     let bulinks = e.linksFrom("Backup", "DxAutoFill") ;​
-    let all = orlinks.concat(bulinks);
+    let all = [];
+    for(let i=0; i<orlinks.length; i++) {
+      all.push(orlinks[i]);
+    }
+    for(let i=0; i<bulinks.length; i++) {
+      all.push(bulinks[i]);
+    }
     if (all.length>0) {
       for(let i=0; i<all.length; i++) {
         if ((e.field("Dx") && all[i].field("Dx") != e.field("Dx"))​ || (e.field("Op") && all[i].field("Op") != e.field("Op"))​)​ {
@@ -1515,7 +1527,13 @@ var opo = {
   effect : function(e){
     let orlinks = e.linksFrom("UroBase", "OperationList") ;
     let bulinks = e.linksFrom("Backup", "OperationList")
-    let all = orlinks.concat(bulinks);
+    let all = [];
+    for(let i=0; i<orlinks.length; i++) {
+      all.push(orlinks[i]);
+    }
+    for(let i=0; i<bulinks.length; i++) {
+      all.push(bulinks[i]);
+    }
     if (all.length>0) {
       for(let i=0; i<all.length; i++) {
         if (e.field("OpFill") && all[i].field("Op") != e.field("OpFill")​)​ {
