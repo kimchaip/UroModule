@@ -925,13 +925,14 @@ var fill = {
     }​
   }, 
   underlying : function (e) {
-    let links = e.field("Patient")​;
-    if (links.length>0) {
-      if (links[0].field("Underlying").length>0) {
-        e.set("Underlying", links[0].field("Underlying").join());
+    let lib = masterLib()​;
+    let ent = masterEntry();
+    if (lib.title=="UroBase"||lib.title=="Consult"||lib.title=="Backup") {
+      if (e.field("Underlying").length>0) {
+        ent.set("Underlying", e.field("Underlying").join());
       }​
       else {
-        e.set("Underlying", "" );
+        ent.set("Underlying", "" );
       }​
     }​
   }, 
@@ -1878,7 +1879,7 @@ var trig = {
     trig.BeforeOpenLib.call(cso, csa);
   }, 
   PatientBeforeLink : function (e)​ {
-    pto.age(e)​;
+    fill.underlying(e)​;
   }, 
   OpenEdit : function (e)​ {
     old.save.call(this, e)​;
@@ -1910,7 +1911,6 @@ var trig = {
       que.run.call(this, e)​;
       fill.opdatecal(e);
     }
-    fill.underlying(e)​;
     fill.los(e)​;
     fill.ptdr(e);
     fill.active.call(this, e);
