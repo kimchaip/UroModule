@@ -1879,10 +1879,10 @@ var trig = {
     trig.BeforeOpenLib.call(cso, csa);
   }, 
   PatientBeforeLink : function (e)​ {
-    
+    fill.underlying(e)​;
   }, 
   PatientAfterLink : function (e)​ {
-    fill.underlying(e)​;
+    
   }, 
   OpenEdit : function (e)​ {
     old.save.call(this, e)​;
