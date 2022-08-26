@@ -1879,6 +1879,9 @@ var trig = {
     trig.BeforeOpenLib.call(cso, csa);
   }, 
   PatientBeforeLink : function (e)​ {
+    
+  }, 
+  PatientAfterLink : function (e)​ {
     fill.underlying(e)​;
   }, 
   OpenEdit : function (e)​ {
