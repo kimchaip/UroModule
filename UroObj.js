@@ -1245,7 +1245,6 @@ var pto = {
       if (parseInt(e.field("Age")) != d)
         pto.agetext(e, d)​;
     }​
-    message(masterLib().title+", "+masterEntry().title);
   }, 
   //DJ stent
   dj : function (e) {
