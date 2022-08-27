@@ -586,6 +586,56 @@ var dxop = {
     }
   }
 };
+var valid = {
+  //un-duplicate HN
+  uniqueHN : function (e, value)​ {
+    let unique = true;
+    let HN = e.field("HN")​;
+    if (HN != null) {
+      let entries = pt.entries();​​
+      for (let ent=0; ent<entries.length; ent++) {
+        if (entries[ent].field("HN") === HN)
+          if (entries[ent].id != e.id || value) 
+            unique = false;
+      }
+      if (!unique) {
+        message("field 'HN' is not unique. Try again.");
+        cancel();
+      }
+    }​
+  }, 
+  //un-duplicate UroBase, Consult, Backup
+  uniqueVisit : function (e, value)​ {
+    let unique = true;
+    let fieldname = [this.opdate, "Patient", "Dx", this.op];
+    let lb;
+    if (this.lib=="UroBase")
+      lb = or;
+    else if (this.lib=="Consult")
+      lb = cs;
+    else if (this.lib=="Backup")
+      lb = bu;
+    let entries = lb.entries();​​
+    for (let ent=0; ent<entries.length; ent++) {
+      if (fieldname.every(f=>{
+        if (f.includes("Date")) 
+          return my.gdate(entries[ent].field(f))==my.gdate(e.field(f));
+        else if (f=="Patient")
+          return entries[ent].field(f)[0].id==e.field(f)[0].id;
+        else if (f=="Rx")
+          return true;
+        else
+          return entries[ent].field(f)==e.field(f);
+      }))
+        if (entries[ent].id != e.id || value) 
+          unique = false;
+    }
+    if (!unique) {
+      message(fieldname.join() + " are not unique. Try again.");
+      cancel();
+    }
+  }
+};
 var fill = {
   setnewdate: function (e) {
     if (my.gdate(old.field(this.opdate)) != my.gdate(my.date(​e.field(this.opdate))​)) {
@@ -1823,10 +1873,7 @@ var trig = {
   PatientBeforeEdit : function (e, value)​ {
     pto.rearrangename(e);
     old.load(e);
-    if (value=="create")
-      pto.uniqueHN(e, true)​;
-    else if (value=="update")​
-      pto.uniqueHN(e, false)​;
+    valid.uniqueHN(e, value=="create")​;
     pto.age(e)​;
     pto.dj(e)​;
 
@@ -1896,6 +1943,7 @@ var trig = {
   BeforeEdit : function (e, value)​ {
     old.load(e)​;
     fill.setnewdate.call(this, e)​;​
+    valid.uniqueVisit.call(this, e, value=="create")​;
     fill.resulteffect.call(this, e);
     fill.future.call(this, e)​;
     if (this.lib!="Consult") {
