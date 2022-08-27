@@ -57,7 +57,7 @@ var old = {
         old.d["Dr"] = e.field("Dr");
       }
       else {
-        old.d["Patient"] = e && e.field("Patient").length? e.field("Patient")​[0].title: ""; 
+        old.d["Patient"] = e.field("Patient") && e.field("Patient").length? e.field("Patient")​[0].title: ""; 
         old.d["PastHx"] = e.field("PastHx");
         old.d["InvResult"] = e.field("InvResult");
         old.d["Dx"] = e.field("Dx");
