@@ -580,7 +580,7 @@ var dxop = {
   }
 };
 var valid = {
-  dxop : function(e){
+  dx : function(e){
     let dx = e.field("Dx").trim();
     if (dx) {
       if(old.field("Dx")!=dx)
@@ -590,7 +590,8 @@ var valid = {
       message("field 'Dx' must fill anything. Try again.");
       cancel();
     }
-    
+  },
+  op : function(e) {
     let op = e.field("Op").trim();
     if (op) {
       if(old.field("Op")!=op)​
@@ -1939,7 +1940,8 @@ var trig = {
   }, 
   BeforeEdit : function (e, value)​ {
     old.load(e)​;
-    valid.dxop(e); //fill dx/op complete
+    valid.dx(e); //fill dx complete
+    valid.op(e); //fill op complete
     fill.setnewdate.call(this, e)​;​
     valid.uniqueVisit.call(this, e, value=="create")​;
     fill.resulteffect.call(this, e);
