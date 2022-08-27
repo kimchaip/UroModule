@@ -455,11 +455,10 @@ var emx = {
 }​;
 var dxop = {
   run : function (e) {
-    dxop.validate(e);
-    if(e.field("Status")​ == "Not" || this.link.some(v=>!e.field(v)))​ { // status not, fill Dx/Op not complete
+    if(e.field("Status")​ == "Not" )​ { // status not, fill Dx/Op not complete
       dxop.deletelink.call(this, e);
     }
-    else if(this.link.every(v=>e.field(v)​)​) { // status plan/done, and fill dx/op complete
+    else { // status plan/done
       let found = dxop.findlink.call(this, e);
       if(found) {
         dxop.autofill.call(this, e, found);
@@ -470,12 +469,6 @@ var dxop = {
         dxop.updatelink.call(this, e, found);
       }
     }
-  },
-  validate : function(e){
-    if(old.field("Dx")!=e.field("Dx")&&e.field("Dx"))
-      e.set("Dx", e.field("Dx").replace(/-|#/g, '').replace(/\s+/g, ' ').trim()​);
-    if(old.field("Op")!=e.field("Op")&&e.field("Op"))​
-      e.set("Op", e.field("Op").replace(/-|#/g, '').replace(/\s+/g, ' ').trim()​);
   },
   findlink : function (e) {
     let lb = this.lib=="DxAutoFill"? dx: op;
@@ -587,6 +580,27 @@ var dxop = {
   }
 };
 var valid = {
+  dxop : function(e){
+    let dx = e.field("Dx").trim();
+    if (dx) {
+      if(old.field("Dx")!=dx)
+        e.set("Dx", dx.replace(/-|#/g, '').replace(/\s+/g, ' '));
+    }
+    else {
+      message("field 'Dx' must fill anything. Try again.");
+      cancel();
+    }
+    
+    let op = e.field("Op").trim();
+    if (op) {
+      if(old.field("Op")!=op)​
+        e.set("Op", op.replace(/-|#/g, '').replace(/\s+/g, ' '));
+    }
+    else {
+      message("field 'Op' must fill anything. Try again.");
+      cancel();
+    }
+  },
   //un-duplicate HN
   uniqueHN : function (e, value)​ {
     let unique = true;
@@ -631,7 +645,7 @@ var valid = {
           unique = false;
     }
     if (!unique) {
-      message(fieldname.join() + " are not unique. Try again.");
+      message("field " + fieldname.join() + " some are not unique. Try again.");
       cancel();
     }
   }
@@ -1262,23 +1276,6 @@ var pto = {
     }​
     else {
       e.set("Age" , diff + " วัน")​;
-    }​
-  }, 
-  //un-duplicate HN
-  uniqueHN : function (e, value)​ {
-    let unique = true;
-    let HN = e.field("HN")​;;
-    if (HN != null) {
-      let entries = pt.entries();​​
-      for (let ent=0; ent<entries.length; ent++) {
-        if (entries[ent].field("HN") === HN)
-          if (entries[ent].id != e.id || value) 
-            unique = false;
-      }
-      if (!unique) {
-        message("field 'HN' is not unique. Try again.");
-        cancel();
-      }
     }​
   }, 
   //Age
@@ -1942,6 +1939,7 @@ var trig = {
   }, 
   BeforeEdit : function (e, value)​ {
     old.load(e)​;
+    valid.dxop(e); //fill dx/op complete
     fill.setnewdate.call(this, e)​;​
     valid.uniqueVisit.call(this, e, value=="create")​;
     fill.resulteffect.call(this, e);
