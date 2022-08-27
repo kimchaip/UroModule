@@ -1885,9 +1885,7 @@ var trig = {
     
   }, 
   PatientBeforeUnlink : function (e)​ {
-    let lib = masterLib()​;
-    let ent = masterEntry();
-    messgae(lib.title+", "+ent.title);​
+    
   }, 
   PatientAfterUnlink : function (e)​ {
     
