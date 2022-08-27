@@ -1884,6 +1884,14 @@ var trig = {
   PatientAfterLink : function (e)​ {
     
   }, 
+  PatientBeforeUnlink : function (e)​ {
+    let lib = masterLib()​;
+    let ent = masterEntry();
+    messgae(lib.title+", "+ent.title);​
+  }, 
+  PatientAfterUnlink : function (e)​ {
+    
+  }, 
   OpenEdit : function (e)​ {
     old.save.call(this, e)​;
   }, 
