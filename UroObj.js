@@ -1938,7 +1938,8 @@ var trig = {
     
   }, 
   OpenEdit : function (e)​ {
-    old.save.call(this, e)​;
+    if (e) old.save.call(this, e)​;
+    else old.save.call(this, entry())​;
   }, 
   BeforeEdit : function (e, value)​ {
     old.load(e)​;
