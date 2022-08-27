@@ -33,75 +33,75 @@ var old = {
     save : function (e) {
       //save field value to Obj and set to Previous
       if(this.lib=="Patient") {
-        old.d["PtName"] = e?e.field("PtName"):""; 
-        old.d["Age"] = e?e.field("Age"):"";
-        old.d["YY"] = e?e.field("YY"):null;
-        old.d["MM"] = e?e.field("MM"):null;
-        old.d["DD"] = e?e.field("DD"):null; 
-        old.d["Birthday"] = e?e.field("Birthday"):null;
-        old.d["HN"] = e?e.field("HN"):null;
-        old.d["HNBar"] = e?e.field("HNBar"):null;
-        old.d["Underlying"] = e?e.field("Underlying"):null;
-        old.d["VIP"] = e?e.field("VIP"):"";
-        old.d["Allergies"] = e?e.field("Allergies"):null;
-        old.d["DJstent"] = e?e.field("DJstent"):null;
-        old.d["DJStamp"] = e?e.field("DJStamp"):null;
-        old.d["Status"] = e?e.field("Status"):"Still";
-        old.d["Done"] = e?e.field("Done"):false;
-        old.d["Ward"] = e?e.field("Ward"):"";
-        old.d["WardStamp"] = e?e.field("WardStamp"):null;
-        old.d["Address"] = e?e.field("Address"):"";
-        old.d["Phone"] = e?e.field("Phone"):null;
-        old.d["Contact"] = e?e.field("Contact"):null;
-        old.d["Descript"] = e?e.field("Descript"):"";
-        old.d["Dr"] = e?e.field("Dr"):"ชัยพร";
+        old.d["PtName"] = e.field("PtName"); 
+        old.d["Age"] = e.field("Age");
+        old.d["YY"] = e.field("YY");
+        old.d["MM"] = e.field("MM");
+        old.d["DD"] = e.field("DD"); 
+        old.d["Birthday"] = e.field("Birthday");
+        old.d["HN"] = e.field("HN");
+        old.d["HNBar"] = e.field("HNBar");
+        old.d["Underlying"] = e.field("Underlying");
+        old.d["VIP"] = e.field("VIP");
+        old.d["Allergies"] = e.field("Allergies");
+        old.d["DJstent"] = e.field("DJstent");
+        old.d["DJStamp"] = e.field("DJStamp");
+        old.d["Status"] = e.field("Status");
+        old.d["Done"] = e.field("Done");
+        old.d["Ward"] = e.field("Ward");
+        old.d["WardStamp"] = e.field("WardStamp");
+        old.d["Address"] = e.field("Address");
+        old.d["Phone"] = e.field("Phone");
+        old.d["Contact"] = e.field("Contact");
+        old.d["Descript"] = e.field("Descript");
+        old.d["Dr"] = e.field("Dr");
       }
       else {
-        old.d["Patient"] = e && e.field("Patient").length>0? e.field("Patient")​[0].title: ""; 
-        old.d["PastHx"] = e?e.field("PastHx"):"";
-        old.d["InvResult"] = e?e.field("InvResult"):"";
-        old.d["Dx"] = e?e.field("Dx"):"";
-        old.d["VisitType"] = e?e.field("VisitType"):"Admit";
-        old.d["VisitDate"] = e?e.field("VisitDate"):null;
-        old.d["Ward"] = e?e.field("Ward"):"Uro";
-        old.d["Merge"] = e?e.field("Merge"):false;
-        old.d["EntryMx"] = e?e.field("EntryMx"):"<Default>";
-        old.d["AppointDate"] = e?e.field("AppointDate"):null;
-        old.d["Operation"] = e?e.field("Operation"):"";
-        old.d["Color"] = e?e.field("Color"):null;
-        old.d["MergeID"] = e?e.field("MergeID"):"";
-        old.d["Dr"] = e?e.field("Dr"):"ชัยพร";
-        old.d["Status"] = e?e.field("Status"):"Plan";
-        old.d["Photo"] = e?e.field("Photo"):null; 
-        old.d["DischargeDate"] = e?e.field("DischargeDate"):null;
-        old.d["LOS"] = e?e.field("LOS"):null;
-        old.d["Summary"] = e?e.field("Summary"):false;
-        old.d["Track"] = e?e.field("Track"):0;
+        old.d["Patient"] = e.field("Patient").length>0? e.field("Patient")​[0].title: ""; 
+        old.d["PastHx"] = e.field("PastHx");
+        old.d["InvResult"] = e.field("InvResult");
+        old.d["Dx"] = e.field("Dx");
+        old.d["VisitType"] = e.field("VisitType");
+        old.d["VisitDate"] = e.field("VisitDate");
+        old.d["Ward"] = e.field("Ward");
+        old.d["Merge"] = e.field("Merge");
+        old.d["EntryMx"] = e.field("EntryMx");
+        old.d["AppointDate"] = e.field("AppointDate");
+        old.d["Operation"] = e.field("Operation");
+        old.d["Color"] = e.field("Color");
+        old.d["MergeID"] = e.field("MergeID");
+        old.d["Dr"] = e.field("Dr");
+        old.d["Status"] = e.field("Status");
+        old.d["Photo"] = e.field("Photo"); 
+        old.d["DischargeDate"] = e.field("DischargeDate");
+        old.d["LOS"] = e.field("LOS");
+        old.d["Summary"] = e.field("Summary");
+        old.d["Track"] = e.field("Track");
       }
       if(this.lib=="UroBase" || this.lib=="Backup") {
-        old.d["Date"] = e?e.field("Date")​:null;
-        old.d["DxAutoFill"] = e&&e.field("DxAutoFill").length>0? e.field("DxAutoFill")[0].title: "";
-        old.d["Op"] = e?e.field("Op"):"";
-        old.d["OperationList"] = e&&e.field("OperationList").length>0? e.field("OperationList")​[0].title: "";
-        old.d["AutoOpExtra"] = e?e.field("AutoOpExtra"):true;
-        old.d["OpExtra"] = e?e.field("OpExtra"):false;
-        old.d["x1.5"] = e?e.field("x1.5"):false;
-        old.d["Bonus"] = e?e.field("Bonus"):0;
-        old.d["ORType"] = e?e.field("ORType"):"GA";
-        old.d["Que"] = e?e.field("Que"):"00";
-        old.d["RecordDate"] = e?e.field("RecordDate"):today;
-        old.d["Future"] = e?e.field("Future"):null;
-        old.d["OpResult"] = e?e.field("OpResult"):"";
-        old.d["DJstent"] = e?e.field("DJstent"):null;
-        old.d["TimeIn"] = e?e.field("TimeIn"):null;
-        old.d["TimeOut"] = e?e.field("TimeOut"):null;
-        old.d["OpDateCal"] = e?e.field("OpDateCal"):null;
-        old.d["OpLength"] = e?e.field("OpLength"):null;
-        old.d["Active"] = e?e.field("Active"):null;
+        old.d["Date"] = e.field("Date")​;
+        old.d["DxAutoFill"] = e.field("DxAutoFill").length>0? e.field("DxAutoFill")[0].title: "";
+        old.d["Op"] = e.field("Op");
+        old.d["OperationList"] = e.field("OperationList").length>0? e.field("OperationList")​[0].title: "";
+        old.d["AutoOpExtra"] = e.field("AutoOpExtra");
+        old.d["OpExtra"] = e.field("OpExtra");
+        old.d["x1.5"] = e.field("x1.5");
+        old.d["Bonus"] = e.field("Bonus");
+        old.d["ORType"] = e.field("ORType");
+        old.d["Que"] = e.field("Que");
+        old.d["RecordDate"] = e.field("RecordDate");
+        old.d["Future"] = e.field("Future");
+        old.d["OpResult"] = e.field("OpResult");
+        old.d["DJstent"] = e.field("DJstent");
+        old.d["TimeIn"] = e.field("TimeIn");
+        old.d["TimeOut"] = e.field("TimeOut");
+        old.d["OpDateCal"] = e.field("OpDateCal");
+        old.d["OpLength"] = e.field("OpLength");
+        old.d["Active"] = e.field("Active");
       }
       else if(this.lib=="Consult") {
-        old.d["ConsultDate"] = e?e.field("ConsultDate"):null;
-        old.d["Rx"] = e?e.field("Rx"):"";
+        old.d["ConsultDate"] = e.field("ConsultDate");
+        old.d["Rx"] = e.field("Rx");
       }
       
       e.set("Previous", JSON.stringify(old.d));
@@ -1868,7 +1868,7 @@ var opu = {
 
 var trig = {
   PatientOpenEdit : function(e) {
-    old.save.call(pto, e);
+    if (e) old.save.call(pto, e);
   },
   PatientBeforeEdit : function (e, value)​ {
     pto.rearrangename(e);
@@ -1939,7 +1939,6 @@ var trig = {
   }, 
   OpenEdit : function (e)​ {
     if (e) old.save.call(this, e)​;
-    else old.save.call(this, entry())​;
   }, 
   BeforeEdit : function (e, value)​ {
     old.load(e)​;
