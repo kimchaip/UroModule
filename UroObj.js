@@ -589,6 +589,7 @@ var valid = {
     else {
       message("field 'Dx' must fill anything. Try again.");
       cancel();
+      exit();
     }
   },
   op : function(e) {
@@ -600,6 +601,7 @@ var valid = {
     else {
       message("field 'Op' must fill anything. Try again.");
       cancel();
+      exit();
     }
   },
   //un-duplicate HN
@@ -616,6 +618,7 @@ var valid = {
       if (!unique) {
         message("field 'HN' is not unique. Try again.");
         cancel();
+        exit();
       }
     }​
   }, 
@@ -648,6 +651,7 @@ var valid = {
     if (!unique) {
       message("field " + fieldname.join() + " some are not unique. Try again.");
       cancel();
+      exit();
     }
   }
 };
