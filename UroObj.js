@@ -580,7 +580,7 @@ var dxop = {
   }
 };
 var valid = {
-  dx : function(e){
+  dxop : function(e){
     let dx = e.field("Dx").trim();
     if (dx) {
       if(old.field("Dx")!=dx)
@@ -591,17 +591,17 @@ var valid = {
       cancel();
       exit();
     }
-  },
-  op : function(e) {
-    let op = e.field("Op").trim();
-    if (op) {
-      if(old.field("Op")!=op)​
-        e.set("Op", op.replace(/-|#/g, '').replace(/\s+/g, ' '));
-    }
-    else {
-      message("field 'Op' must fill anything. Try again.");
-      cancel();
-      exit();
+    if (this.lib!="Consult") {
+      let op = e.field("Op").trim();
+      if (op) {
+        if(old.field("Op")!=op)​
+          e.set("Op", op.replace(/-|#/g, '').replace(/\s+/g, ' '));
+      }
+      else {
+        message("field 'Op' must fill anything. Try again.");
+        cancel();
+        exit();
+      }
     }
   },
   //un-duplicate HN
