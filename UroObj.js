@@ -1311,49 +1311,23 @@ var pto = {
       let orlinks = ptent.linksFrom("UroBase", "Patient") ;
       let bulinks = ptent.linksFrom("Backup", "Patient") ;
       let cslinks = ptent.linksFrom("Consult", "Patient") ;
-      if (orlinks.length>0) {
-        for (let i=0; i<orlinks.length; i++) {
-          let o = new Object();
-          let notdone = orlinks[i].field(uro.result).match(uro.notdonereg);
-          o["nd"] = notdone==null?0:notdone.length;
-          if ((allvisit || orlinks[i].field("VisitType")=="Admit") && !o.nd && my.gdate(​orlinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && orlinks[i].id != eid) {
-            o["vsd"] = orlinks[i].field("VisitDate");
-            o["opd"] = orlinks[i].field(uro.opdate);
-            o["lib"] = "UroBase";
-            o["e"] = orlinks[i];
-            all.push(o);
-          }
-        }
-      }​
-      if (bulinks.length​>0) {
-        for (let i=0; i<bulinks.length; i++) {
-          let o = new Object();
-          let notdone = bulinks[i].field(buo.result).match(buo.notdonereg);
-          o["nd"] = notdone==null?0:notdone.length;
-          if ((allvisit || bulinks[i].field("VisitType")=="Admit") && !o.nd && my.gdate(​bulinks[i].field("VisitDate"))​ <= my.gdate(​date)​ && bulinks[i].id != eid) {
-            o["vsd"] = bulinks[i].field("VisitDate");
-            o["opd"] = bulinks[i].field(buo.opdate);
-            o["lib"] = "Backup";
-            o["e"] = bulinks[i];
-            all.push(o);
-          }
-        }
-      }​
-      if (cslinks.length>0) {
-        for (let i=0; i<cslinks.length; i++) {
-          let o = new Object();
-          let notdone = cslinks[i].field(cso.result).match(cso.notdonereg);
-          o["nd"] = notdone==null?0:notdone.length;
-          if ((allvisit || cslinks[i].field("VisitType")=="Admit") && !o.nd && my.gdate(​cslinks[i].field("VisitDate"))​ <= my.gdate(​date) && cslinks[i].id != eid) {
+      let alllinks = [{"l":orlinks,"o":uro},{"l":bulinks,"o":buo},{"l":cslinks,"o":cso}];
+      alllinks.forEach(a=>{
+        if (a.l.length>0) {
+          for (let i=0; i<a.l.length; i++) {
             let o = new Object();
-            o["vsd"] = cslinks[i].field("VisitDate");
-            o["opd"] = cslinks[i].field(cso.opdate);
-            o["lib"] = "Consult";
-            o["e"] = cslinks[i];
-            all.push(o);
+            let notdone = a.l[i].field(a.o.result).match(a.o.notdonereg);
+            o["nd"] = notdone==null?0:notdone.length;
+            if ((allvisit || a.l[i].field("VisitType")=="Admit") && !o.nd && my.gdate(​a.l[i].field("VisitDate"))​ <= my.gdate(​date)​ && a.l[i].id != eid) {
+              o["vsd"] = a.l[i].field("VisitDate");
+              o["opd"] = a.l[i].field(a.o.opdate);
+              o["lib"] = a.o.lib;
+              o["e"] = a.l[i];
+              all.push(o);
+            }
           }
-        }
-      }
+        }​
+      });
       // find max VisitDate
       let vsdlist = all.map(o=>{return o.vsd});
       let lastvsd = Math.max.apply(null, vsdlist);
