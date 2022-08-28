@@ -1918,7 +1918,7 @@ var trig = {
   }, 
   BeforeEdit : function (e, value)​ {
     old.load(e)​;
-    valid.dxop.call(this, e); //fill dx,op complete
+    valid.dxop.call(this, e); //fill dx,op complete 
     fill.setnewdate.call(this, e)​;​
     valid.uniqueVisit.call(this, e, value=="create")​;
     fill.resulteffect.call(this, e);
