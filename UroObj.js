@@ -416,7 +416,7 @@ var emx = {
         old.save.call(this, last);
         
         last.set(this.opdate,  my.date(e.field("AppointDate")​));
-        last.set("Patient", links[0].title);
+        last.link("Patient", links[0]);
         last.set("Dr", e.field("Dr")​);
         last.set("Underlying", e.field("Underlying"));
         if (e.field("Photo").length>0)​
