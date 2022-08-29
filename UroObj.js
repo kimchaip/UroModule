@@ -416,7 +416,7 @@ var emx = {
         old.save.call(this, last);
         
         last.set(this.opdate,  my.date(e.field("AppointDate")​));
-        last.link("Patient", links[0]);
+        last.set("Patient", links[0].title);
         last.set("Dr", e.field("Dr")​);
         last.set("Underlying", e.field("Underlying"));
         if (e.field("Photo").length>0)​
@@ -428,8 +428,8 @@ var emx = {
         else {
           last.set("Dx", e.field("Diagnosis")​);
         }
-        trig.BeforeEdit.call(this, last, "create");
-        trig.AfterEdit.call(this, last, "create");
+        trig.BeforeEdit.call(this, last, "update");
+        trig.AfterEdit.call(this, last, "update");
         //message("successfully created new Entry") ;
       }
     }​
