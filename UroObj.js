@@ -428,6 +428,7 @@ var emx = {
         else {
           last.set("Dx", e.field("Diagnosis")​);
         }
+        message(last.field("Patient")[0].title+", "+last.field("Patient")[0].id);
         trig.BeforeEdit.call(this, last, "update");
         trig.AfterEdit.call(this, last, "update");
         //message("successfully created new Entry") ;
