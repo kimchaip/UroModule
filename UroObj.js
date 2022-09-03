@@ -1735,7 +1735,7 @@ var opu = {
         ent["CreationTime"] =  e.creationTime;
         ent["ModifiedTime"] =  e.lastModifiedTime;
         os.create(ent);
-        //message("create OpUroSx!");
+        message("create OpUroSx!");
       }
     }
   },
@@ -1772,7 +1772,7 @@ var opu = {
               oss[s].set("CreationTime", e.creationTime);
             if(my.gdate(oss[s].field("ModifiedTime"))<my.gdate(e.lastModifiedTime))
               oss[s].set("ModifiedTime", e.lastModifiedTime);
-            //message("update OpUroSx!");
+            message("update OpUroSx!");
             break;
           }
         }​
@@ -1796,7 +1796,7 @@ var opu = {
         for (let s=0; s<oss.length; s++)​{
           if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(old.field("Date")))​ &​& oss[s].field("Dr") ==​ old.field("Dr") &​& oss[s].field("OpType") ==​ old.field("ORType") &​& oss[s].field("PtName") ==​ parr[0] && oss[s].field("HN") ==​ parr[2] &​& oss[s].field("Dx") ==​ old.field("Dx") &​& oss[s].field("Op") ==​ old.field("Op"))​{
             oss[s].trash();
-            //message("delete OpUroSx!");
+            message("delete OpUroSx!");
             break;
           }
         }​
