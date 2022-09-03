@@ -193,7 +193,7 @@ var mer = {
     });
   },
   fieldall: function(e) {
-    let range = ["VisitDate","PastHx","InvResult","VisitType","Ward","DischargeDate","Track","Summary","Underlying","LOS","Dr","Active"];
+    let range = ["VisitDate","PastHx","InvResult","VisitType","Ward","DischargeDate","Track","Summary","Underlying","LOS","Active"];
     for(let i = 0; i<range.length; i++) {
       let inx = this.findInx(e);
       if(range[i].indexOf("Date")>-1) {
@@ -238,7 +238,6 @@ var mer = {
       mer.setall("Summary", mergeobj.e.field("Summary"));
       mer.setall("Underlying", mergeobj.e.field("Underlying"));
       mer.setall("LOS", mergeobj.e.field("LOS"));
-      mer.setall("Dr", mergeobj.e.field("Dr"));
       mer.setall("Active", mergeobj.e.field("Active"));
     }
     else {
@@ -417,7 +416,7 @@ var emx = {
         
         last.set(this.opdate,  my.date(e.field("AppointDate")​));
         last.link("Patient", links[0]);
-        last.set("Dr", e.field("Dr")​);
+        last.set("Dr", links[0].field("Dr")​);
         last.set("Underlying", e.field("Underlying"));
         if (e.field("Photo").length>0)​
             last.set("Photo", e.field("Photo").join()​);
@@ -1092,15 +1091,6 @@ var fill = {
       }
     }​​​​
   }, 
-  ptdr : function (e) {
-    let dr = e.field("Dr");
-    
-    let links = e.field("Patient")​;
-    if (links.length>0) {
-      if(links[0].field("Dr")!=dr) 
-        links[0].set("Dr", dr);
-    }
-  },
   color : function (e)​ {
     if(this.lib!="Consult") {
       if(e.field("Status")=="Not") {
@@ -1946,7 +1936,6 @@ var trig = {
       fill.opdatecal(e);
     }
     fill.los(e)​;
-    fill.ptdr(e);
     fill.active.call(this, e);
     fill.ptstatus.call(this, e)​;
     fill.color.call(this, e);
@@ -2015,7 +2004,6 @@ var trig = {
     mer.merge.call(this, e)​;
     if (this.lib!="Consult")
       que.run.call(this, e)​;
-    fill.ptdr(e);
     fill.ptstatus.call(this, e)​;
     mer.effect(e)​;
   }, 
