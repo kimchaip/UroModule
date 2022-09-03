@@ -1014,6 +1014,14 @@ var fill = {
       e.set("LOS", null)​;
     }​
   }, 
+  dr : function (e, value) {
+    let link = e.field("Patient");
+    if (link.length>0 && value) {
+      if (old.field("Dr")==e.field("Dr") && e.field("Dr")!=link[0].field("Dr")) {
+        e.set("Dr", link[0].field("Dr"));
+      }
+    }
+  },
   opdatecal : function (e) {
     if(e.field("Date")) {
       let time = e.field("Timein");
@@ -1936,6 +1944,7 @@ var trig = {
       fill.opdatecal(e);
     }
     fill.los(e)​;
+    fill.dr(e, value=="create");
     fill.active.call(this, e);
     fill.ptstatus.call(this, e)​;
     fill.color.call(this, e);
