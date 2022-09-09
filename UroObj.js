@@ -1290,7 +1290,7 @@ var pto = {
       d = Math.round(e.field("YY")*365.2425 + month*30.4375 + day);
       e.set("Birthday", my.dateminus(today, d)​);
     }​
-    else if (e.field("Birthday")​)​ {
+    if (e.field("Birthday")​)​ {
       d = Math.floor((ntoday-my.gdate(e.field("Birthday"))​)/86400000);
       if (parseInt(e.field("Age")) != d)
         pto.agetext(e, d)​;
