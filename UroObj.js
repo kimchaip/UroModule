@@ -1983,14 +1983,14 @@ var trig = {
         let notdone = all[i].field(this.result).match(this.notdonereg);
         this.notdone = notdone==null?0:notdone.length;
         if (all[i].field("VisitType")=="OPD" || this.notdone)
-          end = my.dateadd(all[i].field("VisitDate"),1);
+          end = my.dateadd(all[i].field(this.opdate),1);
         else if (all[i].field("VisitType")=="Admit" && all[i].field("DischargeDate")==null)
           end = today;
         else
           end = my.dateadd(all[i].field("DischargeDate"),1);
 
-        fill.future.call(this, all[i])​;​
-        if (my.gdate(start) <= ntoday && my.gdate(end) >= ntoday ) { 
+        if (my.gdate(start) <= ntoday && ntoday <= my.gdate(end)) { 
+          fill.future.call(this, all[i])​;​
           fill.track.call(this, all[i])​;​
           fill.active.call(this, all[i]);
           fill.ptstatus.call(this, all[i]);
