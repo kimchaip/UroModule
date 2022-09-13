@@ -1093,7 +1093,7 @@ var fill = {
             links[0].set("Ward", "OPD");
         }
       }
-      else if (link[0].field("Status")!="Dead") { //  this entry is not active
+      else if (links[0].field("Status")!="Dead") { //  this entry is not active
         links[0].set("Status", "Still")​;
         links[0].set("Ward", "");
       }
