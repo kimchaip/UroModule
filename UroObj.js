@@ -1078,9 +1078,9 @@ var fill = {
         links[0].set("WardStamp", o[0].e.field("VisitDate")​);
       }
 
-      if (e.field("Active")!=null)​ { // this entry is active
-        let dead = e.field(this.result).match(/dead|death/ig);
-        dead = dead?dead.length​:0;
+      let dead = e.field(this.result).match(/dead|death/ig);
+      dead = dead?dead.length​:0;
+      if (e.field("Active")!=null || dead)​ { // this entry is active
         if (dead) { // dead
           links[0].set("Status" ,"Dead");
           links[0].set("Ward", "");
@@ -1093,7 +1093,7 @@ var fill = {
             links[0].set("Ward", "OPD");
         }
       }
-      else { //  this entry is not active
+      else if (link[0].field("Status")!="Dead") { //  this entry is not active
         links[0].set("Status", "Still")​;
         links[0].set("Ward", "");
       }
