@@ -1078,7 +1078,7 @@ var fill = {
         links[0].set("WardStamp", o[0].e.field("VisitDate")​);
       }
 
-      if (o.length>0 && o.some(l=>l.e.id == e.id) && e.field("Active")!=null)​ { // found last visit and be this entry and be active
+      if (e.field("Active")!=null)​ { // this entry is active
         let dead = e.field(this.result).match(/dead|death/ig);
         dead = dead?dead.length​:0;
         if (dead) { // dead
@@ -1093,7 +1093,7 @@ var fill = {
             links[0].set("Ward", "OPD");
         }
       }
-      else { // not found last visit or not be this entry or not be active
+      else { //  this entry is not active
         links[0].set("Status", "Still")​;
         links[0].set("Ward", "");
       }
