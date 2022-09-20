@@ -1995,10 +1995,10 @@ var trig = {
   }, 
   BeforeOpenLib : function (all) {
     for (let i=0; i<all.length; i++)​ {
-      //if (my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
+      if (my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
         if (all[i].field("Done")==true) 
           all[i].set("Done", false);
-      //}
+      }
       if (all[i].field("Done")==false) {
         let start = my.dateminus(all[i]​.field("VisitDate"), 1);
         let end = null;
@@ -2011,14 +2011,14 @@ var trig = {
         else
           end = my.dateadd(all[i].field("DischargeDate"),1);
 
-        //if (my.gdate(start) <= ntoday && ntoday <= my.gdate(end)) { 
+        if (my.gdate(start) <= ntoday && ntoday <= my.gdate(end)) { 
           fill.future.call(this, all[i])​;​
           fill.track.call(this, all[i])​;​
           fill.active.call(this, all[i]);
           fill.ptstatus.call(this, all[i]);
           fill.color.call(this, all[i]);
           all[i].set("Done", true);
-        //}
+        }
       }
     }
   }, 
