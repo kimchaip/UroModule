@@ -1358,6 +1358,7 @@ var pto = {
         return my.gdate(b.opd)-my.gdate(a.opd);
       });
     }
+    e.set("Output", JSON.stringify(all));
     return all;
   }
 }​;
