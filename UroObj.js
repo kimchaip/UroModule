@@ -214,7 +214,7 @@ var mer = {
     if (e.field("Patient").length>0) {
       let ptent = pt.findById(e.field("Patient")[0].id);
       let date = e.field("VisitDate");
-      return pto.findLast(false, false, ptent, date, e, this.lib);
+      return pto.findLast(false, false, ptent, date, e, this);
     }
     return [];
   },
@@ -1060,7 +1060,7 @@ var fill = {
     if (links.length>0) {
       let ptent = pt.findById(links[0].id);
         
-      let o = pto.findLast(true, true, ptent, today, e, this.lib);
+      let o = pto.findLast(true, true, ptent, today, e, this);
       let str = "" ;
       if (o.length==0) { // never Visit
         links[0].set("WardStamp",null);
@@ -1303,7 +1303,7 @@ var pto = {
       e.set("DJStamp", null);
     }
   }, 
-  findLast : function(allvisit, withme, ptent, date, e, lib) {
+  findLast : function(allvisit, withme, ptent, date, e, olib) {
     let eid = e?e.id:0;
     let all = [];
     if (ptent) {
@@ -1345,8 +1345,8 @@ var pto = {
       if (withme && !exist) {
         let o = new Object();
         o["vsd"] = e.field("VisitDate");
-        o["opd"] = e.field(o.opdate);
-        o["lib"] = lib;
+        o["opd"] = e.field(olib.opdate);
+        o["lib"] = olib.lib;
         o["e"] = e;
         all.push(o);
       }
