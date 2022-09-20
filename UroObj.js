@@ -214,12 +214,12 @@ var mer = {
     if (e.field("Patient").length>0) {
       let ptent = pt.findById(e.field("Patient")[0].id);
       let date = e.field("VisitDate");
-      return pto.findLast(false, ptent, date, e.id);
+      return pto.findLast(false, false, ptent, date, e, this.lib);
     }
     return [];
   },
   run : function(e) {
-    let mergearr = mer.findLast(e);
+    let mergearr = mer.findLast.call(this, e);
     if (mergearr.length>0) {
       let mergeobj = mergearr[0];
       mer.load(mergeobj.e);
@@ -1060,14 +1060,15 @@ var fill = {
     if (links.length>0) {
       let ptent = pt.findById(links[0].id);
         
-      let o = pto.findLast(true, ptent, today);
+      let o = pto.findLast(true, true, ptent, today, e, this.lib);
       let str = "" ;
-      if (o.length==0) { // never admit
+      if (o.length==0) { // never Visit
         links[0].set("WardStamp",null);
         links[0].set("Ward",  "");
         links[0].set("Descript", "");
+        links[0].set("Status", "Still");
       }
-      else { // ever admit
+      else { // ever visit
         let lib;
         if(o[0].lib=="UroBase") lib = uro;
         else if(o[0].lib=="Backup") lib = buo;
@@ -1076,26 +1077,26 @@ var fill = {
         str = fill.descripttxt.call(lib, o[0].e);
         links[0].set("Descript", str);
         links[0].set("WardStamp", o[0].e.field("VisitDate")​);
-      }
-
-      let dead = e.field(this.result).match(/dead|death/ig);
-      dead = dead?dead.length​:0;
-      if (e.field("Active")!=null || dead)​ { // this entry is active
-        if (dead) { // dead
-          links[0].set("Status" ,"Dead");
+        
+        let dead = o[0].e.field(this.result).match(/dead|death/ig);
+        dead = dead?dead.length​:0;
+        if (o[0].e.field("Active")!=null || dead)​ { // last entry is active
+          if (dead) { // dead
+            links[0].set("Status" ,"Dead");
+            links[0].set("Ward", "");
+          }
+          else  { //Admit or OPD visit today
+            links[0].set("Status" ,"Active");
+            if (o[0].e.field("VisitType")=="Admit")
+              links[0].set("Ward", o[0].e.field("Ward"));
+            else
+              links[0].set("Ward", "OPD");
+          }
+        }
+        else if (links[0].field("Status")!="Dead") { //  this entry is not active
+          links[0].set("Status", "Still")​;
           links[0].set("Ward", "");
         }
-        else  { //Admit or OPD visit today
-          links[0].set("Status" ,"Active");
-          if (e.field("VisitType")=="Admit")
-            links[0].set("Ward", e.field("Ward"));
-          else
-            links[0].set("Ward", "OPD");
-        }
-      }
-      else if (links[0].field("Status")!="Dead") { //  this entry is not active
-        links[0].set("Status", "Still")​;
-        links[0].set("Ward", "");
       }
     }​​​​
   }, 
@@ -1302,8 +1303,8 @@ var pto = {
       e.set("DJStamp", null);
     }
   }, 
-  findLast : function(allvisit, ptent, date, eid) {
-    eid=eid?eid:0;
+  findLast : function(allvisit, withme, ptent, date, e, lib) {
+    let eid = e?e.id:0;
     let all = [];
     if (ptent) {
       let orlinks = ptent.linksFrom("UroBase", "Patient") ;
@@ -1316,16 +1317,38 @@ var pto = {
             let o = new Object();
             let notdone = a.l[i].field(a.o.result).match(a.o.notdonereg);
             o["nd"] = notdone==null?0:notdone.length;
-            if ((allvisit || a.l[i].field("VisitType")=="Admit") && !o.nd && my.gdate(​a.l[i].field("VisitDate"))​ <= my.gdate(​date)​ && a.l[i].id != eid) {
-              o["vsd"] = a.l[i].field("VisitDate");
-              o["opd"] = a.l[i].field(a.o.opdate);
-              o["lib"] = a.o.lib;
-              o["e"] = a.l[i];
-              all.push(o);
+            if ((allvisit || a.l[i].field("VisitType")=="Admit") && !o.nd && my.gdate(​a.l[i].field("VisitDate"))​ <= my.gdate(​date)​) {
+              if (a.l[i].id != eid) {
+                if (eid==0) exist = true; // if no e, mean e is exist
+                o["vsd"] = a.l[i].field("VisitDate");
+                o["opd"] = a.l[i].field(a.o.opdate);
+                o["lib"] = a.o.lib;
+                o["e"] = a.l[i];
+                all.push(o);
+              }
+              else { // include this entry
+                exist = true;
+                if (withme) {
+                  o["vsd"] = a.l[i].field("VisitDate");
+                  o["opd"] = a.l[i].field(a.o.opdate);
+                  o["lib"] = a.o.lib;
+                  o["e"] = a.l[i];
+                  all.push(o);
+                }
+              }
             }
           }
         }​
       });
+      // if this entry is not exist, include it
+      if (withme && !exist) {
+        let o = new Object();
+        o["vsd"] = e.field("VisitDate");
+        o["opd"] = e.field(o.opdate);
+        o["lib"] = lib;
+        o["e"] = e;
+        all.push(o);
+      }
       // find max VisitDate
       let vsdlist = all.map(o=>{return o.vsd});
       let lastvsd = Math.max.apply(null, vsdlist);
@@ -1871,7 +1894,7 @@ var trig = {
     for(let i in all) {
       // update track
       if(all[i].id==e.id &​& all[i].field("Done")​==true) {
-        let o = pto.findLast(false, e, today);
+        let o = pto.findLast(false, true, e, today);
         if (o.length>0)​ {
           if (e.field("Done") &​& o.some(l=>l.e.field("Track") == 1)) {
             if (o.some(l=>l.e.field("Active"​) != null))​ { // Admit
