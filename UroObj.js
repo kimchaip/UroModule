@@ -1082,7 +1082,7 @@ var fill = {
         else
           links[0].set("Ward", "OPD");
         
-        let dead = o[0].e.field(this.result).match(/dead|death/ig);
+        let dead = o[0].e.field(lib.result).match(/dead|death/ig);
         dead = dead?dead.length​:0;
         if (o[0].e.field("Active")!=null || dead)​ { // last entry is active
           if (dead) { // dead
@@ -1358,7 +1358,6 @@ var pto = {
         return my.gdate(b.opd)-my.gdate(a.opd);
       });
     }
-    message(JSON.stringify(all));
     return all;
   }
 }​;
