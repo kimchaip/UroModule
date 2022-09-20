@@ -1340,7 +1340,7 @@ var pto = {
         }​
       });
       // if this entry is not exist, include it
-      if (withme && !exist) {
+      if (withme && !exist && e) {
         let o = new Object();
         o["vsd"] = e.field("VisitDate");
         o["opd"] = e.field(olib.opdate);
