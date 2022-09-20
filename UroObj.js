@@ -1311,6 +1311,7 @@ var pto = {
       let bulinks = ptent.linksFrom("Backup", "Patient") ;
       let cslinks = ptent.linksFrom("Consult", "Patient") ;
       let alllinks = [{"l":orlinks,"o":uro},{"l":bulinks,"o":buo},{"l":cslinks,"o":cso}];
+      let exist = false;
       alllinks.forEach(a=>{
         if (a.l.length>0) {
           for (let i=0; i<a.l.length; i++) {
