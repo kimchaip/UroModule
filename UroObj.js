@@ -1077,25 +1077,23 @@ var fill = {
         str = fill.descripttxt.call(lib, o[0].e);
         links[0].set("Descript", str);
         links[0].set("WardStamp", o[0].e.field("VisitDate")​);
+        if (o[0].e.field("VisitType")=="Admit")
+          links[0].set("Ward", o[0].e.field("Ward"));
+        else
+          links[0].set("Ward", "OPD");
         
         let dead = o[0].e.field(this.result).match(/dead|death/ig);
         dead = dead?dead.length​:0;
         if (o[0].e.field("Active")!=null || dead)​ { // last entry is active
           if (dead) { // dead
             links[0].set("Status" ,"Dead");
-            links[0].set("Ward", "");
           }
           else  { //Admit or OPD visit today
             links[0].set("Status" ,"Active");
-            if (o[0].e.field("VisitType")=="Admit")
-              links[0].set("Ward", o[0].e.field("Ward"));
-            else
-              links[0].set("Ward", "OPD");
           }
         }
         else if (links[0].field("Status")!="Dead") { //  this entry is not active
           links[0].set("Status", "Still")​;
-          links[0].set("Ward", "");
         }
       }
     }​​​​
