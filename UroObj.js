@@ -1302,14 +1302,32 @@ var pto = {
     }
   }, 
   findLast : function(allvisit, withme, ptent, date, e, olib) {
-    let eid = e?e.id:0;
+    let eid ;
     let all = [];
     if (ptent) {
       let orlinks = ptent.linksFrom("UroBase", "Patient") ;
       let bulinks = ptent.linksFrom("Backup", "Patient") ;
       let cslinks = ptent.linksFrom("Consult", "Patient") ;
+      // if withme==true , there is this entry and this entry is not exist, include it
+      if (e) {
+        eid = e.id;
+        if (olib.lib == "UroBase") {
+          if (withme && !orlinks.some(o=>o.id==e.id))
+            orlinks.push(e);
+        }
+        else if (olib.lib == "Backup") {
+          if (withme && !bulinks.some(o=>o.id==e.id))
+            bulinks.push(e);
+        }
+        else if (olib.lib == "Consult") {
+          if (withme && !cslinks.some(o=>o.id==e.id))
+            cslinks.push(e);
+        }
+      }
+      else {
+        eid = 0;
+      }
       let alllinks = [{"l":orlinks,"o":uro},{"l":bulinks,"o":buo},{"l":cslinks,"o":cso}];
-      let exist = false;
       alllinks.forEach(a=>{
         if (a.l.length>0) {
           for (let i=0; i<a.l.length; i++) {
@@ -1317,37 +1335,24 @@ var pto = {
             let notdone = a.l[i].field(a.o.result).match(a.o.notdonereg);
             o["nd"] = notdone==null?0:notdone.length;
             if ((allvisit || a.l[i].field("VisitType")=="Admit") && !o.nd && my.gdate(​a.l[i].field("VisitDate"))​ <= my.gdate(​date)​) {
-              if (a.l[i].id != eid) {
-                if (eid==0) exist = true; // if no e, mean e is exist
+              if (a.l[i].id != eid) { // save to array if not this entry
                 o["vsd"] = a.l[i].field("VisitDate");
                 o["opd"] = a.l[i].field(a.o.opdate);
                 o["lib"] = a.o.lib;
                 o["e"] = a.l[i];
                 all.push(o);
               }
-              else { // include this entry
-                exist = true;
-                if (withme) {
-                  o["vsd"] = a.l[i].field("VisitDate");
-                  o["opd"] = a.l[i].field(a.o.opdate);
-                  o["lib"] = a.o.lib;
-                  o["e"] = a.l[i];
-                  all.push(o);
-                }
+              else if (withme) { // save this entry to array if withme == true
+                o["vsd"] = a.l[i].field("VisitDate");
+                o["opd"] = a.l[i].field(a.o.opdate);
+                o["lib"] = a.o.lib;
+                o["e"] = a.l[i];
+                all.push(o);
               }
             }
           }
         }​
       });
-      // if this entry is not exist, include it
-      if (withme && !exist && e) {
-        let o = new Object();
-        o["vsd"] = e.field("VisitDate");
-        o["opd"] = e.field(olib.opdate);
-        o["lib"] = olib.lib;
-        o["e"] = e;
-        all.push(o);
-      }
       // find max VisitDate
       let vsdlist = all.map(o=>{return o.vsd});
       let lastvsd = Math.max.apply(null, vsdlist);
