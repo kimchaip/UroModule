@@ -40,7 +40,6 @@ var old = {
         old.d["DD"] = e.field("DD"); 
         old.d["Birthday"] = e.field("Birthday");
         old.d["HN"] = e.field("HN");
-        old.d["HNBar"] = e.field("HNBar");
         old.d["Underlying"] = e.field("Underlying");
         old.d["VIP"] = e.field("VIP");
         old.d["Allergies"] = e.field("Allergies");
