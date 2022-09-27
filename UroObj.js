@@ -2105,7 +2105,7 @@ var trig = {
         else
           end = my.dateadd(all[i].field("DischargeDate"),1);
 
-        if (my.gdate(start) <= ntoday && ntoday <= my.gdate(end)) { 
+        //if (my.gdate(start) <= ntoday && ntoday <= my.gdate(end)) { 
           fill.future.call(this, all[i])​;​
           fill.track.call(this, all[i])​;​
           fill.active.call(this, all[i]);
@@ -2113,7 +2113,7 @@ var trig = {
           fill.ptnextstatus.call(this, all[i])​;
           fill.color.call(this, all[i]);
           all[i].set("Done", true);
-        }
+        //}
       }
     }
   }, 
