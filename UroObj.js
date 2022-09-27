@@ -844,6 +844,7 @@ var fill = {
     if(opresult) {
       if(this.notdone)​ {
         e.set("Status", "Not")​;
+        e.set("DischargeDate", null)​;
         let links = e.field("Patient");
         if(links.length>0 && links[0].field("Status")=="Active") {
           links[0].set("Status", "Still")​;
@@ -852,13 +853,14 @@ var fill = {
       else if(notonly)​
         e.set("Status", "Not")​;
       else {
-        if(e.field("Status")!="Done")
-          e.set("Status", "Done");
+        e.set("Status", "Done");
+        if (e.field("VisitType") == "OPD")
+          e.set("DischargeDate", e.field("VisitDate"))​;
       }
     }
     else {
-      if(e.field("Status")!="Plan")
-        e.set("Status", "Plan");
+      e.set("Status", "Plan");
+      e.set("DischargeDate", null)​;
     }
   },
   djbyresult : function(e) {
@@ -1066,6 +1068,7 @@ var fill = {
         links[0].set("Ward",  "");
         links[0].set("Descript", "");
         links[0].set("Status", "Still");
+        links[0].set("LastDischarge", null);
       }
       else { // ever visit
         let lib;
@@ -1076,10 +1079,14 @@ var fill = {
         str = fill.descripttxt.call(lib, o[0].e);
         links[0].set("Descript", str);
         links[0].set("WardStamp", o[0].e.field("VisitDate")​);
-        if (o[0].e.field("VisitType")=="Admit")
+        if (o[0].e.field("VisitType")=="Admit") {
           links[0].set("Ward", o[0].e.field("Ward"));
-        else
+          links[0].set("LastDischarge", o[0].e.field("DischargeDate"));
+        }
+        else {
           links[0].set("Ward", "OPD");
+          links[0].set("LastDischarge", o[0].e.field("VisitDate"));
+        }
         
         let dead = o[0].e.field(lib.result).match(/dead|death/ig);
         dead = dead?dead.length​:0;
@@ -1097,6 +1104,29 @@ var fill = {
       }
     }​​​​
   }, 
+  ptnextstatus : function (e) {
+    let links = e.field("Patient")​;
+    if (links.length>0) {
+      let ptent = pt.findById(links[0].id);
+        
+      let o = pto.findNext(true, ptent, today, e, this);
+      let str = "" ;
+      if (o.length==0) { // never Visit
+        links[0].set("NextVisit",null);
+        links[0].set("NextDescript", "");
+      }
+      else { // ever visit
+        let lib;
+        if(o[0].lib=="UroBase") lib = uro;
+        else if(o[0].lib=="Backup") lib = buo;
+        else if(o[0].lib=="Consult") lib = cso;
+          
+        str = fill.descripttxt.call(lib, o[0].e);
+        links[0].set("NextDescript", str);
+        links[0].set("NextVisit", o[0].e.field("VisitDate")​);
+      }
+    }​​​​
+  },
   color : function (e)​ {
     if(this.lib!="Consult") {
       if(e.field("Status")=="Not") {
@@ -1327,6 +1357,7 @@ var pto = {
         eid = 0;
       }
       let alllinks = [{"l":orlinks,"o":uro},{"l":bulinks,"o":buo},{"l":cslinks,"o":cso}];
+      let lastvsd = 0;
       alllinks.forEach(a=>{
         if (a.l.length>0) {
           for (let i=0; i<a.l.length; i++) {
@@ -1334,6 +1365,10 @@ var pto = {
             let notdone = a.l[i].field(a.o.result).match(a.o.notdonereg);
             o["nd"] = notdone==null?0:notdone.length;
             if ((allvisit || a.l[i].field("VisitType")=="Admit") && !o.nd && my.gdate(​a.l[i].field("VisitDate"))​ <= my.gdate(​date)​) {
+              // find max VisitDate
+              if (lastvsd<my.gdate(​a.l[i].field("VisitDate"))) {
+                lastvsd = my.gdate(​a.l[i].field("VisitDate"));
+              }
               if (a.l[i].id != eid) { // save to array if not this entry
                 o["vsd"] = a.l[i].field("VisitDate");
                 o["opd"] = a.l[i].field(a.o.opdate);
@@ -1352,12 +1387,66 @@ var pto = {
           }
         }​
       });
-      // find max VisitDate
-      let vsdlist = all.map(o=>{return o.vsd});
-      let lastvsd = Math.max.apply(null, vsdlist);
       // filter by max visitDate
       all = all.filter(o=>my.gdate(o.vsd) == lastvsd);
-      // sort by opdate
+      // sort by opdate desc
+      all = all.sort((a,b)=>{
+        return my.gdate(b.opd)-my.gdate(a.opd);
+      });
+    }
+    return all;
+  },
+  findNext : function(allvisit, ptent, date, e, olib) {
+    let eid ;
+    let all = [];
+    if (ptent) {
+      let orlinks = ptent.linksFrom("UroBase", "Patient") ;
+      let bulinks = ptent.linksFrom("Backup", "Patient") ;
+      let cslinks = ptent.linksFrom("Consult", "Patient") ;
+      // if withme==true , there is this entry and this entry is not exist, include it
+      if (e) {
+        eid = e.id;
+        if (olib.lib == "UroBase") {
+          if (!orlinks.some(o=>o.id==e.id))
+            orlinks.push(e);
+        }
+        else if (olib.lib == "Backup") {
+          if (!bulinks.some(o=>o.id==e.id))
+            bulinks.push(e);
+        }
+        else if (olib.lib == "Consult") {
+          if (!cslinks.some(o=>o.id==e.id))
+            cslinks.push(e);
+        }
+      }
+      else {
+        eid = 0;
+      }
+      let alllinks = [{"l":orlinks,"o":uro},{"l":bulinks,"o":buo},{"l":cslinks,"o":cso}];
+      let nextvsd = Infinity;
+      alllinks.forEach(a=>{
+        if (a.l.length>0) {
+          for (let i=0; i<a.l.length; i++) {
+            let o = new Object();
+            let notdone = a.l[i].field(a.o.result).match(a.o.notdonereg);
+            o["nd"] = notdone==null?0:notdone.length;
+            if ((allvisit || a.l[i].field("VisitType")=="Admit") && !o.nd && my.gdate(​a.l[i].field("VisitDate"))​ > my.gdate(​date)​) {
+              // find min VisitDate
+              if (nextvsd>my.gdate(​a.l[i].field("VisitDate"))) {
+                nextvsd = my.gdate(​a.l[i].field("VisitDate"));
+              }
+              o["vsd"] = a.l[i].field("VisitDate");
+              o["opd"] = a.l[i].field(a.o.opdate);
+              o["lib"] = a.o.lib;
+              o["e"] = a.l[i];
+              all.push(o);
+            }
+          }
+        }​
+      });
+      // filter by min visitDate
+      all = all.filter(o=>my.gdate(o.vsd) == nextvsd);
+      // sort by opdate desc
       all = all.sort((a,b)=>{
         return my.gdate(b.opd)-my.gdate(a.opd);
       });
@@ -1973,6 +2062,7 @@ var trig = {
     fill.dr(e, value=="create");
     fill.active.call(this, e);
     fill.ptstatus.call(this, e)​;
+    fill.ptnextstatus.call(this, e)​;
     fill.color.call(this, e);
     mer.effect(e)​;
   }, 
@@ -2020,6 +2110,7 @@ var trig = {
           fill.track.call(this, all[i])​;​
           fill.active.call(this, all[i]);
           fill.ptstatus.call(this, all[i]);
+          fill.ptnextstatus.call(this, all[i])​;
           fill.color.call(this, all[i]);
           all[i].set("Done", true);
         }
