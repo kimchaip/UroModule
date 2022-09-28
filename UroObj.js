@@ -260,18 +260,37 @@ var mer = {
         mer.save(e, mergeobj);
         // other child.VSDate, MergeID is changed
         let o = mer.m[0].e;
-        if (mer.m[0].lib!="Consult")
+        let l = mer.m[0].lib;
+        if (l!="Consult")
           mer.setall("VisitDate", my.dateminus(o.field("Date"), 1));
-        else
+        else {
           mer.setall("VisitDate", my.dateminus(o.field("ConsultDate"), 1));
+          if (o.field("Rx")=="set "+e.field("Op")) {
+            if (mer.m.length>1 && mer.m[1].lib!="Consult" && mer.m[1].field("Op")) {
+              o.set("Rx", "set "+mer.m[1].field("Op"));
+              o.set("Status", "Done");
+            }
+            else if (mer.m.length==1) {
+              o.set("Rx", "");
+              o.set("Status", "Plan");
+            }
+          }
+        }
         
         mer.save(o, mer.m);
         mer.setall("MergeID", o.field("MergeID"));
         if (mer.m.length==1) o.set("Merge", false);
       }
       else {  // inx>0: cancel child
-        if (mer.lib!="Consult")
+        if (this.lib!="Consult") {
           e.set("VisitDate", my.dateminus(e.field("Date"), 1));
+          let o = mer.m[0].e;
+          let l = mer.m[0].lib;
+          if (l=="Consult" && o.field("Rx")=="set "+e.field("Op")) {
+            o.set("Rx", "");
+            o.set("Status", "Plan");
+          }
+        }
         else
           e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1));
         if (my.gdate(e.field("VisitDate"))>ntoday) {
