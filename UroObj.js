@@ -259,9 +259,13 @@ var mer = {
       mergeobj = mer.m.splice(inx, 1);
       if (inx==0) {  // cancel parent
         mer.save(e, mergeobj);
-        // other child.VSDate, MergeID is changed
         let o = mer.m[0].e;
         let l = mer.m[0].lib;
+        if (this.lib=="Consult" && l!="Consult" && e.field("Rx")=="set "+o.field("Op")) {
+          o.set("Rx", "");
+          o.set("Status", "Plan");
+        }
+        // other child.VSDate, MergeID is changed
         if (l!="Consult")
           mer.setall("VisitDate", my.dateminus(o.field("Date"), 1));
         else {
