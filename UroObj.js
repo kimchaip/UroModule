@@ -271,7 +271,7 @@ var mer = {
           mer.setall("VisitDate", my.dateminus(o.field("Date"), 1));
         else {
           mer.setall("VisitDate", my.dateminus(o.field("ConsultDate"), 1));
-          if (o.field("Rx")=="set "+e.field("Op")) {
+          if (this.lib!="Consult" && o.field("Rx")=="set "+e.field("Op")) {
             if (mer.m.length>1 && mer.m[1].lib!="Consult" && mer.m[1].field("Op")) {
               o.set("Rx", "set "+mer.m[1].field("Op"));
               o.set("Status", "Done");
