@@ -227,9 +227,12 @@ var mer = {
     let mergearr = mer.findLast.call(this, e);
     if (mergearr.length>0) {
       let minx = mergearr.findIndex(m=>m.lib == "Consult")
-      if (minx>-1 && !mergearr[minx].e.field("Rx") && this.lib != "Consult" && e.field("Op")) {
-        mergearr[minx].e.set("Rx", "set " + e.field("Op"));
-        mergearr[minx].e.set("Status", "Done");
+      if (minx>-1) {
+        let mas = mergearr[minx].e;
+        if ((!mas.field("Rx") && this.lib != "Consult" && e.field("Op")) || (mergearr.length>1 && mergearr.some(m=>m.lib!="Consult" && mas.field("Rx")=="set "+m.e.field("Op")))) {
+          mas.set("Rx", "set " + e.field("Op"));
+          mas.set("Status", "Done");
+        }
       }
       let mergeobj = mergearr[0];
       mer.load(mergeobj.e);
@@ -267,19 +270,7 @@ var mer = {
       let l = mer.m[0].lib;
       if (inx==0) {  // cancel parent
         // Parent : e=normal, o=new parent
-        if (this.lib=="Consult" && l!="Consult" && e.field("Rx")=="set "+o.field("Op")) {
-          e.set("Rx", "");
-          e.set("Status", "Plan");
-        }
-        // other child.VSDate, MergeID is changed
-        if (l!="Consult")
-          mer.setall("VisitDate", my.dateminus(o.field("Date"), 1));
-        else
-          mer.setall("VisitDate", my.dateminus(o.field("ConsultDate"), 1));
-        mer.save(e, mergeobj);
-        mer.save(o, mer.m);
-        mer.setall("MergeID", o.field("MergeID"));
-        if (mer.m.length==1) o.set("Merge", false);
+        message("This parent entry do not uncheck");
       }
       else {  // inx>0: cancel child
         if (this.lib!="Consult") {
