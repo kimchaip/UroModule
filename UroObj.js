@@ -886,7 +886,7 @@ var fill = {
     }
     else {
       e.set("Status", "Plan");
-      if (e.field("Merge") == false && o.field("Merge") == false)
+      if (e.field("Merge") == false && old.field("Merge") == false)
         e.set("DischargeDate", null)​;
     }
   },
