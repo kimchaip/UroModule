@@ -11,12 +11,16 @@ var my = {
         this.d = new Date(value.getFullYear(), value.getMonth(),value.getDate(), 7) ;
         return this.d;
       }
-      else {
+      else if (isNaN(value)){
         value = new Date(value.getTime());
         this.d = new Date(value.getFullYear(), value.getMonth(),value.getDate(), 7) ;
         return this.d;
       }
-      value = new Date(value);
+      else {
+        value = new Date(value);
+        this.d = new Date(value.getFullYear(), value.getMonth(),value.getDate(), 7) ;
+        return this.d;
+      }
     }
     else {
       this.d = null;
