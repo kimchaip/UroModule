@@ -246,7 +246,7 @@ var mer = {
       mer.setall("LOS", mergeobj.e.field("LOS"));
       mer.setall("Active", mergeobj.e.field("Active"));
       
-      if ((mer.m.length>0 && mer.m[0].lib=="Consult") {
+      if (mer.m.length>0 && mer.m[0].lib=="Consult") {
         let mas = mer.m[0].e;
         if (!mas.field("Rx") && this.lib != "Consult" && e.field("Op")) {
           mas.set("Rx", "set " + e.field("Op"));
