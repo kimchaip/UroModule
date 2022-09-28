@@ -1366,16 +1366,16 @@ var pto = {
             let notdone = a.l[i].field(a.o.result).match(a.o.notdonereg);
             o["nd"] = notdone==null?0:notdone.length;
             if ((allvisit || a.l[i].field("VisitType")=="Admit") && !o.nd && my.gdate(​a.l[i].field("VisitDate"))​ <= my.gdate(​date)​) {
-              // find max VisitDate
-              if (lastvsd<my.gdate(​a.l[i].field("VisitDate"))) {
-                lastvsd = my.gdate(​a.l[i].field("VisitDate"));
-              }
               if (a.l[i].id != eid) { // save to array if not this entry
                 o["vsd"] = a.l[i].field("VisitDate");
                 o["opd"] = a.l[i].field(a.o.opdate);
                 o["lib"] = a.o.lib;
                 o["e"] = a.l[i];
                 all.push(o);
+                // find max VisitDate
+                if (lastvsd<my.gdate(​a.l[i].field("VisitDate"))) {
+                  lastvsd = my.gdate(​a.l[i].field("VisitDate"));
+                }
               }
               else if (withme) { // save this entry to array if withme == true
                 o["vsd"] = a.l[i].field("VisitDate");
@@ -1383,6 +1383,10 @@ var pto = {
                 o["lib"] = a.o.lib;
                 o["e"] = a.l[i];
                 all.push(o);
+                // find max VisitDate
+                if (lastvsd<my.gdate(​a.l[i].field("VisitDate"))) {
+                  lastvsd = my.gdate(​a.l[i].field("VisitDate"));
+                }
               }
             }
           }
