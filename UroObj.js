@@ -284,7 +284,8 @@ var mer = {
       }
       else {  // inx>0: cancel child
         if (this.lib!="Consult") {
-          e.set("VisitDate", my.dateminus(e.field("Date"), 1));
+          if (my.gdate(e.field("VisitDate"))<my.gdate(my.dateminus(e.field("Date"), 1)))
+            e.set("VisitDate", my.dateminus(e.field("Date"), 1));
           let o = mer.m[0].e;
           let l = mer.m[0].lib;
           if (l=="Consult" && o.field("Rx")=="set "+e.field("Op")) {
@@ -885,7 +886,7 @@ var fill = {
     }
     else {
       e.set("Status", "Plan");
-      if (e.field("Merge") == false)
+      if (e.field("Merge") == false && o.field("Merge") == false)
         e.set("DischargeDate", null)​;
     }
   },
