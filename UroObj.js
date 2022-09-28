@@ -261,7 +261,6 @@ var mer = {
       let l = mer.m[0].lib;
       if (inx==0) {  // cancel parent
         // Parent : e=normal, o=new parent
-        mer.save(e, mergeobj);
         if (this.lib=="Consult" && l!="Consult" && e.field("Rx")=="set "+o.field("Op")) {
           e.set("Rx", "");
           e.set("Status", "Plan");
@@ -269,20 +268,9 @@ var mer = {
         // other child.VSDate, MergeID is changed
         if (l!="Consult")
           mer.setall("VisitDate", my.dateminus(o.field("Date"), 1));
-        else {
+        else
           mer.setall("VisitDate", my.dateminus(o.field("ConsultDate"), 1));
-          if (this.lib!="Consult" && o.field("Rx")=="set "+e.field("Op")) {
-            if (mer.m.length>1 && mer.m[1].lib!="Consult" && mer.m[1].field("Op")) {
-              o.set("Rx", "set "+mer.m[1].field("Op"));
-              o.set("Status", "Done");
-            }
-            else if (mer.m.length==1) {
-              o.set("Rx", "");
-              o.set("Status", "Plan");
-            }
-          }
-        }
-        
+        mer.save(e, mergeobj);
         mer.save(o, mer.m);
         mer.setall("MergeID", o.field("MergeID"));
         if (mer.m.length==1) o.set("Merge", false);
@@ -294,8 +282,8 @@ var mer = {
             e.set("VisitDate", my.dateminus(e.field("Date"), 1));
           // Parent+other child : e=normal, o=old parent
           if (l=="Consult" && o.field("Rx")=="set "+e.field("Op")) {
-            if (mer.m.length>1 && mer.m[1].lib!="Consult" && mer.m[1].field("Op")) {
-              o.set("Rx", "set "+mer.m[1].field("Op"));
+            if (mer.m.length>1 && mer.m[1].lib!="Consult" && mer.m[1].e.field("Op")) {
+              o.set("Rx", "set "+mer.m[1].e.field("Op"));
               o.set("Status", "Done");
             }
             else if (mer.m.length==1) {
@@ -316,7 +304,6 @@ var mer = {
           e.field("LOS", null);
         }
         mer.save(e, mergeobj);
-        // other mergeobj.MergeID is changed
         mer.save(o, mer.m);
         mer.setall("MergeID", o.field("MergeID"));
         if (mer.m.length==1) o.set("Merge", false);
