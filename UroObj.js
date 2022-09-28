@@ -1388,15 +1388,15 @@ var pto = {
           }
         }​
       });
-      message(date+";"+my.date(lastvsd)+";"+JSON.stringify(all));
+      message(date+";"+new Date(lastvsd)+";"+JSON.stringify(all));
       // filter by max visitDate
       all = all.filter(o=>my.gdate(o.vsd) == lastvsd);
+      message(JSON.stringify(all));
       // sort by opdate desc
       all = all.sort((a,b)=>{
         return my.gdate(b.opd)-my.gdate(a.opd);
       });
     }
-    message(JSON.stringify(all));
     return all;
   },
   findNext : function(allvisit, ptent, date, e, olib) {
