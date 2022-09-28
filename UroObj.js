@@ -213,6 +213,7 @@ var mer = {
     if (e.field("Patient").length>0) {
       let ptent = pt.findById(e.field("Patient")[0].id);
       let date = e.field("VisitDate");
+      message(date + ";" + this.lib);
       return pto.findLast(false, false, ptent, date, e, this);
     }
     return [];
