@@ -271,6 +271,7 @@ var mer = {
       if (inx==0) {  // cancel parent
         // Parent : e=normal, o=new parent
         message("This parent entry do not uncheck");
+        e.set("Merge", true);
       }
       else {  // inx>0: cancel child
         if (this.lib!="Consult") {
