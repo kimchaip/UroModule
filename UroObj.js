@@ -220,6 +220,11 @@ var mer = {
   run : function(e) {
     let mergearr = mer.findLast.call(this, e);
     if (mergearr.length>0) {
+      let minx = mergearr.findIndex(m=>m.lib == "Consult")
+      if (minx>-1 && !mergearr[minx].e.field("Rx") && this.lib != "Consult" && e.field("Op")) {
+        mergearr[minx].e.set("Rx", "set " + e.field("Op"));
+        mergearr[minx].e.set("Status", "Done");
+      }
       let mergeobj = mergearr[0];
       mer.load(mergeobj.e);
       mer.append(this.lib, e);
