@@ -860,7 +860,8 @@ var fill = {
     }
     else {
       e.set("Status", "Plan");
-      e.set("DischargeDate", null)​;
+      if (e.field("Merge") == false)
+        e.set("DischargeDate", null)​;
     }
   },
   djbyresult : function(e) {
