@@ -1392,10 +1392,8 @@ var pto = {
           }
         }​
       });
-      message(withme+";"+my.gdate(date)+";"+lastvsd+"\n"+JSON.stringify(all));
       // filter by max visitDate
       all = all.filter(o=>my.gdate(o.vsd) == lastvsd);
-      message(JSON.stringify(all));
       // sort by opdate desc
       all = all.sort((a,b)=>{
         return my.gdate(b.opd)-my.gdate(a.opd);
