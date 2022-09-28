@@ -1605,8 +1605,8 @@ var buo = {
   opdate : "Date",
   op : "Op",
   result : "OpResult",
-  notonlyreg : /งดเพราะ/,
-  notdonereg : /ไม่ทำเพราะ/,
+  notonlyreg : /งด/,
+  notdonereg : /ไม่ทำ/,
   notdone : null
 }
 var cso = {
@@ -1614,8 +1614,8 @@ var cso = {
   opdate : "ConsultDate",
   op : "Rx",
   result : "Rx",
-  notonlyreg : /ไม่ดูเพราะ/,
-  notdonereg : /ไม่มาเพราะ/,
+  notonlyreg : /ไม่ดู/,
+  notdonereg : /ไม่มา/,
   notdone : null
 }​;
 var dxo = {
