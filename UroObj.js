@@ -1395,6 +1395,7 @@ var pto = {
         return my.gdate(b.opd)-my.gdate(a.opd);
       });
     }
+    message(JSON.stringify(all));
     return all;
   },
   findNext : function(allvisit, ptent, date, e, olib) {
