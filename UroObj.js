@@ -237,7 +237,8 @@ var mer = {
       mer.setall("InvResult", mergeobj.e.field("InvResult"));
       mer.setall("VisitType", mergeobj.e.field("VisitType"))
       mer.setall("Ward", mergeobj.e.field("Ward"));
-      mer.setall("DischargeDate", mergeobj.e.field("DischargeDate"));
+      if (mergeobj.e.field("DischargeDate"))
+        mer.setall("DischargeDate", mergeobj.e.field("DischargeDate"));
       mer.setall("Track", mergeobj.e.field("Track"));
       mer.setall("Summary", mergeobj.e.field("Summary"));
       mer.setall("Underlying", mergeobj.e.field("Underlying"));
