@@ -172,13 +172,14 @@ var mer = {
       else
         q2 = my.gdate(b.e.field("ConsultDate"));
       
-      if (q1==q2)
+      if (q1==q2) {
         if (a.lib==b.lib)
           return my.gdate(a.e.creationTime)-my.gdate(b.e.creationTime);
         else if (a.lib=="Consult")
           return -1;
         else if (a.lib!="Consult")
           return 1;
+      }
       else
         return q1-q2;
     });
