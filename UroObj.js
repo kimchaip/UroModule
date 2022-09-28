@@ -226,17 +226,6 @@ var mer = {
   run : function(e) {
     let mergearr = mer.findLast.call(this, e);
     if (mergearr.length>0) {
-      if (mergearr[0].lib=="Consult") {
-        let mas = mergearr[0].e;
-        if (!mas.field("Rx") && this.lib != "Consult" && e.field("Op")) {
-          mas.set("Rx", "set " + e.field("Op"));
-          mas.set("Status", "Done");
-        }
-        else if (mergearr.length>1 && mergearr[1].lib!="Consult" && mergearr[1].e.field("Op") && mergearr.some(m=>m.lib!="Consult" && mas.field("Rx")=="set "+m.e.field("Op"))) {
-          mas.set("Rx", "set " + mergearr[1].e.field("Op"));
-          mas.set("Status", "Done");
-        }
-      }
       let mergeobj = mergearr[0];
       mer.load(mergeobj.e);
       mer.append(this.lib, e);
@@ -256,6 +245,18 @@ var mer = {
       mer.setall("Underlying", mergeobj.e.field("Underlying"));
       mer.setall("LOS", mergeobj.e.field("LOS"));
       mer.setall("Active", mergeobj.e.field("Active"));
+      
+      if ((mer.m.length>0 && mer.m[0].lib=="Consult") {
+        let mas = mer.m[0].e;
+        if (!mas.field("Rx") && this.lib != "Consult" && e.field("Op")) {
+          mas.set("Rx", "set " + e.field("Op"));
+          mas.set("Status", "Done");
+        }
+        else if (mer.m.length>1 && mer.m[1].lib!="Consult" && mer.m[1].e.field("Op") && mer.m.some(m=>m.lib!="Consult" && mas.field("Rx")=="set "+m.e.field("Op"))) {
+          mas.set("Rx", "set " + mer.m[1].e.field("Op"));
+          mas.set("Status", "Done");
+        }
+      }
     }
     else {
       message("Can't find Last Admit!");
