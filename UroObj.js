@@ -1388,7 +1388,7 @@ var pto = {
           }
         }​
       });
-      message(new Date(lastvsd)+";"+JSON.stringify(all));
+      message(date+";"+my.date(lastvsd)+";"+JSON.stringify(all));
       // filter by max visitDate
       all = all.filter(o=>my.gdate(o.vsd) == lastvsd);
       // sort by opdate desc
