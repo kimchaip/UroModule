@@ -226,11 +226,14 @@ var mer = {
   run : function(e) {
     let mergearr = mer.findLast.call(this, e);
     if (mergearr.length>0) {
-      let minx = mergearr.findIndex(m=>m.lib == "Consult")
-      if (minx>-1) {
-        let mas = mergearr[minx].e;
-        if ((!mas.field("Rx") && this.lib != "Consult" && e.field("Op")) || (mergearr.length>1 && mergearr.some(m=>m.lib!="Consult" && mas.field("Rx")=="set "+m.e.field("Op")))) {
+      if (mergearr[0].lib=="Consult") {
+        let mas = mergearr[0].e;
+        if (!mas.field("Rx") && this.lib != "Consult" && e.field("Op")) {
           mas.set("Rx", "set " + e.field("Op"));
+          mas.set("Status", "Done");
+        }
+        else if (mergearr.length>1 && mergearr[1].lib!="Consult" && mergearr[1].e.field("Op") && mergearr.some(m=>m.lib!="Consult" && mas.field("Rx")=="set "+m.e.field("Op"))) {
+          mas.set("Rx", "set " + mergearr[1].e.field("Op"));
           mas.set("Status", "Done");
         }
       }
