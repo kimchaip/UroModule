@@ -1406,7 +1406,7 @@ var pto = {
               }
               else if (withme && e) { // save this entry to array if withme == true
                 o["vsd"] = e.field("VisitDate");
-                o["opd"] = e.field(a.o.opdate);
+                o["opd"] = e.field(olib.opdate);
                 o["lib"] = olib.lib;
                 o["e"] = e;
                 all.push(o);
