@@ -1404,15 +1404,15 @@ var pto = {
                   lastvsd = my.gdate(​a.l[i].field("VisitDate"));
                 }
               }
-              else if (withme) { // save this entry to array if withme == true
-                o["vsd"] = a.l[i].field("VisitDate");
-                o["opd"] = a.l[i].field(a.o.opdate);
-                o["lib"] = a.o.lib;
-                o["e"] = a.l[i];
+              else if (withme && e) { // save this entry to array if withme == true
+                o["vsd"] = e.field("VisitDate");
+                o["opd"] = e.field(a.o.opdate);
+                o["lib"] = olib.lib;
+                o["e"] = e;
                 all.push(o);
                 // find max VisitDate
-                if (lastvsd<my.gdate(​a.l[i].field("VisitDate"))) {
-                  lastvsd = my.gdate(​a.l[i].field("VisitDate"));
+                if (lastvsd<my.gdate(​e.field("VisitDate"))) {
+                  lastvsd = my.gdate(​e.field("VisitDate"));
                 }
               }
             }
