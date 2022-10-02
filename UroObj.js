@@ -1491,8 +1491,8 @@ var uro = {
   opdate : "Date",
   op : "Op",
   result : "OpResult",
-  notonlyreg : /งดเพราะ/,
-  notdonereg : /ไม่ทำเพราะ/,
+  notonlyreg : /งด/,
+  notdonereg : /ไม่ทำ/,
   notdone : null,
   setopextra : function (e) {
     let hd = libByName("Holidays")​;
