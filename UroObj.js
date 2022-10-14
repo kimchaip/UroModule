@@ -982,8 +982,9 @@ var fill = {
     fill.djbyresult.call(this, e);
   },
   track : function (e) {
-    if (e.field("Summary") == true) {
+    if (!this.notdone && e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null && e.field("Summary") == true) {
       e.set("Track", 3);
+      e.set("DischargeDate", today);
     }​​
     else if (!this.notdone && e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate")​ == null || my.gdate(e.field("DischargeDate"))​ > ntoday) ) {//Admit
       if (e.field("Track") == 0) {
@@ -992,34 +993,19 @@ var fill = {
       else if (e.field("Track") == 3) {​
         e.set("Track", 2) ;
       }​
+      e.set("DischargeDate", null);
     }​
     else if (!this.notdone &​& e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate"))​ <= ntoday​​ ) { // D/C
-      if (e.field("Track") == 3) {​
-        e.set("Track", 2) ;
-      }​
-      else if (e.field("Track") == 0) {​
-        e.set("Track", 1) ;
-      }​
+      e.set("Track", 3) ;
+      e.set("Summary", true);
     }​
-    else if (my.gdate(e.field("VisitDate")​) > ntoday) {​
+    else if (e.field("VisitType")​=="Admit" && my.gdate(e.field("VisitDate")​) > ntoday) {​ // future
       e.set("Track", 0) ;
+      e.set("DischargeDate", null);
     }​
-    else if (this.notdone)​ {
-      if (my.gdate(e.field("VisitDate")​) > ntoday) {​ // 
-        if (e.field("Track") != 0) {​
-          e.set("Track", 0) ;
-        }
-      }​
-      else {
-        if (e.field("DischargeDate")​ == null) {
-          if (e.field("Track") != 0)
-            e.set("Track", 0) ;
-        }​
-        else {
-          if (e.field("Track") == 0)
-            e.set("Track", 1) ;
-        }​
-      }​
+    else if (this.notdone)​ { // notdone
+      e.set("Track", 0) ;
+      e.set("DischargeDate", null);
     }​
   }, 
   underlying : function (e) {
