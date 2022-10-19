@@ -2148,7 +2148,11 @@ var trig = {
     mer.merge.call(this, e)​;
     if (this.lib!="Consult")
       que.run.call(this, e)​;
+    fill.los(e)​;
+    fill.active.call(this, e);
     fill.ptstatus.call(this, e)​;
+    fill.ptnextstatus.call(this, e)​;
+    fill.color.call(this, e);
     mer.effect(e)​;
   }, 
   AfterUpdatingField : function (e) {
