@@ -1477,7 +1477,7 @@ var uro = {
   opdate : "Date",
   op : "Op",
   result : "OpResult",
-  notonlyreg : /งด/,
+  notonlyreg : /งด[^\u0E30-\u0E39]/,
   notdonereg : /ไม่ทำ/,
   notdone : null,
   setopextra : function (e) {
@@ -1623,7 +1623,7 @@ var buo = {
   opdate : "Date",
   op : "Op",
   result : "OpResult",
-  notonlyreg : /งด/,
+  notonlyreg : /งด[^\u0E30-\u0E39]/,
   notdonereg : /ไม่ทำ/,
   notdone : null
 }
