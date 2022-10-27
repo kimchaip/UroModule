@@ -1009,16 +1009,29 @@ var fill = {
     }​
   }, 
   underlying : function (e) {
-    let lib = masterLib()​;
-    let ent = masterEntry();
-    if (lib.title=="UroBase"||lib.title=="Consult"||lib.title=="Backup") {
-      if (e.field("Underlying").length>0) {
-        ent.set("Underlying", e.field("Underlying").join());
+    if(this.lib=="Patient") { // e in Patient
+      let lib = masterLib()​;
+      let ent = masterEntry();
+      if (lib.title=="UroBase"||lib.title=="Consult"||lib.title=="Backup") {
+        if (e.field("Underlying").length>0) {
+          ent.set("Underlying", e.field("Underlying").join());
+        }​
+        else {
+          ent.set("Underlying", "" );
+        }​
       }​
-      else {
-        ent.set("Underlying", "" );
-      }​
-    }​
+    }
+    else { // e in UroBase, Consult, Backup
+      let ptent = e.field("Patient");
+      if (ptent.length>0) {
+        if (ptent[0].field("Underlying").length>0) {
+          e.set("Underlying", ptent[0].field("Underlying").join());
+        }​
+        else {
+          e.set("Underlying", "" );
+        }​
+      }
+    }
   }, 
   los : function (e) {
     if (e.field("VisitDate") != null &​& e.field("DischargeDate") != null) {
@@ -2033,7 +2046,7 @@ var trig = {
     trig.BeforeOpenLib.call(cso, csa);
   }, 
   PatientBeforeLink : function (e)​ {
-    fill.underlying(e)​;
+    fill.underlying.call(pto, e)​;
   }, 
   PatientAfterLink : function (e)​ {
     
@@ -2052,6 +2065,7 @@ var trig = {
     valid.dxop.call(this, e); //fill dx,op complete 
     fill.setnewdate.call(this, e)​;​
     valid.uniqueVisit.call(this, e, value=="create")​;
+    fill.underlying.call(this, e)​;
     fill.resulteffect.call(this, e);
     fill.future.call(this, e)​;
     if (this.lib!="Consult") {
