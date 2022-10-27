@@ -1009,17 +1009,23 @@ var fill = {
     }​
   }, 
   underlying : function (e) {
-    if(this.lib=="Patient") { // e in Patient
+    if (this.lib=="Patient") { // e in Patient
       let lib = masterLib()​;
       let ent = masterEntry();
-      if (lib.title=="UroBase"||lib.title=="Consult"||lib.title=="Backup") {
-        if (e.field("Underlying").length>0) {
-          ent.set("Underlying", e.field("Underlying").join());
+      
+      if(lib) {
+        if (lib.title=="UroBase"||lib.title=="Consult"||lib.title=="Backup") {
+          if (e.field("Underlying").length>0) {
+            ent.set("Underlying", e.field("Underlying").join());
+          }​
+          else {
+            ent.set("Underlying", "" );
+          }​
         }​
-        else {
-          ent.set("Underlying", "" );
-        }​
-      }​
+      }
+      else {
+        message("ready");
+      }
     }
     else { // e in UroBase, Consult, Backup
       let ptent = e.field("Patient");
@@ -1994,6 +2000,7 @@ var trig = {
     pto.rearrangename(e);
     old.load(e);
     valid.uniqueHN(e, value=="create")​;
+    fill.underlying.call(pto, e)​;
     pto.age(e)​;
     pto.dj(e)​;
 
