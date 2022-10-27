@@ -1906,7 +1906,7 @@ var opu = {
             let note = oss[s].field("Note").split(",");
             let underly = link.field("Underlying").join().toLowerCase();
             note = note.map(v=>v.trim());
-            note = note.filter(v=>underly.indexOf(v.trim().toLowerCase())==-1);
+            note = note.filter(v=>underly.indexOf(v.toLowerCase())==-1);
             let udnote = link.field("Underlying").join().split(",");
             udnote = udnote.concat(note);
             udnote = udnote.filter(v=>v);
@@ -1948,18 +1948,18 @@ var opu = {
     }
   },
   ptTrigOpuro : function (e) {
-    if(old.field("PtName") != e.field("PtName") || old.field("Age") != e.field("Age") || old.field("YY") != e.field("YY") || old.field("MM") != e.field("MM")  || old.field("DD") != e.field("DD") || my.gdate(my.date(old.field("Birthday"))) != my.gdate(my.date(e.field("Birthday"))) || old.field("HN") != e.field("HN") ){
+    if(old.field("PtName") != e.field("PtName") || old.field("Age") != e.field("Age") || old.field("YY") != e.field("YY") || old.field("MM") != e.field("MM")  || old.field("DD") != e.field("DD") || my.gdate(my.date(old.field("Birthday"))) != my.gdate(my.date(e.field("Birthday"))) || old.field("HN") != e.field("HN") || old.field("Underlying").join() != e.field("Underlying").join() ){
       let orlinks = e.linksFrom("UroBase", "Patient");
       let bulinks = e.linksFrom("Backup", "Patient");
       let found = [];
       if(orlinks.length+bulinks.length>0) {
         for (let i=0; i<orlinks.length; i++) {
-          if (orlinks[i].field("OpExtra")==true) {
+          if (orlinks[i].field("OpExtra")==true && orlinks[i].field("Status")!="Not") {
             found.push(orlinks[i]);
           }
         }
         for (let i=0; i<bulinks.length; i++) {
-          if (bulinks[i].field("OpExtra")==true) {
+          if (bulinks[i].field("OpExtra")==true && bulinks[i].field("Status")!="Not") {
             found.push(bulinks[i]);
           }
         }
@@ -1973,6 +1973,15 @@ var opu = {
             oss[i].set("PtName", e.field("PtName"));
             oss[i].set("Age", Number(e.field("Age").replace(/\s*ปี/,"")));
             oss[i].set("HN", e.field("HN"));
+            
+            let note = oss[i].field("Note").split(",");
+            let underly = old.field("Underlying").join().toLowerCase();
+            note = note.map(v=>v.trim());
+            note = note.filter(v=>underly.indexOf(v.toLowerCase())==-1);
+            let udnote = e.field("Underlying").join().split(",");
+            udnote = udnote.concat(note);
+            udnote = udnote.filter(v=>v);
+            oss[i].set("Note", udnote.join(", "));
             count++;
           }
         }
