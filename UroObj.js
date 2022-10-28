@@ -514,7 +514,8 @@ var dxop = {
     let found = null;
     if (lbs.length > 0) {
       found = lbs.find(d=>this.title.every((v,i)=>(d.field(v).toLowerCase​()​==e.field(this.link[i]).toLowerCase​()​)));
-      this.title.forEach((v,i)=>e.set(this.link[i], found.field(v)));
+      if (found)
+        this.title.forEach((v,i)=>e.set(this.link[i], found.field(v)));
     }​
     return found;
   },
