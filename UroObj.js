@@ -513,9 +513,7 @@ var dxop = {
     let lbs = lb.find(e.field(this.link[0])​);
     let found = null;
     if (lbs.length > 0) {
-      found = lbs.find(d=>this.title.every((v,i)=>(d.field(v).toLowerCase​()​==e.field(this.link[i]).toLowerCase​()​)));
-      if (found)
-        this.title.forEach((v,i)=>e.set(this.link[i], found.field(v)));
+      found = lbs.find(d=>this.title.every((v,i)=>(d.field(v)​==e.field(this.link[i]))));
     }​
     return found;
   },
@@ -1671,38 +1669,35 @@ var dxo = {
     e.set("Op", e.field("Op").trim()​)​;
   },
   effect : function(e){
-    //if (e.field("Dx") && e.field("Dx")!=old.field("Dx") || e.field("Op") && e.field("Op")!=old.field("Op")) {
-      let orlinks = e.linksFrom("UroBase", this.lib);
-      let bulinks = e.linksFrom("Backup", this.lib);
-      let all = [];
-      for(let i=0; i<orlinks.length; i++) {
-        all.push(orlinks[i]);
-      }
-      for(let i=0; i<bulinks.length; i++) {
-        all.push(bulinks[i]);
-      }
-      if (all.length>0) {
-        for(let i=0; i<all.length; i++) {
-          let u = all[i];
-          if (u.field("Dx") != e.field("Dx")​ || u.field("Op") != e.field("Op"))​ { // update related child.dxop
-            u.set("Dx", e.field("Dx"))​;
-            u.set("Op", e.field("Op"))​;
-            message("dx found not the same");
-          }
-        }​
+    let orlinks = e.linksFrom("UroBase", this.lib);
+    let bulinks = e.linksFrom("Backup", this.lib);
+    let all = [];
+    for(let i=0; i<orlinks.length; i++) {
+      all.push(orlinks[i]);
+    }
+    for(let i=0; i<bulinks.length; i++) {
+      all.push(bulinks[i]);
+    }
+    if (all.length>0) {
+      for(let i=0; i<all.length; i++) {
+        let u = all[i];
+        if (u.field("Dx") != e.field("Dx")​ || u.field("Op") != e.field("Op"))​ { // update related child.dxop
+          u.set("Dx", e.field("Dx"))​;
+          u.set("Op", e.field("Op"))​;
+        }
       }​
-      e.set("Output", JSON.stringify(all));
-      if(all.length>0) {
-        e.set("Count", all.length);
-      }
-      else {
-        e.set("Count", 0);
-        e.trash()​;
-      }
-    //}
+    }​
+    e.set("Output", JSON.stringify(all));
+    if(all.length>0) {
+      e.set("Count", all.length);
+    }
+    else {
+      e.set("Count", 0);
+      e.trash()​;
+    }
   },
   effectother : function(e){
-    if (e.field("Dx") && e.field("Dx")!=old.field("Dx") || e.field("Op") && e.field("Op")!=old.field("Op")) {
+    if (e.field("Dx")!=old.field("Dx") || e.field("Op") && e.field("Op")!=old.field("Op")) {
       let orlinks = e.linksFrom("UroBase", this.lib);
       let bulinks = e.linksFrom("Backup", this.lib);
       let all = [];
@@ -1750,37 +1745,36 @@ var opo = {
     }​
   },
   effect : function(e){
-    if (e.field("OpFill") && e.field("OpFill")!=old.field("OpFill")) {
-      let orlinks = e.linksFrom("UroBase", this.lib);
-      let bulinks = e.linksFrom("Backup", this.lib);
-      let all = [];
-      for(let i=0; i<orlinks.length; i++) {
-        all.push(orlinks[i]);
-      }
-      for(let i=0; i<bulinks.length; i++) {
-        all.push(bulinks[i]);
-      }
-      if (all.length>0) {
-        for(let i=0; i<all.length; i++) {
-          let u = all[i];
-          if (u.field("Op") != e.field("OpFill")​)​ { // update related child.dxop
-            u.set("Op", e.field("OpFill"))​;
-          }
-        }​
+    let orlinks = e.linksFrom("UroBase", this.lib);
+    let bulinks = e.linksFrom("Backup", this.lib);
+    let all = [];
+    for(let i=0; i<orlinks.length; i++) {
+      all.push(orlinks[i]);
+    }
+    for(let i=0; i<bulinks.length; i++) {
+      all.push(bulinks[i]);
+    }
+    if (all.length>0) {
+      for(let i=0; i<all.length; i++) {
+        let u = all[i];
+        if (u.field("Op") != e.field("OpFill")​)​ { // update related child.dxop
+          u.set("Op", e.field("OpFill"))​;
+          dxop.run.call(dxo, e)​;
+        }
       }​
-      
-      if(all.length>0) {
-        e.set("Count", all.length);
-      }
-      else if (value=="update") {
-        e.set("Count", 0);
-        e.set("Optime", null);
-        e.trash()​;
-      }
+    }​
+    
+    if(all.length>0) {
+      e.set("Count", all.length);
+    }
+    else if (value=="update") {
+      e.set("Count", 0);
+      e.set("Optime", null);
+      e.trash()​;
     }
   },
   effectother : function(e){
-    if (e.field("OpFill") && e.field("OpFill")!=old.field("OpFill")) {
+    if (e.field("OpFill")!=old.field("OpFill")) {
       let orlinks = e.linksFrom("UroBase", "OperationList");
       let bulinks = e.linksFrom("Backup", "OperationList");
       let all = [];
