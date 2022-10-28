@@ -1689,14 +1689,14 @@ var dxo = {
           }
         }​
       }​
-    }​​
     
-    if(all.length>0) {
-      e.set("Count", all.length);
-    }
-    else {
-      e.set("Count", 0);
-      e.trash()​;
+      if(all.length>0) {
+        e.set("Count", all.length);
+      }
+      else {
+        e.set("Count", 0);
+        e.trash()​;
+      }
     }
   },
   effectother : function(e){
