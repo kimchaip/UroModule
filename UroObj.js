@@ -1691,7 +1691,7 @@ var dxo = {
           }
         }​
       }​
-    
+      e.set("Output", JSON.stringify(all));
       if(all.length>0) {
         e.set("Count", all.length);
       }
