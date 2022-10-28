@@ -1759,7 +1759,7 @@ var opo = {
         let u = all[i];
         if (u.field("Op") != e.field("OpFill")​)​ { // update related child.dxop
           u.set("Op", e.field("OpFill"))​;
-          dxop.run.call(dxo, e)​;
+          dxop.run.call(dxo, u)​;
         }
       }​
     }​
