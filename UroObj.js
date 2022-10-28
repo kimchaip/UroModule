@@ -1676,8 +1676,8 @@ var dxo = {
           u.set("Dx", e.field("Dx"))​;
           u.set("Op", e.field("Op"))​;
           old.load(u)​;
-          dxop.run.call(dxo, u)​;
           dxop.run.call(opo, u)​;
+          dxop.run.call(dxo, u)​;
           rpo.updatenew(u);
           if (l.lib=="UroBase")
             opu.updateOp(u)​;
@@ -1733,8 +1733,8 @@ var opo = {
         if (e.field("OpFill") && all[i].field("Op") != e.field("OpFill")​)​ { // update dxop, rpt, opu
           all[i].set("Op", e.field("OpFill"))​;
           old.load(u)​;
-          dxop.run.call(dxo, u)​;
           dxop.run.call(opo, u)​;
+          dxop.run.call(dxo, u)​;
           rpo.updatenew(u);
           if (l.lib=="UroBase")
             opu.updateOp(u)​;
@@ -2116,8 +2116,8 @@ var trig = {
       uro.setDJstent(e)​;
       uro.setx15(e)​;
       e.set("OpLength", fill.oplength(e));
-      dxop.run.call(dxo, e)​;
       dxop.run.call(opo, e)​;
+      dxop.run.call(dxo, e)​;
       que.run.call(this, e)​;
       fill.opdatecal(e);
     }
