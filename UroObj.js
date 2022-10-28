@@ -2072,8 +2072,8 @@ var opu = {
 };
 
 var trig = {
-  PatientOpenEdit : function(e) {
-    if (e) old.save.call(pto, e);
+  PatientOpenEdit : function(e, value) {
+    if (value=="update") old.save.call(pto, e);
   },
   PatientBeforeEdit : function (e, value)​ {
     pto.rearrangename(e);
@@ -2143,8 +2143,8 @@ var trig = {
   PatientAfterUnlink : function (e)​ {
     
   }, 
-  OpenEdit : function (e)​ {
-    if (e) old.save.call(this, e)​;
+  OpenEdit : function(e, value) {
+    if (value=="update") old.save.call(this, e)​;
   }, 
   BeforeEdit : function (e, value)​ {
     old.load(e)​;
@@ -2274,8 +2274,8 @@ var trig = {
     }
     fill.deletept(e)​;
   }, 
-  DxOpenEdit : function(e) {
-    if (e) old.save.call(dxo, e);
+  DxOpenEdit : function(e, value) {
+    if (value=="update") old.save.call(dxo, e);
   },
   DxBeforeEdit : function (e, value)​ {
     old.load(e);
@@ -2287,8 +2287,8 @@ var trig = {
     dxo.effectother(e);
     old.save.call(dxo, e)​;
   },
-  OpListOpenEdit : function(e) {
-    if (e) old.save.call(opo, e);
+  OpListOpenEdit : function(e, value) {
+    if (value=="update") old.save.call(opo, e);
   },
   OpListBeforeEdit : function (e, value) {
     old.load(e);
