@@ -1672,8 +1672,8 @@ var dxo = {
   },
   effect : function(e){
     //if (e.field("Dx") && e.field("Dx")!=old.field("Dx") || e.field("Op") && e.field("Op")!=old.field("Op")) {
-      let orlinks = e.linksFrom("UroBase", "OperationList");
-      let bulinks = e.linksFrom("Backup", "OperationList");
+      let orlinks = e.linksFrom("UroBase", this.lib);
+      let bulinks = e.linksFrom("Backup", this.lib);
       let all = [];
       for(let i=0; i<orlinks.length; i++) {
         all.push(orlinks[i]);
@@ -1703,8 +1703,8 @@ var dxo = {
   },
   effectother : function(e){
     if (e.field("Dx") && e.field("Dx")!=old.field("Dx") || e.field("Op") && e.field("Op")!=old.field("Op")) {
-      let orlinks = e.linksFrom("UroBase", "OperationList");
-      let bulinks = e.linksFrom("Backup", "OperationList");
+      let orlinks = e.linksFrom("UroBase", this.lib);
+      let bulinks = e.linksFrom("Backup", this.lib);
       let all = [];
       let lib = [];
       for(let i=0; i<orlinks.length; i++) {
@@ -1751,8 +1751,8 @@ var opo = {
   },
   effect : function(e){
     if (e.field("OpFill") && e.field("OpFill")!=old.field("OpFill")) {
-      let orlinks = e.linksFrom("UroBase", "OperationList");
-      let bulinks = e.linksFrom("Backup", "OperationList");
+      let orlinks = e.linksFrom("UroBase", this.lib);
+      let bulinks = e.linksFrom("Backup", this.lib);
       let all = [];
       for(let i=0; i<orlinks.length; i++) {
         all.push(orlinks[i]);
