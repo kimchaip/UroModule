@@ -2292,12 +2292,12 @@ var trig = {
   },
   OpListBeforeEdit : function (e, value) {
     old.load(e);
-    dxo.validate(e);
-    dxo.effect(e);
+    opo.validate(e);
+    opo.effect(e);
   }, 
   OpListAfterEdit : function (e, value) {
     old.load(e);
-    dxo.effectother(e);
+    opo.effectother(e);
     old.save.call(opo, e)​;
   }, 
   OpUroBeforeEdit : function (e) {
