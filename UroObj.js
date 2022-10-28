@@ -500,7 +500,7 @@ var dxop = {
     let lbs = lb.find(e.field(this.link[0])​);
     let found = null;
     if (lbs.length > 0) {
-      found = lbs.find(d=>this.title.every((v,i)=>(d.field(v).toLowerCase​()​==e.field(this.link[i]).toLowerCase​()​))));
+      found = lbs.find(d=>this.title.every((v,i)=>(d.field(v).toLowerCase​()​==e.field(this.link[i]).toLowerCase​()​)));
     }​
     return found;
   },
