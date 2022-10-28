@@ -1659,20 +1659,31 @@ var dxo = {
     let orlinks = e.linksFrom("UroBase", "DxAutoFill") ;
     let bulinks = e.linksFrom("Backup", "DxAutoFill") ;​
     let all = [];
+    let lib = [];
     for(let i=0; i<orlinks.length; i++) {
       all.push(orlinks[i]);
-    }
+      lib.push("UroBase");
     for(let i=0; i<bulinks.length; i++) {
       all.push(bulinks[i]);
+      lib.push("Backup");
     }
     if (all.length>0) {
       for(let i=0; i<all.length; i++) {
-        if ((e.field("Dx") && all[i].field("Dx") != e.field("Dx"))​ || (e.field("Op") && all[i].field("Op") != e.field("Op"))​)​ {
-          all[i].set("Dx", e.field("Dx"))​;
-          all[i].set("Op", e.field("Op"))​;
+        let u = all[i];
+        let l = lib[i]=="UroBase"?uro:buo;
+        if ((e.field("Dx") && u.field("Dx") != e.field("Dx"))​ || (e.field("Op") && u.field("Op") != e.field("Op"))​)​ { // update dxop, rpt, opu
+          u.set("Dx", e.field("Dx"))​;
+          u.set("Op", e.field("Op"))​;
+          old.load(u)​;
+          dxop.run.call(dxo, u)​;
+          dxop.run.call(opo, u)​;
+          rpo.updatenew(u);
+          if (l.lib=="UroBase")
+            opu.updateOp(u)​;
+          old.save.call(l, u)​;
         }​
       }​
-    }​
+    }​​
     
     if(all.length>0) {
       e.set("Count", all.length);
@@ -1707,14 +1718,25 @@ var opo = {
     let all = [];
     for(let i=0; i<orlinks.length; i++) {
       all.push(orlinks[i]);
+      lib.push("UroBase");
     }
     for(let i=0; i<bulinks.length; i++) {
       all.push(bulinks[i]);
+      lib.push("Backup");
     }
     if (all.length>0) {
       for(let i=0; i<all.length; i++) {
-        if (e.field("OpFill") && all[i].field("Op") != e.field("OpFill")​)​ {
+        let u = all[i];
+        let l = lib[i]=="UroBase"?uro:buo;
+        if (e.field("OpFill") && all[i].field("Op") != e.field("OpFill")​)​ { // update dxop, rpt, opu
           all[i].set("Op", e.field("OpFill"))​;
+          old.load(u)​;
+          dxop.run.call(dxo, u)​;
+          dxop.run.call(opo, u)​;
+          rpo.updatenew(u);
+          if (l.lib=="UroBase")
+            opu.updateOp(u)​;
+          old.save.call(l, u)​;
         }
       }​
     }​
@@ -2198,10 +2220,14 @@ var trig = {
   }, 
   DxBeforeEdit : function (e, value)​ {
     dxo.validate(e);
+  },
+  DxAfterEdit : function (e, value)​ {
     dxo.effect(e);
   },
   OpListBeforeEdit : function (e, value) {
     opo.validate(e);
+  }, 
+  OpListAfterEdit : function (e, value) {
     opo.effect(e);
   }, 
   OpUroBeforeEdit : function (e) {
