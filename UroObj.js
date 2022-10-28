@@ -55,7 +55,7 @@ var old = {
         old.d["Descript"] = e.field("Descript");
         old.d["Dr"] = e.field("Dr");
       }
-      else {
+      else if (this.lib=="UroBase" || this.lib=="Backup" || this.lib=="Consult") {
         old.d["Patient"] = e.field("Patient").length>0? e.field("Patient")​[0].title: ""; 
         old.d["PastHx"] = e.field("PastHx");
         old.d["InvResult"] = e.field("InvResult");
@@ -77,6 +77,7 @@ var old = {
         old.d["Summary"] = e.field("Summary");
         old.d["Track"] = e.field("Track");
       }
+
       if(this.lib=="UroBase" || this.lib=="Backup") {
         old.d["Date"] = e.field("Date")​;
         old.d["DxAutoFill"] = e.field("DxAutoFill").length>0? e.field("DxAutoFill")[0].title: "";
@@ -102,7 +103,19 @@ var old = {
         old.d["ConsultDate"] = e.field("ConsultDate");
         old.d["Rx"] = e.field("Rx");
       }
-      
+
+      if (this.lib=="DxAutoFill") {
+        old.d["Dx"] = e.field("Dx");
+        old.d["Op"] = e.field("Op");
+      }
+      else if (this.lib=="OperationList") {
+        old.d["OpFill"] = e.field("OpFill");
+        old.d["OpList"] = e.field("OpList");
+        old.d["OpGroup"] = e.field("OpGroup");
+        old.d["Price"] = e.field("Price");
+        old.d["PriceExtra"] = e.field("PriceExtra");
+      }
+
       e.set("Previous", JSON.stringify(old.d));
     },
     field : function (fieldname) {
@@ -1657,32 +1670,23 @@ var dxo = {
     e.set("Op", e.field("Op").trim()​)​;
   },
   effect : function(e){
-    let orlinks = e.linksFrom("UroBase", "DxAutoFill") ;
-    let bulinks = e.linksFrom("Backup", "DxAutoFill") ;​
-    let all = [];
-    let lib = [];
-    for(let i=0; i<orlinks.length; i++) {
-      all.push(orlinks[i]);
-      lib.push("UroBase");
-    }
-    for(let i=0; i<bulinks.length; i++) {
-      all.push(bulinks[i]);
-      lib.push("Backup");
-    }
-    if (all.length>0) {
-      for(let i=0; i<all.length; i++) {
-        let u = all[i];
-        let l = lib[i]=="UroBase"?uro:buo;
-        if ((e.field("Dx") && u.field("Dx") != e.field("Dx"))​ || (e.field("Op") && u.field("Op") != e.field("Op"))​)​ { // update dxop, rpt, opu
-          u.set("Dx", e.field("Dx"))​;
-          u.set("Op", e.field("Op"))​;
-          old.load(u)​;
-          dxop.run.call(opo, u)​;
-          dxop.run.call(dxo, u)​;
-          rpo.updatenew(u);
-          if (l.lib=="UroBase")
-            opu.updateOp(u)​;
-          old.save.call(l, u)​;
+    if (e.field("Dx") && e.field("Dx")!=old.field("Dx") || e.field("Op") && e.field("Op")!=old.field("Op")) {
+      let orlinks = e.linksFrom("UroBase", "OperationList");
+      let bulinks = e.linksFrom("Backup", "OperationList");
+      let all = [];
+      for(let i=0; i<orlinks.length; i++) {
+        all.push(orlinks[i]);
+      }
+      for(let i=0; i<bulinks.length; i++) {
+        all.push(bulinks[i]);
+      }
+      if (all.length>0) {
+        for(let i=0; i<all.length; i++) {
+          let u = all[i];
+          if (u.field("Dx") != e.field("Dx")​ || u.field("Op") != e.field("Op"))​ { // update related child.dxop
+            u.set("Dx", e.field("Dx"))​;
+            u.set("Op", e.field("Op"))​;
+          }
         }​
       }​
     }​​
@@ -1693,6 +1697,35 @@ var dxo = {
     else {
       e.set("Count", 0);
       e.trash()​;
+    }
+  },
+  effectother : function(e){
+    if (e.field("Dx") && e.field("Dx")!=old.field("Dx") || e.field("Op") && e.field("Op")!=old.field("Op")) {
+      let orlinks = e.linksFrom("UroBase", "OperationList");
+      let bulinks = e.linksFrom("Backup", "OperationList");
+      let all = [];
+      let lib = [];
+      for(let i=0; i<orlinks.length; i++) {
+        all.push(orlinks[i]);
+        lib.push("UroBase");
+      }
+      for(let i=0; i<bulinks.length; i++) {
+        all.push(bulinks[i]);
+        lib.push("Backup");
+      }
+      if (all.length>0) {
+        for(let i=0; i<all.length; i++) {
+          let u = all[i];
+          let l = lib[i]=="UroBase"?uro:buo;
+          if (u.field("Dx")==e.field("Dx") && u.field("Op")==e.field("Op")) {
+            old.load(u)​;
+            rpo.updatenew(u);
+            if (l.lib=="UroBase")
+              opu.updateOp(u)​;
+            old.save.call(l, u)​;
+          }
+        }
+      }
     }
   }
 };
@@ -1715,42 +1748,62 @@ var opo = {
     }​
   },
   effect : function(e){
-    let orlinks = e.linksFrom("UroBase", "OperationList");
-    let bulinks = e.linksFrom("Backup", "OperationList");
-    let all = [];
-    let lib = [];
-    for(let i=0; i<orlinks.length; i++) {
-      all.push(orlinks[i]);
-      lib.push("UroBase");
-    }
-    for(let i=0; i<bulinks.length; i++) {
-      all.push(bulinks[i]);
-      lib.push("Backup");
-    }
-    if (all.length>0) {
-      for(let i=0; i<all.length; i++) {
-        let u = all[i];
-        let l = lib[i]=="UroBase"?uro:buo;
-        if (e.field("OpFill") && all[i].field("Op") != e.field("OpFill")​)​ { // update dxop, rpt, opu
-          all[i].set("Op", e.field("OpFill"))​;
-          old.load(u)​;
-          dxop.run.call(opo, u)​;
-          dxop.run.call(dxo, u)​;
-          rpo.updatenew(u);
-          if (l.lib=="UroBase")
-            opu.updateOp(u)​;
-          old.save.call(l, u)​;
-        }
+    if (e.field("OpFill") && e.field("OpFill")!=old.field("OpFill")) {
+      let orlinks = e.linksFrom("UroBase", "OperationList");
+      let bulinks = e.linksFrom("Backup", "OperationList");
+      let all = [];
+      for(let i=0; i<orlinks.length; i++) {
+        all.push(orlinks[i]);
+      }
+      for(let i=0; i<bulinks.length; i++) {
+        all.push(bulinks[i]);
+      }
+      if (all.length>0) {
+        for(let i=0; i<all.length; i++) {
+          let u = all[i];
+          if (u.field("Op") != e.field("OpFill")​)​ { // update related child.dxop
+            u.set("Op", e.field("OpFill"))​;
+          }
+        }​
       }​
-    }​
-   
-    if(all.length>0) {
-      e.set("Count", all.length);
+      
+      if(all.length>0) {
+        e.set("Count", all.length);
+      }
+      else if (value=="update") {
+        e.set("Count", 0);
+        e.set("Optime", null);
+        e.trash()​;
+      }
     }
-    else if (value=="update") {
-      e.set("Count", 0);
-      e.set("Optime", null);
-      e.trash()​;
+  },
+  effectother : function(e){
+    if (e.field("OpFill") && e.field("OpFill")!=old.field("OpFill")) {
+      let orlinks = e.linksFrom("UroBase", "OperationList");
+      let bulinks = e.linksFrom("Backup", "OperationList");
+      let all = [];
+      let lib = [];
+      for(let i=0; i<orlinks.length; i++) {
+        all.push(orlinks[i]);
+        lib.push("UroBase");
+      }
+      for(let i=0; i<bulinks.length; i++) {
+        all.push(bulinks[i]);
+        lib.push("Backup");
+      }
+      if (all.length>0) {
+        for(let i=0; i<all.length; i++) {
+          let u = all[i];
+          let l = lib[i]=="UroBase"?uro:buo;
+          if (u.field("Op") == e.field("OpFill")​)​ {
+            old.load(u)​;
+            rpo.updatenew(u);
+            if (l.lib=="UroBase")
+              opu.updateOp(u)​;
+            old.save.call(l, u)​;
+          }
+        }
+      }
     }
   }
 };
@@ -2221,17 +2274,31 @@ var trig = {
     }
     fill.deletept(e)​;
   }, 
-  DxBeforeEdit : function (e, value)​ {
-    dxo.validate(e);
+  DxOpenEdit : function(e) {
+    if (e) old.save.call(dxo, e);
   },
-  DxAfterEdit : function (e, value)​ {
+  DxBeforeEdit : function (e, value)​ {
+    old.load(e);
+    dxo.validate(e);
     dxo.effect(e);
   },
+  DxAfterEdit : function (e, value)​ {
+    old.load(e);
+    dxo.effectother(e);
+    old.save.call(dxo, e)​;
+  },
+  OpListOpenEdit : function(e) {
+    if (e) old.save.call(opo, e);
+  },
   OpListBeforeEdit : function (e, value) {
-    opo.validate(e);
+    old.load(e);
+    dxo.validate(e);
+    dxo.effect(e);
   }, 
   OpListAfterEdit : function (e, value) {
-    opo.effect(e);
+    old.load(e);
+    dxo.effectother(e);
+    old.save.call(opo, e)​;
   }, 
   OpUroBeforeEdit : function (e) {
     opu.setnewdate(e)​;
