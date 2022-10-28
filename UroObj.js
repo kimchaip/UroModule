@@ -1684,10 +1684,11 @@ var dxo = {
         if (u.field("Dx") != e.field("Dx")​ || u.field("Op") != e.field("Op"))​ { // update related child.dxop
           u.set("Dx", e.field("Dx"))​;
           u.set("Op", e.field("Op"))​;
+          dxop.run.call(opo, u)​;
         }
       }​
     }​
-    e.set("Output", JSON.stringify(all));
+    
     if(all.length>0) {
       e.set("Count", all.length);
     }
