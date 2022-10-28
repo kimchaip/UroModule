@@ -1713,9 +1713,10 @@ var opo = {
     }​
   },
   effect : function(e){
-    let orlinks = e.linksFrom("UroBase", "OperationList") ;
-    let bulinks = e.linksFrom("Backup", "OperationList")
+    let orlinks = e.linksFrom("UroBase", "OperationList");
+    let bulinks = e.linksFrom("Backup", "OperationList");
     let all = [];
+    let lib = [];
     for(let i=0; i<orlinks.length; i++) {
       all.push(orlinks[i]);
       lib.push("UroBase");
