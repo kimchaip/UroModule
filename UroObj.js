@@ -1671,7 +1671,7 @@ var dxo = {
     e.set("Op", e.field("Op").trim()​)​;
   },
   effect : function(e){
-    if (e.field("Dx") && e.field("Dx")!=old.field("Dx") || e.field("Op") && e.field("Op")!=old.field("Op")) {
+    //if (e.field("Dx") && e.field("Dx")!=old.field("Dx") || e.field("Op") && e.field("Op")!=old.field("Op")) {
       let orlinks = e.linksFrom("UroBase", "OperationList");
       let bulinks = e.linksFrom("Backup", "OperationList");
       let all = [];
@@ -1687,6 +1687,7 @@ var dxo = {
           if (u.field("Dx") != e.field("Dx")​ || u.field("Op") != e.field("Op"))​ { // update related child.dxop
             u.set("Dx", e.field("Dx"))​;
             u.set("Op", e.field("Op"))​;
+            message("dx found not the same");
           }
         }​
       }​
@@ -1698,7 +1699,7 @@ var dxo = {
         e.set("Count", 0);
         e.trash()​;
       }
-    }
+    //}
   },
   effectother : function(e){
     if (e.field("Dx") && e.field("Dx")!=old.field("Dx") || e.field("Op") && e.field("Op")!=old.field("Op")) {
