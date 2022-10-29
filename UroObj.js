@@ -16,7 +16,7 @@ var old = {
           if (typeof value == "string" && value.match(/\d+\-\d+\-\d+T\d+/)) {
             return new Date(value);
           }
-          else if(typeof value == "object") {
+          else if(typeof value == "object" && Object.keys(value).length>0) {
             return Object.keys(value).map(v=>value.v);
           }
           else {
@@ -44,9 +44,9 @@ var old = {
         old.d["DD"] = e.field("DD"); 
         old.d["Birthday"] = e.field("Birthday");
         old.d["HN"] = e.field("HN");
-        old.d["Underlying"] = Object.keys(e.field("Underlying")).map(v=>e.field("Underlying").v); 
+        old.d["Underlying"] = e.field("Underlying"); 
         old.d["VIP"] = e.field("VIP");
-        old.d["Allergies"] = Object.keys(e.field("Allergies")).map(v=>e.field("Allergies").v);
+        old.d["Allergies"] = e.field("Allergies");
         old.d["DJstent"] = e.field("DJstent");
         old.d["DJStamp"] = e.field("DJStamp");
         old.d["Status"] = e.field("Status");
@@ -126,7 +126,6 @@ var old = {
       //get data by field
       if(fieldname in this.d)
         return this.d[fieldname];
-      
     }
 };
 
