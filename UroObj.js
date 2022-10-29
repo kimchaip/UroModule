@@ -1032,8 +1032,7 @@ var fill = {
     }
   },
   underlying : function (e) {
-    e.set("Output","ud:"+e.field("Underlying").join()+",old:"+old.field("Underlying"));
-    if (Object.keys(e.field("Underlying")).map(v=>e.field("Underlying").v).join()!=old.field("Underlying").join()) {
+    if (e.field("Underlying").join()!=old.field("Underlying").join()) {
       let urs = e.linksFrom("UroBase", "Patient");
       let bus = e.linksFrom("Backup", "Patient");
       let css = e.linksFrom("Consult", "Patient");
