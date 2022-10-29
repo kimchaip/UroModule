@@ -2088,6 +2088,7 @@ var trig = {
     else if(old.field("Phone") != contact && contact) {
       e.set("Phone", contact.phone)​;
     }​
+    message(e.field("Underlying"));
   }, 
   PatientAfterEdit : function (e, value) {
     old.load(e)​;
