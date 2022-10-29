@@ -125,7 +125,10 @@ var old = {
     field : function (fieldname) {
       //get data by field
       if(fieldname in this.d)
-        return this.d[fieldname];
+        if(typeof this.d[fieldname] == "object")
+          return Object.keys(this.d[fieldname]).map(v=>this.d[fieldname].v);
+        else
+          return this.d[fieldname];
     }
 };
 
