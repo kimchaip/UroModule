@@ -2073,6 +2073,7 @@ var trig = {
     if (e) old.save.call(pto, e);
   },
   PatientBeforeEdit : function (e, value)​ {
+    e.set("Output", JSON.stringify(e.field("Underlying")));
     pto.rearrangename(e);
     old.load(e);
     valid.uniqueHN(e, value=="create")​;
@@ -2088,7 +2089,6 @@ var trig = {
     else if(old.field("Phone") != contact && contact) {
       e.set("Phone", contact.phone)​;
     }​
-    message(e.field("Underlying"));
   }, 
   PatientAfterEdit : function (e, value) {
     old.load(e)​;
