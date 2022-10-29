@@ -44,9 +44,9 @@ var old = {
         old.d["DD"] = e.field("DD"); 
         old.d["Birthday"] = e.field("Birthday");
         old.d["HN"] = e.field("HN");
-        old.d["Underlying"] = e.field("Underlying"); 
+        old.d["Underlying"] = Object.keys(e.field("Underlying")).map(v=>e.field("Underlying").v); 
         old.d["VIP"] = e.field("VIP");
-        old.d["Allergies"] = e.field("Allergies");
+        old.d["Allergies"] = Object.keys(e.field("Allergies")).map(v=>e.field("Allergies").v);
         old.d["DJstent"] = e.field("DJstent");
         old.d["DJStamp"] = e.field("DJStamp");
         old.d["Status"] = e.field("Status");
@@ -125,7 +125,10 @@ var old = {
     field : function (fieldname) {
       //get data by field
       if(fieldname in this.d)
-        return this.d[fieldname];
+        if(typeof this.d[fieldname] == "object")
+          return Object.keys(this.d[fieldname]).map(v=>this.d[fieldname].v);
+        else
+          return this.d[fieldname];
       
     }
 };
