@@ -16,6 +16,9 @@ var old = {
           if (typeof value == "string" && value.match(/\d+\-\d+\-\d+T\d+/)) {
             return new Date(value);
           }
+          else if(typeof value == "object") {
+            return Object.values(value);
+          }
           else {
             return value;
           }
@@ -32,6 +35,7 @@ var old = {
     },
     save : function (e) {
       //save field value to Obj and set to Previous
+      old.d = {};
       if(this.lib=="Patient") {
         old.d["PtName"] = e.field("PtName"); 
         old.d["Age"] = e.field("Age");
@@ -2073,7 +2077,6 @@ var trig = {
     if (e) old.save.call(pto, e);
   },
   PatientBeforeEdit : function (e, value)​ {
-    e.set("Output", JSON.stringify(e.field("Underlying")));
     pto.rearrangename(e);
     old.load(e);
     valid.uniqueHN(e, value=="create")​;
