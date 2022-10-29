@@ -16,9 +16,6 @@ var old = {
           if (typeof value == "string" && value.match(/\d+\-\d+\-\d+T\d+/)) {
             return new Date(value);
           }
-          /*else if(typeof value == "object" && Object.keys(value).length>0) {
-            return Object.keys(value).map(v=>value.v);
-          }*/
           else {
             return value;
           }
@@ -125,10 +122,7 @@ var old = {
     field : function (fieldname) {
       //get data by field
       if(fieldname in this.d)
-        if(typeof this.d[fieldname] == "object")
-          return Object.keys(this.d[fieldname]).map(v=>this.d[fieldname].v);
-        else
-          return this.d[fieldname];
+        return this.d[fieldname];
     }
 };
 
@@ -1035,7 +1029,7 @@ var fill = {
     }
   },
   underlying : function (e) {
-    e.set("Output","ud:"+e.field("Underlying")+",old:"+old.field("Underlying"));
+    e.set("Output","ud:"+e.field("Underlying")join()+",old:"+old.field("Underlying"));
     if (Object.keys(e.field("Underlying")).map(v=>e.field("Underlying").v).join()!=old.field("Underlying").join()) {
       let urs = e.linksFrom("UroBase", "Patient");
       let bus = e.linksFrom("Backup", "Patient");
