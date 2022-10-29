@@ -32,7 +32,6 @@ var old = {
     },
     save : function (e) {
       //save field value to Obj and set to Previous
-      old.d = new Object();
       if(this.lib=="Patient") {
         old.d["PtName"] = e.field("PtName"); 
         old.d["Age"] = e.field("Age");
@@ -41,7 +40,7 @@ var old = {
         old.d["DD"] = e.field("DD"); 
         old.d["Birthday"] = e.field("Birthday");
         old.d["HN"] = e.field("HN");
-        old.d["Underlying"] = Object.values(e.field("Underlying"));
+        old.d["Underlying"] = e.field("Underlying");
         old.d["VIP"] = e.field("VIP");
         old.d["Allergies"] = e.field("Allergies");
         old.d["DJstent"] = e.field("DJstent");
