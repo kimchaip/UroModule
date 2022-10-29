@@ -17,7 +17,7 @@ var old = {
             return new Date(value);
           }
           else if(typeof value == "object") {
-            return Object.values(value);
+            return Object.keys(value).map(v=>value.v);
           }
           else {
             return value;
