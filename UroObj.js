@@ -16,9 +16,9 @@ var old = {
           if (typeof value == "string" && value.match(/\d+\-\d+\-\d+T\d+/)) {
             return new Date(value);
           }
-          else if(typeof value == "object" && Object.keys(value).length>0) {
+          /*else if(typeof value == "object" && Object.keys(value).length>0) {
             return Object.keys(value).map(v=>value.v);
-          }
+          }*/
           else {
             return value;
           }
