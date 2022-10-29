@@ -41,8 +41,7 @@ var old = {
         old.d["DD"] = e.field("DD"); 
         old.d["Birthday"] = e.field("Birthday");
         old.d["HN"] = e.field("HN");
-        old.d["Underlying"] = e.field("Underlying");
-        message(JSON.stringify(e.field("Underlying")));
+        old.d["Underlying"] = Object.values(e.field("Underlying"));
         old.d["VIP"] = e.field("VIP");
         old.d["Allergies"] = e.field("Allergies");
         old.d["DJstent"] = e.field("DJstent");
