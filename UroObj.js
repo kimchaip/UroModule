@@ -716,17 +716,17 @@ var fill = {
       }​
     }
   },
-  setortype : function (e) {
-    if(old.field("Op")!=e.field("Op") && e.field("Op") && old.field("ORType") == e.field("ORType")) {
+  setortype : function (e, create) {
+    if(create && old.field("Op")!=e.field("Op") && e.field("Op") && old.field("ORType") == e.field("ORType")) {
       let ortype = fill.ortypebyop(e);
       if (ortype)
         e.set("ORType", ortype);
     }
   } ,
-  setvisittype : function (e) {
+  setvisittype : function (e, create) {
     if(e.field("Merge")​ && e.field("VisitType") == "OPD")
       e.set("VisitType", "Admit")​;
-    if(old.field("Dx")!=e.field("Dx") && e.field("Dx") && old.field("VisitType") == e.field("VisitType")) {
+    if(create && old.field("Dx")!=e.field("Dx") && e.field("Dx") && old.field("VisitType") == e.field("VisitType")) {
       let vstype = fill.visittypebydx.call(this, e);
       if (vstype)
         e.set("VisitType", vstype);
@@ -2155,9 +2155,9 @@ var trig = {
     fill.future.call(this, e)​;
     if (this.lib!="Consult") {
       uro.setopextra(e)​;
-      fill.setortype(e);
+      fill.setortype(e, value=="create");
     }
-    fill.setvisittype.call(this, e);
+    fill.setvisittype.call(this, e, value=="create");
     fill.setvisitdate.call(this, e)​;
     fill.resultbydate.call(this, e);
     fill.pasthx.call(this, e);
@@ -2237,10 +2237,7 @@ var trig = {
   BeforeUpdatingField : function (e) {
     old.load(e)​;
     fill.setnewdate.call(this, e)​;​
-    if (this.lib!="Consult") {
-      fill.setortype(e);
-    }
-    fill.setvisittype.call(this, e);
+    fill.setvisittype.call(this, e, false);
     fill.setvisitdate.call(this, e)​;
     fill.track.call(this, e)​;
     fill.correctMergeID.call(this, e);
