@@ -495,7 +495,9 @@ var emx = {
   }
 }​;
 var dxop = {
-  run : function (e) {
+  id : 0,
+  run : function (e, id) {
+    dxop.id = id?id:0;
     if(e.field("Status")​ == "Not" )​ { // status not, fill Dx/Op not complete
       dxop.deletelink.call(this, e);
     }
@@ -516,7 +518,7 @@ var dxop = {
     let lbs = lb.find(e.field(this.link[0])​);
     let found = null;
     if (lbs.length > 0) {
-      found = lbs.find(d=>this.title.every((v,i)=>(d.field(v)​==e.field(this.link[i]))));
+      found = lbs.find(d=>d.id!=dxop.id && this.title.every((v,i)=>(d.field(v)​==e.field(this.link[i]))));
     }​
     return found;
   },
@@ -694,6 +696,14 @@ var valid = {
       cancel();
       exit();
     }
+  },
+  uniqueDxOp : function (e, create) {
+    let unique = true;
+    let ents = this.lib=="DxAutoFill"?dx.entries():op.entries();​​
+    if (ents.some((v,i,all)=>all.findIndex(a=>(create || a.id!=v.id) && this.title.every(f=>a.field(f)==v.field(f)))>-1)) {
+      unique = false;
+    }
+    return unique;
   }
 };
 var fill = {
@@ -1682,7 +1692,7 @@ var dxo = {
       exit();
     }
   },
-  effect : function(e){
+  effect : function(e, unique){
     let orlinks = e.linksFrom("UroBase", this.lib);
     let bulinks = e.linksFrom("Backup", this.lib);
     let all = [];
@@ -1698,13 +1708,22 @@ var dxo = {
         if (u.field("Dx") != e.field("Dx")​ || u.field("Op") != e.field("Op"))​ { // update related child.dxop
           u.set("Dx", e.field("Dx"))​;
           u.set("Op", e.field("Op"))​;
+          // if non unique, move dx link to other entry
+          let pid = unique?0:e.id;
+          dxop.run.call(dxo, u, pid)​;
+          // op link is update
           dxop.run.call(opo, u)​;
         }
       }​
     }​
     
-    if(all.length>0) {
-      e.set("Count", all.length);
+    if (!unique) { // if non unique, re count this link after move link to other
+      orlinks = e.linksFrom("UroBase", this.lib);
+      bulinks = e.linksFrom("Backup", this.lib);
+    }
+    
+    if (orlinks.length+bulinks.length>0) {
+      e.set("Count", orlinks.length+bulinks.length);
     }
     else {
       e.set("Count", 0);
@@ -1768,7 +1787,7 @@ var opo = {
       e.set("PriceExtra", e.field("Price")​*1.5)​;
     }​
   },
-  effect : function(e){
+  effect : function(e, unique){
     let orlinks = e.linksFrom("UroBase", this.lib);
     let bulinks = e.linksFrom("Backup", this.lib);
     let all = [];
@@ -1783,13 +1802,22 @@ var opo = {
         let u = all[i];
         if (u.field("Op") != e.field("OpFill")​)​ { // update related child.dxop
           u.set("Op", e.field("OpFill"))​;
+          // if non unique, move op link to other entry
+          let pid = unique?0:e.id;
+          dxop.run.call(opo, u, pid)​;
+          // dx link is update
           dxop.run.call(dxo, u)​;
         }
       }​
     }​
     
-    if(all.length>0) {
-      e.set("Count", all.length);
+    if (!unique) { // if non unique, re count this link after move link to other
+      orlinks = e.linksFrom("UroBase", this.lib);
+      bulinks = e.linksFrom("Backup", this.lib);
+    }
+    
+    if (orlinks.length+bulinks.length>0) {
+      e.set("Count", orlinks.length+bulinks.length);
     }
     else if (value=="update") {
       e.set("Count", 0);
@@ -2296,7 +2324,7 @@ var trig = {
   DxBeforeEdit : function (e, value)​ {
     old.load(e);
     dxo.validate(e);
-    dxo.effect(e);
+    dxo.effect(e, valid.uniqueDxOp.call(dxo, e, value=="create"));
   },
   DxAfterEdit : function (e, value)​ {
     old.load(e);
@@ -2309,7 +2337,7 @@ var trig = {
   OpListBeforeEdit : function (e, value) {
     old.load(e);
     opo.validate(e);
-    opo.effect(e);
+    opo.effect(e, valid.uniqueDxOp.call(opo, e, value=="create"));
   }, 
   OpListAfterEdit : function (e, value) {
     old.load(e);
