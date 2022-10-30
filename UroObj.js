@@ -1859,7 +1859,6 @@ var rpo = {
               break;
             }
           }​​
-          message(str);
         }​
       }​
     }
