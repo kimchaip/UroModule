@@ -1668,8 +1668,19 @@ var dxo = {
   link : ["Dx","Op"],
   title : ["Dx","Op"],
   validate : function(e){
-    e.set("Dx", e.field("Dx").trim()​)​;
-    e.set("Op", e.field("Op").trim()​)​;
+    let dx = e.field("Dx").trim();
+    let op = e.field("Op").trim();
+    if (dx && op) {
+      if(old.field("Dx")!=dx)
+        e.set("Dx", dx.replace(/-|#/g, '').replace(/\s+/g, ' '));
+      if(old.field("Op")!=op)
+        e.set("Op", op.replace(/-|#/g, '').replace(/\s+/g, ' '));
+    }
+    else {
+      message("field 'Dx' and 'Op' must fill anything. Try again.");
+      cancel();
+      exit();
+    }
   },
   effect : function(e){
     let orlinks = e.linksFrom("UroBase", this.lib);
@@ -1735,7 +1746,16 @@ var opo = {
   link : ["Op"],
   title : ["OpFill"],
   validate : function(e){
-    e.set("OpFill", e.field("OpFill").trim()​)​;
+    let op = e.field("OpFill").trim();
+    if (op) {
+      if(old.field("Op")!=op)
+        e.set("Op", op.replace(/-|#/g, '').replace(/\s+/g, ' '));
+    }
+    else {
+      message("field 'OpFill' must fill somebuthing. Try again.");
+      cancel();
+      exit();
+    }
     e.set("OpList", e.field("OpList").trim()​)​;
 
     if(e.field("Price")​ > 0 &​& e.field("PriceExtra")​ == 0) {
