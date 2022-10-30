@@ -1853,6 +1853,7 @@ var rpo = {
         let ptent = pt.findById(ptlks[0].id);
         let rps = ptent.linksFrom("Report", "Patient")​;
         let str="";
+        if (rps.length>0) {
           for (let r=0; r<rps.length; r++)​ {
             if (my.gdate(my.date(rps[r].field("OpDate"))​) == my.gdate(my.date(old.field("Date"))​) && rps[r].field("ORType") ==​ old.field("ORType") &​& rps[r].field("Dx") ==​ old.field("Dx") &​& rps[r].field("Op") ==​ old.field("Op"))​{
               rpo.setAll(rps[r], e);
