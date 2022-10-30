@@ -1768,7 +1768,7 @@ var opo = {
     let op = e.field("OpFill").trim();
     if (op) {
       if(old.field("Op")!=op)
-        e.set("Op", op.replace(/-|#/g, '').replace(/\s+/g, ' '));
+        e.set("OpFill", op.replace(/-|#/g, '').replace(/\s+/g, ' '));
     }
     else {
       message("field 'OpFill' must fill somebuthing. Try again.");
