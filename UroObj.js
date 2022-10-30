@@ -1692,7 +1692,7 @@ var dxo = {
       exit();
     }
   },
-  effect : function(e, unique){
+  effect : function(e, create, unique){
     let orlinks = e.linksFrom("UroBase", this.lib);
     let bulinks = e.linksFrom("Backup", this.lib);
     let all = [];
@@ -1787,7 +1787,7 @@ var opo = {
       e.set("PriceExtra", e.field("Price")​*1.5)​;
     }​
   },
-  effect : function(e, unique){
+  effect : function(e, create, unique){
     let orlinks = e.linksFrom("UroBase", this.lib);
     let bulinks = e.linksFrom("Backup", this.lib);
     let all = [];
@@ -1819,7 +1819,7 @@ var opo = {
     if (orlinks.length+bulinks.length>0) {
       e.set("Count", orlinks.length+bulinks.length);
     }
-    else if (value=="update") {
+    else if (!create) {
       e.set("Count", 0);
       e.set("Optime", null);
       e.trash()​;
@@ -2324,7 +2324,7 @@ var trig = {
   DxBeforeEdit : function (e, value)​ {
     old.load(e);
     dxo.validate(e);
-    dxo.effect(e, valid.uniqueDxOp.call(dxo, e, value=="create"));
+    dxo.effect(e, value=="create", valid.uniqueDxOp.call(dxo, e, value=="create"));
   },
   DxAfterEdit : function (e, value)​ {
     old.load(e);
@@ -2337,7 +2337,7 @@ var trig = {
   OpListBeforeEdit : function (e, value) {
     old.load(e);
     opo.validate(e);
-    opo.effect(e, valid.uniqueDxOp.call(opo, e, value=="create"));
+    opo.effect(e, value=="create", valid.uniqueDxOp.call(opo, e, value=="create"));
   }, 
   OpListAfterEdit : function (e, value) {
     old.load(e);
