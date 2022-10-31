@@ -1729,8 +1729,8 @@ var dxo = {
       e.trash()​;
     }
   },
-  effectother : function(e){
-    if (e.field("Dx")!=old.field("Dx") || e.field("Op") && e.field("Op")!=old.field("Op")) {
+  effectother : function(e, second){
+    if (second || this.title.some(f=>e.field(f)!=old.field(f))) {
       let orlinks = e.linksFrom("UroBase", this.lib);
       let bulinks = e.linksFrom("Backup", this.lib);
       if (orlinks.length+bulinks.length>0) {
@@ -1747,8 +1747,10 @@ var dxo = {
         for(let i=0; i<all.length; i++) {
           let u = all[i];
           let l = lib[i]=="UroBase"?uro:buo;
-          if (this.title.every((f,i)=>u.field(this.link[i]) == e.field(f)​)) {
-            old.load(u)​;
+          let oe = this.title.map(f=>old.field(f));
+          old.load(u)​;
+          let ou = this.link.map(f=>old.field(f));
+          if (this.title.every((f,i)=>u.field(this.link[i]) == e.field(f) && ou[i] == oe​[i])) {
             rpo.updatenew(u);
             if (l.lib=="UroBase")
               opu.updateOp(u)​;
@@ -1760,7 +1762,7 @@ var dxo = {
         let dxs = dx.entries();
         let found = dxs.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
         if (found) {
-          this.effectother(found);
+          this.effectother(found, true);
         }
       }
     }
@@ -1831,8 +1833,8 @@ var opo = {
       e.trash()​;
     }
   },
-  effectother : function(e){
-    if (e.field("OpFill")!=old.field("OpFill")) {
+  effectother : function(e, second){
+    if (second || this.title.some(f=>e.field(f)!=old.field(f))) {
       let orlinks = e.linksFrom("UroBase", this.lib);
       let bulinks = e.linksFrom("Backup", this.lib);
       if (orlinks.length+bulinks.length>0) {
@@ -1849,8 +1851,10 @@ var opo = {
         for(let i=0; i<all.length; i++) {
           let u = all[i];
           let l = lib[i]=="UroBase"?uro:buo;
-          if (this.title.every((f,i)=>u.field(this.link[i]) == e.field(f)​)) {
-            old.load(u)​;
+          let oe = this.title.map(f=>old.field(f));
+          old.load(u)​;
+          let ou = this.link.map(f=>old.field(f));
+          if (this.title.every((f,i)=>u.field(this.link[i]) == e.field(f) && ou[i] == oe​[i])) {
             rpo.updatenew(u);
             if (l.lib=="UroBase")
               opu.updateOp(u)​;
@@ -1859,10 +1863,10 @@ var opo = {
         }
       }
       else { // find other duplicated entry
-        let ops = op.entries();
-        let found = ops.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
+        let dxs = dx.entries();
+        let found = dxs.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
         if (found) {
-          this.effectother(found);
+          this.effectother(found, true);
         }
       }
     }
