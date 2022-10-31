@@ -700,7 +700,7 @@ var valid = {
   uniqueDxOp : function (e, create) {
     let unique = true;
     let ents = this.lib=="DxAutoFill"?dx.entries():op.entries();​​
-    if (ents.some((v,i,all)=>all.findIndex(a=>(create || a.id!=v.id) && this.title.every(f=>a.field(f)==v.field(f)))>-1)) {
+    if (ents.some(v=>(create || v.id!=e.id) && this.title.every(f=>v.field(f)==e.field(f)))) {
       unique = false;
     }
     return unique;
@@ -1705,12 +1705,11 @@ var dxo = {
     if (all.length>0) {
       for(let i=0; i<all.length; i++) {
         let u = all[i];
-        if (u.field("Dx") != e.field("Dx")​ || u.field("Op") != e.field("Op"))​ { // update related child.dxop
-          u.set("Dx", e.field("Dx"))​;
-          u.set("Op", e.field("Op"))​;
+        if (this.title.some((f,i)=>u.field(this.link[i]) != e.field(f)​)​ { // update related child.dxop
+          this.title.forEach((f,i)=>u.set(this.link[i], e.field(f))​);
           // if non unique, move dx link to other entry
           let pid = unique?0:e.id;
-          dxop.run.call(dxo, u, pid)​;
+          dxop.run.call(this, u, pid)​;
           // op link is update
           dxop.run.call(opo, u)​;
         }
@@ -1734,27 +1733,34 @@ var dxo = {
     if (e.field("Dx")!=old.field("Dx") || e.field("Op") && e.field("Op")!=old.field("Op")) {
       let orlinks = e.linksFrom("UroBase", this.lib);
       let bulinks = e.linksFrom("Backup", this.lib);
-      let all = [];
-      let lib = [];
-      for(let i=0; i<orlinks.length; i++) {
-        all.push(orlinks[i]);
-        lib.push("UroBase");
-      }
-      for(let i=0; i<bulinks.length; i++) {
-        all.push(bulinks[i]);
-        lib.push("Backup");
-      }
-      if (all.length>0) {
+      if (orlinks.length+bulinks.length>0) {
+        let all = [];
+        let lib = [];
+        for(let i=0; i<orlinks.length; i++) {
+          all.push(orlinks[i]);
+          lib.push("UroBase");
+        }
+        for(let i=0; i<bulinks.length; i++) {
+          all.push(bulinks[i]);
+          lib.push("Backup");
+        }
         for(let i=0; i<all.length; i++) {
           let u = all[i];
           let l = lib[i]=="UroBase"?uro:buo;
-          if (u.field("Dx")==e.field("Dx") && u.field("Op")==e.field("Op")) {
+          if (this.title.every((f,i)=>u.field(this.link[i]) == e.field(f)​)) {
             old.load(u)​;
             rpo.updatenew(u);
             if (l.lib=="UroBase")
               opu.updateOp(u)​;
             old.save.call(l, u)​;
           }
+        }
+      }
+      else { // find other duplicated entry
+        let dxs = dx.entries();
+        let found = dxs.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
+        if (found) {
+          this.effectother(found);
         }
       }
     }
@@ -1800,11 +1806,11 @@ var opo = {
     if (all.length>0) {
       for(let i=0; i<all.length; i++) {
         let u = all[i];
-        if (u.field("Op") != e.field("OpFill")​)​ { // update related child.dxop
-          u.set("Op", e.field("OpFill"))​;
+        if (this.title.some((f,i)=>u.field(this.link[i]) != e.field(f)​)​ { // update related child.dxop
+          this.title.forEach((f,i)=>u.set(this.link[i], e.field(f))​);
           // if non unique, move op link to other entry
           let pid = unique?0:e.id;
-          dxop.run.call(opo, u, pid)​;
+          dxop.run.call(this, u, pid)​;
           // dx link is update
           dxop.run.call(dxo, u)​;
         }
@@ -1827,29 +1833,36 @@ var opo = {
   },
   effectother : function(e){
     if (e.field("OpFill")!=old.field("OpFill")) {
-      let orlinks = e.linksFrom("UroBase", "OperationList");
-      let bulinks = e.linksFrom("Backup", "OperationList");
-      let all = [];
-      let lib = [];
-      for(let i=0; i<orlinks.length; i++) {
-        all.push(orlinks[i]);
-        lib.push("UroBase");
-      }
-      for(let i=0; i<bulinks.length; i++) {
-        all.push(bulinks[i]);
-        lib.push("Backup");
-      }
-      if (all.length>0) {
+      let orlinks = e.linksFrom("UroBase", this.lib);
+      let bulinks = e.linksFrom("Backup", this.lib);
+      if (orlinks.length+bulinks.length>0) {
+        let all = [];
+        let lib = [];
+        for(let i=0; i<orlinks.length; i++) {
+          all.push(orlinks[i]);
+          lib.push("UroBase");
+        }
+        for(let i=0; i<bulinks.length; i++) {
+          all.push(bulinks[i]);
+          lib.push("Backup");
+        }
         for(let i=0; i<all.length; i++) {
           let u = all[i];
           let l = lib[i]=="UroBase"?uro:buo;
-          if (u.field("Op") == e.field("OpFill")​)​ {
+          if (this.title.every((f,i)=>u.field(this.link[i]) == e.field(f)​)) {
             old.load(u)​;
             rpo.updatenew(u);
             if (l.lib=="UroBase")
               opu.updateOp(u)​;
             old.save.call(l, u)​;
           }
+        }
+      }
+      else { // find other duplicated entry
+        let ops = op.entries();
+        let found = ops.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
+        if (found) {
+          this.effectother(found);
         }
       }
     }
