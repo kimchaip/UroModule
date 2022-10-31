@@ -1903,7 +1903,7 @@ var rpo = {
         let str="";
         if (rps.length>0) {
           for (let r=0; r<rps.length; r++)​ {
-            str += "@ opdate:"+my.gdate(my.date(rps[r].field("OpDate"))​)+":"+my.gdate(my.date(old.field("Date"))​)+" ortype:"+rps[r].field("ORType")+":"+old.field("ORType")+" dx:"+rps[r].field("Dx")+":"+old.field("Dx")+" op"+rps[r].field("Op")+":"+old.field("Op")+"\n";
+            str += "@ opdate:"+my.gdate(my.date(rps[r].field("OpDate"))​)+":"+my.gdate(my.date(old.field("Date"))​)+" ortype:"+rps[r].field("ORType")+":"+old.field("ORType")+" dx:"+rps[r].field("Dx")+":"+old.field("Dx")+" op"+rps[r].field("Op")+":"+old.field("Op")+"\n"; 
             if (my.gdate(my.date(rps[r].field("OpDate"))​) == my.gdate(my.date(old.field("Date"))​) && rps[r].field("ORType") ==​ old.field("ORType") &​& rps[r].field("Dx") ==​ old.field("Dx") &​& rps[r].field("Op") ==​ old.field("Op"))​{
               rpo.setAll(rps[r], e);
               break;
