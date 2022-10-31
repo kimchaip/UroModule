@@ -1705,7 +1705,7 @@ var dxo = {
     if (all.length>0) {
       for(let i=0; i<all.length; i++) {
         let u = all[i];
-        if (this.title.some((f,i)=>u.field(this.link[i]) != e.field(f)​)​ { // update related child.dxop
+        if (this.title.some((f,i)=>u.field(this.link[i]) != e.field(f)​))​ { // update related child.dxop
           this.title.forEach((f,i)=>u.set(this.link[i], e.field(f))​);
           // if non unique, move dx link to other entry
           let pid = unique?0:e.id;
@@ -1808,7 +1808,7 @@ var opo = {
     if (all.length>0) {
       for(let i=0; i<all.length; i++) {
         let u = all[i];
-        if (this.title.some((f,i)=>u.field(this.link[i]) != e.field(f)​)​ { // update related child.dxop
+        if (this.title.some((f,i)=>u.field(this.link[i]) != e.field(f)​))​ { // update related child.dxop
           this.title.forEach((f,i)=>u.set(this.link[i], e.field(f))​);
           // if non unique, move op link to other entry
           let pid = unique?0:e.id;
