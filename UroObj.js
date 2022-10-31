@@ -1761,6 +1761,7 @@ var dxo = {
       else { // find other duplicated entry
         let dxs = dx.entries();
         let found = dxs.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
+        message(e.id+JSON.stringify(found));
         if (found) {
           this.effectother(found, true);
         }
@@ -1863,8 +1864,8 @@ var opo = {
         }
       }
       else { // find other duplicated entry
-        let dxs = dx.entries();
-        let found = dxs.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
+        let ops = op.entries();
+        let found = ops.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
         if (found) {
           this.effectother(found, true);
         }
