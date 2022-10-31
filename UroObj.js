@@ -1910,7 +1910,7 @@ var rpo = {
             }
           }​​
         }​
-       e.set("Output", str);
+        e.set("Output", str);
       }​
     }
     else if(old.field("Status") == "Not" && e.field("Status") != "Not" ){
