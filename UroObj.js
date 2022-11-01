@@ -622,6 +622,7 @@ var dxop = {
     }
   },
   effectother : function(e){
+    let oe = this.title.map(f=>old.field(f));
     let orlinks = e.linksFrom("UroBase", this.lib);
     let bulinks = e.linksFrom("Backup", this.lib);
     if (orlinks.length+bulinks.length==0) {
