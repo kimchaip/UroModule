@@ -650,7 +650,6 @@ var dxop = {
       for(let i=0; i<all.length; i++) {
         let u = all[i];
         let l = lib[i]=="UroBase"?uro:buo;
-        let oe = this.title.map(f=>old.field(f));
         old.load(u)​;
         let ou = this.link.map(f=>old.field(f));
         if (this.title.every((f,i)=>u.field(this.link[i]) == e.field(f) && ou[i] == oe​[i])) {
