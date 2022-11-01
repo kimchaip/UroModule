@@ -1729,7 +1729,7 @@ var dxo = {
       e.trash()​;
     }
   },
-  effectother : function(e, second){
+  effectother : function(e){
     let orlinks = e.linksFrom("UroBase", this.lib);
     let bulinks = e.linksFrom("Backup", this.lib);
     if (orlinks.length+bulinks.length==0) {
@@ -1835,7 +1835,7 @@ var opo = {
       e.trash()​;
     }
   },
-  effectother : function(e, second){
+  effectother : function(e){
     let orlinks = e.linksFrom("UroBase", this.lib);
     let bulinks = e.linksFrom("Backup", this.lib);
     if (orlinks.length+bulinks.length==0) {
