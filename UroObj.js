@@ -1736,7 +1736,7 @@ var dxo = {
       let dxops = this.lib=="DxAutoFill"?dx.entries():op.entries();
       let found = dxops.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
       if (found) {
-        e.set("Output", this.title.map((f,i)=>found?found.field(this.link[i]) +"=="+ e.field(f)​).join("\n"):"");
+        e.set("Output", this.title.map((f,i)=>found?found.field(this.link[i]) +"=="+ e.field(f)​:"").join("\n"));
         old.load(found);
         orlinks = found.linksFrom("UroBase", this.lib);
         bulinks = found.linksFrom("Backup", this.lib);
@@ -1842,7 +1842,7 @@ var opo = {
       let dxops = this.lib=="DxAutoFill"?dx.entries():op.entries();
       let found = dxops.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
       if (found) {
-        e.set("Output", this.title.map((f,i)=>found?found.field(this.link[i]) +"=="+ e.field(f)​).join("\n"):"");
+        e.set("Output", this.title.map((f,i)=>found?found.field(this.link[i]) +"=="+ e.field(f)​:"").join("\n"));
         old.load(found);
         orlinks = found.linksFrom("UroBase", this.lib);
         bulinks = found.linksFrom("Backup", this.lib);
