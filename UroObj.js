@@ -2312,7 +2312,7 @@ var trig = {
   },
   DxAfterEdit : function (e, value)​ {
     old.load(e);
-    dxop.effectother(dxo, e);
+    dxop.effectother.call(dxo, e);
     old.save.call(dxo, e)​;
   },
   OpListOpenEdit : function(e, value) {
@@ -2325,7 +2325,7 @@ var trig = {
   }, 
   OpListAfterEdit : function (e, value) {
     old.load(e);
-    dxop.effectother(opo, e);
+    dxop.effectother.call(opo, e);
     old.save.call(opo, e)​;
   }, 
   OpUroBeforeEdit : function (e) {
