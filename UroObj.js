@@ -1730,40 +1730,41 @@ var dxo = {
     }
   },
   effectother : function(e, second){
-    if (second || this.title.some(f=>e.field(f)!=old.field(f))) {
-      let orlinks = e.linksFrom("UroBase", this.lib);
-      let bulinks = e.linksFrom("Backup", this.lib);
-      if (orlinks.length+bulinks.length>0) {
-        let all = [];
-        let lib = [];
-        for(let i=0; i<orlinks.length; i++) {
-          all.push(orlinks[i]);
-          lib.push("UroBase");
-        }
-        for(let i=0; i<bulinks.length; i++) {
-          all.push(bulinks[i]);
-          lib.push("Backup");
-        }
-        for(let i=0; i<all.length; i++) {
-          let u = all[i];
-          let l = lib[i]=="UroBase"?uro:buo;
-          let oe = this.title.map(f=>old.field(f));
-          old.load(u)​;
-          let ou = this.link.map(f=>old.field(f));
-          if (this.title.every((f,i)=>u.field(this.link[i]) == e.field(f) && ou[i] == oe​[i])) {
-            rpo.updatenew(u);
-            if (l.lib=="UroBase")
-              opu.updateOp(u)​;
-            old.save.call(l, u)​;
-          }
-        }
+    let orlinks = e.linksFrom("UroBase", this.lib);
+    let bulinks = e.linksFrom("Backup", this.lib);
+    if (orlinks.length+bulinks.length==0) {
+      let dxops = this.lib=="DxAutoFill"?dx.entries():op.entries();
+      let found = dxops.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
+      if (found) {
+        e.set("Output", this.title.map((f,i)=>found?found.field(this.link[i]) +"=="+ e.field(f)​).join("\n"):"");
+        old.load(found);
+        orlinks = found.linksFrom("UroBase", this.lib);
+        bulinks = found.linksFrom("Backup", this.lib);
       }
-      else { // find other duplicated entry
-        let dxs = dx.entries();
-        let found = dxs.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
-        message(e.id+JSON.stringify(found));
-        if (found) {
-          this.effectother(found, true);
+    }
+    
+    if (orlinks.length+bulinks.length>0) {
+      let all = [];
+      let lib = [];
+      for(let i=0; i<orlinks.length; i++) {
+        all.push(orlinks[i]);
+        lib.push("UroBase");
+      }
+      for(let i=0; i<bulinks.length; i++) {
+        all.push(bulinks[i]);
+        lib.push("Backup");
+      }
+      for(let i=0; i<all.length; i++) {
+        let u = all[i];
+        let l = lib[i]=="UroBase"?uro:buo;
+        let oe = this.title.map(f=>old.field(f));
+        old.load(u)​;
+        let ou = this.link.map(f=>old.field(f));
+        if (this.title.every((f,i)=>u.field(this.link[i]) == e.field(f) && ou[i] == oe​[i])) {
+          rpo.updatenew(u);
+          if (l.lib=="UroBase")
+            opu.updateOp(u)​;
+          old.save.call(l, u)​;
         }
       }
     }
@@ -1835,39 +1836,41 @@ var opo = {
     }
   },
   effectother : function(e, second){
-    if (second || this.title.some(f=>e.field(f)!=old.field(f))) {
-      let orlinks = e.linksFrom("UroBase", this.lib);
-      let bulinks = e.linksFrom("Backup", this.lib);
-      if (orlinks.length+bulinks.length>0) {
-        let all = [];
-        let lib = [];
-        for(let i=0; i<orlinks.length; i++) {
-          all.push(orlinks[i]);
-          lib.push("UroBase");
-        }
-        for(let i=0; i<bulinks.length; i++) {
-          all.push(bulinks[i]);
-          lib.push("Backup");
-        }
-        for(let i=0; i<all.length; i++) {
-          let u = all[i];
-          let l = lib[i]=="UroBase"?uro:buo;
-          let oe = this.title.map(f=>old.field(f));
-          old.load(u)​;
-          let ou = this.link.map(f=>old.field(f));
-          if (this.title.every((f,i)=>u.field(this.link[i]) == e.field(f) && ou[i] == oe​[i])) {
-            rpo.updatenew(u);
-            if (l.lib=="UroBase")
-              opu.updateOp(u)​;
-            old.save.call(l, u)​;
-          }
-        }
+    let orlinks = e.linksFrom("UroBase", this.lib);
+    let bulinks = e.linksFrom("Backup", this.lib);
+    if (orlinks.length+bulinks.length==0) {
+      let dxops = this.lib=="DxAutoFill"?dx.entries():op.entries();
+      let found = dxops.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
+      if (found) {
+        e.set("Output", this.title.map((f,i)=>found?found.field(this.link[i]) +"=="+ e.field(f)​).join("\n"):"");
+        old.load(found);
+        orlinks = found.linksFrom("UroBase", this.lib);
+        bulinks = found.linksFrom("Backup", this.lib);
       }
-      else { // find other duplicated entry
-        let ops = op.entries();
-        let found = ops.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
-        if (found) {
-          this.effectother(found, true);
+    }
+    
+    if (orlinks.length+bulinks.length>0) {
+      let all = [];
+      let lib = [];
+      for(let i=0; i<orlinks.length; i++) {
+        all.push(orlinks[i]);
+        lib.push("UroBase");
+      }
+      for(let i=0; i<bulinks.length; i++) {
+        all.push(bulinks[i]);
+        lib.push("Backup");
+      }
+      for(let i=0; i<all.length; i++) {
+        let u = all[i];
+        let l = lib[i]=="UroBase"?uro:buo;
+        let oe = this.title.map(f=>old.field(f));
+        old.load(u)​;
+        let ou = this.link.map(f=>old.field(f));
+        if (this.title.every((f,i)=>u.field(this.link[i]) == e.field(f) && ou[i] == oe​[i])) {
+          rpo.updatenew(u);
+          if (l.lib=="UroBase")
+            opu.updateOp(u)​;
+          old.save.call(l, u)​;
         }
       }
     }
