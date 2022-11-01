@@ -627,7 +627,7 @@ var dxop = {
     let bulinks = e.linksFrom("Backup", this.lib);
     if (orlinks.length+bulinks.length==0) {
       let dxops = this.lib=="DxAutoFill"?dx.entries():op.entries();
-      let found = dxops.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
+      let found = dxops.find(a=>a.id!=e.id && this.title.every((f,i)=>a.field(f) == e.field(f)​) );
       if (found) {
         old.load(found);
         e = found;
