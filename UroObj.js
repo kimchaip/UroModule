@@ -620,6 +620,46 @@ var dxop = {
       e.set("Count", 0);
       e.trash()​;
     }
+  },
+  effectother : function(e){
+    let orlinks = e.linksFrom("UroBase", this.lib);
+    let bulinks = e.linksFrom("Backup", this.lib);
+    if (orlinks.length+bulinks.length==0) {
+      let dxops = this.lib=="DxAutoFill"?dx.entries():op.entries();
+      let found = dxops.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
+      if (found) {
+        old.load(found);
+        e = found;
+        orlinks = found.linksFrom("UroBase", this.lib);
+        bulinks = found.linksFrom("Backup", this.lib);
+      }
+    }
+    
+    if (orlinks.length+bulinks.length>0) {
+      let all = [];
+      let lib = [];
+      for(let i=0; i<orlinks.length; i++) {
+        all.push(orlinks[i]);
+        lib.push("UroBase");
+      }
+      for(let i=0; i<bulinks.length; i++) {
+        all.push(bulinks[i]);
+        lib.push("Backup");
+      }
+      for(let i=0; i<all.length; i++) {
+        let u = all[i];
+        let l = lib[i]=="UroBase"?uro:buo;
+        let oe = this.title.map(f=>old.field(f));
+        old.load(u)​;
+        let ou = this.link.map(f=>old.field(f));
+        if (this.title.every((f,i)=>u.field(this.link[i]) == e.field(f) && ou[i] == oe​[i])) {
+          rpo.updatenew(u);
+          if (l.lib=="UroBase")
+            opu.updateOp(u)​;
+          old.save.call(l, u)​;
+        }
+      }
+    }
   }
 };
 var valid = {
@@ -1728,46 +1768,6 @@ var dxo = {
       e.set("Count", 0);
       e.trash()​;
     }
-  },
-  effectother : function(e){
-    let orlinks = e.linksFrom("UroBase", this.lib);
-    let bulinks = e.linksFrom("Backup", this.lib);
-    if (orlinks.length+bulinks.length==0) {
-      let dxops = this.lib=="DxAutoFill"?dx.entries():op.entries();
-      let found = dxops.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
-      if (found) {
-        e.set("Output", this.title.map((f,i)=>found?found.field(this.link[i]) +"=="+ e.field(f)​:"").join("\n"));
-        old.load(found);
-        orlinks = found.linksFrom("UroBase", this.lib);
-        bulinks = found.linksFrom("Backup", this.lib);
-      }
-    }
-    
-    if (orlinks.length+bulinks.length>0) {
-      let all = [];
-      let lib = [];
-      for(let i=0; i<orlinks.length; i++) {
-        all.push(orlinks[i]);
-        lib.push("UroBase");
-      }
-      for(let i=0; i<bulinks.length; i++) {
-        all.push(bulinks[i]);
-        lib.push("Backup");
-      }
-      for(let i=0; i<all.length; i++) {
-        let u = all[i];
-        let l = lib[i]=="UroBase"?uro:buo;
-        let oe = this.title.map(f=>old.field(f));
-        old.load(u)​;
-        let ou = this.link.map(f=>old.field(f));
-        if (this.title.every((f,i)=>u.field(this.link[i]) == e.field(f) && ou[i] == oe​[i])) {
-          rpo.updatenew(u);
-          if (l.lib=="UroBase")
-            opu.updateOp(u)​;
-          old.save.call(l, u)​;
-        }
-      }
-    }
   }
 };
 var opo = {
@@ -1833,46 +1833,6 @@ var opo = {
       e.set("Count", 0);
       e.set("Optime", null);
       e.trash()​;
-    }
-  },
-  effectother : function(e){
-    let orlinks = e.linksFrom("UroBase", this.lib);
-    let bulinks = e.linksFrom("Backup", this.lib);
-    if (orlinks.length+bulinks.length==0) {
-      let dxops = this.lib=="DxAutoFill"?dx.entries():op.entries();
-      let found = dxops.find(d=>d.id!=e.id && this.title.every((f,i)=>d.field(this.link[i]) == e.field(f)​) );
-      if (found) {
-        e.set("Output", this.title.map((f,i)=>found?found.field(this.link[i]) +"=="+ e.field(f)​:"").join("\n"));
-        old.load(found);
-        orlinks = found.linksFrom("UroBase", this.lib);
-        bulinks = found.linksFrom("Backup", this.lib);
-      }
-    }
-    
-    if (orlinks.length+bulinks.length>0) {
-      let all = [];
-      let lib = [];
-      for(let i=0; i<orlinks.length; i++) {
-        all.push(orlinks[i]);
-        lib.push("UroBase");
-      }
-      for(let i=0; i<bulinks.length; i++) {
-        all.push(bulinks[i]);
-        lib.push("Backup");
-      }
-      for(let i=0; i<all.length; i++) {
-        let u = all[i];
-        let l = lib[i]=="UroBase"?uro:buo;
-        let oe = this.title.map(f=>old.field(f));
-        old.load(u)​;
-        let ou = this.link.map(f=>old.field(f));
-        if (this.title.every((f,i)=>u.field(this.link[i]) == e.field(f) && ou[i] == oe​[i])) {
-          rpo.updatenew(u);
-          if (l.lib=="UroBase")
-            opu.updateOp(u)​;
-          old.save.call(l, u)​;
-        }
-      }
     }
   }
 };
@@ -2352,7 +2312,7 @@ var trig = {
   },
   DxAfterEdit : function (e, value)​ {
     old.load(e);
-    dxo.effectother(e);
+    dxop.effectother(dxo, e);
     old.save.call(dxo, e)​;
   },
   OpListOpenEdit : function(e, value) {
@@ -2365,7 +2325,7 @@ var trig = {
   }, 
   OpListAfterEdit : function (e, value) {
     old.load(e);
-    opo.effectother(e);
+    dxop.effectother(opo, e);
     old.save.call(opo, e)​;
   }, 
   OpUroBeforeEdit : function (e) {
