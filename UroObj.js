@@ -515,7 +515,7 @@ var dxop = {
   },
   findlink : function (e) {
     let lb = this.lib=="DxAutoFill"?dx:op;
-    let lbs = lb.find(e.field(this.link[0])​);
+    let lbs = lb.entries();
     let found = null;
     if (lbs.length > 0) {
       found = lbs.find(d=>d.id!=dxop.id && this.title.every((v,i)=>(d.field(v)​==e.field(this.link[i]))));
