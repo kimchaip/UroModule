@@ -557,7 +557,7 @@ var dxop = {
       }
     }
     else { // old link is []
-      e.set(this.lib, found.title);
+      e.link(this.lib, found);
       dxop.count.call(this, found);
     }
   },
