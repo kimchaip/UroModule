@@ -7,7 +7,7 @@ var op = libByName("OperationList") ;
 var rp = libByName("Report")​;
 var os = libByName("OpUroSx");
 
-var old = { 
+var old = {
     d : {}, 
     load : function (e) {
       //get Previous to Obj
