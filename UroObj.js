@@ -504,7 +504,6 @@ var dxop = {
     else { // status plan/done
       let found = dxop.findlink.call(this, e);
       if(found) {
-        e.set("Output", dxop.id+" : "+found.id);
         dxop.autofill.call(this, e, found);
         dxop.updatelink.call(this, e, found);
       }
@@ -552,6 +551,7 @@ var dxop = {
       }
     }
     else { // old link is []
+      e.set("Output", dxop.id+" : "+found.title);
       e.set(this.lib, found.title);
       dxop.count.call(this, found);
     }
