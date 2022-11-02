@@ -514,12 +514,15 @@ var dxop = {
     }
   },
   findlink : function (e) {
-    let lb = this.lib=="DxAutoFill"? dx: op;
+    let lb = this.lib=="DxAutoFill"?dx:op;
     let lbs = lb.find(e.field(this.link[0])​);
     let found = null;
+    let str = "";
     if (lbs.length > 0) {
+      str = lbs.reduce((t,d)=>t+"\n"+d.id+"!="+dxop.id+" && "+this.title.reduce((s,v,i)=>s+" "+d.field(v)​+"=="+e.field(this.link[i]) ));
       found = lbs.find(d=>d.id!=dxop.id && this.title.every((v,i)=>(d.field(v)​==e.field(this.link[i]))));
     }​
+    e.set("Output", str);
     return found;
   },
   autofill : function (e, found) {
@@ -551,7 +554,6 @@ var dxop = {
       }
     }
     else { // old link is []
-      e.set("Output", dxop.id+" : "+found.title);
       e.set(this.lib, found.title);
       dxop.count.call(this, found);
     }
