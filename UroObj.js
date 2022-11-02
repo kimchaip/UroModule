@@ -504,14 +504,11 @@ var dxop = {
     else { // status plan/done
       let found = dxop.findlink.call(this, e);
       if(found) {
-        e.set("Output", e.field("Output")+" "+found.title);
         dxop.autofill.call(this, e, found);
         dxop.updatelink.call(this, e, found);
       }
       else {
-        e.set("Output", e.field("Output")+" "+found);
-        found = dxop.create.call(this, e);
-        e.set("Output", e.field("Output")+" "+found);
+        ound = dxop.create.call(this, e);
         dxop.updatelink.call(this, e, found);
       }
     }
@@ -520,12 +517,9 @@ var dxop = {
     let lb = this.lib=="DxAutoFill"?dx:op;
     let lbs = lb.find(e.field(this.link[0])​);
     let found = null;
-    let str = "";
     if (lbs.length > 0) {
-      str = lbs.reduce((t,d)=>t+"\n"+d.id+"!="+dxop.id+" && "+this.title.reduce((s,v,i)=>s+" "+d.field(v)​+"=="+e.field(this.link[i]), ""),"");
       found = lbs.find(d=>d.id!=dxop.id && this.title.every((v,i)=>(d.field(v)​==e.field(this.link[i]))));
     }​
-    e.set("Output", str);
     return found?found:null;
   },
   autofill : function (e, found) {
