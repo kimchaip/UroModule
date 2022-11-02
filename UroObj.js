@@ -511,7 +511,7 @@ var dxop = {
       else {
         e.set("Output", e.field("Output")+" "+found);
         found = dxop.create.call(this, e);
-        e.set("Output", e.field("Output")+" "+found.title);
+        e.set("Output", e.field("Output")+" "+found);
         dxop.updatelink.call(this, e, found);
       }
     }
