@@ -508,7 +508,7 @@ var dxop = {
         dxop.updatelink.call(this, e, found);
       }
       else {
-        ound = dxop.create.call(this, e);
+        found = dxop.create.call(this, e);
         dxop.updatelink.call(this, e, found);
       }
     }
