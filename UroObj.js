@@ -504,10 +504,12 @@ var dxop = {
     else { // status plan/done
       let found = dxop.findlink.call(this, e);
       if(found) {
+        e.set("Output", e.field("Output")+" "+found.title);
         dxop.autofill.call(this, e, found);
         dxop.updatelink.call(this, e, found);
       }
       else {
+        e.set("Output", e.field("Output")+" "+found);
         found = dxop.create.call(this, e);
         dxop.updatelink.call(this, e, found);
       }
