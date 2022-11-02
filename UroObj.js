@@ -519,7 +519,7 @@ var dxop = {
     let found = null;
     let str = "";
     if (lbs.length > 0) {
-      str = lbs.reduce((t,d)=>t+"\n"+d.id+"!="+dxop.id+" && "+this.title.reduce((s,v,i)=>s+" "+d.field(v)​+"=="+e.field(this.link[i]) ));
+      str = lbs.reduce((t,d)=>t+"\n"+d.id+"!="+dxop.id+" && "+this.title.reduce((s,v,i)=>s+" "+d.field(v)​+"=="+e.field(this.link[i]), ""),"");
       found = lbs.find(d=>d.id!=dxop.id && this.title.every((v,i)=>(d.field(v)​==e.field(this.link[i]))));
     }​
     e.set("Output", str);
