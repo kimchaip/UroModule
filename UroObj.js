@@ -511,6 +511,7 @@ var dxop = {
       else {
         e.set("Output", e.field("Output")+" "+found);
         found = dxop.create.call(this, e);
+        e.set("Output", e.field("Output")+" "+found.title);
         dxop.updatelink.call(this, e, found);
       }
     }
@@ -525,7 +526,7 @@ var dxop = {
       found = lbs.find(d=>d.id!=dxop.id && this.title.every((v,i)=>(d.field(v)​==e.field(this.link[i]))));
     }​
     e.set("Output", str);
-    return found;
+    return found?found:null;
   },
   autofill : function (e, found) {
     if(this.lib=="OperationList") {
