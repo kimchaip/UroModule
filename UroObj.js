@@ -573,6 +573,7 @@ var dxop = {
       o["Optime"] = fill.oplength(e);
     }
     let found = lb.create(o);
+    old.save.call(this, found);
     //message("Create new " + this.lib + " Successfully​")​;
     return found;
   },
