@@ -1083,18 +1083,26 @@ var fill = {
     }
   },
   underlying : function (e) {
-    if (e.field("Underlying").join()!=old.field("Underlying").join()) {
-      let urs = e.linksFrom("UroBase", "Patient");
-      let bus = e.linksFrom("Backup", "Patient");
-      let css = e.linksFrom("Consult", "Patient");
-      for (let i=0; i<urs.length; i++) {
-        urs[i].set("Underlying", e.field("Underlying").join());
+    if (this.lib == "Patient")
+      if (e.field("Underlying").join()!=old.field("Underlying").join()) {
+        let urs = e.linksFrom("UroBase", "Patient");
+        let bus = e.linksFrom("Backup", "Patient");
+        let css = e.linksFrom("Consult", "Patient");
+        for (let i=0; i<urs.length; i++) {
+          urs[i].set("Underlying", e.field("Underlying").join());
+        }
+        for (let i=0; i<bus.length; i++) {
+          bus[i].set("Underlying", e.field("Underlying").join());
+        }
+        for (let i=0; i<css.length; i++) {
+          css[i].set("Underlying", e.field("Underlying").join());
+        }
       }
-      for (let i=0; i<bus.length; i++) {
-        bus[i].set("Underlying", e.field("Underlying").join());
-      }
-      for (let i=0; i<css.length; i++) {
-        css[i].set("Underlying", e.field("Underlying").join());
+    }
+    else if (this.lib == "UroBase" || this.lib == "Backup" || this.lib == "Consult") {
+      let p = e.field("Patient");
+      if (p.length>0) {
+        e.set("Underlying", p[0].field("Underlying").join());
       }
     }
   }, 
@@ -2108,7 +2116,7 @@ var trig = {
     pto.rearrangename(e);
     old.load(e);
     valid.uniqueHN(e, value=="create")​;
-    fill.underlying(e)​;
+    fill.underlying.call(pto, e)​;
     pto.age(e)​;
     pto.dj(e)​;
 
@@ -2180,6 +2188,7 @@ var trig = {
     valid.dxop.call(this, e); //fill dx,op complete 
     fill.setnewdate.call(this, e)​;​
     valid.uniqueVisit.call(this, e, value=="create")​;
+    fill.underlying.call(this, e)​;
     fill.resulteffect.call(this, e);
     fill.future.call(this, e)​;
     if (this.lib!="Consult") {
