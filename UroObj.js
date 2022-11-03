@@ -1083,7 +1083,7 @@ var fill = {
     }
   },
   underlying : function (e) {
-    if (this.lib == "Patient")
+    if (this.lib == "Patient") {
       if (e.field("Underlying").join()!=old.field("Underlying").join()) {
         let urs = e.linksFrom("UroBase", "Patient");
         let bus = e.linksFrom("Backup", "Patient");
