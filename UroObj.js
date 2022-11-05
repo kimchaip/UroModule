@@ -1098,6 +1098,7 @@ var fill = {
           css[i].set("Underlying", e.field("Underlying").join());
         }
       }
+      e.set("Output", e.field("UD")+" : "+e.field("richtext"));
     }
     else if (this.lib == "UroBase" || this.lib == "Backup" || this.lib == "Consult") {
       let p = e.field("Patient");
