@@ -1390,6 +1390,48 @@ var fill = {
         e.set("MergeID", mstr);
       }
     }
+  },
+  twodigit : function(value) {
+    if(value​<10)
+      return "0"+value.toString()​;
+    else
+      return value.toString()​;
+  },
+  orbridge : function(e)​ {
+    let a=[] ;
+    a.push(e.field("Que")​);
+    a.push(e.field("Patient")[0].field("PtName") + " " + e.field("Patient")[0].field("Age") + "; " + e.field("Patient")[0].field("HN"));
+    let strdx = e.field("Dx");
+    let strop = e.field("Op");
+    if(strdx.indexOf(",")>-1) 
+      strdx = "\"" + strdx + "\"" ;
+    if(strop.indexOf(",")>-1)
+      strop = "\"" + strop + "\"" ;
+    a.push(strdx + "->" + strop);    
+    a.push(e.field("Bonus"));
+    if(e.field("DJstent")=="on DJ" ||e.field("DJstent")=="change DJ") 
+      a.push("/");
+    else
+      a.push("");
+    if(e.field("VisitType")​=="OPD")​{
+      a.push("OPD");
+    }​
+    else {
+      a.push(e.field("Ward"));
+    }​
+    if(e.field("TimeIn")!=null && e.field("TimeOut")!=null) 
+      a.push(e.field("TimeIn").getHours() + ":" + fill.twodigit(e.field("TimeIn").getMinutes())​ + "-" + e.field("TimeOut").getHours() +":" + fill.twodigit(e.field("TimeOut").getMinutes()))​;
+    else
+      a.push("");
+    if(e.field("Patient")[0].field("Underlying").length>0) {
+      a.push("\"" + e.field("Patient")[0].field("Underlying").join() + "\"");
+    }​
+    else
+      a.push("");
+    if(e.field("OpResult")!="") {
+      a.push("\"" + e.field("OpResult").replace(/\n/g, ", ") + "\"");
+    }​
+    e.set("ORbridge", a.join());
   }
 }​;
 var pto = {
@@ -1764,6 +1806,7 @@ var dxo = {
           dxop.run.call(this, u, create, pid)​;
           // op link is update
           dxop.run.call(opo, u, create)​;
+          fill.orbridge(u);
         }
       }​
     }​
@@ -1829,6 +1872,7 @@ var opo = {
           dxop.run.call(this, u, create, pid)​;
           // dx link is update
           dxop.run.call(dxo, u, create)​;
+          fill.orbridge(u);
         }
       }​
     }​
@@ -2074,11 +2118,13 @@ var opu = {
         for (let i=0; i<orlinks.length; i++) {
           if (orlinks[i].field("OpExtra")==true && orlinks[i].field("Status")!="Not") {
             found.push(orlinks[i]);
+            fill.orbridge(orlinks[i]);
           }
         }
         for (let i=0; i<bulinks.length; i++) {
           if (bulinks[i].field("OpExtra")==true && bulinks[i].field("Status")!="Not") {
             found.push(bulinks[i]);
+            fill.orbridge(bulinks[i]);
           }
         }
       }
@@ -2215,6 +2261,7 @@ var trig = {
       dxop.run.call(dxo, e, value=="create")​;
       que.run.call(this, e)​;
       fill.opdatecal(e);
+      fill.orbridge(e);
     }
     fill.los(e)​;
     fill.dr(e, value=="create");
@@ -2283,8 +2330,10 @@ var trig = {
     fill.track.call(this, e)​;
     fill.correctMergeID.call(this, e);
     mer.merge.call(this, e)​;
-    if (this.lib!="Consult")
+    if (this.lib!="Consult") {
       que.run.call(this, e)​;
+      fill.orbridge(e);
+    }
     fill.los(e)​;
     fill.active.call(this, e);
     fill.ptstatus.call(this, e)​;
