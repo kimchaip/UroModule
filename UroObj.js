@@ -1398,42 +1398,42 @@ var fill = {
       return value.toString()​;
   },
   orbridge : function(e)​ {
-    let a=[] ;
-    a.push(e.field("Que")​);
-    a.push(e.field("Patient")[0].field("PtName") + " " + e.field("Patient")[0].field("Age") + "; " + e.field("Patient")[0].field("HN"));
-    let strdx = e.field("Dx");
-    let strop = e.field("Op");
-    if(strdx.indexOf(",")>-1) 
-      strdx = "\"" + strdx + "\"" ;
-    if(strop.indexOf(",")>-1)
-      strop = "\"" + strop + "\"" ;
-    a.push(strdx + "->" + strop);    
-    a.push(e.field("Bonus"));
-    if(e.field("DJstent")=="on DJ" ||e.field("DJstent")=="change DJ") 
-      a.push("/");
-    else
-      a.push("");
-    if(e.field("VisitType")​=="OPD")​{
-      a.push("OPD");
-    }​
-    else {
-      a.push(e.field("Ward"));
-    }​
-    if(e.field("TimeIn")!=null && e.field("TimeOut")!=null) 
-      a.push(e.field("TimeIn").getHours() + ":" + fill.twodigit(e.field("TimeIn").getMinutes())​ + "-" + e.field("TimeOut").getHours() +":" + fill.twodigit(e.field("TimeOut").getMinutes()))​;
-    else
-      a.push("");
-    if(e.field("Patient")[0].field("Underlying").length>0) {
-      a.push("\"" + e.field("Patient")[0].field("Underlying").join() + "\"");
-    }​
-    else
-      a.push("");
-    if(e.field("OpResult")!="") {
-      a.push("\"" + e.field("OpResult").replace(/\n/g, ", ") + "\"");
-    }​
-
-    if(e.field("Status")!="Not" && e.field("OpExtra")==true)
+    if(e.field("Status")!="Not" && e.field("OpExtra")==true) {
+      let a=[] ;
+      a.push(e.field("Que")​);
+      a.push(e.field("Patient")[0].field("PtName") + " " + e.field("Patient")[0].field("Age") + "; " + e.field("Patient")[0].field("HN"));
+      let strdx = e.field("Dx");
+      let strop = e.field("Op");
+      if(strdx.indexOf(",")>-1) 
+        strdx = "\"" + strdx + "\"" ;
+      if(strop.indexOf(",")>-1)
+        strop = "\"" + strop + "\"" ;
+      a.push(strdx + "->" + strop);    
+      a.push(e.field("Bonus"));
+      if(e.field("DJstent")=="on DJ" ||e.field("DJstent")=="change DJ") 
+        a.push("/");
+      else
+        a.push("");
+      if(e.field("VisitType")​=="OPD")​{
+        a.push("OPD");
+      }​
+      else {
+        a.push(e.field("Ward"));
+      }​
+      if(e.field("TimeIn")!=null && e.field("TimeOut")!=null) 
+        a.push(e.field("TimeIn").getHours() + ":" + fill.twodigit(e.field("TimeIn").getMinutes())​ + "-" + e.field("TimeOut").getHours() +":" + fill.twodigit(e.field("TimeOut").getMinutes()))​;
+      else
+        a.push("");
+      if(e.field("Patient")[0].field("Underlying").length>0) {
+        a.push("\"" + e.field("Patient")[0].field("Underlying").join() + "\"");
+      }​
+      else
+        a.push("");
+      if(e.field("OpResult")!="") {
+        a.push("\"" + e.field("OpResult").replace(/\n/g, ", ") + "\"");
+      }​
       e.set("ORbridge", a.join());
+    }
     else
       e.set("ORbridge", "");
   }
