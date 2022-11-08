@@ -2211,8 +2211,8 @@ var trig = {
       uro.setDJstent(e)​;
       uro.setx15(e)​;
       e.set("OpLength", fill.oplength(e));
-      dxop.run.call(opo, e, create)​;
-      dxop.run.call(dxo, e, create)​;
+      dxop.run.call(opo, e, value=="create")​;
+      dxop.run.call(dxo, e, value=="create")​;
       que.run.call(this, e)​;
       fill.opdatecal(e);
     }
