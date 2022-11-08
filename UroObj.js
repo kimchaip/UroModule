@@ -550,7 +550,7 @@ var dxop = {
         dxop.count.call(this, found);
       }
     }
-    else { // old link is []
+    else if(found) { // old link is []
       e.link(this.lib, found);
       dxop.count.call(this, found);
     }
