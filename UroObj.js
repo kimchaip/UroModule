@@ -1431,7 +1431,11 @@ var fill = {
     if(e.field("OpResult")!="") {
       a.push("\"" + e.field("OpResult").replace(/\n/g, ", ") + "\"");
     }​
-    e.set("ORbridge", a.join());
+
+    if(e.field("Status")!="Not" && e.field("OpExtra")==true)
+      e.set("ORbridge", a.join());
+    else
+      e.set("ORbridge", "");
   }
 }​;
 var pto = {
