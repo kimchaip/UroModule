@@ -496,7 +496,7 @@ var emx = {
 }​;
 var dxop = {
   id : 0,
-  run : function (e, id) {
+  run : function (e, id, create) {
     dxop.id = id?id:0;
     if(e.field("Status")​ == "Not" )​ { // status not, fill Dx/Op not complete
       dxop.deletelink.call(this, e);
@@ -505,11 +505,11 @@ var dxop = {
       let found = dxop.findlink.call(this, e);
       if(found) {
         dxop.autofill.call(this, e, found);
-        dxop.updatelink.call(this, e, found);
+        dxop.updatelink.call(this, e, found, create);
       }
       else {
         found = dxop.create.call(this, e);
-        dxop.updatelink.call(this, e, found);
+        dxop.updatelink.call(this, e, found, create);
       }
     }
   },
@@ -540,7 +540,7 @@ var dxop = {
       }
     }
   },
-  updatelink : function (e, found) {
+  updatelink : function (e, found, create) {
     if(e.field(this.lib).length>0) {
       let oldlink = e.field(this.lib)[0];
       if(oldlink.id!=found.id) { // change link
@@ -551,7 +551,10 @@ var dxop = {
       }
     }
     else if(found) { // old link is []
-      e.link(this.lib, found);
+      if (create)
+        e.set(this.lib, found.title);
+      else
+        e.link(this.lib, found);
       dxop.count.call(this, found);
     }
   },
@@ -1758,9 +1761,9 @@ var dxo = {
           this.title.forEach((f,i)=>u.set(this.link[i], e.field(f))​);
           // if non unique, move dx link to other entry
           let pid = unique?0:e.id;
-          dxop.run.call(this, u, pid)​;
+          dxop.run.call(this, u, pid, create)​;
           // op link is update
-          dxop.run.call(opo, u)​;
+          dxop.run.call(opo, u, , create)​;
         }
       }​
     }​
@@ -1823,9 +1826,9 @@ var opo = {
           this.title.forEach((f,i)=>u.set(this.link[i], e.field(f))​);
           // if non unique, move op link to other entry
           let pid = unique?0:e.id;
-          dxop.run.call(this, u, pid)​;
+          dxop.run.call(this, u, pid, create)​;
           // dx link is update
-          dxop.run.call(dxo, u)​;
+          dxop.run.call(dxo, u, , create)​;
         }
       }​
     }​
@@ -2208,8 +2211,8 @@ var trig = {
       uro.setDJstent(e)​;
       uro.setx15(e)​;
       e.set("OpLength", fill.oplength(e));
-      dxop.run.call(opo, e)​;
-      dxop.run.call(dxo, e)​;
+      dxop.run.call(opo, e, , create)​;
+      dxop.run.call(dxo, e, , create)​;
       que.run.call(this, e)​;
       fill.opdatecal(e);
     }
