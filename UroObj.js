@@ -465,10 +465,17 @@ var emx = {
         if(this.lib!="Consult") {
           last.set("Op", e.field("Operation")​);
           last.set("Dx", e.field("Diagnosis"));
+          let ortype = fill.ortypebyop(last);
+          if (ortype)
+            last.set("ORType", ortype);
         }
         else {
           last.set("Dx", e.field("Diagnosis")​);
         }
+        let vstype = fill.visittypebydx.call(this, last);
+        if (vstype)
+          last.set("VisitType", vstype);
+
         trig.BeforeEdit.call(this, last, "update");
         trig.AfterEdit.call(this, last, "create");
         //message("successfully created new Entry") ;
@@ -771,7 +778,6 @@ var fill = {
     }
   },
   setortype : function (e, create) {
-    e.set("Output", create +"&&"+ old.field("Op")+"!="+e.field("Op") +"&&"+ old.field("ORType") +"=="+ e.field("ORType"));
     if(create && old.field("Op")!=e.field("Op") && e.field("Op") && old.field("ORType") == e.field("ORType")) {
       let ortype = fill.ortypebyop(e);
       if (ortype)
@@ -881,11 +887,9 @@ var fill = {
         return o;
       });
       results.sort((a,b)=>{return b.count-a.count});
-      e.set("Output", result[0].type);
       return results[0].type;
     }
     else {
-      e.set("Output", "");
       return null;
     }
   },
