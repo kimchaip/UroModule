@@ -771,6 +771,7 @@ var fill = {
     }
   },
   setortype : function (e, create) {
+    e.set("Output", create +"&&"+ old.field("Op")+"!="+e.field("Op") +"&&"+ old.field("ORType") +"=="+ e.field("ORType"));
     if(create && old.field("Op")!=e.field("Op") && e.field("Op") && old.field("ORType") == e.field("ORType")) {
       let ortype = fill.ortypebyop(e);
       if (ortype)
