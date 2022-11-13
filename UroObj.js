@@ -880,9 +880,11 @@ var fill = {
         return o;
       });
       results.sort((a,b)=>{return b.count-a.count});
+      e.set("Output", result[0].type);
       return results[0].type;
     }
     else {
+      e.set("Output", "");
       return null;
     }
   },
