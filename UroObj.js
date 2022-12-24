@@ -2316,6 +2316,7 @@ var trig = {
     old.save.call(this, e)​;
   }, 
   BeforeOpenLib : function (all) {
+    let first = false;
     for (let i=0; i<all.length; i++)​ {
       if (my.gdate(my.date(all[i]​.lastModifiedTime))​ < ntoday) {
         if (all[i].field("Done")==true) 
@@ -2341,8 +2342,13 @@ var trig = {
           fill.ptnextstatus.call(this, all[i])​;
           fill.color.call(this, all[i]);
           all[i].set("Done", true);
+          first = true;
         }
       }
+    }
+    if (first) {
+      or.syncGoogleSheet();
+      os.syncGoogleSheet();
     }
   }, 
   BeforeUpdatingField : function (e) {
