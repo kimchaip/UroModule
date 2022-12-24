@@ -2308,6 +2308,8 @@ var trig = {
           opu.updateOp(e)​;
       }
     }
+    if (my.gdate(e.field("Date"))!=my.gdate(old.field("Date")) || e.field("ORType")!=old.field("ORType") || e.field("Status")!=old.field("Status") || e.field("TimeIn")!=old.field("TimeIn") || e.field("TimeOut")!=old.field("TimeOut"))
+      or.syncGoogleSheet();
     old.save.call(this, e)​;
   }, 
   BeforeViewCard ​: function (e) {​
