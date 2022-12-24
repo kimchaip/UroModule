@@ -2053,6 +2053,7 @@ var opu = {
         ent["ModifiedTime"] =  e.lastModifiedTime;
         os.create(ent);
         //message("create OpUroSx!");
+        os.syncGoogleSheet();
       }
     }
   },
