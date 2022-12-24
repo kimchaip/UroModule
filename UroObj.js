@@ -2111,6 +2111,7 @@ var opu = {
   },
   deleteOp : function (e) {
     if(old.field("OpExtra") && old.field("Status") != "Not"){
+      let change = false;
       let oss = os.entries();
       if(oss.length>0){
         let parr = this.splitPtName(old.field("Patient"));
@@ -2119,10 +2120,13 @@ var opu = {
           if (my.gdate(my.date(oss[s].field("OpDate")))​ == my.gdate(my.date(old.field("Date")))​ &​& oss[s].field("Dr") ==​ old.field("Dr") &​& oss[s].field("OpType") ==​ old.field("ORType") &​& oss[s].field("PtName") ==​ parr[0] && oss[s].field("HN") ==​ parr[2] &​& oss[s].field("Dx") ==​ old.field("Dx") &​& oss[s].field("Op") ==​ old.field("Op"))​{
             oss[s].trash();
             //message("delete OpUroSx!");
+            change = true;
             break;
           }
         }​
       }​
+      if (change)
+        os.syncGoogleSheet();
     }
   },
   ptTrigOpuro : function (e) {
