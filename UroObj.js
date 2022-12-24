@@ -2171,6 +2171,7 @@ var opu = {
         }
         if(count) {
           //message("Update related PtName in OpUroSx!");
+          os.syncGoogleSheet();
         }
       }
     }
