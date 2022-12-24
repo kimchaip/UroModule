@@ -2060,6 +2060,7 @@ var opu = {
   updateOp : function (e) {
     if(old.field("OpExtra") == true && old.field("Status") != "Not" && e.field("OpExtra") == true && e.field("Status") != "Not"){
       //update
+      let change = false;
       let oss = os.entries();
       let links = e.field("Patient");
       if(links.length>0 && oss.length>0){
@@ -2091,10 +2092,13 @@ var opu = {
             if(my.gdate(oss[s].field("ModifiedTime"))<my.gdate(e.lastModifiedTime))
               oss[s].set("ModifiedTime", e.lastModifiedTime);
             //message("update OpUroSx!");
+            change = true;
             break;
           }
         }​
       }​
+      if (change)
+        os.syncGoogleSheet();
     }
     else if(old.field("OpExtra") == false && e.field("OpExtra") == true && e.field("Status") != "Not" || old.field("Status") == "Not" && e.field("Status") != "Not" && e.field("OpExtra") == true){
       //create
