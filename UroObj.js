@@ -2388,6 +2388,7 @@ var trig = {
       rpo.deleteold(e)​;
       if (this.lib=="UroBase")
         opu.deleteOp(e);
+      or.syncGoogleSheet();
     }
     fill.deletept(e)​;
   }, 
