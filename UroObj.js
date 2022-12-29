@@ -2195,7 +2195,7 @@ var trig = {
       AndroidContacts.create(e.field("PtName"), 
         {phone:e.field("Phone")});
     }​
-    else if(old.field("Phone") != contact && contact) {
+    else if(contact && contact.phone && old.field("Phone") != contact.phone) {
       e.set("Phone", contact.phone)​;
     }​
   }, 
