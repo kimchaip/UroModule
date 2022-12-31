@@ -2185,9 +2185,7 @@ var trig = {
   PatientBeforeEdit : function (e, value)​ {
     pto.rearrangename(e);
     old.load(e);
-    /*
     valid.uniqueHN(e, value=="create")​;
-    */
     fill.underlying.call(pto, e)​;
     pto.age(e)​;
     pto.dj(e)​;
