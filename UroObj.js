@@ -2188,9 +2188,10 @@ var trig = {
     /*
     valid.uniqueHN(e, value=="create")​;
     fill.underlying.call(pto, e)​;
+*/
     pto.age(e)​;
     pto.dj(e)​;
-*/
+
     let contact = e.field("Contact")​;
     if (old.field("Phone") != e.field("Phone") && e.field("Phone")) {
       AndroidContacts.create(e.field("PtName"), 
