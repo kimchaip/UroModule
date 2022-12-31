@@ -2185,6 +2185,7 @@ var trig = {
   PatientBeforeEdit : function (e, value)​ {
     pto.rearrangename(e);
     old.load(e);
+    /*
     valid.uniqueHN(e, value=="create")​;
     fill.underlying.call(pto, e)​;
     pto.age(e)​;
@@ -2197,7 +2198,7 @@ var trig = {
     }​
     else if(contact && contact.phone && old.field("Phone") != contact.phone) {
       e.set("Phone", contact.phone)​;
-    }​
+    }​*/
   }, 
   PatientAfterEdit : function (e, value) {
     old.load(e)​;
