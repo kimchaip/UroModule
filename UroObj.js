@@ -2190,7 +2190,7 @@ var trig = {
     fill.underlying.call(pto, e)​;
     pto.age(e)​;
     pto.dj(e)​;
-
+*/
     let contact = e.field("Contact")​;
     if (old.field("Phone") != e.field("Phone") && e.field("Phone")) {
       AndroidContacts.create(e.field("PtName"), 
@@ -2198,7 +2198,7 @@ var trig = {
     }​
     else if(contact && contact.phone && old.field("Phone") != contact.phone) {
       e.set("Phone", contact.phone)​;
-    }​*/
+    }
   }, 
   PatientAfterEdit : function (e, value) {
     old.load(e)​;
