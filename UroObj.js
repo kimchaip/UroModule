@@ -347,17 +347,19 @@ var mer = {
   }
 };
 var que = {
+  o: [],
   q: [],​
   load: function(e) {  // load entry to q
     let lib = this.lib=="UroBase"? or: bu;
     all = lib.entries();
+    o = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(old.field("Date")) && v.field("ORType")=="GA" && v.field("Status")!="Not");
     q = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(e.field("Date")) && v.field("ORType")=="GA" && v.field("Status")!="Not");
   },
-  save : function(e) {
+  save : function(arr) {
     // reorder by TimeIn
-    this.sorttime();
+    this.sorttime(arr);
     // set new que to every entry
-    q.forEach((v,i)=>{
+    arr.forEach((v,i)=>{
       v.set("Que", ("0"+(i+1)).slice(-2));
       this.oldsave(v);
     }, this);
@@ -370,65 +372,63 @@ var que = {
     // set new previous
     e.set("Previous", previous);
   },
-  sortque: function(e) {
-    // order q by que asc except this entry use old que
-    q = q.sort((a,b)=>a.field("Que")-b.field("Que"));
+  sortque: function(arr) {
+    // order array by que asc
+    arr.sort((a,b)=>a.field("Que")-b.field("Que"));
   },
-  sorttime: function(e) {
-    // order q by TimeIn asc (if any is null, TimeIn is max)
-    q = q.sort((a,b)=>{
+  sorttime: function(arr) {
+    // order arr by TimeIn asc (if any is null, TimeIn is max)
+    arr.sort((a,b)=>{
       let q1 = a.field("TimeIn")? my.gdate(a.field("TimeIn")): 86400000;
       let q2 = b.field("TimeIn")? my.gdate(b.field("TimeIn")): 86400000;
       return q1-q2;
     });
   },
-  findInx: function(e) {
+  findInx: function(e, arr) {
     //q.findIndex by this entry.id
-    if(q.length>0)
-      return q.findIndex(v=>v.id==e.id);
+    if(arr.length>0)
+      return arr.findIndex(v=>v.id==e.id);
     else
       return -1;
   },
-  insert: function(e) {
-    // remove this entry from q if found
-    this.remove(e);
+  insert: function(e, arr) {
     // get this que
     let thisq = Number(e.field("Que"));
     if (thisq>0)  // thisq > 0
       // insert this entry to position by que
-      q.splice(thisq-1, 0, e);
+      arr.splice(thisq-1, 0, e);
     else  // thisq <= 0
       // append this entry to q
-      q.push(e);
+      arr.push(e);
   },
-  remove: function(e) {
+  remove: function(e, arr) {
     // findInx and remove this entry from q
-    let inx = this.findInx(e);
+    let inx = this.findInx(e, arr);
     if(inx>-1)
-      q.splice(inx, 1);
-    
+      arr.splice(inx, 1);
   },
   run : function (e) {
-    if (my.gdate(e.field("TimeIn")) != my.gdate(old.field("TimeIn")) || e.field("Que") != old.field("Que") || e.field("Status") != old.field("Status") || e.field("ORType") != old.field("ORType") || (e.field("Que") == "00" && e.field("Status") != "Not" && e.field("ORType")​ == "GA")) {
-      // load old entry to q
+    if (my.gdate(e.field("TimeIn")) != my.gdate(old.field("TimeIn")) || e.field("Que") != old.field("Que") || e.field("Status") != old.field("Status") || e.field("ORType") != old.field("ORType") || my.gdate(e.field("Date")) != my.gdate(old.field("Date"))) {
+      // load old entry to o, load  new entry to q
       que.load.call(this, e);
-      // remove old e or insert new e
+      que.sortque(que.o);
+      que.sortque(que.q);
+      // remove old and save old
+      if (my.gdate(e.field("Date")) != my.gdate(old.field("Date"))) {
+        que.remove(e, que.o);
+        que.save(que.o);
+      }
+      // remove new or change new 
       if (e.field("Status") == "Not" || e.field("ORType")​ == "LA") {  // change Status -> Not or ORType -> LA
-        que.remove(e);
+        que.remove(e, que.q);
         e.set("Que", "00");
       }
-      else {  // change Status -> !Not and ORType -> GA
-        que.insert(e);
-      }
-      // sort q by que
-      que.sortque(e);
-      // update when Que change and !Not and GA
-      if (e.field("Que") != old.field("Que") && e.field("Status") != "Not" && e.field("ORType")​ == "GA") {
-        // insert this entry to q at position que
-        que.insert(e);
+      else {  
+        que.remove(e, que.q);
+        que.insert(e, que.q);
       }
       //reorder by TimeIn -> set new que to every entry
-      que.save(e);
+      que.save(que.q);
     }
   }
 };
@@ -2375,6 +2375,13 @@ var trig = {
     old.save.call(this, e)​;
   }, 
   BeforeDelete : function (e)​ {
+    old.load(e);
+    if (this.lib!="Consult") {
+      que.load.call(this, e);
+      que.sortque(que.q);
+      que.remove(e, que.q);
+      que.save(que.q);
+    }
     if (e.field("Merge")​==true)​ {
       fill.correctMergeID.call(this, e);
       mer.cancel.call(this, e)​;
