@@ -352,8 +352,8 @@ var que = {
   load: function(e) {  // load entry to q
     let lib = this.lib=="UroBase"? or: bu;
     all = lib.entries();
-    o = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(old.field("Date")) && v.field("ORType")=="GA" && v.field("Status")!="Not");
-    q = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(e.field("Date")) && v.field("ORType")=="GA" && v.field("Status")!="Not");
+    que.o = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(old.field("Date")) && v.field("ORType")=="GA" && v.field("Status")!="Not");
+    que.q = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(e.field("Date")) && v.field("ORType")=="GA" && v.field("Status")!="Not");
   },
   save : function(arr) {
     // reorder by TimeIn
