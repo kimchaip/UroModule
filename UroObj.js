@@ -2190,18 +2190,18 @@ var opu = {
     arr.forEach((v,i)=>{
       // Find related opu and correct que
       let oss = os.entries();
-      let links = e.field("Patient");
+      let links = v.field("Patient");
       if(links.length>0 && oss.length>0){
         let link = links[0];
         let parr = this.splitPtName(link.title);
         parr[2] = parr[2]?parr[2]:null;
         for (let s=0; s<oss.length; s++) {
-          if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(my.date(e.field("Date"))) && oss[s].field("Dr") == e.field("Dr") && oss[s].field("OpType") == e.field("ORType") && oss[s].field("PtName") == parr[0] && oss[s].field("HN") == parr[2] && oss[s].field("Dx") == e.field("Dx") && oss[s].field("Op") == e.field("Op")){
-            if(oss[s].field("Que")!=Number(e.field("Que"))) {
-              oss[s].set("Que", Number(e.field("Que")));
+          if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(my.date(v.field("Date"))) && oss[s].field("Dr") == v.field("Dr") && oss[s].field("OpType") == v.field("ORType") && oss[s].field("PtName") == parr[0] && oss[s].field("HN") == parr[2] && oss[s].field("Dx") == v.field("Dx") && oss[s].field("Op") == v.field("Op")){
+            if(oss[s].field("Que")!=Number(v.field("Que"))) {
+              oss[s].set("Que", Number(v.field("Que")));
               change = true;
-              break;
             }
+            break;
           }
         }
       }
