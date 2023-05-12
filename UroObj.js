@@ -2187,7 +2187,7 @@ var opu = {
     all = or.entries();
     que.q = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(e.field("Date")) && v.field("ORType")==e.field("ORType") && v.field("Status")!="Not");
     // set new que to every entry
-    arr.forEach((v,i)=>{
+    que.q.forEach((v,i)=>{
       // Find related opu and correct que
       let oss = os.entries();
       let links = v.field("Patient");
