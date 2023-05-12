@@ -363,7 +363,20 @@ var que = {
       if (v.field("Que")!=("0"+(i+1)).slice(-2)) {
         v.set("Que", ("0"+(i+1)).slice(-2));
         this.oldsave(v);
-        opu.updateOp(v);
+        // Find related opu and correct que
+        let oss = os.entries();
+        let links = v.field("Patient");
+        if(links.length>0 && oss.length>0){
+          let link = links[0];
+          let parr = opu.splitPtName(v.field("Patient"));
+          parr[2] = parr[2]?parr[2]:null;
+          for (let s=0; s<oss.length; s++) {
+            if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(my.date(v.field("Date"))) && oss[s].field("Dr") == v.field("Dr") && oss[s].field("OpType") == v.field("ORType") && oss[s].field("PtName") == parr[0] && oss[s].field("HN") == parr[2] && oss[s].field("Dx") == v.field("Dx") && oss[s].field("Op") == v.field("Op")){
+              oss[s].set("Que", Number(v.field("Que")));
+              break;
+            }
+          }
+        }
       }
     }, this);
   },
