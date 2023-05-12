@@ -2193,10 +2193,10 @@ var opu = {
       let links = e.field("Patient");
       if(links.length>0 && oss.length>0){
         let link = links[0];
-        let parr = this.splitPtName(old.field("Patient"));
+        let parr = this.splitPtName(link.title);
         parr[2] = parr[2]?parr[2]:null;
         for (let s=0; s<oss.length; s++) {
-          if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(my.date(old.field("Date"))) && oss[s].field("Dr") == old.field("Dr") && oss[s].field("OpType") == old.field("ORType") && oss[s].field("PtName") == parr[0] && oss[s].field("HN") == parr[2] && oss[s].field("Dx") == old.field("Dx") && oss[s].field("Op") == old.field("Op")){
+          if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(my.date(e.field("Date"))) && oss[s].field("Dr") == e.field("Dr") && oss[s].field("OpType") == e.field("ORType") && oss[s].field("PtName") == parr[0] && oss[s].field("HN") == parr[2] && oss[s].field("Dx") == e.field("Dx") && oss[s].field("Op") == e.field("Op")){
             if(oss[s].field("Que")!=Number(e.field("Que"))) {
               oss[s].set("Que", Number(e.field("Que")));
               change = true;
@@ -2212,7 +2212,7 @@ var opu = {
 
 var trig = {
   PatientOpenEdit : function(e, value) {
-    if (e) old.save.call(pto, e);
+    if(e) old.save.call(pto, e);
   },
   PatientBeforeEdit : function (e, value) {
     pto.rearrangename(e);
@@ -2223,7 +2223,7 @@ var trig = {
     pto.dj(e);
 
     let contact = e.field("Contact");
-    if (old.field("Phone") != e.field("Phone") && e.field("Phone")) {
+    if(old.field("Phone") != e.field("Phone") && e.field("Phone")) {
       AndroidContacts.create(e.field("PtName"), 
         {phone:e.field("Phone")});
     }
@@ -2234,7 +2234,7 @@ var trig = {
   PatientAfterEdit : function (e, value) {
     let change = false;
     old.load(e);
-    if (value=="update")
+    if(value=="update")
       change = opu.ptTrigOpuro(e);
     if(change)
       os.syncGoogleSheet();
