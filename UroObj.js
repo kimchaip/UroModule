@@ -2184,7 +2184,7 @@ var opu = {
   queSaveEffect : function(e) { // when que.save -> every entry rearrange in que -> make change whice relate que in opu
     // load q
     let change = false;
-    all = lib.entries();
+    all = or.entries();
     que.q = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(e.field("Date")) && v.field("ORType")==e.field("ORType") && v.field("Status")!="Not");
     // set new que to every entry
     arr.forEach((v,i)=>{
@@ -2413,7 +2413,10 @@ var trig = {
     mer.effect(e);
   }, 
   AfterUpdatingField : function (e) {
+    let change = opu.queSaveEffect(e);
     old.save.call(this, e);
+    if(change)
+      os.syncGoogleSheet();
   }, 
   BeforeDelete : function (e) {
     old.load(e);
