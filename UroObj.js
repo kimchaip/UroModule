@@ -360,8 +360,11 @@ var que = {
     this.sorttime(arr);
     // set new que to every entry
     arr.forEach((v,i)=>{
-      v.set("Que", ("0"+(i+1)).slice(-2));
-      this.oldsave(v);
+      if (v.field("Que")!=("0"+(i+1)).slice(-2)) {
+        v.set("Que", ("0"+(i+1)).slice(-2));
+        this.oldsave(v);
+        opu.updateOp(v);
+      }
     }, this);
   },
   oldsave : function (e) {
