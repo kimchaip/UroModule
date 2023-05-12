@@ -433,9 +433,10 @@ var que = {
       if (my.gdate(e.field("Date")) != my.gdate(old.field("Date")) || e.field("ORType") != old.field("ORType")) {
         que.remove(e, que.o);
         que.save(que.o);
+        e.set("Que", "00");   // for append to q
       }
       // remove new or change new 
-      if (e.field("Status") == "Not") {  // change Status -> Not or ORType -> LA
+      if (e.field("Status") == "Not") {  // change Status -> Not
         que.remove(e, que.q);
         e.set("Que", "00");
       }
