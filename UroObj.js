@@ -360,24 +360,8 @@ var que = {
     this.sorttime(arr);
     // set new que to every entry
     arr.forEach((v,i)=>{
-      if (v.field("Que")!=("0"+(i+1)).slice(-2)) {
-        v.set("Que", ("0"+(i+1)).slice(-2));
-        this.oldsave(v);
-        // Find related opu and correct que
-        let oss = os.entries();
-        let links = v.field("Patient");
-        if(links.length>0 && oss.length>0){
-          let link = links[0];
-          let parr = opu.splitPtName(link.title);
-          parr[2] = parr[2]?parr[2]:null;
-          for (let s=0; s<oss.length; s++) {
-            if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(my.date(v.field("Date"))) && oss[s].field("Dr") == v.field("Dr") && oss[s].field("OpType") == v.field("ORType") && oss[s].field("PtName") == parr[0] && oss[s].field("HN") == parr[2] && oss[s].field("Dx") == v.field("Dx") && oss[s].field("Op") == v.field("Op")){
-              oss[s].set("Que", Number(v.field("Que")));
-              break;
-            }
-          }
-        }
-      }
+      v.set("Que", ("0"+(i+1)).slice(-2));
+      this.oldsave(v);
     }, this);
   },
   oldsave : function (e) {
@@ -2052,6 +2036,7 @@ var opu = {
     return arr;
   },
   createOp : function (e) {
+    let change = false;
     if(e.field("OpExtra") && e.field("Status") != "Not"){
       let ent = new Object() ;
       let links = e.field("Patient");
@@ -2071,14 +2056,15 @@ var opu = {
         ent["ModifiedTime"] =  e.lastModifiedTime;
         os.create(ent);
         //message("create OpUroSx!");
-        os.syncGoogleSheet();
+        change = true;
       }
     }
+    return change;
   },
   updateOp : function (e) {
+    let change = false;
     if(old.field("OpExtra") == true && old.field("Status") != "Not" && e.field("OpExtra") == true && e.field("Status") != "Not"){
       //update
-      let change = false;
       let oss = os.entries();
       let links = e.field("Patient");
       if(links.length>0 && oss.length>0){
@@ -2116,21 +2102,20 @@ var opu = {
           }
         }
       }
-      if (change)
-        os.syncGoogleSheet();
     }
     else if(old.field("OpExtra") == false && e.field("OpExtra") == true && e.field("Status") != "Not" || old.field("Status") == "Not" && e.field("Status") != "Not" && e.field("OpExtra") == true){
       //create
-      this.createOp(e);
+      change = this.createOp(e);
     }
     else if(old.field("OpExtra") == true && e.field("OpExtra") == false && old.field("Status") != "Not" || old.field("Status") != "Not" && e.field("Status") == "Not" && old.field("OpExtra") == true){
       //delete
-      this.deleteOp(e);
+      change = this.deleteOp(e);
     }
+    return change;
   },
   deleteOp : function (e) {
+    let change = false;
     if(old.field("OpExtra") && old.field("Status") != "Not"){
-      let change = false;
       let oss = os.entries();
       if(oss.length>0){
         let parr = this.splitPtName(old.field("Patient"));
@@ -2144,11 +2129,11 @@ var opu = {
           }
         }
       }
-      if (change)
-        os.syncGoogleSheet();
     }
+    return change;
   },
   ptTrigOpuro : function (e) {
+    let change = false;
     if(old.field("PtName") != e.field("PtName") || old.field("Age") != e.field("Age") || old.field("YY") != e.field("YY") || old.field("MM") != e.field("MM")  || old.field("DD") != e.field("DD") || my.gdate(my.date(old.field("Birthday"))) != my.gdate(my.date(e.field("Birthday"))) || old.field("HN") != e.field("HN") || old.field("Underlying").join() != e.field("Underlying").join() ){
       let orlinks = e.linksFrom("UroBase", "Patient");
       let bulinks = e.linksFrom("Backup", "Patient");
@@ -2190,10 +2175,38 @@ var opu = {
         }
         if(count) {
           //message("Update related PtName in OpUroSx!");
-          os.syncGoogleSheet();
+          change = true;
         }
       }
     }
+    return change;
+  },
+  queSaveEffect : function(e) { // when que.save -> every entry rearrange in que -> make change whice relate que in opu
+    // load q
+    let change = false;
+    all = lib.entries();
+    que.q = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(e.field("Date")) && v.field("ORType")==e.field("ORType") && v.field("Status")!="Not");
+    // set new que to every entry
+    arr.forEach((v,i)=>{
+      // Find related opu and correct que
+      let oss = os.entries();
+      let links = e.field("Patient");
+      if(links.length>0 && oss.length>0){
+        let link = links[0];
+        let parr = this.splitPtName(old.field("Patient"));
+        parr[2] = parr[2]?parr[2]:null;
+        for (let s=0; s<oss.length; s++) {
+          if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(my.date(old.field("Date"))) && oss[s].field("Dr") == old.field("Dr") && oss[s].field("OpType") == old.field("ORType") && oss[s].field("PtName") == parr[0] && oss[s].field("HN") == parr[2] && oss[s].field("Dx") == old.field("Dx") && oss[s].field("Op") == old.field("Op")){
+            if(oss[s].field("Que")!=Number(e.field("Que"))) {
+              oss[s].set("Que", Number(e.field("Que")));
+              change = true;
+              break;
+            }
+          }
+        }
+      }
+    });
+    return change;
   }
 };
 
@@ -2219,9 +2232,12 @@ var trig = {
     }
   }, 
   PatientAfterEdit : function (e, value) {
+    let change = false;
     old.load(e);
     if (value=="update")
-      opu.ptTrigOpuro(e);
+      change = opu.ptTrigOpuro(e);
+    if(change)
+      os.syncGoogleSheet();
     old.save.call(pto, e);
   }, 
   PatientUpdatingField : function (all) {
@@ -2312,6 +2328,7 @@ var trig = {
     mer.effect(e);
   }, 
   AfterEdit : function (e, value) {
+    let change = false;
     emx.run.call(this, e);
     old.load(e);
     if (this.lib!="Consult") {
@@ -2319,15 +2336,20 @@ var trig = {
       if (value=="create") {
         rpo.createnew(e);
         if (this.lib=="UroBase")
-          opu.createOp(e);
+          change = opu.createOp(e);
+          change = opu.queSaveEffect(e);
       }
       else if (value=="update") {
         rpo.updatenew(e);
         if (this.lib=="UroBase")
-          opu.updateOp(e);
+          change = opu.updateOp(e);
+          change = opu.queSaveEffect(e);
       }
       if (this.lib=="UroBase" && (my.gdate(e.field("Date"))!=my.gdate(old.field("Date")) || e.field("ORType")!=old.field("ORType") || e.field("Status")!=old.field("Status") || e.field("TimeIn")!=old.field("TimeIn") || e.field("TimeOut")!=old.field("TimeOut"))) {
         or.syncGoogleSheet();
+      }
+      if(change) {
+        os.syncGoogleSheet();
       }
     }
     old.save.call(this, e);
@@ -2407,14 +2429,19 @@ var trig = {
     }
   }, 
   AfterDelete : function (e) {
+    let change = false;
     if (this.lib!="Consult") {
       old.load(e);
       dxop.deletelink.call(dxo, e);
       dxop.deletelink.call(opo, e);
       rpo.deleteold(e);
-      if (this.lib=="UroBase")
-        opu.deleteOp(e);
+      if (this.lib=="UroBase") {
+        change = opu.deleteOp(e);
+        change = opu.queSaveEffect(e);
+      }
       or.syncGoogleSheet();
+      if(change) 
+        os.syncGoogleSheet();
     }
     fill.deletept(e);
   }, 
