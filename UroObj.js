@@ -368,7 +368,7 @@ var que = {
         let links = v.field("Patient");
         if(links.length>0 && oss.length>0){
           let link = links[0];
-          let parr = opu.splitPtName(link);
+          let parr = opu.splitPtName(link.title);
           parr[2] = parr[2]?parr[2]:null;
           for (let s=0; s<oss.length; s++) {
             if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(my.date(v.field("Date"))) && oss[s].field("Dr") == v.field("Dr") && oss[s].field("OpType") == v.field("ORType") && oss[s].field("PtName") == parr[0] && oss[s].field("HN") == parr[2] && oss[s].field("Dx") == v.field("Dx") && oss[s].field("Op") == v.field("Op")){
