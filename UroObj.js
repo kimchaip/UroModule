@@ -2358,6 +2358,16 @@ var trig = {
     old.save.call(this, e);
   }, 
   BeforeOpenLib : function (all) {
+    let pts = pt.entries();
+    for (let i=0; i<pts.length; i++) {
+      if (my.gdate(my.date(pts[i].lastModifiedTime)) < ntoday) {
+        if (pts[i].field("Done")==true) {
+          pts[i].set("Done", false) ;
+        }
+        pto.age(pts[i]);
+      }
+    }
+    
     let first = false;
     for (let i=0; i<all.length; i++) {
       if (my.gdate(my.date(all[i].lastModifiedTime)) < ntoday) {
