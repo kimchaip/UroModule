@@ -470,7 +470,7 @@ var que = {
     que.load.call(this, e);
     let change = false;
     if(e.field("ORType")!=old.field("ORType") || my.gdate(e.field("Date"))!=my.gdate(old.field("Date"))) {
-      que.effect(e. que.o);
+      que.effect(e, que.o);
       que.oldsave(que.o);
     }
     change = que.effect(e, que.q);
