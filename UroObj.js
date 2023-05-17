@@ -359,18 +359,19 @@ var que = {
     // reorder by TimeIn
     this.sorttime(arr);
     // set new que to every entry
-    arr.forEach((v,i)=>{
+    arr.forEach(v=>{
       v.set("Que", ("0"+(i+1)).slice(-2));
-      this.oldsave(v);
-    }, this);
+    });
   },
-  oldsave : function (e) {
-    // get que data
-    let qstr = '"Que":"' + e.field("Que") + '"';
-    // replace to "que":"xx" in previous
-    let previous = e.field("Previous").replace(/"Que":"\d\d"/, qstr);
-    // set new previous
-    e.set("Previous", previous);
+  oldsave : function (arr) {
+    arr.forEach(v=>{
+      // get que data
+      let qstr = '"Que":"' + v.field("Que") + '"';
+      // replace to "que":"xx" in previous
+      let previous = v.field("Previous").replace(/"Que":"\d\d"/, qstr);
+      // set new previous
+      v.set("Previous", previous);
+    });
   },
   sortque: function(arr) {
     // order array by que asc
@@ -431,6 +432,50 @@ var que = {
       //reorder by TimeIn -> set new que to every entry
       que.save(que.q);
     }
+  },
+  effect : function(e, arr) { // array loop make change to opurosx.que
+    // set new que to every element in array
+    let oss = os.entries();
+    let change = false;
+    arr.forEach(v=>{
+      // Find related opu and correct que = inx+1
+      let o;
+      if(v.id==e.id)
+        o = old;
+      else
+        o = v;
+      if(o.field("Patient").length>0 && oss.length>0) {
+        let ptname;
+        if(v.id==e.id)
+          ptname = o.field("Patient");
+        else
+          ptname = o.field("Patient")[0].title;
+        let parr = opu.splitPtName(ptname);
+        parr[2] = parr[2]?parr[2]:null;
+        for(let s=0; s<oss.length; s++) {
+          if(my.gdate(my.date(oss[s].field("OpDate")))==my.gdate(my.date(o.field("Date"))) && oss[s].field("Dr")==o.field("Dr") && oss[s].field("OpType")==o.field("ORType") && oss[s].field("PtName")==parr[0] && oss[s].field("HN")==parr[2] && oss[s].field("Dx")==o.field("Dx") && oss[s].field("Op")==o.field("Op")) {
+            if(oss[s].field("Que")!=Number(o.field("Que"))) {
+              oss[s].set("Que", Number(o.field("Que")));
+              change = true;
+            }
+            break;
+          }
+        }
+      }
+    });
+    return change;
+  },
+  runeffect : function(e) { // when que.save -> every entry rearrange in que -> make change whice relate que in opu
+    // load o, q
+    que.load.call(this, e);
+    let change = false;
+    if(e.field("ORType")!=old.field("ORType") || my.gdate(e.field("Date"))!=my.gdate(old.field("Date"))) {
+      que.effect(e. que.o);
+      que.oldsave(que.o);
+    }
+    change = que.effect(e, que.q);
+    que.oldsave(que.q);
+    return change;
   }
 };
 var emx = {
@@ -2180,33 +2225,6 @@ var opu = {
       }
     }
     return change;
-  },
-  queSaveEffect : function(e) { // when que.save -> every entry rearrange in que -> make change whice relate que in opu
-    // load q
-    let change = false;
-    all = or.entries();
-    que.q = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(e.field("Date")) && v.field("ORType")==e.field("ORType") && v.field("Status")!="Not");
-    // set new que to every entry
-    que.q.forEach((v,i)=>{
-      // Find related opu and correct que
-      let oss = os.entries();
-      let links = v.field("Patient");
-      if(links.length>0 && oss.length>0){
-        let link = links[0];
-        let parr = this.splitPtName(link.title);
-        parr[2] = parr[2]?parr[2]:null;
-        for (let s=0; s<oss.length; s++) {
-          if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(my.date(v.field("Date"))) && oss[s].field("Dr") == v.field("Dr") && oss[s].field("OpType") == v.field("ORType") && oss[s].field("PtName") == parr[0] && oss[s].field("HN") == parr[2] && oss[s].field("Dx") == v.field("Dx") && oss[s].field("Op") == v.field("Op")){
-            if(oss[s].field("Que")!=Number(v.field("Que"))) {
-              oss[s].set("Que", Number(v.field("Que")));
-              change = true;
-            }
-            break;
-          }
-        }
-      }
-    });
-    return change;
   }
 };
 
@@ -2235,7 +2253,7 @@ var trig = {
     let change = false;
     old.load(e);
     if(value=="update")
-      change = opu.ptTrigOpuro(e);
+      change |=opu.ptTrigOpuro(e);
     if(change)
       os.syncGoogleSheet();
     old.save.call(pto, e);
@@ -2328,24 +2346,25 @@ var trig = {
     mer.effect(e);
   }, 
   AfterEdit : function (e, value) {
-    let change = false;
     emx.run.call(this, e);
     old.load(e);
     if (this.lib!="Consult") {
+      let change = false;
       uro.updateDJStamp(e);
       if (value=="create") {
         rpo.createnew(e);
+        change |= que.runeffect.call(this, e);
         if (this.lib=="UroBase")
-          change = opu.createOp(e);
-          change = opu.queSaveEffect(e);
+          change |=opu.createOp(e);
       }
       else if (value=="update") {
         rpo.updatenew(e);
+        change |= que.runeffect.call(this, e);
         if (this.lib=="UroBase")
-          change = opu.updateOp(e);
-          change = opu.queSaveEffect(e);
+          change |=opu.updateOp(e);
       }
-      if (this.lib=="UroBase" && (my.gdate(e.field("Date"))!=my.gdate(old.field("Date")) || e.field("ORType")!=old.field("ORType") || e.field("Status")!=old.field("Status") || e.field("TimeIn")!=old.field("TimeIn") || e.field("TimeOut")!=old.field("TimeOut"))) {
+
+      if (this.lib=="UroBase") {
         or.syncGoogleSheet();
       }
       if(change) {
@@ -2423,10 +2442,13 @@ var trig = {
     mer.effect(e);
   }, 
   AfterUpdatingField : function (e) {
-    let change = opu.queSaveEffect(e);
-    old.save.call(this, e);
-    if(change)
+    old.load(e);
+    let change = que.runeffect.call(this, e);
+    or.syncGoogleSheet();
+    if(change) {
       os.syncGoogleSheet();
+    }
+    old.save.call(this, e);
   }, 
   BeforeDelete : function (e) {
     old.load(e);
@@ -2442,15 +2464,15 @@ var trig = {
     }
   }, 
   AfterDelete : function (e) {
-    let change = false;
+    old.load(e);
     if (this.lib!="Consult") {
-      old.load(e);
+      let change = false;
       dxop.deletelink.call(dxo, e);
       dxop.deletelink.call(opo, e);
       rpo.deleteold(e);
       if (this.lib=="UroBase") {
-        change = opu.deleteOp(e);
-        change = opu.queSaveEffect(e);
+        change |=opu.deleteOp(e);
+        change |=que.runeffect.call(this, e);
       }
       or.syncGoogleSheet();
       if(change) 
