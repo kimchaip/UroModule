@@ -439,7 +439,7 @@ var que = {
     let change = false;
     arr.forEach(v=>{
       // Find related opu and correct que = inx+1
-      let o;
+      let o = {};
       if(v.id==e.id)
         o = old;
       else
