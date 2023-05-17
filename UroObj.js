@@ -2470,10 +2470,9 @@ var trig = {
       dxop.deletelink.call(dxo, e);
       dxop.deletelink.call(opo, e);
       rpo.deleteold(e);
-      if (this.lib=="UroBase") {
+      change |=que.runeffect.call(this, e);
+      if (this.lib=="UroBase") 
         change |=opu.deleteOp(e);
-        change |=que.runeffect.call(this, e);
-      }
       or.syncGoogleSheet();
       if(change) 
         os.syncGoogleSheet();
