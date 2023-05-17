@@ -2443,10 +2443,14 @@ var trig = {
   }, 
   AfterUpdatingField : function (e) {
     old.load(e);
-    let change = que.runeffect.call(this, e);
-    or.syncGoogleSheet();
-    if(change) {
-      os.syncGoogleSheet();
+    if (this.lib!="Consult") {
+      let change = que.runeffect.call(this, e);
+      if (this.lib=="UroBase")
+        change |=opu.updateOp(e);
+      or.syncGoogleSheet();
+      if(change) {
+        os.syncGoogleSheet();
+      }
     }
     old.save.call(this, e);
   }, 
