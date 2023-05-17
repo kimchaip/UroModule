@@ -359,7 +359,7 @@ var que = {
     // reorder by TimeIn
     this.sorttime(arr);
     // set new que to every entry
-    arr.forEach(v=>{
+    arr.forEach((v,i)=>{
       v.set("Que", ("0"+(i+1)).slice(-2));
     });
   },
