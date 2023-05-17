@@ -439,11 +439,15 @@ var que = {
     let change = false;
     arr.forEach(v=>{
       // Find related opu and correct que = inx+1
-      let o = {};
-      if(v.id==e.id)
+      let o, n;
+      if(v.id==e.id) {
         o = old;
-      else
+        n = e;
+      }
+      else {
         o = v;
+        n = v;
+      }
       if(o.field("Patient").length>0 && oss.length>0) {
         let ptname;
         if(v.id==e.id)
@@ -454,8 +458,8 @@ var que = {
         parr[2] = parr[2]?parr[2]:null;
         for(let s=0; s<oss.length; s++) {
           if(my.gdate(my.date(oss[s].field("OpDate")))==my.gdate(my.date(o.field("Date"))) && oss[s].field("Dr")==o.field("Dr") && oss[s].field("OpType")==o.field("ORType") && oss[s].field("PtName")==parr[0] && oss[s].field("HN")==parr[2] && oss[s].field("Dx")==o.field("Dx") && oss[s].field("Op")==o.field("Op")) {
-            if(oss[s].field("Que")!=Number(o.field("Que"))) {
-              oss[s].set("Que", Number(o.field("Que")));
+            if(oss[s].field("Que")!=Number(n.field("Que"))) {
+              oss[s].set("Que", Number(n.field("Que")));
               change = true;
             }
             break;
