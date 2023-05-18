@@ -2262,23 +2262,20 @@ var trig = {
       os.syncGoogleSheet();
     old.save.call(pto, e);
   }, 
-  PatientUpdatingField : function (all) {
-    let e = entry();
-    for(let i in all) {
-      // update track
-      if(all[i].id==e.id && all[i].field("Done")==true) {
-        let o = pto.findLast(false, true, e, today);
-        if (o.length>0) {
-          if (e.field("Done") && o.some(l=>l.e.field("Track") == 1)) {
-            if (o.some(l=>l.e.field("Active") != null)) { // Admit
-              for (let i=0; i<o.length; i++) {
-                o[i].e.set("Track", 2);
-              }
+  PatientUpdatingField : function (e) {
+    // update track
+    if(e.field("Done")==true) {
+      let o = pto.findLast(false, true, e, today);
+      if (o.length>0) {
+        if (e.field("Done") && o.some(l=>l.e.field("Track") == 1)) {
+          if (o.some(l=>l.e.field("Active") != null)) { // Admit
+            for (let i=0; i<o.length; i++) {
+              o[i].e.set("Track", 2);
             }
           }
         }
-        break;
       }
+      break;
     }
   }, 
   PatientBeforeOpenLib : function (all) {
