@@ -2275,7 +2275,6 @@ var trig = {
           }
         }
       }
-      break;
     }
   }, 
   PatientBeforeOpenLib : function (all) {
