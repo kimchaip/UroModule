@@ -2170,7 +2170,7 @@ var opu = {
         let parr = this.splitPtName(old.field("Patient"));
         parr[2] = parr[2]?parr[2]:null;
         for (let s=0; s<oss.length; s++){
-          if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(my.date(old.field("Date"))) && oss[s].field("Dr") == old.field("Dr") && oss[s].field("OpType") == old.field("ORType") && oss[s].field("PtName") == parr[0] && oss[s].field("HN") == parr[2] && oss[s].field("Dx") == old.field("Dx") && oss[s].field("Op") == old.field("Op")){
+          if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(my.date(old.field("Date"))) && oss[s].field("Dr") == old.field("Dr") && oss[s].field("OpType") == old.field("ORType") && (oss[s].field("PtName").trim() == parr[0] || oss[s].field("HN") == parr[2])){
             oss[s].trash();
             //message("delete OpUroSx!");
             change = true;
