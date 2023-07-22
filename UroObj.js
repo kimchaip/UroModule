@@ -2394,7 +2394,6 @@ var trig = {
           all[i].set("Done", false);
       }
       if (all[i].field("Done")==false) {
-        let start = my.dateminus(all[i].field("VisitDate"), 1);
         let end = null;
         let notdone = all[i].field(this.result).match(this.notdonereg);
         this.notdone = notdone==null?0:notdone.length;
@@ -2405,7 +2404,7 @@ var trig = {
         else
           end = my.dateadd(all[i].field("DischargeDate"),1);
 
-        if (my.gdate(start) <= ntoday && ntoday <= my.gdate(end)) { 
+        if (ntoday <= my.gdate(end)) { 
           fill.future.call(this, all[i]);
           fill.track.call(this, all[i]);
           fill.active.call(this, all[i]);
