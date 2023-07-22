@@ -1225,7 +1225,7 @@ var fill = {
       let str = "" ;
       if (o.length==0) { // never Visit
         links[0].set("WardStamp",null);
-        links[0].set("Ward",  "");
+        links[0].set("Ward",  e.field("VisitType")=="Admit"?e.field("Ward"):"OPD");
         links[0].set("Descript", "");
         links[0].set("Status", "Still");
         links[0].set("LastDischarge", null);
