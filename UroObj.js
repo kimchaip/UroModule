@@ -1455,7 +1455,9 @@ var fill = {
         let ptent = pt.findById(ptlks[0].id) ;
         let orlinks = ptent.linksFrom("UroBase", "Patient") ;
         let bulinks = ptent.linksFrom("Backup", "Patient") ;
-        let alllinks = orlinks.concat(bulinks);
+        let alllinks = [];
+        orlinks.forEach(v=>alllinks.push(v));
+        bulinks.forEach(v=>alllinks.push(v));
         let result = [];
         if(alllinks.length>0){
           result = alllinks.filter((v,i,a)=>a.some(u=>u.id != v.id && u.field("Date").getTime()>=v.field("Date").getTime() && Math.floor((u.field("Date").getTime()-v.field("Date").getTime())/86400000)<14));
