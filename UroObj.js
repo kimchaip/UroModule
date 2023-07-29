@@ -1462,7 +1462,7 @@ var fill = {
         if(alllinks.length>0){
           result = alllinks.filter((v,i,a)=>a.some(u=>u.id != v.id && u.field("Date").getTime()>=v.field("Date").getTime() && Math.floor((u.field("Date").getTime()-v.field("Date").getTime())/86400000)<14));
         }
-        ptent.set("ReVisit", alllinks.length);
+        ptent.set("ReVisit", result.length);
       }
     }
   },
