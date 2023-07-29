@@ -1448,6 +1448,22 @@ var fill = {
       }
     }
   },
+  revisit : function(e) {
+    if(this.lib != "Consult") {
+      let ptlks = e.field("Patient");
+      if (ptlks.length>0) {
+        let ptent = pt.findById(ptlks[0].id) ;
+        let orlinks = ptent.linksFrom("UroBase", "Patient") ;
+        let bulinks = ptent.linksFrom("Backup", "Patient") ;
+        let alllinks = orlinks.concat(bulinks).concat(cslinks);
+        let result = [];
+        if(alllinks.length>0){
+          result = alllinks.filter((v,i,a)=>a.findIndex(u=>u.id != v.id && u.field("Date").getTime()>=v.field("Date").getTime() && Math.floor(u.field("Date").getTime()-v.field("Date").getTime()/1,209,600,000)<1)>-1);
+        }
+        prlks[0].set("ReVisit", result.length);
+      }
+    }
+  },
   twodigit : function(value) {
     if(value<10)
       return "0"+value.toString();
@@ -2342,6 +2358,7 @@ var trig = {
     fill.active.call(this, e);
     fill.ptstatus.call(this, e);
     fill.ptnextstatus.call(this, e);
+    fill.revisit.call(this, e);
     fill.color.call(this, e);
     mer.effect(e);
   }, 
