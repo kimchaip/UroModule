@@ -1458,7 +1458,7 @@ var fill = {
         let alllinks = orlinks.concat(bulinks);
         let result = [];
         if(alllinks.length>0){
-          result = alllinks.filter((v,i,a)=>a.findIndex(u=>u.id != v.id && u.field("Date").getTime()>=v.field("Date").getTime() && Math.floor(u.field("Date").getTime()-v.field("Date").getTime()/86400000)<14)>-1);
+          result = alllinks.filter((v,i,a)=>a.some(u=>u.id != v.id && u.field("Date").getTime()>=v.field("Date").getTime() && Math.floor(u.field("Date").getTime()-v.field("Date").getTime()/86400000)<14));
         }
         ptlks[0].set("ReVisit", result.length);
       }
