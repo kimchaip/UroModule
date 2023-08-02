@@ -1461,11 +1461,17 @@ var fill = {
         let orlinks = ptent.linksFrom("UroBase", "Patient") ;
         let bulinks = ptent.linksFrom("Backup", "Patient") ;
         let alllinks = [];
-        orlinks.forEach(v=>alllinks.push(v));
-        bulinks.forEach(v=>alllinks.push(v));
+        orlinks.forEach(v=>{
+          if(v.id==e.id) v = e; 
+          if(v.field("Status")!="Not") alllinks.push(v);
+        });
+        bulinks.forEach(v=>{
+          if(v.id==e.id) v = e; 
+          if(v.field("Status")!="Not") alllinks.push(v);
+        });
         let result = [];
         if(alllinks.length>0){
-          result = alllinks.filter((v,i,a)=>a.some(u=>u.id != v.id && u.field("Date").getTime()>=v.field("Date").getTime() && Math.floor((u.field("Date").getTime()-v.field("Date").getTime())/86400000)<14));
+          result = alllinks.filter((v,i,a)=>a.some(u=>u.id != v.id && my.gdate(u.field("Date"))>=my.gdate(v.field("Date")) && Math.floor((my.gdate(u.field("Date"))-my.gdate(v.field("Date")))/86400000)<14));
         }
         ptent.set("ReVisit", result.length);
       }
