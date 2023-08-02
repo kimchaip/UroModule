@@ -1286,7 +1286,7 @@ var fill = {
         links[0].set("NextVisit", o[0].e.field("VisitDate"));
 
         let vsdiff = Math.floor((my.gdate(o[0].e.field("VisitDate"))-ntoday)/86400000);
-        if((vsdiff>=0 && vsdiff<8) {
+        if(vsdiff>=0 && vsdiff<8) {
           links[0].set("Descript", str);
         }
       }
