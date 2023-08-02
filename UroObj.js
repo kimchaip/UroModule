@@ -1275,7 +1275,7 @@ var fill = {
         links[0].set("NextVisit",null);
         links[0].set("NextDescript", "");
       }
-      else { // ever visit
+      else { // have next visit
         let lib;
         if(o[0].lib=="UroBase") lib = uro;
         else if(o[0].lib=="Backup") lib = buo;
@@ -1284,6 +1284,11 @@ var fill = {
         str = fill.descripttxt.call(lib, o[0].e);
         links[0].set("NextDescript", str);
         links[0].set("NextVisit", o[0].e.field("VisitDate"));
+
+        let vsdiff = Math.floor((my.gdate(o[0].e.field("VisitDate"))-ntoday)/86400000);
+        if((vsdiff>=0 && vsdiff<8) {
+          links[0].set("Descript", str);
+        }
       }
     }
   },
