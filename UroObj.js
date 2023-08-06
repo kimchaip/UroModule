@@ -2432,7 +2432,7 @@ var trig = {
         else if (all[i].field("VisitType")=="Admit" && all[i].field("DischargeDate")==null)
           end = today;
         else if (my.gdate(all[i].field("DischargeDate"))<my.gdate(all[i].field(this.opdate)))
-          end = my.dateadd(all[i].field("this.opdate"),1);
+          end = my.dateadd(all[i].field(this.opdate),1);
         else
           end = my.dateadd(all[i].field("DischargeDate"),1);
 
