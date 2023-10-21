@@ -2460,6 +2460,8 @@ var trig = {
     fill.setvisittype.call(this, e, false);
     fill.setvisitdate.call(this, e);
     fill.track.call(this, e);
+    if (!e.field("MergeID"))
+      mer.newmergeid.call(this, e);
     fill.correctMergeID.call(this, e);
     mer.merge.call(this, e);
     if (this.lib!="Consult") {
