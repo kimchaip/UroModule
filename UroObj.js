@@ -1467,13 +1467,14 @@ var fill = {
         bulinks.forEach(v=>{
           alllinks.push(v);
         });
-        alllinks.forEach(v=>{
+        alllinks.filter(v=>{
           if(v.id!=e.id){
-             if(v.field("Status")!="Not") alllinks.push(v);
+             if(v.field("Status")!="Not") return true;
           }
           else if(withme){ 
-             if(v.field("Status")!="Not") alllinks.push(v);
+             if(v.field("Status")!="Not") return true;
           }
+          return false;
         });
         let result = [];
         if(alllinks.length>0){
