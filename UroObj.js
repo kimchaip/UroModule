@@ -1476,7 +1476,7 @@ var fill = {
     if(alllinks.length>0){
       result = alllinks.filter((v,i,a)=>a.some(u=>u.id != v.id && my.gdate(u.field("Date"))>=my.gdate(v.field("Date")) && Math.floor((my.gdate(u.field("Date"))-my.gdate(v.field("Date")))/86400000)<14));
     }
-    e.set("ReVisit", result.length);
+    e.set("ReOp", result.length);
   },
   twodigit : function(value) {
     if(value<10)
