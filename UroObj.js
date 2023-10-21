@@ -1455,34 +1455,29 @@ var fill = {
   },
   reop : function(e, withme) {
     if(this.lib != "Consult") {
-      let ptlks = e.field("Patient");
-      if (ptlks.length>0) {
-        let ptent = pt.findById(ptlks[0].id) ;
-        let orlinks = ptent.linksFrom("UroBase", "Patient") ;
-        let bulinks = ptent.linksFrom("Backup", "Patient") ;
-        let alllinks = [];
-        orlinks.forEach(v=>{
-          alllinks.push(v);
-        });
-        bulinks.forEach(v=>{
-          alllinks.push(v);
-        });
-        alllinks.filter(v=>{
-          if(v.id!=e.id){
-             if(v.field("Status")!="Not") return true;
-          }
-          else if(withme){ 
-             if(v.field("Status")!="Not") return true;
-          }
-          return false;
-        });
-        let result = [];
-        if(alllinks.length>0){
-          result = alllinks.filter((v,i,a)=>a.some(u=>u.id != v.id && my.gdate(u.field("Date"))>=my.gdate(v.field("Date")) && Math.floor((my.gdate(u.field("Date"))-my.gdate(v.field("Date")))/86400000)<14));
-        }
-        ptent.set("ReVisit", result.length);
+      let let orlinks = e.linksFrom("UroBase", "Patient") ;
+    let bulinks = e.linksFrom("Backup", "Patient") ;
+    let alllinks = [];
+    orlinks.forEach(v=>{
+      alllinks.push(v);
+    });
+    bulinks.forEach(v=>{
+      alllinks.push(v);
+    });
+    alllinks.filter(v=>{
+      if(v.id!=e.id){
+         if(v.field("Status")!="Not") return true;
       }
+      else if(withme){ 
+         if(v.field("Status")!="Not") return true;
+      }
+      return false;
+    });
+    let result = [];
+    if(alllinks.length>0){
+      result = alllinks.filter((v,i,a)=>a.some(u=>u.id != v.id && my.gdate(u.field("Date"))>=my.gdate(v.field("Date")) && Math.floor((my.gdate(u.field("Date"))-my.gdate(v.field("Date")))/86400000)<14));
     }
+    e.set("ReVisit", result.length);
   },
   twodigit : function(value) {
     if(value<10)
@@ -2269,9 +2264,10 @@ var opu = {
 };
 
 var trig = {
-  PatientOpenEdit : function(e, value) {
-    if(e) old.save.call(pto, e);
-  },
+  PatientBeforeViewCard : function (e) {
+    fill.reop(e);
+    old.save.call(pto, e);
+  }, 
   PatientBeforeEdit : function (e, value) {
     pto.rearrangename(e);
     old.load(e);
@@ -2378,7 +2374,6 @@ var trig = {
     fill.active.call(this, e);
     fill.ptstatus.call(this, e);
     fill.ptnextstatus.call(this, e);
-    fill.reop.call(this, e, true);
     fill.color.call(this, e);
     mer.effect(e);
   }, 
@@ -2476,7 +2471,6 @@ var trig = {
     fill.active.call(this, e);
     fill.ptstatus.call(this, e);
     fill.ptnextstatus.call(this, e);
-    fill.reop.call(this, e, true);
     fill.color.call(this, e);
     mer.effect(e);
   }, 
@@ -2521,7 +2515,6 @@ var trig = {
       if(change) 
         os.syncGoogleSheet();
     }
-    fill.reop.call(this, e, false);
     fill.deletept(e);
   }, 
   DxOpenEdit : function(e, value) {
