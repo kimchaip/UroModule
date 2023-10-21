@@ -2469,6 +2469,8 @@ var trig = {
     fill.correctMergeID.call(this, e);
     mer.merge.call(this, e);
     if (this.lib!="Consult") {
+      dxop.run.call(opo, e, false);
+      dxop.run.call(dxo, e, false);
       que.run.call(this, e);
       fill.orbridge(e);
     }
@@ -2482,6 +2484,7 @@ var trig = {
   AfterUpdatingField : function (e) {
     old.load(e);
     if (this.lib!="Consult") {
+      rpo.updatenew(e);
       let change = que.runeffect.call(this, e);
       if (this.lib=="UroBase")
         change |=opu.updateOp(e);
