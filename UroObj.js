@@ -2500,7 +2500,6 @@ var trig = {
       que.sortque(que.q);
       que.remove(e, que.q);
       que.save(que.q);
-      fill.reop.call(this, e, false);
     }
     if (e.field("Merge")==true) {
       e.set("Merge", false);
@@ -2522,6 +2521,7 @@ var trig = {
       if(change) 
         os.syncGoogleSheet();
     }
+    fill.reop.call(this, e, false);
     fill.deletept(e);
   }, 
   DxOpenEdit : function(e, value) {
