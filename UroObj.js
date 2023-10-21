@@ -2458,7 +2458,6 @@ var trig = {
     old.load(e);
     fill.setnewdate.call(this, e);
     if (this.lib!="Consult") {
-      uro.setopextra(e);
       fill.setortype(e, false);
     }
     fill.setvisittype.call(this, e, false);
@@ -2469,8 +2468,6 @@ var trig = {
     fill.correctMergeID.call(this, e);
     mer.merge.call(this, e);
     if (this.lib!="Consult") {
-      dxop.run.call(opo, e, false);
-      dxop.run.call(dxo, e, false);
       que.run.call(this, e);
       fill.orbridge(e);
     }
@@ -2484,7 +2481,6 @@ var trig = {
   AfterUpdatingField : function (e) {
     old.load(e);
     if (this.lib!="Consult") {
-      rpo.updatenew(e);
       let change = que.runeffect.call(this, e);
       if (this.lib=="UroBase")
         change |=opu.updateOp(e);
