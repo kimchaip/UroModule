@@ -1453,7 +1453,7 @@ var fill = {
       }
     }
   },
-  revisit : function(e) {
+  reop : function(e) {
     if(this.lib != "Consult") {
       let ptlks = e.field("Patient");
       if (ptlks.length>0) {
@@ -2371,7 +2371,7 @@ var trig = {
     fill.active.call(this, e);
     fill.ptstatus.call(this, e);
     fill.ptnextstatus.call(this, e);
-    fill.revisit.call(this, e);
+    fill.reop.call(this, e);
     fill.color.call(this, e);
     mer.effect(e);
   }, 
@@ -2469,6 +2469,7 @@ var trig = {
     fill.active.call(this, e);
     fill.ptstatus.call(this, e);
     fill.ptnextstatus.call(this, e);
+    fill.reop.call(this, e);
     fill.color.call(this, e);
     mer.effect(e);
   }, 
