@@ -2503,6 +2503,7 @@ var trig = {
       fill.reop.call(this, e, false);
     }
     if (e.field("Merge")==true) {
+      e.set("Merge", false);
       fill.correctMergeID.call(this, e);
       mer.cancel.call(this, e);
     }
