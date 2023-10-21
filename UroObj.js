@@ -2457,6 +2457,10 @@ var trig = {
   BeforeUpdatingField : function (e) {
     old.load(e);
     fill.setnewdate.call(this, e);
+    if (this.lib!="Consult") {
+      uro.setopextra(e);
+      fill.setortype(e, false);
+    }
     fill.setvisittype.call(this, e, false);
     fill.setvisitdate.call(this, e);
     fill.track.call(this, e);
