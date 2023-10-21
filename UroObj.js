@@ -1171,7 +1171,7 @@ var fill = {
     if (e.field("VisitDate") != null && e.field("DischargeDate") != null && my.gdate(e.field("DischargeDate"))>=my.gdate(e.field("VisitDate"))) {
       diff = Math.floor((my.gdate(e.field("DischargeDate"))-my.gdate(e.field("VisitDate")))/86400000);
     }
-    else if(e.field("VisitDate") != null && e.field("DischargeDate") == null && ntoday>=my.gdate(e.field("VisitDate"))){
+    else if(e.field("VisitDate") != null && e.field("DischargeDate") == null && e.field("Status") != "Not" && ntoday>=my.gdate(e.field("VisitDate"))){
       diff = Math.floor((ntoday-my.gdate(e.field("VisitDate")))/86400000);
     }
     else {
