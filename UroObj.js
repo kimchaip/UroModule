@@ -1167,13 +1167,18 @@ var fill = {
     }
   }, 
   los : function (e) {
-    if (e.field("VisitDate") != null && e.field("DischargeDate") != null) {
-      let diff = Math.floor((my.gdate(e.field("DischargeDate"))-my.gdate(e.field("VisitDate")))/86400000);
-      e.set("LOS", diff);
+    let diff;
+    if (e.field("VisitDate") != null && e.field("DischargeDate") != null && my.gdate(e.field("DischargeDate"))>=my.gdate(e.field("VisitDate"))) {
+      diff = Math.floor((my.gdate(e.field("DischargeDate"))-my.gdate(e.field("VisitDate")))/86400000);
+    }
+    else if(e.field("VisitDate") != null && e.field("DischargeDate") == null && ntoday>=my.gdate(e.field("VisitDate"))){
+      diff = Math.floor((ntoday-my.gdate(e.field("VisitDate")))/86400000);
     }
     else {
-      e.set("LOS", null);
+      diff = null;
     }
+    e.set("LOS", diff);
+    e.set("LOSDisp", diff);
   }, 
   dr : function (e, value) {
     let link = e.field("Patient");
