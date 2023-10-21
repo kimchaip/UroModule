@@ -1454,8 +1454,7 @@ var fill = {
     }
   },
   reop : function(e, withme) {
-    if(this.lib != "Consult") {
-      let let orlinks = e.linksFrom("UroBase", "Patient") ;
+    let orlinks = e.linksFrom("UroBase", "Patient") ;
     let bulinks = e.linksFrom("Backup", "Patient") ;
     let alllinks = [];
     orlinks.forEach(v=>{
