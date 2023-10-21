@@ -1462,14 +1462,12 @@ var fill = {
         let bulinks = ptent.linksFrom("Backup", "Patient") ;
         let alllinks = [];
         orlinks.forEach(v=>{
-          if(v.id!=e.id){
-             if(v.field("Status")!="Not") alllinks.push(v);
-          }
-          else if(withme){ 
-             if(v.field("Status")!="Not") alllinks.push(v);
-          }
+          alllinks.push(v);
         });
         bulinks.forEach(v=>{
+          alllinks.push(v);
+        });
+        alllinks.forEach(v=>{
           if(v.id!=e.id){
              if(v.field("Status")!="Not") alllinks.push(v);
           }
@@ -2501,6 +2499,7 @@ var trig = {
       que.sortque(que.q);
       que.remove(e, que.q);
       que.save(que.q);
+      fill.reop.call(this, e, false);
     }
     if (e.field("Merge")==true) {
       fill.correctMergeID.call(this, e);
@@ -2514,7 +2513,6 @@ var trig = {
       dxop.deletelink.call(dxo, e);
       dxop.deletelink.call(opo, e);
       rpo.deleteold(e);
-      fill.reop.call(this, e, false);
       change |=que.runeffect.call(this, e);
       if (this.lib=="UroBase") 
         change |=opu.deleteOp(e);
