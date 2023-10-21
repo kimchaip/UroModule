@@ -2377,7 +2377,7 @@ var trig = {
       fill.opdatecal(e);
       fill.orbridge(e);
     }
-    fill.los(e);
+    fill.los.call(this, e);
     fill.dr(e, value=="create");
     fill.active.call(this, e);
     fill.ptstatus.call(this, e);
@@ -2480,7 +2480,7 @@ var trig = {
       que.run.call(this, e);
       fill.orbridge(e);
     }
-    fill.los(e);
+    fill.los.call(this, e);
     fill.active.call(this, e);
     fill.ptstatus.call(this, e);
     fill.ptnextstatus.call(this, e);
