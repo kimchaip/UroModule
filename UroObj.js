@@ -1453,7 +1453,7 @@ var fill = {
       }
     }
   },
-  revisit : function(e) {
+  reop : function(e, withme) {
     if(this.lib != "Consult") {
       let ptlks = e.field("Patient");
       if (ptlks.length>0) {
@@ -1462,12 +1462,20 @@ var fill = {
         let bulinks = ptent.linksFrom("Backup", "Patient") ;
         let alllinks = [];
         orlinks.forEach(v=>{
-          if(v.id==e.id) v = e; 
-          if(v.field("Status")!="Not") alllinks.push(v);
+          if(v.id!=e.id){
+             if(v.field("Status")!="Not") alllinks.push(v);
+          }
+          else if(withme){ 
+             if(v.field("Status")!="Not") alllinks.push(v);
+          }
         });
         bulinks.forEach(v=>{
-          if(v.id==e.id) v = e; 
-          if(v.field("Status")!="Not") alllinks.push(v);
+          if(v.id!=e.id){
+             if(v.field("Status")!="Not") alllinks.push(v);
+          }
+          else if(withme){ 
+             if(v.field("Status")!="Not") alllinks.push(v);
+          }
         });
         let result = [];
         if(alllinks.length>0){
@@ -2371,7 +2379,7 @@ var trig = {
     fill.active.call(this, e);
     fill.ptstatus.call(this, e);
     fill.ptnextstatus.call(this, e);
-    fill.revisit.call(this, e);
+    fill.reop.call(this, e, true);
     fill.color.call(this, e);
     mer.effect(e);
   }, 
@@ -2469,6 +2477,7 @@ var trig = {
     fill.active.call(this, e);
     fill.ptstatus.call(this, e);
     fill.ptnextstatus.call(this, e);
+    fill.reop.call(this, e, true);
     fill.color.call(this, e);
     mer.effect(e);
   }, 
@@ -2505,6 +2514,7 @@ var trig = {
       dxop.deletelink.call(dxo, e);
       dxop.deletelink.call(opo, e);
       rpo.deleteold(e);
+      fill.reop.call(this, e, false);
       change |=que.runeffect.call(this, e);
       if (this.lib=="UroBase") 
         change |=opu.deleteOp(e);
