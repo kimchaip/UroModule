@@ -1807,24 +1807,26 @@ var uro = {
     return o ;
   },
   setx15 : function (e) {
-    let str = e.field("Dx").toLowerCase();
-    let isstone = false;
-    let isorextra = false;
-    
-    if ((str.indexOf("stone")!=-1 || str.indexOf("uc")!=-1 || str.indexOf("rc")!=-1 || str.indexOf("vc")!=-1 || str.indexOf("calculi")!=-1) && str.indexOf("orchi")==-1)  // match stone, not orchi
-      isstone = true;
+    if((e.field("Dx") && old.field("Dx")!=e.field("Dx") || e.field("Date")!=null && my.gday(old.field("Date"))!=my.gday(e.field("Date")) || e.field("TimeIn")!=null && old.field("TimeIn")!=e.field("TimeIn")) && old.field("x1.5")==e.field("x1.5")) {
+      let str = e.field("Dx").toLowerCase();
+      let isstone = false;
+      let isorextra = false;
       
-    if ((my.gday(e.field("Date"))==6 || my.gday(e.field("Date"))==0) )
-      isorextra = true;
-    if (e.field("TimeIn") != null)
-      if (e.field("TimeIn").getHours() < 8 || e.field("TimeIn").getHours() >= 16)
-        isorextra = false;
-   
-    if(isstone && isorextra) {
-      e.set("x1.5", true) ;
-    }
-    else {
-      e.set("x1.5", false) ;
+      if ((str.indexOf("stone")!=-1 || str.indexOf("uc")!=-1 || str.indexOf("rc")!=-1 || str.indexOf("vc")!=-1 || str.indexOf("calculi")!=-1) && str.indexOf("orchi")==-1)  // match stone, not orchi
+        isstone = true;
+        
+      if ((my.gday(e.field("Date"))==6 || my.gday(e.field("Date"))==0) )
+        isorextra = true;
+      if (e.field("TimeIn") != null)
+        if (e.field("TimeIn").getHours() < 8 || e.field("TimeIn").getHours() >= 16)
+          isorextra = false;
+     
+      if(isstone && isorextra) {
+        e.set("x1.5", true) ;
+      }
+      else {
+        e.set("x1.5", false) ;
+      }
     }
   },
   updateDJStamp : function (e) {
