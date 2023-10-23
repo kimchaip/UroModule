@@ -843,6 +843,10 @@ var fill = {
         e.set("VisitType", vstype);
     }
   } ,
+  setward : function (e) {
+    if(e.field("VisitType")=="OPD") {
+      e.set("Ward", "OPD");
+  } ,
   setvisitdate : function (e) {
     if(this.lib!="Consult") {
       if(e.field("ORType") == "LA" && e.field("VisitType") == "OPD" && (my.gdate(e.field("VisitDate")) != my.gdate(e.field(this.opdate)) || !e.field("VisitDate"))) {
@@ -2361,6 +2365,7 @@ var trig = {
       fill.setortype(e, value=="create");
     }
     fill.setvisittype.call(this, e, value=="create");
+    fill.setward.call(this, e);
     fill.setvisitdate.call(this, e);
     fill.resultbydate.call(this, e);
     fill.pasthx.call(this, e);
@@ -2472,6 +2477,7 @@ var trig = {
       fill.setortype(e, false);
     }
     fill.setvisittype.call(this, e, false);
+    fill.setward.call(this, e);
     fill.setvisitdate.call(this, e);
     fill.track.call(this, e);
     if (!e.field("MergeID"))
