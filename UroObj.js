@@ -260,6 +260,7 @@ var mer = {
       mer.setall("Summary", mergeobj.e.field("Summary"));
       mer.setall("Underlying", mergeobj.e.field("Underlying"));
       mer.setall("LOS", mergeobj.e.field("LOS"));
+      mer.setall("LOSDisp", mergeobj.e.field("LOSDisp"));
       mer.setall("Active", mergeobj.e.field("Active"));
       
       if (mer.m.length>0 && mer.m[0].lib=="Consult") {
