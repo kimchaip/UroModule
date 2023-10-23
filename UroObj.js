@@ -315,7 +315,7 @@ var mer = {
           e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1));
         }
         if (my.gdate(e.field("VisitDate"))>ntoday) {
-          e.field("Ward", "Uro");
+          e.field("Ward", e.field("VisitType")=="Admit"?entryDefault().field("Ward"):"OPD");
           e.field("DischargeDate", null);
           e.field("Track", 0);
           e.field("Summary", false);
