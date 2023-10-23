@@ -2374,7 +2374,7 @@ var trig = {
     fill.track.call(this, e);
     if (value=="create" || !e.field("MergeID"))
       mer.newmergeid.call(this, e);
-    fill.correctMergeID.call(this, e);
+    //fill.correctMergeID.call(this, e);
     mer.merge.call(this, e);
     if (this.lib!="Consult") {
       uro.setDJstent(e);
@@ -2484,7 +2484,7 @@ var trig = {
     fill.track.call(this, e);
     if (!e.field("MergeID"))
       mer.newmergeid.call(this, e);
-    fill.correctMergeID.call(this, e);
+    //fill.correctMergeID.call(this, e);
     mer.merge.call(this, e);
     if (this.lib!="Consult") {
       que.run.call(this, e);
@@ -2520,7 +2520,7 @@ var trig = {
     }
     if (e.field("Merge")==true) {
       e.set("Merge", false);
-      fill.correctMergeID.call(this, e);
+      //fill.correctMergeID.call(this, e);
       mer.cancel.call(this, e);
     }
   }, 
