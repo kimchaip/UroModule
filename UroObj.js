@@ -214,7 +214,7 @@ var mer = {
     });
   },
   fieldall: function(e) {
-    let range = ["VisitDate","PastHx","InvResult","VisitType","Ward","DischargeDate","Track","Summary","Underlying","LOS","Active"];
+    let range = ["VisitDate","PastHx","InvResult","VisitType","Ward","DischargeDate","Track","Summary","Underlying","LOS","LOSDisp","Active"];
     for(let i = 0; i<range.length; i++) {
       let inx = this.findInx(e);
       if(range[i].indexOf("Date")>-1) {
