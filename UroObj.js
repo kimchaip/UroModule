@@ -846,6 +846,7 @@ var fill = {
   setward : function (e) {
     if(e.field("VisitType")=="OPD") {
       e.set("Ward", "OPD");
+    }
   } ,
   setvisitdate : function (e) {
     if(this.lib!="Consult") {
