@@ -176,7 +176,7 @@ var mer = {
     e.set("MergeID", JSON.stringify(o));
   },
   sort: function(e) {
-    this.m = this.m.sort((a,b)=>{
+    this.m.sort((a,b)=>{
       let q1, q2;
       if (a.lib!="Consult") 
         q1 = my.gdate(a.e.field("Date"));
@@ -889,7 +889,7 @@ var fill = {
         }
       }
     }
-    list = list.sort((a, b) => {
+    list.sort((a, b) => {
       if(a.field("Date")<b.field("Date"))
         return -1;
       else if(a.field("Date")>b.field("Date"))
@@ -1645,7 +1645,7 @@ var pto = {
       // filter by max visitDate
       all = all.filter(o=>my.gdate(o.vsd) == lastvsd);
       // sort by opdate desc
-      all = all.sort((a,b)=>{
+      all.sort((a,b)=>{
         return my.gdate(b.opd)-my.gdate(a.opd);
       });
     }
@@ -1702,7 +1702,7 @@ var pto = {
       // filter by min visitDate
       all = all.filter(o=>my.gdate(o.vsd) == nextvsd);
       // sort by opdate desc
-      all = all.sort((a,b)=>{
+      all.sort((a,b)=>{
         return my.gdate(b.opd)-my.gdate(a.opd);
       });
     }
