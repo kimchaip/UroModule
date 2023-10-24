@@ -179,14 +179,14 @@ var mer = {
     this.m.sort((a,b)=>{
       let q1, q2;
       if (a.lib!="Consult") 
-        q1 = my.gdate(a.e.field("Date"));
+        q1 = my.gdate(my.date(a.e.field("Date")));
       else
-        q1 = my.gdate(a.e.field("ConsultDate"));
+        q1 = my.gdate(my.date(a.e.field("ConsultDate")));
         
       if (b.lib!="Consult") 
-        q2 = my.gdate(b.e.field("Date"));
+        q2 = my.gdate(my.date(b.e.field("Date")));
       else
-        q2 = my.gdate(b.e.field("ConsultDate"));
+        q2 = my.gdate(my.date(b.e.field("ConsultDate")));
       
       if (q1==q2) {
         if (a.lib==b.lib)
@@ -218,8 +218,8 @@ var mer = {
     for(let i = 0; i<range.length; i++) {
       let inx = this.findInx(e);
       if(range[i].indexOf("Date")>-1) {
-        if(my.gdate(e.field(range[i]))!=my.gdate(old.field(range[i])))
-          this.setall(range[i],  e.field(range[i]));
+        if(my.gdate(my.date(e.field(range[i])))!=my.gdate(my.date(old.field(range[i]))))
+          this.setall(range[i],  my.gdate(my.date(e.field(range[i]))));
       }
       else if (range[i] == "VisitType") {
         if(this.m.length>1 && e.field(range[i])!="Admit")
@@ -297,7 +297,7 @@ var mer = {
       else {  // inx>0: cancel child
         if (this.lib!="Consult") {
           // Child : e=normal, o=old parent
-          if (my.gdate(e.field("VisitDate"))<my.gdate(my.dateminus(e.field("Date"), 1)))
+          if (my.gdate(my.date(e.field("VisitDate")))<my.gdate(my.dateminus(e.field("Date"), 1)))
             e.set("VisitDate", my.dateminus(e.field("Date"), 1));
           // Parent+other child : e=normal, o=old parent
           if (l=="Consult" && o.field("Rx")=="set "+e.field("Op")) {
@@ -315,7 +315,7 @@ var mer = {
           // Child : e=normal, o=old parent
           e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1));
         }
-        if (my.gdate(e.field("VisitDate"))>ntoday) {
+        if (my.gdate(my.date(e.field("VisitDate")))>ntoday) {
           e.field("Ward", e.field("VisitType")=="Admit"?entryDefault().field("Ward"):"OPD");
           e.field("DischargeDate", null);
           e.field("Track", 0);
@@ -353,8 +353,8 @@ var que = {
   load: function(e) {  // load entry to q
     let lib = this.lib=="UroBase"? or: bu;
     all = lib.entries();
-    que.o = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(old.field("Date")) && v.field("ORType")==old.field("ORType") && v.field("Status")!="Not");
-    que.q = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(e.field("Date")) && v.field("ORType")==e.field("ORType") && v.field("Status")!="Not");
+    que.o = all.filter(v=>my.gdate(my.date(v.field("Date")))==my.gdate(my.date(old.field("Date"))) && v.field("ORType")==old.field("ORType") && v.field("Status")!="Not");
+    que.q = all.filter(v=>my.gdate(my.date(v.field("Date")))==my.gdate(my.date(e.field("Date"))) && v.field("ORType")==e.field("ORType") && v.field("Status")!="Not");
   },
   save : function(arr) {
     // reorder by TimeIn
@@ -410,14 +410,14 @@ var que = {
       arr.splice(inx, 1);
   },
   run : function (e) {
-    if (my.gdate(e.field("TimeIn")) != my.gdate(old.field("TimeIn")) || e.field("Que") != old.field("Que") || e.field("Status") != old.field("Status") || e.field("ORType") != old.field("ORType") || my.gdate(e.field("Date")) != my.gdate(old.field("Date"))) {
+    if (my.gdate(e.field("TimeIn")) != my.gdate(old.field("TimeIn")) || e.field("Que") != old.field("Que") || e.field("Status") != old.field("Status") || e.field("ORType") != old.field("ORType") || my.gdate(my.date(e.field("Date"))) != my.gdate(my.date(old.field("Date")))) {
       // load old entry to o, load  new entry to q
       que.load.call(this, e);
       que.sortque(que.o);
       que.sortque(que.q);
       e.field("Output", que.o.reduce((t,a)=>t+" "+a.field("Que")+":"+a.field("Date"),"")+"\n"+que.q.reduce((t,a)=>t+" "+a.field("Que")+":"+a.field("Date"),""));
       // remove old and save old
-      if (my.gdate(e.field("Date")) != my.gdate(old.field("Date")) || e.field("ORType") != old.field("ORType")) {
+      if (my.gdate(my.date(e.field("Date"))) != my.gdate(my.date(old.field("Date"))) || e.field("ORType") != old.field("ORType")) {
         que.remove(e, que.o);
         que.save(que.o);
         e.set("Que", "00");   // for append to q
@@ -475,7 +475,7 @@ var que = {
     // load o, q
     que.load.call(this, e);
     let change = false;
-    if(e.field("ORType")!=old.field("ORType") || my.gdate(e.field("Date"))!=my.gdate(old.field("Date"))) {
+    if(e.field("ORType")!=old.field("ORType") || my.gdate(my.date(e.field("Date")))!=my.gdate(my.date(old.field("Date")))) {
       que.effect(e, que.o);
       que.oldsave(que.o);
     }
