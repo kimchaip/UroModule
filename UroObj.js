@@ -2221,7 +2221,7 @@ var trig = {
     old.save.call(pto, e);
   }, 
   PatientOpenEdit : function(e, value) {
-    if (e) old.save.call(e);
+    if (e) old.save.call(pto, e);
   }, 
   PatientBeforeEdit : function (e, value) {
     pto.rearrangename(e);
