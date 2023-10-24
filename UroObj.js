@@ -1402,71 +1402,6 @@ var fill = {
       }
     }
   },
-  correctMergeID : function (e) {
-    if(this.lib == "Backup") {
-      let mstr = e.field("MergeID");
-      let marr = JSON.parse(mstr);
-      let inx;
-      var list = [] ;
-      let flag = false;
-      do  {
-        inx = marr.findIndex(m=>m.lib=="UroBase"&&!or.findById(m.e));
-        if(inx==0&&marr.length==1){
-          marr[inx].lib = "Backup";
-          marr[inx].e = e.id;
-          flag = true;
-        }
-        else if(inx>-1) {
-          let vsdate = e.field("VisitDate");
-          let dcdate = e.field("DischargeDate");
-          let link = e.field("Patient");
-          if(link.length>0) {
-            let ptent = pt.findById(link[0].id);
-            let orlinks = ptent.linksFrom("UroBase", "Patient");
-            let bulinks = ptent.linksFrom("Backup", "Patient");
-            if (orlinks.length>0) {
-              for (let i=0; i<orlinks.length; i++) {
-                if (orlinks[i].field("VisitType")=="Admit" && my.gdate(orlinks[i].field("Date")) >= my.gdate(vsdate) && (!dcdate || my.gdate(orlinks[i].field("Date")) <= my.gdate(dcdate))) {
-                  list.push(orlinks[i]);
-                }
-              }
-            }
-            if (bulinks.length>0) {
-              for (let i=0; i<bulinks.length; i++) {
-                if (bulinks[i].field("VisitType")=="Admit" && my.gdate(bulinks[i].field("Date")) >= my.gdate(vsdate) && (!dcdate || my.gdate(bulinks[i].field("Date")) <= my.gdate(dcdate))) {
-                  list.push(bulinks[i]);
-                }
-              }
-            }
-          }
-          //sort by vsdate opdate creationTime
-          list.sort((a,b)=>{
-            if(a.field("Date") < b.field("Date"))
-              return -1;
-            else if(a.field("Date") > b.field("Date"))
-              return 1;
-            else if(a.creationTime < b.creationTime)
-              return -1;
-            else if(a.creationTime > b.creationTime)
-              return 1;
-            else
-              return 0;
-          });
-          //replace Merge Object
-          if(list.length>inx) {
-            marr[inx].lib = "Backup";
-            marr[inx].e = list[inx].id;
-            flag = true;
-          }
-        }
-      } while (inx>-1);
-      //replace MergeID
-      if(flag) {
-        mstr = JSON.stringify(marr);
-        e.set("MergeID", mstr);
-      }
-    }
-  },
   reop : function(e, withme) {
     let orlinks = e.linksFrom("UroBase", "Patient") ;
     let bulinks = e.linksFrom("Backup", "Patient") ;
@@ -2374,7 +2309,6 @@ var trig = {
     fill.track.call(this, e);
     if (value=="create" || !e.field("MergeID"))
       mer.newmergeid.call(this, e);
-    //fill.correctMergeID.call(this, e);
     mer.merge.call(this, e);
     if (this.lib!="Consult") {
       uro.setDJstent(e);
@@ -2484,7 +2418,6 @@ var trig = {
     fill.track.call(this, e);
     if (!e.field("MergeID"))
       mer.newmergeid.call(this, e);
-    //fill.correctMergeID.call(this, e);
     mer.merge.call(this, e);
     if (this.lib!="Consult") {
       que.run.call(this, e);
@@ -2520,7 +2453,6 @@ var trig = {
     }
     if (e.field("Merge")==true) {
       e.set("Merge", false);
-      //fill.correctMergeID.call(this, e);
       mer.cancel.call(this, e);
     }
   }, 
