@@ -2220,6 +2220,9 @@ var trig = {
     fill.reop(e);
     old.save.call(pto, e);
   }, 
+  PatientOpenEdit : function(e, value) {
+    if (e) old.save.call(e);
+  }, 
   PatientBeforeEdit : function (e, value) {
     pto.rearrangename(e);
     old.load(e);
