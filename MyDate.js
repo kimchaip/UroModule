@@ -11,15 +11,9 @@ var my = {
     if (value) {
       if (this.dateIsValid(value)) {
         this.d = value;
-      }
-      else if (isNaN(value) && value.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        this.d = new Date(value);
-      }
-      else if(!isNaN(value)){
-        this.d = new Date(value);
-      }
+      }  
       else {
-        this.d = null;
+        this.d = new Date(value);
       }
     }
     else {
