@@ -1,72 +1,69 @@
-function dateIsValid(date) {
-  return date instanceof Date && !isNaN(date);
-}
-
 var my = {
   d : null, 
   nd : 0,
+  dateIsValid : function(value) {
+    return value instanceof Date && !isNaN(value) && value.getTime()>86400000;
+  },
+  timeIsValid : function(value) {
+    return value instanceof Date && !isNaN(value) && value.getTime()<86400000;
+  },
   date : function (value)  {
     if (value) {
-      if (dateIsValid(value)) {
-        this.d = new Date(value.getFullYear(), value.getMonth(),value.getDate(), 7) ;
-        return this.d;
+      if (this.dateIsValid(value)) {
+        this.d = value;
       }
-      else if (isNaN(value)){
-        value = new Date(value.getTime());
-        this.d = new Date(value.getFullYear(), value.getMonth(),value.getDate(), 7) ;
-        return this.d;
+      else if (isNaN(value) && value.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        this.d = new Date(value);
+      }
+      else if(!isNaN(value)){
+        this.d = new Date(value);
       }
       else {
-        value = new Date(value);
-        this.d = new Date(value.getFullYear(), value.getMonth(),value.getDate(), 7) ;
-        return this.d;
+        this.d = null;
       }
     }
     else {
       this.d = null;
-      return this.d;
     }
+    if(this.d && this.d.getTime()>86400000)
+        this.d = new Date(this.d.getFullYear(), this.d.getMonth(),this.d.getDate(), 7) ;
+    return this.d;
   },
   dateadd : function (value, add)  {
+    value = this.date(value);
     if (value) {
       this.d = new Date(value.getTime() + (add*86400000))​;
-      this.d = this.date(this.d) ;
-      return this.d;
     }
     else {
       this.d = null;
-      return this.d;
     }
+    return this.d;
   },
   dateminus : function (value, minus)  {
+    value = this.date(value);
     if (value) {
       this.d = new Date(value.getTime() -​ (minus*86400000))​;
-      this.d = this.date(this.d) ;
-      return this.d;
     }
     else {
       this.d = null;
-      return this.d;
     }
+    return this.d;
   }, 
   gdate : function (value)  {
     if (value) {
       this.nd = value.getTime()​;
-      return this.nd;
     }
     else {
       this.nd = 0;
-      return this.nd;
     }
+    return this.nd;
   }, 
   gday : function (value)  {
     if (value) {
-      this.nd = value.getDay() ;
-      return this.nd;
+      return value.getDay() ;
     }
     else {
-      this.nd = 0;
-      return this.d;
+      return 0;
     }
   },
   wkname : function (wd) {
@@ -80,7 +77,7 @@ var my = {
     else if (wd==6)​ wdt = "Sat" ;
     return wdt;
   }
-}​;​
+}​;
 
 var today = my.date(new Date())​;
 var ntoday = my.gdate(today);​
