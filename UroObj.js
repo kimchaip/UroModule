@@ -291,8 +291,8 @@ var que = {
   load: function(e) {  // load entry to q
     let lib = this.lib=="UroBase"? or: bu;
     all = lib.entries();
-    que.o = all.filter(v=>my.gdate(my.date(v.field("Date")))==my.gdate(my.date(old.field("Date"))) && v.field("ORType")==old.field("ORType") && v.field("Status")!="Not");
-    que.q = all.filter(v=>my.gdate(my.date(v.field("Date")))==my.gdate(my.date(e.field("Date"))) && v.field("ORType")==e.field("ORType") && v.field("Status")!="Not");
+    que.o = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(old.field("Date")) && v.field("ORType")==old.field("ORType") && v.field("Status")!="Not");
+    que.q = all.filter(v=>my.gdate(v.field("Date"))==my.gdate(e.field("Date")) && v.field("ORType")==e.field("ORType") && v.field("Status")!="Not");
   },
   save : function(arr) {
     // reorder by TimeIn
@@ -353,9 +353,9 @@ var que = {
       que.load.call(this, e);
       que.sortque(que.o);
       que.sortque(que.q);
-      e.field("Output", que.o.reduce((t,a)=>t+" "+a.field("Que")+":"+a.field("Date"),"")+"\n"+que.q.reduce((t,a)=>t+" "+a.field("Que")+":"+a.field("Date"),""));
+      //e.field("Output", que.o.reduce((t,a)=>t+" "+a.field("Que")+":"+a.field("Date"),"")+"\n"+que.q.reduce((t,a)=>t+" "+a.field("Que")+":"+a.field("Date"),""));
       // remove old and save old
-      if (my.gdate(my.date(e.field("Date"))) != my.gdate(my.date(old.field("Date"))) || e.field("ORType") != old.field("ORType")) {
+      if (my.gdate(e.field("Date")) != my.gdate(old.field("Date")) || e.field("ORType") != old.field("ORType")) {
         que.remove(e, que.o);
         que.save(que.o);
         e.set("Que", "00");   // for append to q
@@ -388,7 +388,7 @@ var que = {
         o = v;
         n = v;
       }
-      if(o.field("Patient").length>0 && oss.length>0) {
+      if(v.field("Patient").length>0 && oss.length>0) {
         let ptname;
         if(v.id==e.id)
           ptname = o.field("Patient");
@@ -413,7 +413,7 @@ var que = {
     // load o, q
     que.load.call(this, e);
     let change = false;
-    if(e.field("ORType")!=old.field("ORType") || my.gdate(my.date(e.field("Date")))!=my.gdate(my.date(old.field("Date")))) {
+    if(e.field("ORType")!=old.field("ORType") || my.gdate(e.field("Date"))!=my.gdate(old.field("Date"))) {
       que.effect(e, que.o);
       que.oldsave(que.o);
     }
