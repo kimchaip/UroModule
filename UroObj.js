@@ -13,10 +13,10 @@ var old = {
       //get Previous to Obj
       this.d = JSON.parse(e.field("Previous"), function (key, value) {
         if (value) {
-          if (typeof value == "string" && value.match(/\d+\-\d+\-\d+T\d+/)) {
+          if (typeof value == "string" && value.match(/^\d{4}-\d{2}-\d{2}$/)) {
             return new Date(value);
           }
-          else if (key == "Underlying" || key == "Allergies") {
+          else if (typeof value == "object" && key == "Underlying" || key == "Allergies" || key == "Photo") {
            return Object.keys(value).map(v=>value[v]);
           }
           else {
@@ -36,88 +36,26 @@ var old = {
     save : function (e) {
       //save field value to Obj and set to Previous
       old.d = {};
-      if(this.lib=="Patient") {
-        old.d["PtName"] = e.field("PtName"); 
-        old.d["Age"] = e.field("Age");
-        old.d["YY"] = e.field("YY");
-        old.d["MM"] = e.field("MM");
-        old.d["DD"] = e.field("DD"); 
-        old.d["Birthday"] = e.field("Birthday");
-        old.d["HN"] = e.field("HN");
-        old.d["Underlying"] = e.field("Underlying"); 
-        old.d["VIP"] = e.field("VIP");
-        old.d["Allergies"] = e.field("Allergies");
-        old.d["DJstent"] = e.field("DJstent");
-        old.d["DJStamp"] = e.field("DJStamp");
-        old.d["Status"] = e.field("Status");
-        old.d["Done"] = e.field("Done");
-        old.d["Ward"] = e.field("Ward");
-        old.d["WardStamp"] = e.field("WardStamp");
-        old.d["Address"] = e.field("Address");
-        old.d["Phone"] = e.field("Phone");
-        old.d["Contact"] = e.field("Contact");
-        old.d["Descript"] = e.field("Descript");
-        old.d["Dr"] = e.field("Dr");
-      }
-      else if (this.lib=="UroBase" || this.lib=="Backup" || this.lib=="Consult") {
-        old.d["Patient"] = e.field("Patient").length>0? e.field("Patient")[0].title: ""; 
-        old.d["PastHx"] = e.field("PastHx");
-        old.d["InvResult"] = e.field("InvResult");
-        old.d["Dx"] = e.field("Dx");
-        old.d["VisitType"] = e.field("VisitType");
-        old.d["VisitDate"] = e.field("VisitDate");
-        old.d["Ward"] = e.field("Ward");
-        old.d["Merge"] = e.field("Merge");
-        old.d["EntryMx"] = e.field("EntryMx");
-        old.d["AppointDate"] = e.field("AppointDate");
-        old.d["Operation"] = e.field("Operation");
-        old.d["Color"] = e.field("Color");
-        old.d["MergeID"] = e.field("MergeID");
-        old.d["Dr"] = e.field("Dr");
-        old.d["Status"] = e.field("Status");
-        old.d["Photo"] = e.field("Photo"); 
-        old.d["DischargeDate"] = e.field("DischargeDate");
-        old.d["LOS"] = e.field("LOS");
-        old.d["Summary"] = e.field("Summary");
-        old.d["Track"] = e.field("Track");
-      }
-
-      if(this.lib=="UroBase" || this.lib=="Backup") {
-        old.d["Date"] = e.field("Date");
-        old.d["DxAutoFill"] = e.field("DxAutoFill").length>0? e.field("DxAutoFill")[0].title: "";
-        old.d["Op"] = e.field("Op");
-        old.d["OperationList"] = e.field("OperationList").length>0? e.field("OperationList")[0].title: "";
-        old.d["AutoOpExtra"] = e.field("AutoOpExtra");
-        old.d["OpExtra"] = e.field("OpExtra");
-        old.d["x1.5"] = e.field("x1.5");
-        old.d["Bonus"] = e.field("Bonus");
-        old.d["ORType"] = e.field("ORType");
-        old.d["Que"] = e.field("Que");
-        old.d["RecordDate"] = e.field("RecordDate");
-        old.d["Future"] = e.field("Future");
-        old.d["OpResult"] = e.field("OpResult");
-        old.d["DJstent"] = e.field("DJstent");
-        old.d["TimeIn"] = e.field("TimeIn");
-        old.d["TimeOut"] = e.field("TimeOut");
-        old.d["OpDateCal"] = e.field("OpDateCal");
-        old.d["OpLength"] = e.field("OpLength");
-        old.d["Active"] = e.field("Active");
-      }
-      else if(this.lib=="Consult") {
-        old.d["ConsultDate"] = e.field("ConsultDate");
-        old.d["Rx"] = e.field("Rx");
-      }
-
-      if (this.lib=="DxAutoFill") {
-        old.d["Dx"] = e.field("Dx");
-        old.d["Op"] = e.field("Op");
-      }
-      else if (this.lib=="OperationList") {
-        old.d["OpFill"] = e.field("OpFill");
-        old.d["OpList"] = e.field("OpList");
-        old.d["OpGroup"] = e.field("OpGroup");
-        old.d["Price"] = e.field("Price");
-        old.d["PriceExtra"] = e.field("PriceExtra");
+      let lb;
+      if(this.lib == "Patient") lb = pt;
+      else if(this.lib == "UroBase") lb = or;
+      else if(this.lib == "Consult") lb = cs;
+      else if(this.lib == "Backup") lb = bu;
+      else if(this.lib == "DxAutoFill") lb = dx;
+      else if(this.lib == "OperationList") lb = op;
+      let fieldnames = lb.fields();
+      for(let f of fieldnames) {
+        if(f!="Previous" && f!= "OpDateCal" && f!= "Output") {
+          if(my.dateIsValid(e.field(f)) || my.timeIsValid(e.field(f))) {
+            old.d[f] = my.date(e.field(f));
+          }
+          else if(lb.lib!="Patient" && (f=="Patient" || f=="DxAutoFill" || f=="OperationList")) {
+            old.d[f] = e.field(f).length>0? e.field(f)[0].title: ""; 
+          }
+          else {
+            old.d[f] = e.field(f);
+          }
+        }
       }
 
       e.set("Previous", JSON.stringify(old.d));
