@@ -117,14 +117,14 @@ var mer = {
     this.m.sort((a,b)=>{
       let q1, q2;
       if (a.lib!="Consult") 
-        q1 = my.gdate(my.date(a.e.field("Date")));
+        q1 = my.gdate(a.e.field("Date"));
       else
-        q1 = my.gdate(my.date(a.e.field("ConsultDate")));
+        q1 = my.gdate(a.e.field("ConsultDate"));
         
       if (b.lib!="Consult") 
-        q2 = my.gdate(my.date(b.e.field("Date")));
+        q2 = my.gdate(b.e.field("Date"));
       else
-        q2 = my.gdate(my.date(b.e.field("ConsultDate")));
+        q2 = my.gdate(b.e.field("ConsultDate"));
       
       if (q1==q2) {
         if (a.lib==b.lib)
@@ -156,8 +156,8 @@ var mer = {
     for(let i = 0; i<range.length; i++) {
       let inx = this.findInx(e);
       if(range[i].indexOf("Date")>-1) {
-        if(my.gdate(my.date(e.field(range[i])))!=my.gdate(my.date(old.field(range[i]))))
-          this.setall(range[i],  my.gdate(my.date(e.field(range[i]))));
+        if(my.gdate(e.field(range[i]))!=my.gdate(old.field(range[i])))
+          this.setall(range[i],  e.field(range[i]));
       }
       else if (range[i] == "VisitType") {
         if(this.m.length>1 && e.field(range[i])!="Admit")
@@ -235,7 +235,7 @@ var mer = {
       else {  // inx>0: cancel child
         if (this.lib!="Consult") {
           // Child : e=normal, o=old parent
-          if (my.gdate(my.date(e.field("VisitDate")))<my.gdate(my.dateminus(e.field("Date"), 1)))
+          if (my.gdate(e.field("VisitDate"))<my.gdate(my.dateminus(e.field("Date"), 1)))
             e.set("VisitDate", my.dateminus(e.field("Date"), 1));
           // Parent+other child : e=normal, o=old parent
           if (l=="Consult" && o.field("Rx")=="set "+e.field("Op")) {
@@ -253,12 +253,12 @@ var mer = {
           // Child : e=normal, o=old parent
           e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1));
         }
-        if (my.gdate(my.date(e.field("VisitDate")))>ntoday) {
-          e.field("Ward", e.field("VisitType")=="Admit"?entryDefault().field("Ward"):"OPD");
-          e.field("DischargeDate", null);
-          e.field("Track", 0);
-          e.field("Summary", false);
-          e.field("LOS", null);
+        if (my.gdate(e.field("VisitDate"))>ntoday) {
+          e.set("Ward", e.field("VisitType")=="Admit"?Trauma9:"OPD");
+          e.set("DischargeDate", null);
+          e.set("Track", 0);
+          e.set("Summary", false);
+          e.set("LOS", null);
         }
         mer.save(e, mergeobj);
         mer.save(o, mer.m);
