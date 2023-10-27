@@ -348,7 +348,7 @@ var que = {
       arr.splice(inx, 1);
   },
   run : function (e) {
-    if (my.gdate(e.field("TimeIn")) != my.gdate(old.field("TimeIn")) || e.field("Que") != old.field("Que") || e.field("Status") != old.field("Status") || e.field("ORType") != old.field("ORType") || my.gdate(my.date(e.field("Date"))) != my.gdate(my.date(old.field("Date")))) {
+    if (my.gdate(e.field("TimeIn")) != my.gdate(old.field("TimeIn")) || e.field("Que") != old.field("Que") || e.field("Status") != old.field("Status") || e.field("ORType") != old.field("ORType") || my.gdate(e.field("Date")) != my.gdate(old.field("Date"))) {
       // load old entry to o, load  new entry to q
       que.load.call(this, e);
       que.sortque(que.o);
@@ -446,7 +446,7 @@ var emx = {
         last = lib.create(ent);
         old.save.call(this, last);
         
-        last.set(this.opdate,  my.date(e.field("AppointDate")));
+        last.set(this.opdate,  e.field("AppointDate"));
         last.link("Patient", links[0]);
         last.set("Dr", links[0].field("Dr"));
         last.set("Underlying", e.field("Underlying"));
@@ -749,20 +749,20 @@ var valid = {
 };
 var fill = {
   setnewdate: function (e) {
-    if (my.gdate(old.field(this.opdate)) != my.gdate(my.date(e.field(this.opdate)))) {
+    if (my.gdate(old.field(this.opdate)) != my.gdate(e.field(this.opdate))) {
       e.set(this.opdate, my.date(e.field(this.opdate)));
     }
-    if (my.gdate(old.field("VisitDate")) != my.gdate(my.date(e.field("VisitDate")))) {
+    if (my.gdate(old.field("VisitDate")) != my.gdate(e.field("VisitDate"))) {
       e.set("VisitDate", my.date(e.field("VisitDate")));
     }
-    if (my.gdate(old.field("DischargeDate")) != my.gdate(my.date(e.field("DischargeDate")))) {
+    if (my.gdate(old.field("DischargeDate")) != my.gdate(e.field("DischargeDate"))) {
       e.set("DischargeDate", my.date(e.field("DischargeDate")));
     }
-    if (my.gdate(old.field("AppointDate")) != my.gdate(my.date(e.field("AppointDate")))) {
+    if (my.gdate(old.field("AppointDate")) != my.gdate(e.field("AppointDate"))) {
       e.set("AppointDate", my.date(e.field("AppointDate")));
     }
     if(this.lib!="Consult") {
-      if (my.gdate(old.field("RecordDate")) != my.gdate(my.date(e.field("RecordDate")))) {
+      if (my.gdate(old.field("RecordDate")) != my.gdate(e.field("RecordDate"))) {
         e.set("RecordDate", my.date(e.field("RecordDate")));
       }
     }
@@ -791,10 +791,10 @@ var fill = {
   setvisitdate : function (e) {
     if(this.lib!="Consult") {
       if(e.field("ORType") == "LA" && e.field("VisitType") == "OPD" && (my.gdate(e.field("VisitDate")) != my.gdate(e.field(this.opdate)) || !e.field("VisitDate"))) {
-        e.set("VisitDate", my.date(e.field(this.opdate)));
+        e.set("VisitDate", e.field(this.opdate));
       }
       else if(e.field("ORType") == "LA" && e.field("VisitType") == "Admit" && (my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate)) || !e.field("VisitDate"))) {
-        e.set("VisitDate", my.date(e.field(this.opdate)));
+        e.set("VisitDate", e.field(this.opdate));
       }
       else if(e.field("ORType") == "GA" && e.field("VisitType") == "Admit" && (my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate)) || !e.field("VisitDate"))) {
         e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
@@ -802,10 +802,10 @@ var fill = {
     }
     else { // this.lib == "Consult"
       if(e.field("VisitType") == "OPD" && (my.gdate(e.field("VisitDate")) != my.gdate(e.field(this.opdate)) || !e.field("VisitDate"))) {
-        e.set("VisitDate", my.date(e.field(this.opdate)));
+        e.set("VisitDate", e.field(this.opdate));
       }
       else if(e.field("VisitType") == "Admit" && (my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate)) || !e.field("VisitDate"))) {
-        e.set("VisitDate", my.date(e.field(this.opdate)));
+        e.set("VisitDate", e.field(this.opdate));
       }
     }
   },
@@ -1921,7 +1921,7 @@ var rpo = {
         let rps = ptent.linksFrom("Report", "Patient");
         if (rps.length>0) {
           for (let r=0; r<rps.length; r++) {
-            if (my.gdate(my.date(rps[r].field("OpDate"))) == my.gdate(my.date(old.field("Date"))) && rps[r].field("ORType") == old.field("ORType") && rps[r].field("Dx") == old.field("Dx") && rps[r].field("Op") == old.field("Op")){
+            if (my.gdate(rps[r].field("OpDate")) == my.gdate(old.field("Date")) && rps[r].field("ORType") == old.field("ORType") && rps[r].field("Dx") == old.field("Dx") && rps[r].field("Op") == old.field("Op")){
               rpo.setAll(rps[r], e);
               break;
             }
@@ -2022,8 +2022,8 @@ var opu = {
         ent["Op"] = e.field("Op");
         ent["Note"] =  link.field("Underlying").join();
         ent["Que"] = Number(e.field("Que"));
-        ent["CreationTime"] =  e.creationTime;
-        ent["ModifiedTime"] =  e.lastModifiedTime;
+        ent["CreationTime"] =  new Date(e.creationTime);
+        ent["ModifiedTime"] =  new Date(e.lastModifiedTime);
         os.create(ent);
         //message("create OpUroSx!");
         change = true;
@@ -2042,7 +2042,7 @@ var opu = {
         let parr = this.splitPtName(old.field("Patient"));
         parr[2] = parr[2]?parr[2]:null;
         for (let s=0; s<oss.length; s++) {
-          if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(my.date(old.field("Date"))) && oss[s].field("Dr") == old.field("Dr") && oss[s].field("OpType") == old.field("ORType") && oss[s].field("PtName") == parr[0] && oss[s].field("HN") == parr[2] && oss[s].field("Dx") == old.field("Dx") && oss[s].field("Op") == old.field("Op")){
+          if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(old.field("Date")) && oss[s].field("Dr") == old.field("Dr") && oss[s].field("OpType") == old.field("ORType") && oss[s].field("PtName") == parr[0] && oss[s].field("HN") == parr[2] && oss[s].field("Dx") == old.field("Dx") && oss[s].field("Op") == old.field("Op")){
             oss[s].set("OpDate", my.date(e.field("Date")));
             oss[s].set("Dr", e.field("Dr"));
             oss[s].set("OpType", e.field("ORType"));
@@ -2063,9 +2063,9 @@ var opu = {
             
             oss[s].set("Que", Number(e.field("Que")));
             if(!oss[s].field("CreationTime"))
-              oss[s].set("CreationTime", e.creationTime);
+              oss[s].set("CreationTime", new Date(e.creationTime));
             if(my.gdate(oss[s].field("ModifiedTime"))<my.gdate(e.lastModifiedTime))
-              oss[s].set("ModifiedTime", e.lastModifiedTime);
+              oss[s].set("ModifiedTime", new Date(e.lastModifiedTime));
             //message("update OpUroSx!");
             change = true;
             break;
@@ -2091,7 +2091,7 @@ var opu = {
         let parr = this.splitPtName(old.field("Patient"));
         parr[2] = parr[2]?parr[2]:null;
         for (let s=0; s<oss.length; s++){
-          if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(my.date(old.field("Date"))) && oss[s].field("Dr") == old.field("Dr") && oss[s].field("OpType") == old.field("ORType") && (oss[s].field("PtName").trim() == parr[0] || oss[s].field("HN") == parr[2])){
+          if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(old.field("Date")) && oss[s].field("Dr") == old.field("Dr") && oss[s].field("OpType") == old.field("ORType") && (oss[s].field("PtName").trim() == parr[0] || oss[s].field("HN") == parr[2])){
             oss[s].trash();
             //message("delete OpUroSx!");
             change = true;
@@ -2104,7 +2104,7 @@ var opu = {
   },
   ptTrigOpuro : function (e) {
     let change = false;
-    if(old.field("PtName") != e.field("PtName") || old.field("Age") != e.field("Age") || old.field("YY") != e.field("YY") || old.field("MM") != e.field("MM")  || old.field("DD") != e.field("DD") || my.gdate(my.date(old.field("Birthday"))) != my.gdate(my.date(e.field("Birthday"))) || old.field("HN") != e.field("HN") || old.field("Underlying").join() != e.field("Underlying").join() ){
+    if(old.field("PtName") != e.field("PtName") || old.field("Age") != e.field("Age") || old.field("YY") != e.field("YY") || old.field("MM") != e.field("MM")  || old.field("DD") != e.field("DD") || my.gdate(old.field("Birthday")) != my.gdate(e.field("Birthday")) || old.field("HN") != e.field("HN") || old.field("Underlying").join() != e.field("Underlying").join() ){
       let orlinks = e.linksFrom("UroBase", "Patient");
       let bulinks = e.linksFrom("Backup", "Patient");
       let found = [];
