@@ -1958,7 +1958,8 @@ var rpo = {
 };
 var opu = {
   setnewdate : function (e) {
-    e.set("OpDate", my.date(e.field("OpDate")));
+    if(my.gdate(my.date(e.field("OpDate")))!=my.gdate(e.field("OpDate")))
+      e.set("OpDate", my.date(e.field("OpDate")));
   }, 
   splitPtName : function (ptName) {
     let arr = [];
