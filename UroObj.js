@@ -1341,7 +1341,7 @@ var fill = {
       }
     }
   },
-  reop : function(e, withme) {
+  reop : function(e) {
     let orlinks = e.linksFrom("UroBase", "Patient") ;
     let bulinks = e.linksFrom("Backup", "Patient") ;
     let alllinks = [];
@@ -1351,15 +1351,7 @@ var fill = {
     bulinks.forEach(v=>{
       alllinks.push(v);
     });
-    alllinks.filter(v=>{
-      if(v.id!=e.id){
-         if(v.field("Status")!="Not") return true;
-      }
-      else if(withme){ 
-         if(v.field("Status")!="Not") return true;
-      }
-      return false;
-    });
+    alllinks.filter(v=>alllinks.filter(v=>v.field("Status")!="Not"));
     let result = [];
     if(alllinks.length>0){
       result = alllinks.filter((v,i,a)=>a.some(u=>u.id != v.id && my.gdate(u.field("Date"))>=my.gdate(v.field("Date")) && Math.floor((my.gdate(u.field("Date"))-my.gdate(v.field("Date")))/86400000)<14));
