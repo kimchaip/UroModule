@@ -1215,6 +1215,7 @@ var fill = {
           links[0].set("Status", "Still");
         }
       }
+      pto.opdiff(ptent);
     }
   }, 
   ptnextstatus : function (e) {
@@ -1341,24 +1342,6 @@ var fill = {
       }
     }
   },
-  reop : function(e) {
-    let orlinks = e.linksFrom("UroBase", "Patient") ;
-    let bulinks = e.linksFrom("Backup", "Patient") ;
-    let alllinks = [];
-    orlinks.forEach(v=>{
-      alllinks.push(v);
-    });
-    bulinks.forEach(v=>{
-      alllinks.push(v);
-    });
-    alllinks.filter(v=>alllinks.filter(v=>v.field("Status")!="Not"));
-    let result = [];
-    if(alllinks.length>0){
-      result = alllinks.filter((v,i,a)=>a.some(u=>u.id != v.id && my.gdate(u.field("Date"))>=my.gdate(v.field("Date")) && Math.floor((my.gdate(u.field("Date"))-my.gdate(v.field("Date")))/86400000)<14));
-    }
-    e.set("ReOp", result.length);
-    e.set("ReOpValue", result.length);
-  },
   twodigit : function(value) {
     if(value<10)
       return "0"+value.toString();
@@ -1404,6 +1387,16 @@ var fill = {
     }
     else
       e.set("ORbridge", "");
+  },
+  ptDetail : function (e) {
+    let links = e.field("Patient");
+    if (links.length>0) {
+      let ptent = pt.findById(links[0].id) ;
+      if(ptent) {
+        pto.djStamp(ptent);
+        pto.redo(ptent);
+      }
+    }
   }
 };
 var pto = {
@@ -1573,6 +1566,103 @@ var pto = {
       });
     }
     return all;
+  },
+  lastDJStamp : function (ptent, date)  {
+    let orlinks = ptent.linksFrom("UroBase", "Patient") ;
+    let bulinks = ptent.linksFrom("Backup", "Patient") ;
+    let o = null ;
+    let last = null, r = null, u = null;
+    if (orlinks.length>0) {
+      for (let i=0; i<orlinks.length; i++) {
+        if (orlinks[i].field("DJstent") && my.gdate(orlinks[i].field("Date")) > my.gdate(last) && my.gdate(orlinks[i].field("Date")) <= my.gdate(date)) {
+          last = orlinks[i].field("Date");
+          r=i;
+        }
+      }
+    }
+    if (bulinks.length>0) {
+      for (let i=0; i<bulinks.length; i++) {
+        if (bulinks[i].field("DJstent") && my.gdate(bulinks[i].field("Date")) > my.gdate(last) && my.gdate(bulinks[i].field("Date")) <= my.gdate(date)) {
+          last = bulinks[i].field("Date");
+          u=i;
+        }
+      }
+    }
+    if (last != null){
+      if (u==null)
+        o = orlinks[r] ;
+      else if (u!=null)
+        o = bulinks[u] ;
+    }
+    return o ;
+  },
+  djStamp : function (ptent) {
+    let d = this.lastDJStamp(ptent, today) ;
+    if (!d) { // not found
+      ptent.set("DJstent", null);
+      ptent.set("DJStamp", null);
+    } 
+    else if (d){ // found off, on, change DJ before
+      if (d.field("DJstent") == "off DJ") {
+        ptent.set("DJstent", null);
+        ptent.set("DJStamp", d.field("Date"));
+      }
+      else {
+        ptent.set("DJstent", "on DJ");
+        ptent.set("DJStamp", d.field("Date"));
+      }
+    }
+  },
+  reop : function(ptent) {
+    let orlinks = ptent.linksFrom("UroBase", "Patient") ;
+    let bulinks = ptent.linksFrom("Backup", "Patient") ;
+    let alllinks = [];
+    orlinks.forEach(v=>{
+      alllinks.push(v);
+    });
+    bulinks.forEach(v=>{
+      alllinks.push(v);
+    });
+    alllinks = alllinks.filter(v=>v.field("Status")!="Not");
+    let result = [];
+    if(alllinks.length>0){
+      result = alllinks.filter((v,i,a)=>a.some(u=>u.id != v.id && my.gdate(u.field("Date"))>=my.gdate(v.field("Date")) && Math.floor((my.gdate(u.field("Date"))-my.gdate(v.field("Date")))/86400000)<=14));
+    }
+    ptent.set("ReOp", result.length);
+    ptent.set("ReOpValue", result.length);
+  },
+  opdiff : function(ptent) {
+    let orlinks = ptent.linksFrom("UroBase", "Patient") ;
+    let bulinks = ptent.linksFrom("Backup", "Patient") ;
+    let alllinks = [];
+    orlinks.forEach(v=>{
+      alllinks.push(v);
+    });
+    bulinks.forEach(v=>{
+      alllinks.push(v);
+    });
+    alllinks = alllinks.filter(v=>v.field("Status")!="Not" && my.gdate(v.field("Date"))>=ntoday);
+    let result = [];
+    if(alllinks.length>0){
+      alllinks.sort((a,b)=>{
+        if(my.gdate(a.field("VisitDate"))==my.gdate(b.field("VisitDate"))) {
+          if(my.gdate(a.field("Date"))==my.gdate(b.field("Date")))
+            return 0;
+          else
+            return my.gdate(a.field("Date"))-my.gdate(b.field("Date"));
+        }
+        else
+          return my.gdate(a.field("VisitDate"))-my.gdate(b.field("VisitDate"));
+      });
+      result = alllinks[0];
+    }
+
+    if(result.length) {
+      ptent.set("OpDiff", Math.floor((my.gdate(result.field("Date"))-ntoday)/86400000));
+    }
+    else {
+      ptent.set("OpDiff", -1000);
+    }
   }
 };
 var uro = {
@@ -1648,35 +1738,6 @@ var uro = {
         } 
       }
     }
-  }, 
-  lastDJStamp : function (ptent, date)  {
-    let orlinks = ptent.linksFrom("UroBase", "Patient") ;
-    let bulinks = ptent.linksFrom("Backup", "Patient") ;
-    let o = null ;
-    let last = null, r = null, u = null;
-    if (orlinks.length>0) {
-      for (let i=0; i<orlinks.length; i++) {
-        if (orlinks[i].field("DJstent") && my.gdate(orlinks[i].field("Date")) > my.gdate(last) && my.gdate(orlinks[i].field("Date")) <= my.gdate(date)) {
-          last = orlinks[i].field("Date");
-          r=i;
-        }
-      }
-    }
-    if (bulinks.length>0) {
-      for (let i=0; i<bulinks.length; i++) {
-        if (bulinks[i].field("DJstent") && my.gdate(bulinks[i].field("Date")) > my.gdate(last) && my.gdate(bulinks[i].field("Date")) <= my.gdate(date)) {
-          last = bulinks[i].field("Date");
-          u=i;
-        }
-      }
-    }
-    if (last != null){
-      if (u==null)
-        o = orlinks[r] ;
-      else if (u!=null)
-        o = bulinks[u] ;
-    }
-    return o ;
   },
   setx15 : function (e) {
     if((e.field("Dx") && old.field("Dx")!=e.field("Dx") || e.field("Date")!=null && my.gday(old.field("Date"))!=my.gday(e.field("Date")) || e.field("TimeIn")!=null && old.field("TimeIn")!=e.field("TimeIn")) && old.field("x1.5")==e.field("x1.5")) {
@@ -1698,27 +1759,6 @@ var uro = {
       }
       else {
         e.set("x1.5", false) ;
-      }
-    }
-  },
-  updateDJStamp : function (e) {
-    let links = e.field("Patient");
-    if (links.length>0) {
-      let ptent = pt.findById(links[0].id) ;
-      let d = this.lastDJStamp(ptent, today) ;
-      if (!d) { // not found
-        ptent.set("DJstent", null);
-        ptent.set("DJStamp", null);
-      } 
-      else if (d){ // found off, on, change DJ before
-        if (d.field("DJstent") == "off DJ") {
-          ptent.set("DJstent", null);
-          ptent.set("DJStamp", d.field("Date"));
-        }
-        else {
-          ptent.set("DJstent", "on DJ");
-          ptent.set("DJStamp", d.field("Date"));
-        }
       }
     }
   }
@@ -2148,7 +2188,8 @@ var opu = {
 
 var trig = {
   PatientBeforeViewCard : function (e) {
-    fill.reop(e);
+    pt.djStamp(e);
+    pt.reop(e);
     old.save.call(pto, e);
   }, 
   PatientOpenEdit : function(e, value) {
@@ -2268,7 +2309,7 @@ var trig = {
     old.load(e);
     if (this.lib!="Consult") {
       let change = false;
-      uro.updateDJStamp(e);
+      fill.ptDetail(e);
       if (value=="create") {
         rpo.createnew(e);
         change |= que.runeffect.call(this, e);
