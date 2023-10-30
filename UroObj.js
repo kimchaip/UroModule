@@ -1642,7 +1642,7 @@ var pto = {
       alllinks.push(v);
     });
     alllinks = alllinks.filter(v=>v.field("Status")!="Not" && my.gdate(my.date(v.field("Date")))>=ntoday);
-    let result = [];
+    let result;
     if(alllinks.length>0){
       alllinks.sort((a,b)=>{
         if(my.gdate(a.field("VisitDate"))==my.gdate(b.field("VisitDate"))) {
@@ -1657,7 +1657,7 @@ var pto = {
       result = alllinks[0];
     }
 
-    if(result.length) {
+    if(result) {
       ptent.set("OpDiff", Math.floor((my.gdate(result.field("Date"))-ntoday)/86400000));
     }
     else {
