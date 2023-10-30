@@ -1641,7 +1641,7 @@ var pto = {
     bulinks.forEach(v=>{
       alllinks.push(v);
     });
-    alllinks = alllinks.filter(v=>v.field("Status")!="Not" && my.gdate(v.field("Date"))>=ntoday);
+    alllinks = alllinks.filter(v=>v.field("Status")!="Not" && my.gdate(my.date(v.field("Date")))>=ntoday);
     let result = [];
     if(alllinks.length>0){
       alllinks.sort((a,b)=>{
