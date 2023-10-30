@@ -1394,7 +1394,7 @@ var fill = {
       let ptent = pt.findById(links[0].id) ;
       if(ptent) {
         pto.djStamp(ptent);
-        pto.redo(ptent);
+        pto.reop(ptent);
       }
     }
   }
