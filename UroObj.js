@@ -2188,8 +2188,8 @@ var opu = {
 
 var trig = {
   PatientBeforeViewCard : function (e) {
-    pt.djStamp(e);
-    pt.reop(e);
+    pto.djStamp(e);
+    pto.reop(e);
     old.save.call(pto, e);
   }, 
   PatientOpenEdit : function(e, value) {
