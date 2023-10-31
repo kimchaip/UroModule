@@ -1215,7 +1215,6 @@ var fill = {
           links[0].set("Status", "Still");
         }
       }
-      pto.opdiff(ptent);
     }
   }, 
   ptnextstatus : function (e) {
@@ -1246,6 +1245,32 @@ var fill = {
       }
     }
   },
+  opdiff : function(e, o, n) {
+    let links = e.field("Patient");
+    if (links.length>0) {
+      let ptent = links[0];
+      o = o.filter(v=>v.lib!="Consult");
+      n = o.filter(v=>v.lib!="Consult");
+      if(o.length>0 && my.gdate(ptent.field("VisitDate")) == my.gdate(o[0].e.field("VisitDate"))) { // admit
+        if(o.length>1 )  {
+          let inx = o.findIndex(v=>my.gdate(v.e.field(this.opdate))>=ntoday);
+          if(inx>-1 )  {
+            ptent.set("OpDiff", Math.floor((my.gdate(o[onx].e.field(this.opdate))-ntoday)/86400000));
+          else
+            ptent.set("OpDiff", Math.floor((my.gdate(o[o.length-1].e.field(this.opdate))-ntoday)/86400000));
+        }
+        else {
+          ptent.set("OpDiff", Math.floor((my.gdate(o[0].e.field(this.opdate))-ntoday)/86400000));
+        }
+      }
+      else if(n.length>0 ) { // found next visit
+        ptent.set("OpDiff", Math.floor((my.gdate(n[0].e.field(this.opdate))-ntoday)/86400000));
+      }
+      else { // pass last admit, or no visit
+        ptent.set("OpDiff", -1000);
+      }
+    }
+  } ,
   color : function (e) {
     if(this.lib!="Consult") {
       if(e.field("Status")=="Not") {
@@ -1630,39 +1655,6 @@ var pto = {
     }
     ptent.set("ReOp", result.length);
     ptent.set("ReOpValue", result.length);
-  },
-  opdiff : function(ptent) {
-    let orlinks = ptent.linksFrom("UroBase", "Patient") ;
-    let bulinks = ptent.linksFrom("Backup", "Patient") ;
-    let alllinks = [];
-    orlinks.forEach(v=>{
-      alllinks.push(v);
-    });
-    bulinks.forEach(v=>{
-      alllinks.push(v);
-    });
-    alllinks = alllinks.filter(v=>v.field("Status")!="Not" && (v.field("Status")=="Active" || my.gdate(v.field("Date"))>=ntoday));
-    let result;
-    if(alllinks.length>0){
-      alllinks.sort((a,b)=>{
-        if(my.gdate(a.field("VisitDate"))==my.gdate(b.field("VisitDate"))) {
-          if(my.gdate(a.field("Date"))==my.gdate(b.field("Date")))
-            return 0;
-          else
-            return my.gdate(a.field("Date"))-my.gdate(b.field("Date"));
-        }
-        else
-          return my.gdate(a.field("VisitDate"))-my.gdate(b.field("VisitDate"));
-      });
-      result = alllinks[0];
-    }
-
-    if(result) {
-      ptent.set("OpDiff", Math.floor((my.gdate(result.field("Date"))-ntoday)/86400000));
-    }
-    else {
-      ptent.set("OpDiff", -1000);
-    }
   }
 };
 var uro = {
@@ -2299,8 +2291,7 @@ var trig = {
     fill.los.call(this, e);
     fill.dr(e, value=="create");
     fill.active.call(this, e);
-    fill.ptstatus.call(this, e);
-    fill.ptnextstatus.call(this, e);
+    fill.opdiff.call(this, e, fill.ptstatus.call(this, e), fill.ptnextstatus.call(this, e));
     fill.color.call(this, e);
     mer.effect(e);
   }, 
