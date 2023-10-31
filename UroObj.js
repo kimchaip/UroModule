@@ -2235,7 +2235,7 @@ var trig = {
   }, 
   PatientBeforeOpenLib : function (all) {
     for (let i=0; i<all.length; i++) {
-      if (my.gdate(my.date(all[i].lastModifiedTime)) < ntoday) {
+      if (my.gdate(all[i].lastModifiedTime) < ntoday) {
         if (all[i].field("Done")==true) {
           all[i].set("Done", false) ;
         }
@@ -2334,7 +2334,7 @@ var trig = {
   BeforeOpenLib : function (all) {
     let pts = pt.entries();
     for (let i=0; i<pts.length; i++) {
-      if (my.gdate(my.date(pts[i].lastModifiedTime)) < ntoday) {
+      if (my.gdate(pts[i].lastModifiedTime) < ntoday) {
         if (pts[i].field("Done")==true) {
           pts[i].set("Done", false) ;
         }
@@ -2344,7 +2344,7 @@ var trig = {
     
     let first = false;
     for (let i=0; i<all.length; i++) {
-      if (my.gdate(my.date(all[i].lastModifiedTime)) < ntoday) {
+      if (my.gdate(all[i].lastModifiedTime) < ntoday) {
         if (all[i].field("Done")==true) 
           all[i].set("Done", false);
       }
