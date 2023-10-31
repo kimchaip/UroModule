@@ -1215,7 +1215,9 @@ var fill = {
           links[0].set("Status", "Still");
         }
       }
+      return o;
     }
+    return [];
   }, 
   ptnextstatus : function (e) {
     let links = e.field("Patient");
@@ -1243,7 +1245,9 @@ var fill = {
           links[0].set("Descript", str);
         }
       }
+      return o;
     }
+    return [];
   },
   opdiff : function(e, o, n) {
     let links = e.field("Patient");
