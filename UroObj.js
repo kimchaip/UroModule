@@ -1269,6 +1269,7 @@ var fill = {
       else { // pass last admit, or no visit
         ptent.set("OpDiff", -1000);
       }
+      ptent.set("Output", my.gdate(ptent.field(this.opdate)) + " : " + ntoday);
     }
   } ,
   color : function (e) {
