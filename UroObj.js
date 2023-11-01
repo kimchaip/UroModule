@@ -1251,7 +1251,7 @@ var fill = {
   },
   opdiff : function(e, o, n) {
     let links = e.field("Patient");
-    if (links.length>0) {
+    if (links.length>0 && this.lib != "Consult") {
       let ptent = links[0];
       o = o.filter(v=>v.lib!="Consult");
       n = o.filter(v=>v.lib!="Consult");
