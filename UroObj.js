@@ -1275,6 +1275,9 @@ var fill = {
       }
       //ptent.set("Output", my.gdate(o[0].e.field(this.opdate)) + " : " + ntoday);
     }
+    else if (links.length>0 && this.lib == "Consult") {
+      ptent.set("OpDiff", -1000);
+    }
   } ,
   color : function (e) {
     if(this.lib!="Consult") {
