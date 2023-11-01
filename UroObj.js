@@ -1271,12 +1271,12 @@ var fill = {
         ptent.set("OpDiff", Math.floor((my.gdate(n[0].e.field(this.opdate))-ntoday)/86400000));
       }
       else { // pass last admit, or no visit
-        links[0].set("OpDiff", -1000);
+        ptent.set("OpDiff", -1000);
       }
       //ptent.set("Output", my.gdate(o[0].e.field(this.opdate)) + " : " + ntoday);
     }
     else if (links.length>0 && this.lib == "Consult") {
-      ptent.set("OpDiff", -1000);
+      links[0].set("OpDiff", -1000);
     }
   } ,
   color : function (e) {
