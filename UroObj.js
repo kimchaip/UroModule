@@ -1740,7 +1740,7 @@ var uro = {
     }
   },
   setx15 : function (e) {
-    if((e.field("Dx") && old.field("Dx")!=e.field("Dx") || e.field("Date")!=null && my.gday(old.field("Date"))!=my.gday(e.field("Date")) || e.field("TimeIn")!=null && old.field("TimeIn")!=e.field("TimeIn")) && old.field("x1.5")==e.field("x1.5")) {
+    if((e.field("Dx") && old.field("Dx")!=e.field("Dx") || e.field("Date")!=null && my.gday(old.field("Date"))!=my.gday(e.field("Date")) || e.field("TimeIn")!=null && my.gdate(old.field("TimeIn"))!=my.gdate(e.field("TimeIn"))) && old.field("x1.5")==e.field("x1.5")) {
       let str = e.field("Dx").toLowerCase();
       let isstone = false;
       let isorextra = false;
