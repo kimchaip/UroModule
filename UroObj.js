@@ -1752,7 +1752,7 @@ var uro = {
         isorextra = true;
       if (e.field("TimeIn") != null)
         if (e.field("TimeIn").getHours() < 8 || e.field("TimeIn").getHours() >= 16)
-          isorextra = false;
+          isorextra = true;
      
       if(isstone && isorextra) {
         e.set("x1.5", true) ;
