@@ -1253,8 +1253,8 @@ var fill = {
     let links = e.field("Patient");
     if (links.length>0 && this.lib != "Consult") {
       let ptent = links[0];
-      o = o.filter(v=>v.lib!="Consult");
-      n = o.filter(v=>v.lib!="Consult");
+      o = o.filter(v=>v.lib!="Consult" && v.e.field("Status")!="Not");
+      n = o.filter(v=>v.lib!="Consult" && v.e.field("Status")!="Not");
       if(o.length>0 && my.gdate(e.field("VisitDate")) == my.gdate(o[0].e.field("VisitDate"))) { // admit
         if(o.length>1 )  {
           let inx = o.findIndex(v=>my.gdate(v.e.field(this.opdate))>=ntoday);
