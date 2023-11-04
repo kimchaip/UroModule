@@ -2400,8 +2400,7 @@ var trig = {
     }
     fill.los.call(this, e);
     fill.active.call(this, e);
-    fill.ptstatus.call(this, e);
-    fill.ptnextstatus.call(this, e);
+    fill.opdiff.call(this, e, fill.ptstatus.call(this, e), fill.ptnextstatus.call(this, e));
     fill.color.call(this, e);
     mer.effect(e);
   }, 
