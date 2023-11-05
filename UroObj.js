@@ -2369,8 +2369,7 @@ var trig = {
           fill.track.call(this, all[i]);
           fill.los.call(this, all[i]);
           fill.active.call(this, all[i]);
-          fill.ptstatus.call(this, all[i]);
-          fill.ptnextstatus.call(this, all[i]);
+          fill.opdiff.call(this, all[i], fill.ptstatus.call(this, all[i]), fill.ptnextstatus.call(this, all[i]));
           fill.color.call(this, all[i]);
           all[i].set("Done", true);
           first = true;
