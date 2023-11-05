@@ -1259,7 +1259,7 @@ var fill = {
         if(o.length>1 )  {
           let inx = o.findIndex(v=>my.gdate(v.e.field(this.opdate))>=ntoday);
           if(inx>-1 )  
-            ptent.set("OpDiff", Math.floor((my.gdate(o[onx].e.field(this.opdate))-ntoday)/86400000));
+            ptent.set("OpDiff", Math.floor((my.gdate(o[inx].e.field(this.opdate))-ntoday)/86400000));
           else
             ptent.set("OpDiff", Math.floor((my.gdate(o[o.length-1].e.field(this.opdate))-ntoday)/86400000));
         }
