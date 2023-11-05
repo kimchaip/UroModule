@@ -1726,7 +1726,7 @@ var uro = {
         }
         else { // this entry is on DJ, must check last DJStamp before
           let ptent = pt.findById(links[0].id) ;
-          let d = this.lastDJStamp(ptent, my.dateminus(e.field("Date"), 1)) ;
+          let d = pto.lastDJStamp(ptent, my.dateminus(e.field("Date"), 1)) ;
           if (d != null && d.field("DJstent") != "off DJ") { // ever on or change DJ before -> get only off or change DJ
             if (e.field("DJstent") == "on DJ") 
               e.set("DJstent", null) ;
