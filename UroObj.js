@@ -2367,6 +2367,7 @@ var trig = {
         if (ntoday <= my.gdate(end)) { 
           fill.future.call(this, all[i]);
           fill.track.call(this, all[i]);
+          fill.los.call(this, all[i]);
           fill.active.call(this, all[i]);
           fill.ptstatus.call(this, all[i]);
           fill.ptnextstatus.call(this, all[i]);
