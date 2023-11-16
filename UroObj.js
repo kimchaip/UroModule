@@ -254,7 +254,7 @@ var mer = {
           e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1));
         }
         if (my.gdate(e.field("VisitDate"))>ntoday) {
-          e.set("Ward", e.field("VisitType")=="Admit"?"Trauma9":"OPD");
+          e.set("Ward", e.field("VisitType")=="Admit"?"Uro":"OPD");
           e.set("DischargeDate", null);
           e.set("Track", 0);
           e.set("Summary", false);
@@ -784,8 +784,11 @@ var fill = {
     }
   } ,
   setward : function (e) {
-    if(e.field("VisitType")=="OPD") {
+    if(e.field("VisitType")=="OPD" && e.field("Ward")!="OPD") {
       e.set("Ward", "OPD");
+    }
+    else if(e.field("VisitType")!="OPD" && e.field("Ward")=="OPD") {
+      e.set("Ward", "Uro");
     }
   } ,
   setvisitdate : function (e) {
