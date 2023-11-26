@@ -745,6 +745,26 @@ var valid = {
       unique = false;
     }
     return unique;
+  },
+  // check opdate is not working elsewhere 
+  opdate : function(e) {
+    let hd = libByName("Holidays");
+    let hds = hd.entries();
+    let outofduty = false;
+    let title = "";
+    
+    for(let i=0; i<hds.length; i++) {
+      if(my.gdate(my.date(hds[i].field("Date")))==my.gdate(my.date(e.field(this.opdate))) && hds[i].field("OutOfDuty") == true){
+        outofduty = true;
+        title = hds[i].field("Title");
+        break;
+      }
+    }
+    if (outofduty) {
+      message("OpDate overlap with " + title + " . Try again.");
+      cancel();
+      exit();
+    }
   }
 };
 var fill = {
@@ -1685,8 +1705,9 @@ var uro = {
       if(e.field("TimeIn").getHours()<8 || e.field("TimeIn").getHours()>=16)
         timeout = true;
     for(let i=0; i<hds.length; i++) {
-      if(my.gdate(hds[i].field("Date"))==my.gdate(e.field("Date")) && hds[i].field("Holiday") == true){
+      if(my.gdate(my.date(hds[i].field("Date")))==my.gdate(my.date(e.field("Date"))) && hds[i].field("Holiday") == true){
         holiday = true;
+        break;
       }
     }
     if(e.field("AutoOpExtra")){
@@ -2270,6 +2291,7 @@ var trig = {
   }, 
   BeforeEdit : function (e, value) {
     old.load(e);
+    valid.opdate.call(this, e);
     valid.dxop.call(this, e); //fill dx,op complete 
     fill.setnewdate.call(this, e);
     valid.uniqueVisit.call(this, e, value=="create");
