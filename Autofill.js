@@ -58,3 +58,76 @@ var autofill = {
     return result;
   }
 }
+var script = {
+  timeanswer : function (m) {
+    let time = {};
+    if(m>=10) {
+      time["hr"] = Math.floor(m/60);
+      time["min"] = m%60;
+      if(time.hr>0)
+        return "ยังเหลือเวลาอยู่ " + time.hr + ":" + ("0" + time.min).slice(-2) + " น."
+      else
+        return "ยังเหลือเวลาอยู่ " + time.min + " น."
+    }
+    else if(m>=0){
+      return "้เต็มแล้ว ยังเหลือเวลา " + m + " น."
+    }
+    else {
+      time["hr"] = Math.floor(Math.abs(m)/60);
+      time["min"] = Math.abs(m)%60;
+      if(time.hr>0)
+        return "เต็มแล้ว เกินเวลา " + time.hr + ":" + ("0" + time.min).slice(-2) + " น."
+      else
+        return "เต็มแล้ว เกินเวลา " + time.min + " น."
+    }
+  },
+  timeleft : function (m, ot, hd, hdname) {
+    let tl;
+    if(ot || hd) {
+      if(hd)
+        message("วันหยุด" + hdname + " " +  this.timeanswer(420-m));
+      else
+        message(this.timeanswer(420-m));
+    }
+    else {
+      message(this.timeanswer(360-m));
+    }
+  },
+  checkopdate : function (e, lb, hd)
+    let all = lb.entries();
+    let hds = hd.entries();
+    let holiday = {name : "", flag : false};
+    let opdate = my.gdate(my.date(e.field("Date")));
+    
+    for(let i=0; i<hds.length; i++) {
+      if(my.gdate(my.date(hds[i].field("Date"))) == opdate && hds[i].field("Holiday") == true){
+        holiday["name"] = hds[i].field("Title");
+        holiday["flag"] = true;
+      }
+    }
+    
+    let result = all.filter(a=>my.gdate(a.field("Date"))==opdate && a.field("Status")!="Not");
+    let optime;
+    let wd = my.gday(e.field("Date"));
+    if(wd==0 || wd==6) {
+      optime = result.reduce((t,a)=>{
+        if(a.field("ORType")=="GA")
+          t+=a.field("OpLength")+600000;
+        else
+          t+=a.field("OpLength")+300000;
+        return t;
+      },0);
+    }
+    else {
+      optime = result.reduce((t,a)=>{
+        if(a.field("ORType")=="GA")
+          t+=a.field("OpLength")+1200000;
+        else
+          t+=a.field("OpLength")+900000;
+        return t;
+      },0);
+    }
+    let optimemin = Math.floor(optime/60000);
+    this.timeleft(optimemin, wd==0||wd==6, holiday.flag, holiday.name);
+  }
+}
