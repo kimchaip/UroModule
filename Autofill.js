@@ -93,7 +93,7 @@ var script = {
       message(this.timeanswer(360-m));
     }
   },
-  checkopdate : function (e, lb, hd)
+  checkopdate : function (e, lb, hd) {
     let all = lb.entries();
     let hds = hd.entries();
     let holiday = {name : "", flag : false};
