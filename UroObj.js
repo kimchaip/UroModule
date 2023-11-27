@@ -757,13 +757,11 @@ var valid = {
   checkholiday : function(date) {
     let hd = libByName("Holidays");
     let hds = hd.entries();
-    let outofduty = false;
     let hdent = null;
     let gdate = my.gdate(my.date(date))
     
     for(let i=0; i<hds.length; i++) {
       if(my.gdate(my.date(hds[i].field("Date")))==gdate){
-        outofduty = true;
         hdent = hds[i];
         break;
       }
