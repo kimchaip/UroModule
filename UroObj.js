@@ -423,16 +423,14 @@ var que = {
   }
 };
 var emx = {
-  createnew : function (e) {
-    let last = null;
+  checkduplicate : function (e) {
+    let found = false;
     let libfrom = lib().title;
     let min = this.lib==libfrom? 1: 0;
     let links = e.field("Patient");
-    if (links.length && links[0].field("Status")!="Dead") {
-      let lib = this.lib!="Consult"? or: cs;
+    if (links.length>0) {
       let ptent = pt.findById(links[0].id);
       let entlinks = ptent.linksFrom(this.lib, "Patient");
-      let found = false;
       if (entlinks.length > min) {
         for (let i=0; i<entlinks.length; i++) {
           if (my.gdate(entlinks[i].field(this.opdate)) == my.gdate(e.field("AppointDate")) && entlinks[i].id!=e.id){
@@ -441,6 +439,15 @@ var emx = {
           }
         }
       } 
+    }
+    return found;
+  },
+  createnew : function (e) {
+    let last = null;
+    let links = e.field("Patient");
+    if (links.length>0 && links[0].field("Status")!="Dead") {
+      let lib = this.lib!="Consult"? or: cs;
+      
       if (!found) {
         let ent = new Object();
         last = lib.create(ent);
@@ -479,16 +486,23 @@ var emx = {
     let outofduty = false;
     if(hdent && hdent.field("OutOfDuty"))
       outofduty = true;
+    let duplicate = false;
     
     if (e.field("EntryMx")== "F/U" &&  e.field("AppointDate")) {
-      last = emx.createnew.call(cso, e);
-      if(last && !outofduty) last.show();
+      duplicate = emx.checkduplicate.call(cso, e);
+      if(!duplicate && !outofduty) {
+        last = emx.createnew.call(cso, e);
+        last.show();
+      }
       else if(outofduty) message("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . Try again.");
       else message("check appoint date or Pt Status");
     }
     else if (e.field("EntryMx")== "set OR" &&  e.field("AppointDate")) {
-      last = emx.createnew.call(uro, e);
-      if(last && !outofduty) last.show();
+      found = emx.checkduplicate.call(uro, e);
+      if(!duplicate && !outofduty) {
+        last = emx.createnew.call(uro, e);
+        last.show();
+      }
       else if(outofduty) message("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . Try again.");
       else message("check appoint date or Pt Status");
     }
