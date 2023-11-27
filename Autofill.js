@@ -81,30 +81,39 @@ var script = {
         return "เต็มแล้ว เกินเวลา " + time.min + " น."
     }
   },
-  timeleft : function (m, ot, hd, hdname) {
+  timeleft : function (m, ot, hd) {
     let tl;
     if(ot || hd) {
-      if(hd)
-        message("วันหยุด" + hdname + " " +  this.timeanswer(420-m));
+      if(hd && hd.field("OutOfDuty"))
+        message("วันนี้ห้าม Set ติด '" + hd.field("Title") + "'");
+      else if(hd && hd.field("Holiday"))
+        message("วันหยุด" + hd.field("Title") + " " +  this.timeanswer(420-m));
       else
-        message(this.timeanswer(420-m));
+        message("วันหยุดเสาร์อาทิตย์ " +  this.timeanswer(420-m));
     }
     else {
       message(this.timeanswer(360-m));
     }
   },
-  checkopdate : function (e, lb, hd) {
-    let all = lb.entries();
+  checkholiday : function(date) {
+    let hd = libByName("Holidays");
     let hds = hd.entries();
-    let holiday = {name : "", flag : false};
-    let opdate = my.gdate(my.date(e.field("Date")));
+    let hdent = null;
+    let gdate = my.gdate(my.date(date))
     
     for(let i=0; i<hds.length; i++) {
-      if(my.gdate(my.date(hds[i].field("Date"))) == opdate && hds[i].field("Holiday") == true){
-        holiday["name"] = hds[i].field("Title");
-        holiday["flag"] = true;
+      if(my.gdate(my.date(hds[i].field("Date")))==gdate){
+        hdent = hds[i];
+        break;
       }
     }
+    return hdent;
+  },
+  checkopdate : function (e, lb) {
+    let all = lb.entries();
+    let opdate = my.gdate(my.date(e.field("Date")));
+    
+    let holiday = this.checkholiday(e.field("Date"));
     
     let result = all.filter(a=>my.gdate(a.field("Date"))==opdate && a.field("Status")!="Not");
     let optime;
@@ -128,6 +137,6 @@ var script = {
       },0);
     }
     let optimemin = Math.floor(optime/60000);
-    this.timeleft(optimemin, wd==0||wd==6, holiday.flag, holiday.name);
+    this.timeleft(optimemin, wd==0||wd==6, holiday);
   }
 }
