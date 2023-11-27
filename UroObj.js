@@ -475,14 +475,21 @@ var emx = {
   }, 
   run : function (e) {
     let last = null;
+    let hdent = valid.checkholiday(e.field("AppointDate"));
+    let outofduty = false;
+    if(hdent && hdent.field("OutOfDuty"))
+      outofduty = true;
+    
     if (e.field("EntryMx")== "F/U" &&  e.field("AppointDate")) {
       last = emx.createnew.call(cso, e);
-      if(last) last.show();
+      if(last && !outofduty) last.show();
+      else if(outofduty) message("This 'AppointDate' overlap with '" + hdent.field("OutOfDuty") + "' . Try again.");
       else message("check appoint date or Pt Status");
     }
     else if (e.field("EntryMx")== "set OR" &&  e.field("AppointDate")) {
       last = emx.createnew.call(uro, e);
-      if(last) last.show();
+      if(last && !outofduty) last.show();
+      else if(outofduty) message("This 'AppointDate' overlap with '" + hdent.field("OutOfDuty") + "' . Try again.");
       else message("check appoint date or Pt Status");
     }
     else if (e.field("EntryMx")=="F/U" || e.field("EntryMx")=="set OR") {
@@ -747,21 +754,27 @@ var valid = {
     return unique;
   },
   // check opdate is not working elsewhere 
-  opdate : function(e) {
+  checkholiday : function(date) {
     let hd = libByName("Holidays");
     let hds = hd.entries();
     let outofduty = false;
-    let title = "";
+    let hdent = null;
+    let gdate = my.gdate(my.date(date))
     
     for(let i=0; i<hds.length; i++) {
-      if(my.gdate(my.date(hds[i].field("Date")))==my.gdate(my.date(e.field(this.opdate))) && hds[i].field("OutOfDuty") == true){
+      if(my.gdate(my.date(hds[i].field("Date")))==gdate){
         outofduty = true;
-        title = hds[i].field("Title");
+        hdent = hds[i];
         break;
       }
     }
-    if (outofduty) {
-      message("OpDate overlap with " + title + " . Try again.");
+    return hdent;
+  },
+  // check opdate is not working elsewhere 
+  opdateOutOfDuty : function(e) {
+    let hdent = valid.checkholiday(e.field(this.opdate));
+    if (hdent && hdent.field("OutOfDuty")) {
+      message("This 'OpDate' overlap with '" + hdent.field("OutOfDuty") + "' . Try again.");
       cancel();
       exit();
     }
@@ -2291,7 +2304,7 @@ var trig = {
   }, 
   BeforeEdit : function (e, value) {
     old.load(e);
-    valid.opdate.call(this, e);
+    valid.opdateOutOfDuty.call(this, e);
     valid.dxop.call(this, e); //fill dx,op complete 
     fill.setnewdate.call(this, e);
     valid.uniqueVisit.call(this, e, value=="create");
