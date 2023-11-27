@@ -483,13 +483,13 @@ var emx = {
     if (e.field("EntryMx")== "F/U" &&  e.field("AppointDate")) {
       last = emx.createnew.call(cso, e);
       if(last && !outofduty) last.show();
-      else if(outofduty) message("This 'AppointDate' overlap with '" + hdent.field("OutOfDuty") + "' . Try again.");
+      else if(outofduty) message("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . Try again.");
       else message("check appoint date or Pt Status");
     }
     else if (e.field("EntryMx")== "set OR" &&  e.field("AppointDate")) {
       last = emx.createnew.call(uro, e);
       if(last && !outofduty) last.show();
-      else if(outofduty) message("This 'AppointDate' overlap with '" + hdent.field("OutOfDuty") + "' . Try again.");
+      else if(outofduty) message("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . Try again.");
       else message("check appoint date or Pt Status");
     }
     else if (e.field("EntryMx")=="F/U" || e.field("EntryMx")=="set OR") {
