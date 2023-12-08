@@ -33,7 +33,7 @@ var old = {
         }
       });
     },
-    save : function (e, create) {
+    save : function (e) {
       //save field value to Obj and set to Previous
       old.d = {};
       let lb;
@@ -47,22 +47,13 @@ var old = {
       for(let f of fieldnames) {
         if(f!="Previous" && f!= "OpDateCal" && f!= "Output") {
           if(my.dateIsValid(e.field(f)) || my.timeIsValid(e.field(f))) {
-            if(create)
-              old.d[f] = my.date(defaultEntry().field(f));
-            else
-              old.d[f] = my.date(e.field(f));
+            old.d[f] = my.date(e.field(f));
           }
           else if(lb.lib!="Patient" && (f=="Patient" || f=="DxAutoFill" || f=="OperationList")) {
-            if(create)
-              old.d[f] = "";
-            else
-              old.d[f] = e.field(f).length>0? e.field(f)[0].title: ""; 
+            old.d[f] = e.field(f).length>0? e.field(f)[0].title: ""; 
           }
           else {
-            if(create)
-              old.d[f] = defaultEntry().field(f);
-            else
-              old.d[f] = e.field(f);
+            old.d[f] = e.field(f);
           }
         }
       }
@@ -2248,13 +2239,10 @@ var trig = {
   PatientBeforeViewCard : function (e) {
     pto.djStamp(e);
     pto.reop(e);
-    old.save.call(pto, e, false);
+    old.save.call(pto, e);
   }, 
   PatientOpenEdit : function(e, value) {
-    if(value=="create")
-      old.save.call(pto, e, true);
-    else
-      old.save.call(pto, e, false);
+    old.save.call(pto, e);
   }, 
   PatientBeforeEdit : function (e, value) {
     pto.rearrangename(e);
@@ -2280,7 +2268,7 @@ var trig = {
       change |=opu.ptTrigOpuro(e);
     if(change)
       os.syncGoogleSheet();
-    old.save.call(pto, e, false);
+    old.save.call(pto, e);
   }, 
   PatientUpdatingField : function (e) {
     // update track
@@ -2324,10 +2312,7 @@ var trig = {
     
   }, 
   OpenEdit : function(e, value) {
-    if (value=="create")
-      old.save.call(this, e, true);
-    else
-      old.save.call(this, e, false);
+    old.save.call(this, e);
   }, 
   BeforeEdit : function (e, value) {
     old.load(e);
@@ -2394,10 +2379,10 @@ var trig = {
         os.syncGoogleSheet();
       }
     }
-    old.save.call(this, e, false);
+    old.save.call(this, e);
   }, 
   BeforeViewCard : function (e) {
-    old.save.call(this, e, false);
+    old.save.call(this, e);
   }, 
   BeforeOpenLib : function (all) {
     let pts = pt.entries();
@@ -2480,7 +2465,7 @@ var trig = {
         os.syncGoogleSheet();
       }
     }
-    old.save.call(this, e, false);
+    old.save.call(this, e);
   }, 
   BeforeDelete : function (e) {
     old.load(e);
@@ -2512,10 +2497,7 @@ var trig = {
     fill.deletept(e);
   }, 
   DxOpenEdit : function(e, value) {
-    if(value=="create") 
-      old.save.call(dxo, e, true);
-    else
-      old.save.call(dxo, e, false);
+    old.save.call(dxo, e);
   },
   DxBeforeEdit : function (e, value) {
     old.load(e);
@@ -2525,13 +2507,10 @@ var trig = {
   DxAfterEdit : function (e, value) {
     old.load(e);
     dxop.effectother.call(dxo, e);
-    old.save.call(dxo, e, false);
+    old.save.call(dxo, e);
   },
   OpListOpenEdit : function(e, value) {
-    if(value=="create")
-      old.save.call(opo, e, true);
-    else
-      old.save.call(opo, e, false);
+    old.save.call(opo, e);
   },
   OpListBeforeEdit : function (e, value) {
     old.load(e);
@@ -2541,7 +2520,7 @@ var trig = {
   OpListAfterEdit : function (e, value) {
     old.load(e);
     dxop.effectother.call(opo, e);
-    old.save.call(opo, e, false);
+    old.save.call(opo, e);
   }, 
   OpUroBeforeEdit : function (e) {
     opu.setnewdate(e);
