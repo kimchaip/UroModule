@@ -2482,6 +2482,7 @@ var trig = {
   }, 
   AfterDelete : function (e) {
     old.load(e);
+    fill.opdiff.call(this, e, fill.ptstatus.call(this, e), fill.ptnextstatus.call(this, e));
     if (this.lib!="Consult") {
       let change = false;
       dxop.deletelink.call(dxo, e);
