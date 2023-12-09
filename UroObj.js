@@ -1478,6 +1478,14 @@ var fill = {
         pto.reop(ptent);
       }
     }
+  },
+  lastOther : function (e) {
+    if (e.field("Patient").length>0) {
+      let ptent = pt.findById(e.field("Patient")[0].id);
+      let date = e.field("VisitDate");
+      return pto.findLast(true, false, ptent, date, e, this);
+    }
+    return [];
   }
 };
 var pto = {
@@ -2482,7 +2490,14 @@ var trig = {
   }, 
   AfterDelete : function (e) {
     old.load(e);
-    fill.opdiff.call(this, e, fill.ptstatus.call(this, e), fill.ptnextstatus.call(this, e));
+    let o = fill.lastOther.call(this, e);
+    if(o.length>0) {
+      let lib ;
+      if(o[0].lib=="UroBase") lib = uro;
+      else if(o[0].lib=="Backup") lib = buo;
+      else if(o[0].lib=="Consult") lib = cso;
+      fill.opdiff.call(lib, o[0].e, fill.ptstatus.call(lib, o[0].e), fill.ptnextstatus.call(lib, o[0].e));
+    }
     if (this.lib!="Consult") {
       let change = false;
       dxop.deletelink.call(dxo, e);
