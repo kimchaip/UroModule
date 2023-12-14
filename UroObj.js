@@ -1,3 +1,48 @@
+function Lib(name, event = "", phase = "") {
+  this.name = name;
+  this.lib = libByName(name);
+  this.ents = this.lib.entries();
+  if(this.name=="UroBase" || this.name=="Backup") {
+    this.opdate = "Date";
+    this.op = "Op";
+    this.result = "OpResult";
+    this.notonlyreg = /งด[^\u0E30-\u0E39]/;
+    this.notdonereg = /ไม่ทำ/;
+  }
+  else if(this.name=="Consult") {
+    this.opdate = "ConsultDate";
+    this.op = "Rx";
+    this.result = "Rx";
+    this.notonlyreg = /ไม่ดู/;
+    this.notdonereg = /ไม่มา/;
+  }
+  else if(this.name=="DxAutoFill") {
+    this.link = ["Dx", "Op"];
+    this.title = ["Dx", "Op"];
+  }
+  else if(this.name=="OperationList") {
+    this.link = ["Op"];
+    this.title = ["OpFill"];
+  }
+
+  if(event || phase) {
+    this.event = event;
+    this.phase = phase;
+    if(this.event == "CreatingEntry" && this.phase == "Opening") {
+      this.ent = entryDefault();
+    }
+    else if(this.event != "OpenLib") {
+      this.ent = entry();
+      if(this.name=="UroBase" || this.name=="Backup" || this.name=="Consult") {
+        this.ptlib = libByName("Patient");
+        let links = this.ent.field("Patient");
+        if(links.length>0) {
+          this.ptent = ptlib.findById(links[0].id);
+        }
+      }
+    }
+  }
+}
 var pt = libByName("Patient") ;
 var or = libByName("UroBase") ;
 var cs = libByName("Consult") ;
@@ -9,7 +54,8 @@ var os = libByName("OpUroSx");
 
 var old = {
     d : {}, 
-    load : function (e) {
+    load : function () {
+      let e = this.ent;
       //get Previous to Obj
       this.d = JSON.parse(e.field("Previous"), function (key, value) {
         if (value) {
@@ -33,23 +79,19 @@ var old = {
         }
       });
     },
-    save : function (e) {
+    save : function () {
+      let e = this.ent;
       //save field value to Obj and set to Previous
       old.d = {};
       let lb;
-      if(this.lib == "Patient") lb = pt;
-      else if(this.lib == "UroBase") lb = or;
-      else if(this.lib == "Consult") lb = cs;
-      else if(this.lib == "Backup") lb = bu;
-      else if(this.lib == "DxAutoFill") lb = dx;
-      else if(this.lib == "OperationList") lb = op;
-      let fieldnames = lb.fields();
+      
+      let fieldnames = this.lib.fields();
       for(let f of fieldnames) {
         if(f!="Previous" && f!= "OpDateCal" && f!= "Output") {
           if(my.dateIsValid(e.field(f)) || my.timeIsValid(e.field(f))) {
             old.d[f] = my.date(e.field(f));
           }
-          else if(lb.lib!="Patient" && (f=="Patient" || f=="DxAutoFill" || f=="OperationList")) {
+          else if(this.name!="Patient" && (f=="Patient" || f=="DxAutoFill" || f=="OperationList")) {
             old.d[f] = e.field(f).length>0? e.field(f)[0].title: ""; 
           }
           else {
@@ -62,8 +104,8 @@ var old = {
     },
     field : function (fieldname) {
       //get data by field
-      if(fieldname in this.d)
-        return this.d[fieldname];
+      if(fieldname in old.d)
+        return old.d[fieldname];
     }
 };
 
@@ -442,45 +484,46 @@ var emx = {
     }
     return found;
   },
-  createnew : function (e) {
-    let last = null;
-    let links = e.field("Patient");
-    if (links.length>0 && links[0].field("Status")!="Dead") {
-      let lib = this.lib!="Consult"? or: cs;
-      
+  createnew : function () {
+    let e = this.ent;
+    this.ent = null;
+    if (this.ptent && this.ptent.field("Status")!="Dead") {
       if (!found) {
         let ent = new Object();
-        last = lib.create(ent);
-        old.save.call(this, last);
+        this.ent = this.lib.create(ent);
+        old.save.call(this);
         
-        last.set(this.opdate,  e.field("AppointDate"));
-        last.link("Patient", links[0]);
-        last.set("Dr", links[0].field("Dr"));
-        last.set("Underlying", e.field("Underlying"));
+        this.ent.set(this.opdate,  e.field("AppointDate"));
+        this.ent.link("Patient", this.ptent);
+        this.ent.set("Dr", this.ptent.field("Dr"));
+        this.ent.set("Underlying", e.field("Underlying"));
         if (e.field("Photo").length>0)
-          last.set("Photo", e.field("Photo").join());
+          this.ent.set("Photo", e.field("Photo").join());
         if(this.lib!="Consult") {
-          last.set("Op", e.field("Operation"));
-          last.set("Dx", e.field("Diagnosis"));
-          let ortype = fill.ortypebyop(last);
+          this.ent.set("Op", e.field("Operation"));
+          this.ent.set("Dx", e.field("Diagnosis"));
+          let ortype = fill.ortypebyop.call(this);
           if (ortype)
-            last.set("ORType", ortype);
+            this.ent.set("ORType", ortype);
         }
         else {
-          last.set("Dx", e.field("Diagnosis"));
+          this.ent.set("Dx", e.field("Diagnosis"));
         }
-        let vstype = fill.visittypebydx.call(this, last);
+        let vstype = fill.visittypebydx.call(this);
         if (vstype)
-          last.set("VisitType", vstype);
+          this.ent.set("VisitType", vstype);
 
-        trig.BeforeEdit.call(this, last, "update");
-        trig.AfterEdit.call(this, last, "create");
+        trig.BeforeEdit.call(this);
+        this.event = "CreatingEntry";
+        this.phase = "After";
+        trig.AfterEdit.call(this);
         //message("successfully created new Entry") ;
       }
     }
-    return last;
+    return this.ent;
   }, 
-  run : function (e) {
+  run : function () {
+    let e = this.ent;
     let last = null;
     let hdent = valid.checkholiday(e.field("AppointDate"));
     let outofduty = false;
@@ -489,18 +532,20 @@ var emx = {
     let duplicate = false;
     
     if (e.field("EntryMx")== "F/U" &&  e.field("AppointDate")) {
-      duplicate = emx.checkduplicate.call(cso, e);
+      let cso = new Lib("Consult", "UpdatingEntry", "Before");
+      duplicate = emx.checkduplicate.call(cso);
       if(!duplicate && !outofduty) {
-        last = emx.createnew.call(cso, e);
+        last = emx.createnew.call(cso);
         last.show();
       }
       else if(outofduty) message("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . Try again.");
       else message("check appoint date or Pt Status");
     }
     else if (e.field("EntryMx")== "set OR" &&  e.field("AppointDate")) {
-      found = emx.checkduplicate.call(uro, e);
+      let uro = new Lib("UroBase", "UpdatingEntry", "Before");
+      duplicate = emx.checkduplicate.call(uro);
       if(!duplicate && !outofduty) {
-        last = emx.createnew.call(uro, e);
+        last = emx.createnew.call(uro);
         last.show();
       }
       else if(outofduty) message("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . Try again.");
@@ -651,7 +696,7 @@ var dxop = {
       let dxops = this.lib=="DxAutoFill"?dx.entries():op.entries();
       let found = dxops.find(a=>a.id!=e.id && this.title.every((f,i)=>a.field(f) == e.field(f)) );
       if (found) {
-        old.load(found);
+        old.load.call(this);
         e = found;
         orlinks = found.linksFrom("UroBase", this.lib);
         bulinks = found.linksFrom("Backup", this.lib);
@@ -2252,9 +2297,9 @@ var trig = {
   PatientOpenEdit : function(e, value) {
     old.save.call(pto, e);
   }, 
-  PatientBeforeEdit : function (e, value) {
+  PatientBeforeEdit : function () {
     pto.rearrangename(e);
-    old.load(e);
+    old.load.call(this);
     valid.uniqueHN(e, value=="create");
     fill.underlying.call(pto, e);
     pto.age(e);
@@ -2269,9 +2314,9 @@ var trig = {
       e.set("Phone", contact.phone);
     }
   }, 
-  PatientAfterEdit : function (e, value) {
+  PatientAfterEdit : function () {
     let change = false;
-    old.load(e);
+    old.load.call(this);
     if(value=="update")
       change |=opu.ptTrigOpuro(e);
     if(change)
@@ -2322,8 +2367,8 @@ var trig = {
   OpenEdit : function(e, value) {
     old.save.call(this, e);
   }, 
-  BeforeEdit : function (e, value) {
-    old.load(e);
+  BeforeEdit : function () {
+    old.load.call(this);
     valid.opdateOutOfDuty.call(this, e);
     valid.dxop.call(this, e); //fill dx,op complete 
     fill.setnewdate.call(this, e);
@@ -2361,9 +2406,9 @@ var trig = {
     fill.color.call(this, e);
     mer.effect(e);
   }, 
-  AfterEdit : function (e, value) {
+  AfterEdit : function () {
     emx.run.call(this, e);
-    old.load(e);
+    old.load.call(this);
     if (this.lib!="Consult") {
       let change = false;
       fill.ptDetail(e);
@@ -2439,8 +2484,8 @@ var trig = {
       os.syncGoogleSheet();
     }
   }, 
-  BeforeUpdatingField : function (e) {
-    old.load(e);
+  BeforeUpdatingField : function () {
+    old.load.call(this);
     fill.setnewdate.call(this, e);
     if (this.lib!="Consult") {
       fill.setortype(e, false);
@@ -2462,8 +2507,8 @@ var trig = {
     fill.color.call(this, e);
     mer.effect(e);
   }, 
-  AfterUpdatingField : function (e) {
-    old.load(e);
+  AfterUpdatingField : function () {
+    old.load.call(this);
     if (this.lib!="Consult") {
       let change = que.runeffect.call(this, e);
       if (this.lib=="UroBase")
@@ -2475,8 +2520,8 @@ var trig = {
     }
     old.save.call(this, e);
   }, 
-  BeforeDelete : function (e) {
-    old.load(e);
+  BeforeDelete : function () {
+    old.load.call(this);
     if (this.lib!="Consult") {
       que.load.call(this, e);
       que.sortque(que.q);
@@ -2488,8 +2533,8 @@ var trig = {
       mer.cancel.call(this, e);
     }
   }, 
-  AfterDelete : function (e) {
-    old.load(e);
+  AfterDelete : function () {
+    old.load.call(this);
     let o = fill.lastOther.call(this, e);
     if(o.length>0) {
       let lib ;
@@ -2515,26 +2560,26 @@ var trig = {
   DxOpenEdit : function(e, value) {
     old.save.call(dxo, e);
   },
-  DxBeforeEdit : function (e, value) {
-    old.load(e);
+  DxBeforeEdit : function () {
+    old.load.call(this);
     dxo.validate(e);
     dxo.effect(e, value=="create", valid.uniqueDxOp.call(dxo, e, value=="create"));
   },
-  DxAfterEdit : function (e, value) {
-    old.load(e);
+  DxAfterEdit : function () {
+    old.load.call(this);
     dxop.effectother.call(dxo, e);
     old.save.call(dxo, e);
   },
   OpListOpenEdit : function(e, value) {
     old.save.call(opo, e);
   },
-  OpListBeforeEdit : function (e, value) {
-    old.load(e);
+  OpListBeforeEdit : function () {
+    old.load.call(this);
     opo.validate(e);
     opo.effect(e, value=="create", valid.uniqueDxOp.call(opo, e, value=="create"));
   }, 
-  OpListAfterEdit : function (e, value) {
-    old.load(e);
+  OpListAfterEdit : function () {
+    old.load.call(this);
     dxop.effectother.call(opo, e);
     old.save.call(opo, e);
   }, 
