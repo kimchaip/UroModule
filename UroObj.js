@@ -2112,8 +2112,8 @@ var opu = {
         ent["Op"] = e.field("Op");
         ent["Note"] =  link.field("Underlying").join();
         ent["Que"] = Number(e.field("Que"));
-        ent["CreationTime"] =  new Date(e.creationTime);
-        ent["ModifiedTime"] =  new Date(e.lastModifiedTime);
+        ent["CreationTime"] =  e.creationTime;
+        ent["ModifiedTime"] =  e.lastModifiedTime;
         os.create(ent);
         //message("create OpUroSx!");
         change = true;
@@ -2152,10 +2152,8 @@ var opu = {
             oss[s].set("Note", udnote.join(", "));
             
             oss[s].set("Que", Number(e.field("Que")));
-            if(!oss[s].field("CreationTime"))
-              oss[s].set("CreationTime", new Date(e.creationTime));
-            if(my.gdate(oss[s].field("ModifiedTime"))<my.gdate(e.lastModifiedTime))
-              oss[s].set("ModifiedTime", new Date(e.lastModifiedTime));
+            oss[s].set("CreationTime", e.creationTime);
+            oss[s].set("ModifiedTime", e.lastModifiedTime);
             //message("update OpUroSx!");
             change = true;
             break;
