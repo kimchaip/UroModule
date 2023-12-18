@@ -448,7 +448,7 @@ var emx = {
     if (links.length>0 && links[0].field("Status")!="Dead") {
       let lib = this.lib!="Consult"? or: cs;
       
-      if (!found) {
+      if (true) {
         let ent = new Object();
         last = lib.create(ent);
         old.save.call(this, last);
