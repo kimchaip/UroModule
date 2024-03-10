@@ -2568,6 +2568,17 @@ var trig = {
     opu.setnewdate(e);
   }, 
   OpUroAfterEdit : function (e) {
-    
+    os.syncGoogleSheet();
+  },
+  HDBeforeEdit : function (e) {
+    let d = Math.floor((my.gdate(e.field("Date"))-ntoday)/86400000);
+    if (d<0) {
+      d = null;
+    }
+    e.set("Future", d);
+    e.set("Month", my.monthname[e.field("Date").getMonth()]);
+  }, 
+  HDAfterEdit : function (e) {
+    hd.syncGoogleSheet();
   }
 };
