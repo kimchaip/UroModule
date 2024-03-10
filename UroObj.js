@@ -64,6 +64,13 @@ var old = {
       //get data by field
       if(fieldname in this.d)
         return this.d[fieldname];
+      else
+        return null;
+    },
+    savesync : function (e, fieldname) {
+      this.d[fieldname] = hour;
+        
+      e.set("Previous", JSON.stringify(this.d));
     }
 };
 
@@ -2241,6 +2248,28 @@ var opu = {
   }
 };
 
+var sync = {
+  run : function(e, fieldname) {
+    let diff = 0;
+    if(hour>=old.field(fieldname)) {
+      diff = hour-old.field(fieldname);
+    }
+    else {
+      diff = 24-(hour-old.field(fieldname));
+    }
+    
+    if(old.field(fieldname)==null || diff>=1) {
+      if(fieldname=="ossync") {
+        os.syncGoogleSheet();
+      }
+      else if(fieldname=="orsync") {
+        or.syncGoogleSheet();
+      }
+      old.savesync(e, fieldname);
+    }
+  }
+}
+
 var trig = {
   PatientBeforeViewCard : function (e) {
     pto.djStamp(e);
@@ -2273,7 +2302,7 @@ var trig = {
     if(value=="update")
       change |=opu.ptTrigOpuro(e);
     if(change)
-      os.syncGoogleSheet();
+      sync.run(e, "ossync");
     old.save.call(pto, e);
   }, 
   PatientUpdatingField : function (e) {
@@ -2379,10 +2408,10 @@ var trig = {
       }
 
       if (this.lib=="UroBase") {
-        or.syncGoogleSheet();
+        sync.run(e, "orsync");
       }
       if(change) {
-        os.syncGoogleSheet();
+        sync.run(e, "ossync");
       }
     }
     old.save.call(this, e);
@@ -2433,8 +2462,8 @@ var trig = {
       }
     }
     if (first) {
-      or.syncGoogleSheet();
-      os.syncGoogleSheet();
+      sync.run(e, "orsync");
+      sync.run(e, "ossync");
     }
   }, 
   BeforeUpdatingField : function (e) {
@@ -2466,9 +2495,9 @@ var trig = {
       let change = que.runeffect.call(this, e);
       if (this.lib=="UroBase")
         change |=opu.updateOp(e);
-      or.syncGoogleSheet();
+      sync.run(e, "orsync");
       if(change) {
-        os.syncGoogleSheet();
+        sync.run(e, "ossync");
       }
     }
     old.save.call(this, e);
@@ -2504,9 +2533,9 @@ var trig = {
       change |=que.runeffect.call(this, e);
       if (this.lib=="UroBase") 
         change |=opu.deleteOp(e);
-      or.syncGoogleSheet();
+      sync.run(e, "orsync");
       if(change) 
-        os.syncGoogleSheet();
+        sync.run(e, "ossync");
     }
     fill.deletept(e);
   }, 
