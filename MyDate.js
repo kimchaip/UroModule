@@ -61,15 +61,22 @@ var my = {
     }
   },
   wkname : function (wd) {
-    let wdt = "" ;
-    if (wd==0)​ wdt = "Sun" ;
-    else if (wd==1)​ wdt = "Mon" ;
-    else if (wd==2)​ wdt = "Tue" ;
-    else if (wd==3)​ wdt = "Wed" ;
-    else if (wd==4)​ wdt = "Thu" ;
-    else if (wd==5)​ wdt = "Fri" ;
-    else if (wd==6)​ wdt = "Sat" ;
-    return wdt;
+    let wname = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+    if(wd>=0 && wd<7) {
+      return wname[wd];
+    }
+    else {
+      return "";
+    }
+  },
+  monthname : function(mnum) {
+    let mname = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    if(mnum>=0 && mnum<12) {
+      return mname[mnum];
+    }
+    else {
+      return "";
+    }
   }
 }​;
 
