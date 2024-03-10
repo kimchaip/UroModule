@@ -46,7 +46,16 @@ var old = {
       else if(this.lib == "OperationList") lb = op;
       let fieldnames = lb.fields();
       for(let f of fieldnames) {
-        if(f!="Previous" && f!= "OpDateCal" && f!= "Output") {
+        if(f=="Previous") {
+          let prev = JSON.parse(e.field(f));
+          if("ossync" in prev) {
+            old.d["ossync"] = prev.ossync;
+          }
+          if("orsync" in prev) {
+            old.d["orsync"] = prev.orsync;
+          }
+        }
+        else if(f!= "OpDateCal" && f!= "Output") {
           if(my.dateIsValid(e.field(f)) || my.timeIsValid(e.field(f))) {
             old.d[f] = my.date(e.field(f));
           }
