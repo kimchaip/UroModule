@@ -6,6 +6,7 @@ var dx = libByName("DxAutoFill") ;
 var op = libByName("OperationList") ;
 var rp = libByName("Report");
 var os = libByName("OpUroSx");
+var hd = libByName("Holidays");
 
 var old = {
     d : {}, 
@@ -776,7 +777,6 @@ var valid = {
   },
   // check opdate is not working elsewhere 
   checkholiday : function(date) {
-    let hd = libByName("Holidays");
     let hds = hd.entries();
     let hdent = null;
     let gdate = my.gdate(my.date(date))
@@ -1737,7 +1737,6 @@ var uro = {
   notdonereg : /ไม่ทำ/,
   notdone : null,
   setopextra : function (e) {
-    let hd = libByName("Holidays");
     let hds = hd.entries();
     let holiday = false;
     let timeout = false;
