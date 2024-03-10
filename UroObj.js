@@ -2576,7 +2576,7 @@ var trig = {
       d = null;
     }
     e.set("Future", d);
-    e.set("Month", my.monthname[e.field("Date").getMonth()]);
+    e.set("Month", my.monthname(e.field("Date").getMonth()));
   }, 
   HDAfterEdit : function (e) {
     hd.syncGoogleSheet();
@@ -2588,7 +2588,7 @@ var trig = {
         d = null;
       }
       h.set("Future", d);
-      h.set("Month", my.monthname[h.field("Date").getMonth()]);
+      h.set("Month", my.monthname(h.field("Date").getMonth()));
     });
   }
 };
