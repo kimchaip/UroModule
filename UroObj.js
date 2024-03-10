@@ -2580,5 +2580,15 @@ var trig = {
   }, 
   HDAfterEdit : function (e) {
     hd.syncGoogleSheet();
+  },
+  HDBeforeOpenLib : function (all) {
+    all.forEach(h=>{
+      let d = Math.floor((my.gdate(h.field("Date"))-ntoday)/86400000);
+      if (d<0) {
+        d = null;
+      }
+      h.set("Future", d);
+      h.set("Month", my.monthname[h.field("Date").getMonth()]);
+    });
   }
 };
