@@ -47,7 +47,7 @@ var old = {
       let fieldnames = lb.fields();
       for(let f of fieldnames) {
         if(f=="Previous") {
-          let prev = JSON.parse(e.field(f));
+          let prev = e.field(f)?JSON.parse(e.field(f)):{};
           if("ossync" in prev) {
             old.d["ossync"] = prev.ossync;
           }
