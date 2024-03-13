@@ -2465,27 +2465,6 @@ var trig = {
           fill.opdiff.call(this, all[i], fill.ptstatus.call(this, all[i]), fill.ptnextstatus.call(this, all[i]));
           fill.color.call(this, all[i]);
           all[i].set("Done", true);
-          let diff = 0;
-          old.load(all[i]);
-          if(hour>=old.field("orsync")) {
-            diff = hour-old.field("orsync");
-          }
-          else {
-            diff = 24-(hour-old.field("orsync"));
-          }
-          if(old.field("orsync")==null || diff>=1) {
-            old.savesync(all[i], "orsync");
-          }
-            
-          if(hour>=old.field("ossync")) {
-            diff = hour-old.field("ossync");
-          }
-          else {
-            diff = 24-(hour-old.field("ossync"));
-          }
-          if(old.field("ossync")==null || diff>=1) {
-            old.savesync(all[i], "ossync");
-          }
           first = true;
         }
       }
