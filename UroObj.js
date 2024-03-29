@@ -29,7 +29,7 @@ var old = {
             return value;
           }
           else {
-            return null;
+            return "";
           }
         }
       });
@@ -74,8 +74,6 @@ var old = {
       //get data by field
       if(fieldname in this.d)
         return this.d[fieldname];
-      else
-        return null;
     },
     savesync : function (e, fieldname) {
       this.d[fieldname] = hour;
