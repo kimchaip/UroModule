@@ -25,12 +25,7 @@ var old = {
           }
         }
         else {
-          if (value==false || value==0 || value=="") {
-            return value;
-          }
-          else {
-            return "";
-          }
+          return value;
         }
       });
     },
