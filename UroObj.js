@@ -17,7 +17,7 @@ var old = {
           if (typeof value == "string" && value.match(/^\d{4}-\d{2}-\d{2}/)) {
             return new Date(value);
           }
-          else if (typeof value == "object" && key == "Underlying" || key == "Allergies" || key == "Photo") {
+          else if (typeof value == "object" && (key == "Underlying" || key == "Allergies" || key == "Photo")) {
            return Object.keys(value).map(v=>value[v]);
           }
           else {
