@@ -2190,6 +2190,145 @@ var opu = {
           if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(old.field("Date")) && oss[s].field("Dr") == old.field("Dr") && oss[s].field("OpType") == old.field("ORType") && (oss[s].field("PtName").trim() == parr[0] || oss[s].field("HN") == parr[2])){
             oss[s].trash();
             //message("delete OpUroSx!");
+var opu = {
+  setnewdate : function (e) {
+    if(my.gdate(my.date(e.field("OpDate")))!=my.gdate(e.field("OpDate")))
+      e.set("OpDate", my.date(e.field("OpDate")));
+  }, 
+  splitPtName : function (ptName) {
+    let arr = [];
+    let inx = ptName.search(/\d+/); // search for number
+    if(inx>-1){
+      arr[0] = ptName.slice(0,inx).trim(); // alphabet
+      ptName = ptName.slice(inx).trim(); // number +/- alphabet
+    }
+    else {
+      arr[0] = ptName.trim();
+      arr[1] = '';
+      arr[2] = '';
+    }
+    inx = ptName.search(/\D/); // search for alphabet
+    if(inx>-1){
+      let num = ptName.slice(0,inx).trim(); // number
+      ptName = ptName.slice(inx); // alphabet +/- number
+      inx = ptName.search(/\d/); // search for number
+      if(inx>-1){
+        arr[1] = num + ' ' + ptName.slice(0,inx).trim(); // alphabet
+        arr[2] = ptName.slice(inx);  // number
+      }
+      else {
+        arr[1] = num + ' ' + ptName;
+        arr[2] = '';
+      }
+    }
+    else {
+      inx = ptName.search(/\s/); // search for space
+      if(inx>-1){
+        arr[1] = ptName.slice(0,inx);
+        arr[2] = ptName.slice(inx).trim();
+      }
+      else {
+        if(Number(ptName)<120){
+          arr[1] = ptName.trim();
+          arr[2] = '';
+        }
+        else{
+          arr[1] = '';
+          arr[2] = ptName.trim();
+        }
+      }
+    }
+    return arr;
+  },
+  createOp : function (e) {
+    let change = false;
+    if(e.field("OpExtra")){
+      let ent = new Object() ;
+      let links = e.field("Patient");
+      if(links.length>0){
+        let link = links[0];
+        ent["OpDate"] = my.date(e.field("Date")) ;
+        ent["Dr"] =  e.field("Dr");
+        ent["OpType"] =  e.field("ORType");
+        ent["PtName"] =  link.field("PtName");
+        ent["Age"] =  Number(link.field("Age").replace(/\s*ปี/,""));
+        ent["HN"] =  link.field("HN");
+        ent["Dx"] =  e.field("Dx");
+        ent["Op"] = e.field("Op");
+        ent["Note"] =  link.field("Underlying").join();
+        ent["Que"] = Number(e.field("Que"));
+        ent["OffCase"] = e.field("Status")=="Not";
+        ent["CreationTime"] =  e.creationTime;
+        ent["ModifiedTime"] =  e.lastModifiedTime;
+        os.create(ent);
+        //message("create OpUroSx!");
+        change = true;
+      }
+    }
+    return change;
+  },
+  updateOp : function (e) {
+    let change = false;
+    if(old.field("OpExtra") == true && e.field("OpExtra") == true){
+      //update
+      let oss = os.entries();
+      let links = e.field("Patient");
+      if(links.length>0 && oss.length>0){
+        let link = links[0];
+        let parr = this.splitPtName(old.field("Patient"));
+        parr[2] = parr[2]?parr[2]:null;
+        for (let s=0; s<oss.length; s++) {
+          if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(old.field("Date")) && oss[s].field("Dr") == old.field("Dr") && oss[s].field("OpType") == old.field("ORType") && oss[s].field("PtName").trim() == parr[0] && oss[s].field("HN") == parr[2]){
+            oss[s].set("OpDate", my.date(e.field("Date")));
+            oss[s].set("Dr", e.field("Dr"));
+            oss[s].set("OpType", e.field("ORType"));
+            oss[s].set("PtName", link.field("PtName"));
+            oss[s].set("Age", Number(link.field("Age").replace(/\s*ปี/,"")));
+            oss[s].set("HN", link.field("HN"));
+            oss[s].set("Dx", e.field("Dx"));
+            oss[s].set("Op", e.field("Op"));
+            
+            let note = oss[s].field("Note").split(",");
+            let underly = link.field("Underlying").join().toLowerCase();
+            note = note.map(v=>v.trim());
+            note = note.filter(v=>underly.indexOf(v.toLowerCase())==-1);
+            let udnote = link.field("Underlying").join().split(",");
+            udnote = udnote.concat(note);
+            udnote = udnote.filter(v=>v);
+            oss[s].set("Note", udnote.join(", "));
+            
+            oss[s].set("Que", Number(e.field("Que")));
+            oss[s].set("OffCase", e.field("Status")=="Not");
+            oss[s].set("CreationTime", e.creationTime);
+            oss[s].set("ModifiedTime", e.lastModifiedTime);
+            //message("update OpUroSx!");
+            change = true;
+            break;
+          }
+        }
+      }
+    }
+    else if(old.field("OpExtra") == false && e.field("OpExtra") == true){
+      //create
+      change = this.createOp(e);
+    }
+    else if(old.field("OpExtra") == true && e.field("OpExtra") == false){
+      //delete
+      change = this.deleteOp(e);
+    }
+    return change;
+  },
+  deleteOp : function (e) {
+    let change = false;
+    if(old.field("OpExtra")){
+      let oss = os.entries();
+      if(oss.length>0){
+        let parr = this.splitPtName(old.field("Patient"));
+        parr[2] = parr[2]?parr[2]:null;
+        for (let s=0; s<oss.length; s++){
+          if (my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(old.field("Date")) && oss[s].field("Dr") == old.field("Dr") && oss[s].field("OpType") == old.field("ORType") && (oss[s].field("PtName").trim() == parr[0] || oss[s].field("HN") == parr[2])){
+            oss[s].trash();
+            //message("delete OpUroSx!");
             change = true;
             break;
           }
@@ -2206,13 +2345,13 @@ var opu = {
       let found = [];
       if(orlinks.length+bulinks.length>0) {
         for (let i=0; i<orlinks.length; i++) {
-          if (orlinks[i].field("OpExtra")==true && orlinks[i].field("Status")!="Not") {
+          if (orlinks[i].field("OpExtra")==true ) {
             found.push(orlinks[i]);
             fill.orbridge(orlinks[i]);
           }
         }
         for (let i=0; i<bulinks.length; i++) {
-          if (bulinks[i].field("OpExtra")==true && bulinks[i].field("Status")!="Not") {
+          if (bulinks[i].field("OpExtra")==true ) {
             found.push(bulinks[i]);
             fill.orbridge(bulinks[i]);
           }
