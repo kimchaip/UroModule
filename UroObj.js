@@ -2170,6 +2170,10 @@ var opu = {
             break;
           }
         }
+        if(!change) {
+          //create
+          change = this.createOp(e);
+        }
       }
     }
     else if(old.field("OpExtra") == false && e.field("OpExtra") == true){
