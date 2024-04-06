@@ -387,6 +387,8 @@ var que = {
     // set new que to every element in array
     let oss = os.entries();
     let change = false;
+    let opuent = [];
+    let opuque = [];
     arr.forEach(v=>{
       // Find related opu and correct que = inx+1
       let o, n;
@@ -408,15 +410,22 @@ var que = {
         parr[2] = parr[2]?parr[2]:null;
         for(let s=0; s<oss.length; s++) {
           if(my.gdate(my.date(oss[s].field("OpDate")))==my.gdate(my.date(o.field("Date"))) && oss[s].field("Dr")==o.field("Dr") && oss[s].field("OpType")==o.field("ORType") && oss[s].field("PtName")==parr[0] && oss[s].field("HN")==parr[2] && oss[s].field("Dx")==o.field("Dx") && oss[s].field("Op")==o.field("Op")) {
-            if(oss[s].field("Que")!=Number(n.field("Que"))) {
-              oss[s].set("Que", Number(n.field("Que")));
-              change = true;
-            }
+            opuent.push(oss[s]);
+            opuque.push(oss[s].field("Que"));
             break;
           }
         }
       }
     });
+    if(opuque.length>0) {
+      opuque.sort((a,b)=>a-b);
+      opuent.forEach((v,i)=> {
+        if(v.field("Que")!=opuque[i]) {
+          v.set("Que", opuque[i]);
+          change = true;
+        }
+      });
+    }
     return change;
   },
   runeffect : function(e) { // when que.save -> every entry rearrange in que -> make change whice relate que in opu
@@ -2106,10 +2115,21 @@ var opu = {
   },
   createOp : function (e) {
     let change = false;
-    if(e.field("OpExtra")){
+    if(e.field("OpExtra") && e.field("Status") != "Not"){
       let ent = new Object() ;
       let links = e.field("Patient");
       if(links.length>0){
+        // count oss that opdate, optype as the same as old.date, old.ortype
+        let oss = os.entries();
+        let opuent = [];
+        if(oss.length>0) {
+          for(let s=0; s<oss.length; s++) {
+            if(my.gdate(my.date(oss[s].field("OpDate"))) == my.gdate(old.field("Date")) && oss[s].field("OpType") == old.field("ORType")) {
+              opuent.push(oss[s]);
+            }
+          }
+        }
+        
         let link = links[0];
         ent["OpDate"] = my.date(e.field("Date")) ;
         ent["Dr"] =  e.field("Dr");
@@ -2120,7 +2140,7 @@ var opu = {
         ent["Dx"] =  e.field("Dx");
         ent["Op"] = e.field("Op");
         ent["Note"] =  link.field("Underlying").join();
-        ent["Que"] = Number(e.field("Que"));
+        ent["Que"] = opuent.length+1;  // assign que as the last member
         ent["OffCase"] = e.field("Status")=="Not";
         ent["CreationTime"] =  e.creationTime;
         ent["ModifiedTime"] =  e.lastModifiedTime;
@@ -2133,7 +2153,7 @@ var opu = {
   },
   updateOp : function (e) {
     let change = false;
-    if(old.field("OpExtra") == true && e.field("OpExtra") == true){
+    if(old.field("OpExtra") == true && e.field("OpExtra") == true && old.field("Status") != "Not" && e.field("Status") != "Not"){
       //update
       let oss = os.entries();
       let links = e.field("Patient");
@@ -2161,7 +2181,6 @@ var opu = {
             udnote = udnote.filter(v=>v);
             oss[s].set("Note", udnote.join(", "));
             
-            oss[s].set("Que", Number(e.field("Que")));
             oss[s].set("OffCase", e.field("Status")=="Not");
             oss[s].set("CreationTime", e.creationTime);
             oss[s].set("ModifiedTime", e.lastModifiedTime);
@@ -2172,11 +2191,11 @@ var opu = {
         }
       }
     }
-    else if(old.field("OpExtra") == false && e.field("OpExtra") == true){
+    else if(e.field("OpExtra") == true && e.field("Status") != "Not"){
       //create
       change = this.createOp(e);
     }
-    else if(old.field("OpExtra") == true && e.field("OpExtra") == false){
+    else {
       //delete
       change = this.deleteOp(e);
     }
@@ -2184,7 +2203,7 @@ var opu = {
   },
   deleteOp : function (e) {
     let change = false;
-    if(old.field("OpExtra")){
+    if(e.field("OpExtra") == false || e.field("Status") == "Not"){
       let oss = os.entries();
       if(oss.length>0){
         let parr = this.splitPtName(old.field("Patient"));
@@ -2400,15 +2419,15 @@ var trig = {
       fill.ptDetail(e);
       if (value=="create") {
         rpo.createnew(e);
-        change |= que.runeffect.call(this, e);
         if (this.lib=="UroBase")
           change |=opu.createOp(e);
+        change |= que.runeffect.call(this, e);
       }
       else if (value=="update") {
         rpo.updatenew(e);
-        change |= que.runeffect.call(this, e);
         if (this.lib=="UroBase")
           change |=opu.updateOp(e);
+        change |= que.runeffect.call(this, e);
       }
 
       if (this.lib=="UroBase") {
@@ -2490,9 +2509,10 @@ var trig = {
   AfterUpdatingField : function (e) {
     old.load(e);
     if (this.lib!="Consult") {
-      let change = que.runeffect.call(this, e);
+      let change = false;
       if (this.lib=="UroBase")
-        change |=opu.updateOp(e);
+        change |= opu.updateOp(e);
+      change |= que.runeffect.call(this, e);
       sync.run(e, "orsync");
       if(change) {
         sync.run(e, "ossync");
@@ -2528,9 +2548,9 @@ var trig = {
       dxop.deletelink.call(dxo, e);
       dxop.deletelink.call(opo, e);
       rpo.deleteold(e);
-      change |=que.runeffect.call(this, e);
       if (this.lib=="UroBase") 
-        change |=opu.deleteOp(e);
+        change |= opu.deleteOp(e);
+      change |= que.runeffect.call(this, e);
       sync.run(e, "orsync");
       if(change) 
         sync.run(e, "ossync");
