@@ -394,8 +394,9 @@ var que = {
     que.oldsave(que.q);
   },
   debug : function(title, arr) {
-    let arr = arr.map(v=>v.field("Que"));
-    log(title + "[" + arr.join() + "] ");
+    let ptname = v.field("Patient")?v.field("Patient")[0].title:v.field("PtName");
+    let arr = arr.map(v=>Number(v.field("Que"))+":"+ptname);
+    log(title + " : " + arr.join("\n") + " ");
   }
 };
 var emx = {
