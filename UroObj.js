@@ -721,10 +721,10 @@ var valid = {
     entries.forEach(v=>{
       if (fieldname.every(f=>{
         if (f.includes("Date")) 
-          return my.gdate(entries[ent].field(f))==my.gdate(e.field(f));
+          return my.gdate(v.field(f))==my.gdate(e.field(f));
         else if (f=="Patient") {
-          if(entries[ent].field(f) && entries[ent].field(f).length>0 && e.field(f) && e.field(f).length>0){
-            return entries[ent].field(f)[0].id==e.field(f)[0].id;
+          if(v.field(f) && v.field(f).length>0 && e.field(f) && e.field(f).length>0){
+            return v.field(f)[0].id==e.field(f)[0].id;
           }
           else {
             return false
@@ -733,9 +733,9 @@ var valid = {
         else if (f=="Rx")
           return true;
         else
-          return entries[ent].field(f)==e.field(f);
+          return v.field(f)==e.field(f);
       }))
-        if (entries[ent].id != e.id || value) 
+        if (v.id != e.id || value) 
           unique = false;
     });
     if (!unique) {
