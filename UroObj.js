@@ -1474,19 +1474,16 @@ var pto = {
   rearrangename : function(e) {
     let newname = e.field("PtName").replace(/\s+/g, ' ').trim();
     e.set("PtName", newname);
-    if(newname.search(/à¸™à¸²à¸™/)==0){
-      e.set("PtName", newname.replace(/à¸™à¸²à¸™/, "à¸™à¸²à¸¢"));
-    }
   }, 
   agetext : function (e, diff) {
     if (diff>365){
-      e.set("Age", Math.floor(diff/365.2425) + " à¸›à¸µ");
+      e.set("Age", Math.floor(diff/365.2425) + " ปี");
     }
     else if (diff>30){
-      e.set("Age", Math.floor(diff/30.4375) + " à¹€à¸”à¸·à¸­à¸™");
+      e.set("Age", Math.floor(diff/30.4375) + " เดือน");
     }
     else {
-      e.set("Age" , diff + " à¸§à¸±à¸™");
+      e.set("Age" , diff + " วัน");
     }
   }, 
   //Age
