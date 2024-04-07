@@ -2218,7 +2218,7 @@ var opu = {
         s.set("Dx", e.field("Dx"));
         s.set("Op", e.field("Op"));
         
-        let note = oss[s].field("Note").split(",");
+        let note = s.field("Note").split(",");
         let underly = link.field("Underlying").join().toLowerCase();
         note = note.map(v=>v.trim());
         note = note.filter(v=>underly.indexOf(v.toLowerCase())==-1);
