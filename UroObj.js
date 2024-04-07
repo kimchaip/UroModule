@@ -395,7 +395,7 @@ var que = {
   },
   debug : function(title, arr) {
     let arr = arr.map(v=>{
-      let ptname = v.field("Patient")?v.field("Patient")[0].title:v.field("PtName");
+      let ptname = this.lib=="OpUroSx"?v.field("PtName"):v.field("Patient")[0].title;
       return Number(v.field("Que")) + " : " + ptname;
     });
     log(title + " : " + arr.join("\n") + " ");
@@ -1941,6 +1941,7 @@ var opo = {
   }
 };
 var rpo = {
+  lib : "Report",
   setAll : function (r, e) {
     //---Date, Patient, Dx, Op, ORType, Extra, LOS
     r.set("OpDate", e.field("Date"));
@@ -2024,6 +2025,7 @@ var rpo = {
 };
 
 var opu = {
+  lib : "OpUroSx",
   o : [],
   q : [],
   loadque : function (e) {
