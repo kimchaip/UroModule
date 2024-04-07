@@ -2040,10 +2040,10 @@ var opu = {
   q : [],
   loadque : function (e) {
     let oss = os.entries();
-    this.q = oss.filter(v=>my.gdate(v.field("OpDate"))==my.gdate(my.date(e.field("Date"))) && v.field("OpType")==e.field("ORType"));
+    this.q = oss.filter(v=>my.gdate(my.date(v.field("OpDate")))==my.gdate(e.field("Date")) && v.field("OpType")==e.field("ORType"));
     que.sortque(this.q);
     if(my.gdate(e.field("Date"))!=my.gdate(old.field("Date")) || e.field("ORType")!=old.field("ORType")) {
-      this.o = oss.filter(v=>my.gdate(v.field("OpDate"))==my.gdate(old.field("Date")) && v.field("OpType")==old.field("ORType"));
+      this.o = oss.filter(v=>my.gdate(my.date(v.field("OpDate")))==my.gdate(old.field("Date")) && v.field("OpType")==old.field("ORType"));
       que.sortque(this.o);
     }
     else {
