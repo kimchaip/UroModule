@@ -2183,11 +2183,11 @@ var opu = {
         ent["OffCase"] = e.field("Status")=="Not";
         ent["CreationTime"] =  e.creationTime;
         ent["ModifiedTime"] =  e.lastModifiedTime;
-        os.create(ent);
+        let newent = os.create(ent);
         //message("create OpUroSx!");
         change = true;
         // append this entry to que
-        this.q.push(ent);
+        this.q.push(newent);
         this.saveque(this.q);
         que.debug.call(opu, "\nsave opu.q", opu.q);
         this.runque(e);
