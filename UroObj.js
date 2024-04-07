@@ -353,8 +353,8 @@ var que = {
       que.load.call(this, e);
       que.sortque(que.o);
       que.sortque(que.q);
-      que.debug.call(this, "run : \nload o",que.o);
-      que.debug.call(this, "load q",que.q);
+      que.debug.call(this, "run : ",que.o);
+      que.debug.call(this, "",que.q);
       //e.field("Output", que.o.reduce((t,a)=>t+" "+a.field("Que")+":"+a.field("Date"),"")+"\n"+que.q.reduce((t,a)=>t+" "+a.field("Que")+":"+a.field("Date"),""));
       // remove old and save old
       if (my.gdate(e.field("Date")) != my.gdate(old.field("Date")) || e.field("ORType") != old.field("ORType")) {
@@ -394,11 +394,18 @@ var que = {
     que.oldsave(que.q);
   },
   debug : function(title, arr) {
-    let arr = arr.map(v=>{
+    let group = "";
+    let arr = arr.map((v,i)=>{
+      if(this.lib = "OpUroSx") {
+        group = i==0?v.field("OpDate").toISOString()+"_"+v.field("OpType"):group;
+      }
+      else {
+        group = i==0?v.field("Date").toISOString()+"_"+v.field("ORType"):group;
+      }
       let ptname = this.lib=="OpUroSx"?v.field("PtName"):v.field("Patient")[0].title;
       return Number(v.field("Que")) + " : " + ptname;
     });
-    log(title + " : " + arr.join("\n") + " ");
+    log(title + " : " +  arr.join("\n") + " ");
   }
 };
 var emx = {
@@ -2033,7 +2040,7 @@ var opu = {
   q : [],
   loadque : function (e) {
     let oss = os.entries();
-    this.q = oss.filter(v=>my.gdate(v.field("OpDate"))==my.gdate(e.field("Date")) && v.field("OpType")==e.field("ORType"));
+    this.q = oss.filter(v=>my.gdate(v.field("OpDate"))==my.gdate(my.date(e.field("Date"))) && v.field("OpType")==e.field("ORType"));
     que.sortque(this.q);
     if(my.gdate(e.field("Date"))!=my.gdate(old.field("Date")) || e.field("ORType")!=old.field("ORType")) {
       this.o = oss.filter(v=>my.gdate(v.field("OpDate"))==my.gdate(old.field("Date")) && v.field("OpType")==old.field("ORType"));
