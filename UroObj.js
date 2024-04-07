@@ -396,7 +396,7 @@ var que = {
   debug : function(title, arr) {
     let group = "";
     let arr = arr.map((v,i)=>{
-      if(this.lib = "OpUroSx") {
+      if(this.lib == "OpUroSx") {
         group = i==0?v.field("OpDate").toISOString()+"_"+v.field("OpType"):group;
       }
       else {
