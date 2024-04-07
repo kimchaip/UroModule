@@ -1704,8 +1704,8 @@ var uro = {
   opdate : "Date",
   op : "Op",
   result : "OpResult",
-  notonlyreg : /à¸‡à¸”[^\u0E30-\u0E39]/,
-  notdonereg : /à¹„à¸¡à¹ˆà¸—à¸³/,
+  notonlyreg : /งด[^\u0E30-\u0E39]/,
+  notdonereg : /ไม่ทำ/,
   notdone : null,
   setopextra : function (e) {
     let hds = hd.entries();
@@ -1802,8 +1802,8 @@ var buo = {
   opdate : "Date",
   op : "Op",
   result : "OpResult",
-  notonlyreg : /à¸‡à¸”[^\u0E30-\u0E39]/,
-  notdonereg : /à¹„à¸¡à¹ˆà¸—à¸³/,
+  notonlyreg : /งด[^\u0E30-\u0E39]/,
+  notdonereg : /ไม่ทำ/,
   notdone : null
 }
 var cso = {
@@ -1811,8 +1811,8 @@ var cso = {
   opdate : "ConsultDate",
   op : "Rx",
   result : "Rx",
-  notonlyreg : /à¹„à¸¡à¹ˆà¸”à¸¹/,
-  notdonereg : /à¹„à¸¡à¹ˆà¸¡à¸²/,
+  notonlyreg : /ไม่ดู/,
+  notdonereg : /ไม่มา/,
   notdone : null
 };
 var dxo = {
