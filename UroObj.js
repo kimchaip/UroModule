@@ -394,8 +394,10 @@ var que = {
     que.oldsave(que.q);
   },
   debug : function(title, arr) {
-    let ptname = v.field("Patient")?v.field("Patient")[0].title:v.field("PtName");
-    let arr = arr.map(v=>Number(v.field("Que"))+":"+ptname);
+    let arr = arr.map(v=>{
+      let ptname = v.field("Patient")?v.field("Patient")[0].title:v.field("PtName");
+      return Number(v.field("Que")) + " : " + ptname;
+    });
     log(title + " : " + arr.join("\n") + " ");
   }
 };
