@@ -718,14 +718,17 @@ var valid = {
     else if (this.lib=="Backup")
       lb = bu;
     let entries = lb.entries();
-    let link = e.field("Patient")&&e.field("Patient").length>0?e.field("Patient")[0]:null;
-    for (let ent=0; ent<entries.length; ent++) {
+    entries.forEach(v=>{
       if (fieldname.every(f=>{
         if (f.includes("Date")) 
           return my.gdate(entries[ent].field(f))==my.gdate(e.field(f));
         else if (f=="Patient") {
-          let elink = entries[ent].field(f)&&entries[ent].field(f).length>0?entries[ent].field(f)[0]:null;
-          return elink.id==link.id;
+          if(entries[ent].field(f) && entries[ent].field(f).length>0 && e.field(f) && e.field(f).length>0){
+            return entries[ent].field(f)[0].id==e.field(f)[0].id;
+          }
+          else {
+            return false
+          }
         }
         else if (f=="Rx")
           return true;
@@ -734,7 +737,7 @@ var valid = {
       }))
         if (entries[ent].id != e.id || value) 
           unique = false;
-    }
+    });
     if (!unique) {
       message("field " + fieldname.join() + " some are not unique. Try again.");
       cancel();
