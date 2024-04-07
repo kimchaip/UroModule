@@ -2208,10 +2208,12 @@ var opu = {
       let link = e.field("Patient").length>0?e.field("Patient")[0]:null;
       if (s && link) {
         if(my.gdate(e.field("Date"))!=my.gdate(old.field("Date")) || e.field("ORType")!=old.field("ORType")) {
-          // remove this entry from que
+          // remove this entry from o
           this.removeque(s, this.o);
           this.saveque(this.o);
           que.debug.call(opu, "\nsave opu.o", opu.o);
+          // append this entry to q
+          this.q.push(s);
         }
         //update opu entry
         s.set("OpDate", my.date(e.field("Date")));
