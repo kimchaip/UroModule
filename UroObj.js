@@ -2182,7 +2182,7 @@ var opu = {
         ent["Dr"] =  e.field("Dr");
         ent["OpType"] =  e.field("ORType");
         ent["PtName"] =  link.field("PtName");
-        ent["Age"] =  Number(link.field("Age").replace(/\sปี/,""));
+        ent["Age"] =  Number(link.field("Age").replace(/\s*ปี/,""));
         ent["HN"] =  link.field("HN");
         ent["Dx"] =  e.field("Dx");
         ent["Op"] = e.field("Op");
@@ -2226,7 +2226,7 @@ var opu = {
         s.set("Dr", e.field("Dr"));
         s.set("OpType", e.field("ORType"));
         s.set("PtName", link.field("PtName"));
-        s.set("Age", Number(link.field("Age").replace(/\sปี/,"")));
+        s.set("Age", Number(link.field("Age").replace(/\s*ปี/,"")));
         s.set("HN", link.field("HN"));
         s.set("Dx", e.field("Dx"));
         s.set("Op", e.field("Op"));
@@ -2314,7 +2314,7 @@ var opu = {
         for(let i=0; i<oss.length; i++) {
           if(old.field("PtName") && old.field("PtName") == oss[i].field("PtName") || old.field("HN") && old.field("HN") == oss[i].field("HN")) {
             oss[i].set("PtName", e.field("PtName"));
-            oss[i].set("Age", Number(e.field("Age").replace(/\sปี/,"")));
+            oss[i].set("Age", Number(e.field("Age").replace(/\s*ปี/,"")));
             oss[i].set("HN", e.field("HN"));
             
             let note = oss[i].field("Note").split(",");
