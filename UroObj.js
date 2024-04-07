@@ -405,7 +405,7 @@ var que = {
       let ptname = this.lib=="OpUroSx"?v.field("PtName"):v.field("Patient")[0].title;
       return Number(v.field("Que")) + " : " + ptname;
     });
-    log(title + " : " +  arr.join("\n") + " ");
+    log(title + " : " + group + " : " +  arr.join("\n") + " ");
   }
 };
 var emx = {
