@@ -353,15 +353,15 @@ var que = {
       que.load.call(this, e);
       que.sortque(que.o);
       que.sortque(que.q);
-      que.debug("run : \nload o",que.o);
-      que.debug("load q",que.q);
+      que.debug.call(this, "run : \nload o",que.o);
+      que.debug.call(this, "load q",que.q);
       //e.field("Output", que.o.reduce((t,a)=>t+" "+a.field("Que")+":"+a.field("Date"),"")+"\n"+que.q.reduce((t,a)=>t+" "+a.field("Que")+":"+a.field("Date"),""));
       // remove old and save old
       if (my.gdate(e.field("Date")) != my.gdate(old.field("Date")) || e.field("ORType") != old.field("ORType")) {
         que.remove(e, que.o);
         que.save(que.o);
         e.set("Que", "00");   // for append to q
-        que.debug("\nsave o",que.o);
+        que.debug.call(this, "\nsave o",que.o);
       }
       // remove new or change new 
       if (e.field("Status") == "Not") {  // change Status -> Not
@@ -374,7 +374,7 @@ var que = {
       }
       //reorder by TimeIn -> set new que to every entry
       que.save(que.q);
-      que.debug("save q",que.q);
+      que.debug.call(this, "save q",que.q);
     }
   },
   oldsave : function (arr) {
@@ -2151,10 +2151,10 @@ var opu = {
     let change = false;
     if(e.field("OpExtra") && e.field("Status") != "Not"){
       this.loadque(e);
-      que.debug("\ncreate :\nload o",que.o);
-      que.debug("load q",que.q);
-      que.debug("load opu.o", opu.o);
-      que.debug("load opu.q", opu.q);
+      que.debug.call(uro, "\ncreate :\nload o",que.o);
+      que.debug.call(uro, "load q",que.q);
+      que.debug.call(opu, "load opu.o", opu.o);
+      que.debug.call(opu, "load opu.q", opu.q);
       let s = this.findent(e);
       let link = e.field("Patient").length>0?e.field("Patient")[0]:null;
       if (s && link) {
@@ -2162,7 +2162,7 @@ var opu = {
           // remove this entry from que
           this.removeque(s, this.o);
           this.saveque(this.o);
-          que.debug("\nsave opu.o", opu.o);
+          que.debug.call(opu, "\nsave opu.o", opu.o);
         }
       }
       // ceeate new opu entry
@@ -2189,9 +2189,9 @@ var opu = {
         // append this entry to que
         this.q.push(ent);
         this.saveque(this.q);
-        que.debug("\nsave opu.q", opu.q);
+        que.debug.call(opu, "\nsave opu.q", opu.q);
         this.runque(e);
-        que.debug("runque opu.q", opu.q);
+        que.debug.call(opu, "runque opu.q", opu.q);
       }
     }
     return change;
@@ -2200,10 +2200,10 @@ var opu = {
     let change = false;
     if(old.field("OpExtra") == true && e.field("OpExtra") == true && old.field("Status") != "Not" && e.field("Status") != "Not"){
       this.loadque(e);
-      que.debug("\nupdate :\nload o",que.o);
-      que.debug("load q",que.q);
-      que.debug("load opu.o", opu.o);
-      que.debug("load opu.q", opu.q);
+      que.debug.call(uro, "\nupdate :\nload o",que.o);
+      que.debug.call(uro, "load q",que.q);
+      que.debug.call(opu, "load opu.o", opu.o);
+      que.debug.call(opu, "load opu.q", opu.q);
       let s = this.findent(e);
       let link = e.field("Patient").length>0?e.field("Patient")[0]:null;
       if (s && link) {
@@ -2211,7 +2211,7 @@ var opu = {
           // remove this entry from que
           this.removeque(s, this.o);
           this.saveque(this.o);
-          que.debug("\nsave opu.o", opu.o);
+          que.debug.call(opu, "\nsave opu.o", opu.o);
         }
         //update opu entry
         s.set("OpDate", my.date(e.field("Date")));
@@ -2238,9 +2238,9 @@ var opu = {
         change = true;
         // update this entry to que
         this.saveque(this.q);
-        que.debug("\nsave opu.q", opu.q);
+        que.debug.call(opu, "\nsave opu.q", opu.q);
         this.runque(e);
-        que.debug("runque opu.q", opu.q);
+        que.debug.call(opu, "runque opu.q", opu.q);
       }
     }
    else if(e.field("OpExtra") == true && e.field("Status") != "Not"){
@@ -2257,10 +2257,10 @@ var opu = {
     let change = false;
     if(e.field("OpExtra") == false || e.field("Status") == "Not"){
       this.loadque(e);
-      que.debug("\ndelete :\nload o",que.o);
-      que.debug("load q",que.q);
-      que.debug("load opu.o", opu.o);
-      que.debug("load opu.q", opu.q);
+      que.debug.call(uro, "\ndelete :\nload o",que.o);
+      que.debug.call(uro, "load q",que.q);
+      que.debug.call(opu, "load opu.o", opu.o);
+      que.debug.call(opu, "load opu.q", opu.q);
       let s = this.findent(e);
       let link = e.field("Patient").length>0?e.field("Patient")[0]:null;
       if (s && link) {
@@ -2268,7 +2268,7 @@ var opu = {
           // remove this entry from que
           this.removeque(s, this.o);
           this.saveque(this.o);
-          que.debug("\nsave opu.o", opu.o);
+          que.debug.call(opu, "\nsave opu.o", opu.o);
         }
         s.trash();
         //message("delete OpUroSx!");
@@ -2276,7 +2276,7 @@ var opu = {
         // delete this entry from que
         this.removeque(s, this.q);
         this.saveque(this.q);
-        que.debug("\nsave opu.q", opu.q);
+        que.debug.call(opu, "\nsave opu.q", opu.q);
       }
     }
     return change;
