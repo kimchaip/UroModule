@@ -1093,7 +1093,7 @@ var fill = {
     fill.djbyresult.call(this, e);
   },
   track : function (e) {
-    if (!this.notdone && e.field("VisitType")=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && e.field("DischargeDate") == null && e.field("Summary") == true) {
+    if (!this.notdone && e.field("VisitType")=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && e.field("DischargeDate") == null && e.field("Summary") == true && old.field("Summary") == false) {
       e.set("Track", 3);
       e.set("DischargeDate", today);
     }
