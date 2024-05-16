@@ -486,6 +486,7 @@ var emx = {
       found = emx.checkduplicate.call(uro, e);
       if(!duplicate) {
         if(outofduty) {
+          log("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?");
           const myDialog = dialog();
           myDialog.title("Notify")
             .text("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?")
@@ -788,6 +789,7 @@ var valid = {
   opdateOutOfDuty : function(e) {
     let hdent = valid.checkholiday(e.field(this.opdate));
     if (hdent && hdent.field("OutOfDuty")) {
+      log("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?");
       const myDialog = dialog();
       myDialog.title("Notify")
         .text("This 'OpDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?")
