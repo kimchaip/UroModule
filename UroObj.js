@@ -793,21 +793,20 @@ var valid = {
     }
   },
   showDialog : function(hdent) {
-    var myTextUI = ui().text("This 'OpDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?");
-
     var myDialog = dialog();
     myDialog.title("Warning")
-      .view(myTextUI)
+      .text("This 'OpDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?")
       .positiveButton("Ok", () => {
-        return true
+        message("press OK")
       })
       .negativeButton("Cancel", () => {
-        //message("Try again");
-        cancel();
-        exit();
-        return true
+        message("press Cancel")
+        //cancel();
+        //exit();
       })
-      .neutralButton('X', () => {return true})
+      .neutralButton('X', () => {
+        message("press X")
+      })
       .show()
   }
 };
