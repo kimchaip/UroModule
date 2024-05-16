@@ -796,7 +796,7 @@ var valid = {
     var myTextUI = ui().text("This 'OpDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?");
 
     var myDialog = dialog();
-    myDialog.title(name)
+    myDialog.title("Warning")
       .view(myTextUI)
       .positiveButton("Ok", () => {
         return true
