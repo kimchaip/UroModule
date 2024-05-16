@@ -490,12 +490,12 @@ var emx = {
           myDialog.title("Notify")
             .text("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?")
             .positiveButton("OK", () => {
-              message("Append Entry");
+              log("Append Entry");
               last = emx.createnew.call(uro, e);
               last.show();
             })
             .negativeButton("Cancel", () => {
-              message("Try again");
+              log("Try again");
             })
             .autoDismiss(false)
             .show();
@@ -791,9 +791,9 @@ var valid = {
       const myDialog = dialog();
       myDialog.title("Notify")
         .text("This 'OpDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?")
-        .positiveButton("OK", () => { message("Append Entry") })
+        .positiveButton("OK", () => { log("Append Entry") })
         .negativeButton("Cancel", () => {
-          message("Try again");
+          log("Try again");
           cancel();
           exit();
         })
