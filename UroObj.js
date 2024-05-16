@@ -497,10 +497,11 @@ var emx = {
             .negativeButton("Cancel", () => {
               message("Try again");
             })
+            .autoDismiss(false)
             .show();
         }
       }
-      else message("check appoint date whether is duplicated");
+      else message("check appoint date whether it is duplicated");
     }
     else if (e.field("EntryMx")=="F/U" || e.field("EntryMx")=="set OR") {
       message("Appoint date must not leave blank");
@@ -796,6 +797,7 @@ var valid = {
           cancel();
           exit();
         })
+        .autoDismiss(false)
         .show();
     }
   }
