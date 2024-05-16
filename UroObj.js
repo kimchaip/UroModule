@@ -479,7 +479,7 @@ var emx = {
         last = emx.createnew.call(cso, e);
         last.show();
       }
-      else message("Check appoint date whether is duplicated");
+      else message("Check appoint date whether it is duplicated");
     }
     else if (e.field("EntryMx")== "set OR" &&  e.field("AppointDate")) {
       duplicate = emx.checkduplicate.call(uro, e);
