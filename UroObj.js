@@ -806,6 +806,7 @@ var valid = {
         cancel();
         exit();
         return true
+      })
       .show()
   }
 };
