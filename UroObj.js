@@ -807,6 +807,7 @@ var valid = {
         exit();
         return true
       })
+      .neutralButton('X', () => {return true})
       .show()
   }
 };
