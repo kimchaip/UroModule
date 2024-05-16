@@ -494,10 +494,6 @@ var emx = {
               last = emx.createnew.call(uro, e);
               last.show();
             })
-            .negativeButton("Cancel", () => {
-              log("Try again");
-            })
-            .autoDismiss(false)
             .show();
         }
       }
@@ -791,13 +787,11 @@ var valid = {
       const myDialog = dialog();
       myDialog.title("Notify")
         .text("This 'OpDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?")
-        .positiveButton("OK", () => { log("Append Entry") })
-        .negativeButton("Cancel", () => {
+        .positiveButton("Cancel", () => {
           log("Try again");
           cancel();
           exit();
         })
-        .autoDismiss(false)
         .show();
     }
   }
