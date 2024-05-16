@@ -405,8 +405,6 @@ var que = {
       let ptname = this.lib=="OpUroSx"?v.field("PtName"):v.field("Patient")[0].title;
       return Number(v.field("Que")) + " : " + ptname;
     });
-    //log(title + " : " + group + " : " +  arr.join("\n") + " ");
-      
   }
 };
 var emx = {
@@ -492,7 +490,7 @@ var emx = {
             last.show();
           }
           else {
-            message("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . please change Dr to any except 'ชัยพร'");
+            message("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . please change Appointdate or Dr");
           }
         }
         else {
@@ -788,7 +786,7 @@ var valid = {
     let hdent = valid.checkholiday(e.field(this.opdate));
     if (hdent && hdent.field("OutOfDuty")) {
       if(this.lib != "Consult" && e.field("Dr")=="ชัยพร") {
-        message("This 'OpDate' overlap with '" + hdent.field("Title") + "' . please change Dr to any one except 'ชัยพร'");
+        message("This 'OpDate' overlap with '" + hdent.field("Title") + "' . please change Opdate or Dr");
         cancel();
         exit();
       }
