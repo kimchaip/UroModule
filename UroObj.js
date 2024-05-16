@@ -405,7 +405,7 @@ var que = {
       let ptname = this.lib=="OpUroSx"?v.field("PtName"):v.field("Patient")[0].title;
       return Number(v.field("Que")) + " : " + ptname;
     });
-    log(title + " : " + group + " : " +  arr.join("\n") + " ");
+    //log(title + " : " + group + " : " +  arr.join("\n") + " ");
   }
 };
 var emx = {
@@ -483,7 +483,7 @@ var emx = {
       else message("Check appoint date whether is duplicated");
     }
     else if (e.field("EntryMx")== "set OR" &&  e.field("AppointDate")) {
-      found = emx.checkduplicate.call(uro, e);
+      duplicate = emx.checkduplicate.call(uro, e);
       if(!duplicate) {
         if(outofduty) {
           log("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?");
