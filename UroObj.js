@@ -793,10 +793,14 @@ var valid = {
       const myDialog = dialog();
       myDialog.title("Notify")
         .text("This 'OpDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?")
-        .positiveButton("Cancel", () => {
+        .positiveButton("OK", () => {
+          return true
+        })
+        .negativeButton("Cancel", () => {
           /*log("Try again");
           cancel();
           exit();*/
+          return true
         })
         .show();
     }
