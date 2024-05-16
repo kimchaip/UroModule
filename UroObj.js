@@ -486,16 +486,13 @@ var emx = {
       duplicate = emx.checkduplicate.call(uro, e);
       if(!duplicate) {
         if(outofduty) {
-          log("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?");
-          const myDialog = dialog();
-          myDialog.title("Notify")
-            .text("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?")
-            .positiveButton("OK", () => {
-              /*log("Append Entry");
-              last = emx.createnew.call(uro, e);
-              last.show();*/
-            })
-            .show();
+          if(e.field("Dr")!="ชัยพร") {
+            last = emx.createnew.call(uro, e);
+            last.show();
+          }
+          else {
+            message("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . please change Dr to any except 'ชัยพร'");
+          }
         }
         else {
           last = emx.createnew.call(uro, e);
@@ -789,7 +786,11 @@ var valid = {
   opdateOutOfDuty : function(e) {
     let hdent = valid.checkholiday(e.field(this.opdate));
     if (hdent && hdent.field("OutOfDuty")) {
-      valid.showDialog(hdent);
+      if(this.lib != "Consult" && e.field("Dr")=="ชัยพร") {
+        message("This 'OpDate' overlap with '" + hdent.field("Title") + "' . please change Dr to any one except 'ชัยพร'");
+        cancel();
+        exit();
+      }
     }
   },
   showDialog : function(hdent) {
