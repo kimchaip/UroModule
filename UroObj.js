@@ -792,23 +792,6 @@ var valid = {
         exit();
       }
     }
-  },
-  showDialog : function(hdent) {
-    var myDialog = dialog();
-    myDialog.title("Warning")
-      .text("This 'OpDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?")
-      .positiveButton("Ok", () => {
-        message("press OK")
-      })
-      .negativeButton("Cancel", () => {
-        message("press Cancel")
-        //cancel();
-        //exit();
-      })
-      .neutralButton('X', () => {
-        message("press X")
-      })
-      .show()
   }
 };
 var fill = {
