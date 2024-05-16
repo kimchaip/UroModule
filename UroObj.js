@@ -789,21 +789,24 @@ var valid = {
   opdateOutOfDuty : function(e) {
     let hdent = valid.checkholiday(e.field(this.opdate));
     if (hdent && hdent.field("OutOfDuty")) {
-      log("This 'OpDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?");
-      const myDialog = dialog();
-      myDialog.title("Notify")
-        .text("This 'OpDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?")
-        .positiveButton("OK", () => {
-          return true
-        })
-        .negativeButton("Cancel", () => {
-          /*log("Try again");
-          cancel();
-          exit();*/
-          return true
-        })
-        .show();
+      valid.showDialog(hdent);
     }
+  },
+  showDialog : function(hdent) {
+    var myTextUI = ui().text("This 'OpDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?");
+
+    var myDialog = dialog();
+    myDialog.title(name)
+      .view(myTextUI)
+      .positiveButton("Ok", () => {
+        return true
+      })
+      .negativeButton("Cancel", () => {
+        //message("Try again");
+        cancel();
+        exit();
+        return true
+      .show()
   }
 };
 var fill = {
