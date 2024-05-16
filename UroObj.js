@@ -490,11 +490,15 @@ var emx = {
           myDialog.title("Notify")
             .text("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?")
             .positiveButton("OK", () => {
-              log("Append Entry");
+              /*log("Append Entry");
               last = emx.createnew.call(uro, e);
-              last.show();
+              last.show();*/
             })
             .show();
+        }
+        else {
+          last = emx.createnew.call(uro, e);
+          last.show();
         }
       }
       else message("check appoint date whether it is duplicated");
@@ -788,9 +792,9 @@ var valid = {
       myDialog.title("Notify")
         .text("This 'OpDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?")
         .positiveButton("Cancel", () => {
-          log("Try again");
+          /*log("Try again");
           cancel();
-          exit();
+          exit();*/
         })
         .show();
     }
