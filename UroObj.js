@@ -476,21 +476,31 @@ var emx = {
     
     if (e.field("EntryMx")== "F/U" &&  e.field("AppointDate")) {
       duplicate = emx.checkduplicate.call(cso, e);
-      if(!duplicate && !outofduty) {
+      if(!duplicate) {
         last = emx.createnew.call(cso, e);
         last.show();
       }
-      else if(outofduty) message("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . Try again.");
-      else message("check appoint date or Pt Status");
+      else message("Check appoint date whether is duplicated");
     }
     else if (e.field("EntryMx")== "set OR" &&  e.field("AppointDate")) {
       found = emx.checkduplicate.call(uro, e);
-      if(!duplicate && !outofduty) {
-        last = emx.createnew.call(uro, e);
-        last.show();
+      if(!duplicate) {
+        if(outofduty) {
+          const myDialog = dialog();
+          myDialog.title("Notify")
+            .text("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?")
+            .positiveButton("OK", () => {
+              message("Append Entry");
+              last = emx.createnew.call(uro, e);
+              last.show();
+            })
+            .negativeButton("Cancel", () => {
+              message("Try again");
+            })
+            .show();
+        }
       }
-      else if(outofduty) message("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . Try again.");
-      else message("check appoint date or Pt Status");
+      else message("check appoint date whether is duplicated");
     }
     else if (e.field("EntryMx")=="F/U" || e.field("EntryMx")=="set OR") {
       message("Appoint date must not leave blank");
@@ -777,9 +787,16 @@ var valid = {
   opdateOutOfDuty : function(e) {
     let hdent = valid.checkholiday(e.field(this.opdate));
     if (hdent && hdent.field("OutOfDuty")) {
-      message("This 'OpDate' overlap with '" + hdent.field("OutOfDuty") + "' . Try again.");
-      cancel();
-      exit();
+      const myDialog = dialog();
+      myDialog.title("Notify")
+        .text("This 'OpDate' overlap with '" + hdent.field("Title") + "' . Are you sure to append this entry?")
+        .positiveButton("OK", () => { message("Append Entry") })
+        .negativeButton("Cancel", () => {
+          message("Try again");
+          cancel();
+          exit();
+        })
+        .show();
     }
   }
 };
