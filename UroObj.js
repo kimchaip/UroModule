@@ -440,7 +440,7 @@ var emx = {
         
         last.set(this.opdate,  e.field("AppointDate"));
         last.link("Patient", links[0]);
-        last.set("Dr", links[0].field("Dr"));
+        last.set("Dr", e.field("Dr"));
         last.set("Underlying", e.field("Underlying"));
         if (e.field("Photo").length>0)
           last.set("Photo", e.field("Photo").join());
