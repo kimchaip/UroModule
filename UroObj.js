@@ -2371,6 +2371,80 @@ var sync = {
 };
 
 var trig = {
+  DailyPtUpdate : function (all) {
+    for (let i=0; i<all.length; i++) {
+      if (my.gdate(all[i].lastModifiedTime) < ntoday) {
+        if (all[i].field("Done")==true) {
+          all[i].set("Done", false) ;
+        }
+        pto.age(all[i]);
+      }
+    }
+  },
+  DailyChildUpdate : function (all) {
+    let change = false;
+    for (let i=0; i<all.length; i++) {
+      if (my.gdate(all[i].lastModifiedTime) < ntoday) {
+        if (all[i].field("Done")==true) 
+          all[i].set("Done", false);
+      }
+      if (all[i].field("Done")==false) {
+        let end = null;
+        let notdone = all[i].field(this.result).match(this.notdonereg);
+        this.notdone = notdone==null?0:notdone.length;
+        if (all[i].field("VisitType")=="OPD" || this.notdone)
+          end = my.dateadd(all[i].field(this.opdate),1);
+        else if (all[i].field("VisitType")=="Admit" && all[i].field("DischargeDate")==null)
+          end = today;
+        else if (my.gdate(all[i].field("DischargeDate"))<my.gdate(all[i].field(this.opdate)))
+          end = my.dateadd(all[i].field(this.opdate),1);
+        else
+          end = my.dateadd(all[i].field("DischargeDate"),1);
+
+        if (ntoday <= my.gdate(end)) { 
+          fill.future.call(this, all[i]);
+          fill.track.call(this, all[i]);
+          fill.los.call(this, all[i]);
+          fill.active.call(this, all[i]);
+          fill.opdiff.call(this, all[i], fill.ptstatus.call(this, all[i]), fill.ptnextstatus.call(this, all[i]));
+          fill.color.call(this, all[i]);
+          all[i].set("Done", true);
+          change = true;
+        }
+      }
+    }
+    if(change) {
+      or.syncGoogleSheet();
+      os.syncGoogleSheet();
+    }
+  }, 
+  DailyHDUpdate : function (all) {
+    let change = false;
+    all.forEach(h=>{
+      let d = Math.floor((my.gdate(h.field("Date"))-ntoday)/86400000);
+      if (d<0) {
+        d = null;
+      }
+      if(h.field("Future")!=d) {
+        h.set("Future", d);
+        h.set("Month", my.monthname(h.field("Date").getMonth()));
+        change = true;
+      }
+    });
+    if(change) {
+      hd.syncGoogleSheet();
+    }
+  },
+  DailyUpdateAll : function () {
+    let pta = pt.entries();
+    trig.DailyPtUpdate(pta);
+    let ura = or.entries();
+    trig.DailyChildUpdate.call(uro, ura);
+    let csa = cs.entries();
+    trig.DailyChildUpdate.call(cso, csa);
+    let hda = hd.entries();
+    trig.DailyHDUpdate(hda);
+  }, 
   PatientBeforeViewCard : function (e) {
     pto.djStamp(e);
     pto.reop(e);
@@ -2419,20 +2493,6 @@ var trig = {
         }
       }
     }
-  }, 
-  PatientBeforeOpenLib : function (all) {
-    for (let i=0; i<all.length; i++) {
-      if (my.gdate(all[i].lastModifiedTime) < ntoday) {
-        if (all[i].field("Done")==true) {
-          all[i].set("Done", false) ;
-        }
-        pto.age(all[i]);
-      }
-    }
-    let ura = or.entries();
-    trig.BeforeOpenLib.call(uro, ura);
-    let csa = cs.entries();
-    trig.BeforeOpenLib.call(cso, csa);
   }, 
   PatientBeforeLink : function (e) {
     fill.linkunderlying(e);
@@ -2521,54 +2581,7 @@ var trig = {
   }, 
   BeforeViewCard : function (e) {
     old.save.call(this, e);
-  }, 
-  BeforeOpenLib : function (all) {
-    let pts = pt.entries();
-    for (let i=0; i<pts.length; i++) {
-      if (my.gdate(pts[i].lastModifiedTime) < ntoday) {
-        if (pts[i].field("Done")==true) {
-          pts[i].set("Done", false) ;
-        }
-        pto.age(pts[i]);
-      }
-    }
-    
-    let change = false;
-    for (let i=0; i<all.length; i++) {
-      if (my.gdate(all[i].lastModifiedTime) < ntoday) {
-        if (all[i].field("Done")==true) 
-          all[i].set("Done", false);
-      }
-      if (all[i].field("Done")==false) {
-        let end = null;
-        let notdone = all[i].field(this.result).match(this.notdonereg);
-        this.notdone = notdone==null?0:notdone.length;
-        if (all[i].field("VisitType")=="OPD" || this.notdone)
-          end = my.dateadd(all[i].field(this.opdate),1);
-        else if (all[i].field("VisitType")=="Admit" && all[i].field("DischargeDate")==null)
-          end = today;
-        else if (my.gdate(all[i].field("DischargeDate"))<my.gdate(all[i].field(this.opdate)))
-          end = my.dateadd(all[i].field(this.opdate),1);
-        else
-          end = my.dateadd(all[i].field("DischargeDate"),1);
-
-        if (ntoday <= my.gdate(end)) { 
-          fill.future.call(this, all[i]);
-          fill.track.call(this, all[i]);
-          fill.los.call(this, all[i]);
-          fill.active.call(this, all[i]);
-          fill.opdiff.call(this, all[i], fill.ptstatus.call(this, all[i]), fill.ptnextstatus.call(this, all[i]));
-          fill.color.call(this, all[i]);
-          all[i].set("Done", true);
-          change = true;
-        }
-      }
-    }
-    if(change) {
-      or.syncGoogleSheet();
-      os.syncGoogleSheet();
-    }
-  }, 
+  },
   BeforeUpdatingField : function (e) {
     old.load(e);
     fill.setnewdate.call(this, e);
@@ -2695,22 +2708,5 @@ var trig = {
   }, 
   HDAfterEdit : function (e) {
     hd.syncGoogleSheet();
-  },
-  HDBeforeOpenLib : function (all) {
-    let change = false;
-    all.forEach(h=>{
-      let d = Math.floor((my.gdate(h.field("Date"))-ntoday)/86400000);
-      if (d<0) {
-        d = null;
-      }
-      if(h.field("Future")!=d) {
-        h.set("Future", d);
-        h.set("Month", my.monthname(h.field("Date").getMonth()));
-        change = true;
-      }
-    });
-    if(change) {
-      hd.syncGoogleSheet();
-    }
   }
 };
