@@ -7,6 +7,7 @@ var op = libByName("OperationList") ;
 var rp = libByName("Report");
 var os = libByName("OpUroSx");
 var hd = libByName("Holidays");
+var wd = libBtName("UroOfficeHour");
 
 var old = {
     d : {}, 
@@ -2444,6 +2445,7 @@ var trig = {
     trig.DailyChildUpdate.call(cso, csa);
     let hda = hd.entries();
     trig.DailyHDUpdate(hda);
+    wd.syncGoogleSheet();
   }, 
   PatientBeforeViewCard : function (e) {
     pto.djStamp(e);
