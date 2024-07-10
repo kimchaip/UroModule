@@ -7,7 +7,7 @@ var op = libByName("OperationList") ;
 var rp = libByName("Report");
 var os = libByName("OpUroSx");
 var hd = libByName("Holidays");
-var wd = libBtName("UroOfficeHour");
+var wd = libByName("UroOfficeHour");
 
 var old = {
     d : {}, 
