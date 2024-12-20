@@ -1314,7 +1314,7 @@ var fill = {
       else { // pass last admit, or no visit
         ptent.set("OpDiff", -1000);
       }
-      ptent.set("Output", "o:" + o.length + ",lastVS<=today: " + my.gdate(ptent.field("WardStamp"))<=ntoday + "(lastDCisnull:"  + ptent.field("LastDischarge")==null + " or today<lastDC:" + ntoday < my.gdate(ptent.field("LastDischarge")) + "), n:" + n.length);
+      ptent.set("Output", o.length + ":" + my.gdate(ptent.field("WardStamp"))<=ntoday + ":"  + ptent.field("LastDischarge")==null + ":" + ntoday < my.gdate(ptent.field("LastDischarge")) + ":" + n.length);
     }
   } ,
   color : function (e) {
