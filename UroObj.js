@@ -1305,10 +1305,10 @@ var fill = {
       let ptent = links[0];
       o = o.filter(v=>v.lib!="Consult" && v.e.field("Status")!="Not");
       n = o.filter(v=>v.lib!="Consult" && v.e.field("Status")!="Not");
-      if(e.field("Active")!=null) { // admit or OR OPD
+      if(o.length>0 && my.gdate(o[0].e.field("VisitDate")) == my.gdate(e.field("VisitDate")) ) { // admit or OR OPD
         ptent.set("OpDiff", Math.floor((my.gdate(e.field(this.opdate))-ntoday)/86400000));
       }
-      else if(n.length>0 ) { // found next visit
+      else if(n.length>0) { // found next visit
         ptent.set("OpDiff", Math.floor((my.gdate(n[0].e.field(this.opdate))-ntoday)/86400000));
       }
       else { // pass last admit, or no visit
