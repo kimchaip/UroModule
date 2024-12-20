@@ -1305,7 +1305,7 @@ var fill = {
       let ptent = links[0];
       o = o.filter(v=>v.lib!="Consult" && v.e.field("Status")!="Not");
       n = o.filter(v=>v.lib!="Consult" && v.e.field("Status")!="Not");
-      if(o.length>0 && ((ptent.field("Ward") != "OPD" && my.gdate(ptent.field("WardStamp"))<=ntoday && (ptent.field("LastDischarge")==null || ntoday < my.gdate(ptent.field("LastDischarge")))) || (ptent.field("Ward")=="OPD" && my.gdate(ptent.field("WardStamp"))==ntoday)) ) { // admit or OPD OR LA
+      if(o.length>0 && my.gdate(ptent.field("WardStamp"))<=ntoday && (ptent.field("LastDischarge")==null || ntoday < my.gdate(ptent.field("LastDischarge"))) ) { // admit or OPD OR LA
         ptent.set("OpDiff", Math.floor((my.gdate(o[0].e.field(this.opdate))-ntoday)/86400000));
       }
       else if(n.length>0) { // found next visit
@@ -1314,7 +1314,7 @@ var fill = {
       else { // pass last admit, or no visit
         ptent.set("OpDiff", -1000);
       }
-      //ptent.set("Output", my.gdate(o[0].e.field(this.opdate)) + " : " + ntoday);
+      ptent.set("Output", o.length + " : " + n.length);
     }
   } ,
   color : function (e) {
