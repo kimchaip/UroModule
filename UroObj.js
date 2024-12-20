@@ -1301,12 +1301,12 @@ var fill = {
   },
   opdiff : function(e, o, n) {
     let links = e.field("Patient");
-    if (links.length>0 && this.lib != "Consult") {
+    if (links.length>0) {
       let ptent = links[0];
       o = o.filter(v=>v.lib!="Consult" && v.e.field("Status")!="Not");
       n = o.filter(v=>v.lib!="Consult" && v.e.field("Status")!="Not");
-      if(o.length>0 && my.gdate(o[0].e.field("VisitDate")) == my.gdate(e.field("VisitDate")) ) { // admit or OR OPD
-        ptent.set("OpDiff", Math.floor((my.gdate(e.field(this.opdate))-ntoday)/86400000));
+      if(o.length>0 && ((ptent.field("Ward") != "OPD" && my.gdate(ptent.field("WardStamp"))<=ntoday && (ptent.field("LastDischarge")==null || ntoday < my.gdate(ptent.field("LastDischarge")))) || (ptent.field("Ward")=="OPD" && my.gdate(ptent.field("WardStamp"))==ntoday)) ) { // admit or OPD OR LA
+        ptent.set("OpDiff", Math.floor((my.gdate(o[0].e.field(this.opdate))-ntoday)/86400000));
       }
       else if(n.length>0) { // found next visit
         ptent.set("OpDiff", Math.floor((my.gdate(n[0].e.field(this.opdate))-ntoday)/86400000));
@@ -1315,9 +1315,6 @@ var fill = {
         ptent.set("OpDiff", -1000);
       }
       //ptent.set("Output", my.gdate(o[0].e.field(this.opdate)) + " : " + ntoday);
-    }
-    else if (links.length>0 && this.lib == "Consult") {
-      links[0].set("OpDiff", -1000);
     }
   } ,
   color : function (e) {
