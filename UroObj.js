@@ -1306,10 +1306,10 @@ var fill = {
       o = o.filter(v=>v.lib!="Consult" && v.e.field("Status")!="Not");
       n = n.filter(v=>v.lib!="Consult" && v.e.field("Status")!="Not");
       if(o.length>0 && (my.gdate(ptent.field("WardStamp"))<=ntoday) && ((ptent.field("LastDischarge")==null) || (ntoday < my.gdate(ptent.field("LastDischarge")))) ) { // admit or OPD OR LA
-        ptent.set("OpDiff", Math.floor((my.gdate(o[0].e.field(this.opdate))-ntoday)/86400000));
+        ptent.set("OpDiff", Math.floor((my.gdate(o[0].e.field("Date"))-ntoday)/86400000));
       }
       else if(n.length>0) { // found next visit
-        ptent.set("OpDiff", Math.floor((my.gdate(n[0].e.field(this.opdate))-ntoday)/86400000));
+        ptent.set("OpDiff", Math.floor((my.gdate(n[0].e.field("Date"))-ntoday)/86400000));
       }
       else { // pass last admit, or no visit
         ptent.set("OpDiff", -1000);
