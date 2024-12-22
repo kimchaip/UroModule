@@ -2498,9 +2498,7 @@ var trig = {
     old.save.call(this, e);
   }, 
   BeforeEdit : function (e, value) {
-    console.time("old load");
     old.load(e);
-    console.timeEnd("old load");
     valid.opdateOutOfDuty.call(this, e);
     valid.dxop.call(this, e); //fill dx,op complete 
     fill.setnewdate.call(this, e);
@@ -2531,16 +2529,12 @@ var trig = {
       fill.opdatecal(e);
       fill.orbridge(e);
     }
-    console.time("fill los, dr, active, opdiff, color, mer effect");
     fill.los.call(this, e);
     fill.dr(e, value=="create");
     fill.active.call(this, e);
     fill.opdiff.call(this, e, fill.ptstatus.call(this, e), fill.ptnextstatus.call(this, e));
     fill.color.call(this, e);
     mer.effect(e);
-    console.timeEnd("fill los, dr, active, opdiff, color, mer effect");
-
-
   }, 
   AfterEdit : function (e, value) {
     emx.run.call(this, e);
