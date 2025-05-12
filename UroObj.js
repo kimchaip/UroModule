@@ -2406,21 +2406,7 @@ var trig = {
     }
   }, 
   DailyHDUpdate : function (all) {
-    let change = false;
-    all.forEach(h=>{
-      let d = Math.floor((my.gdate(h.field("Date"))-ntoday)/86400000);
-      if (d<0) {
-        d = null;
-      }
-      if(h.field("Future")!=d) {
-        h.set("Future", d);
-        h.set("Month", my.monthname(h.field("Date").getMonth()));
-        change = true;
-      }
-    });
-    if(change) {
-      hd.syncGoogleSheet();
-    }
+    hd.syncGoogleSheet();
   },
   DailyUpdateAll : function () {
     let pta = pt.entries();
