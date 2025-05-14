@@ -486,7 +486,7 @@ var emx = {
       if(!duplicate) {
         last = emx.createnew.call(cso, e);
         last.show();
-        cal.notify(outofduty, holiday, opextra, calname) {  // warning when outofduty, holiday, opextra
+        cal.notify(outofduty, holiday, opextra, calname)  // warning when outofduty, holiday, opextra
       }
       else message("Check appoint date whether it is duplicated");
     }
@@ -497,7 +497,7 @@ var emx = {
           if(e.field("Dr")!="ชัยพร") {
             last = emx.createnew.call(uro, e);
             last.show();
-            cal.notify(outofduty, holiday, opextra, calname) {  // warning when outofduty, holiday, opextra
+            cal.notify(outofduty, holiday, opextra, calname)  // warning when outofduty, holiday, opextra
           }
           else {
             message("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . please change Appointdate or Dr");
@@ -506,7 +506,7 @@ var emx = {
         else {
           last = emx.createnew.call(uro, e);
           last.show();
-          cal.notify(outofduty, holiday, opextra, calname) {  // warning when outofduty, holiday, opextra
+          cal.notify(outofduty, holiday, opextra, calname)  // warning when outofduty, holiday, opextra
         }
       }
       else message("check appoint date whether it is duplicated");
