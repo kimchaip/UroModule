@@ -780,7 +780,6 @@ var valid = {
   },
   // check opdate is not working elsewhere 
   checkholiday : function(date) {
-    let hd = libByName("Holidays");
     let hds = hd.entries();
     
     return hds.find(e=>e.field("Date").toDateString()==date.toDateString());
