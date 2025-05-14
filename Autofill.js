@@ -105,7 +105,14 @@ var script = {
     let hd = libByName("Holidays");
     let hds = hd.entries();
     
-    return hds.find(e=>e.field("Date").toDateString()==date.toDateString());
+    return hds.fiilter(e=>{
+      if(my.dateIsValid(e.field("Date")) && my.dateIsValid(date)) {
+        return e.field("Date").toDateString()==date.toDateString();
+      }
+      else {
+        return false;
+      }
+    });
   },
   checkopdate : function (e, lb) {
     let all = lb.entries();
