@@ -783,7 +783,14 @@ var valid = {
   checkholiday : function(date) {
     let hds = hd.entries();
     
-    return hds.find(e=>e.field("Date").toDateString()==date.toDateString());
+    return hds.filter(e=>{
+      if(my.dateIsValid(e.field("Date")) && my.dateIsValid(date)) {
+        return e.field("Date").toDateString()==date.toDateString();
+      }
+      else {
+        return false;
+      }
+    });
   },
   // check opdate is not working elsewhere 
   opdateOutOfDuty : function(e) {
