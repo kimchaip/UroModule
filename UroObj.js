@@ -793,10 +793,10 @@ var valid = {
   },
   // check opdate is not working elsewhere 
   opdateOutOfDuty : function(e) {
-    let hdent = valid.checkholiday(e.field(this.opdate));
-    if (hdent && hdent.field("OutOfDuty")) {
+    let hdents = valid.checkholiday(e.field(this.opdate));
+    if (hdents && hdents.length && hdents.some(h=>h.field("OutOfDuty"))) {
       if(this.lib != "Consult" && e.field("Dr")=="ชัยพร") {
-        message("This 'OpDate' overlap with '" + hdent.field("Title") + "' . please change Opdate or Dr");
+        message("This 'OpDate' overlap with '" + hdents.find(h=>h.field("OutOfDuty")).field("Title") + "' . please change Opdate or Dr");
         cancel();
         exit();
       }
