@@ -82,14 +82,20 @@ var script = {
     }
   },
   timeleft : function (m, ot, hd) {
-    let tl;
+    let textarr = [];
     if(ot || hd) {
       if(hd && hd.field("OutOfDuty"))
         message("วันนี้ห้าม Set ติด '" + hd.field("Title") + "'");
-      else if(hd && hd.field("Holiday"))
-        message("วันหยุด" + hd.field("Title") + " " +  this.timeanswer(420-m));
-      else
-        message("วันหยุดเสาร์อาทิตย์ " +  this.timeanswer(420-m));
+      else {
+        if(hd && hd.field("Holiday"))
+          textarr.push("วันหยุด" + hd.field("Title"));
+        if(ot)
+          textarr.push("วันหยุดเสาร์-อาทิตย์");
+        if(hd && hd.field("Title")=="ORนอกเวลา")
+          textarr.push("ORนอกเวลา");
+          
+        message(textarr.join() + " " +  this.timeanswer(420-m));
+      }
     }
     else {
       message(this.timeanswer(360-m));
