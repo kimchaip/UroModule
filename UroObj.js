@@ -468,17 +468,16 @@ var emx = {
   }, 
   run : function (e) {
     let last = null;
-    let hdent = valid.checkholiday(e.field("AppointDate"));
+    let hdents = valid.checkholiday(e.field("AppointDate"));
     let outofduty = false;
     let holiday = false;
     let opextra = false;
     let calname = "";
-    if(hdent) {
-      outofduty = hdent.field("OutOfDuty");
-      holiday = hdent.field("Holiday") || my.gday(e.field("AppointDate"))==0 || my.gday(e.field("AppointDate"))==6;
-      opextra = hdent.field("Title") == "ORนอกเวลา";
-      calname = hdent.field("Calendar");
-      log("outofduty:"+outofduty+",holiday:"+holiday+",opextra:"+opextra+",calname:"+calname);
+    if(hdents && hdents.length) {
+      outofduty = hdents.some(h=>h.field("OutOfDuty"));
+      holiday = hdents.some(h=>h.field("Holiday")) || my.gday(e.field("AppointDate"))==0 || my.gday(e.field("AppointDate"))==6;
+      opextra = hdents.some(h=>h.field("Title") == "ORนอกเวลา");
+      calname = hdents.find(h=>h.field("Title") == "ORนอกเวลา").field("Calendar");
     }
     
     let duplicate = false;
