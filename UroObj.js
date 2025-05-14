@@ -780,17 +780,10 @@ var valid = {
   },
   // check opdate is not working elsewhere 
   checkholiday : function(date) {
+    let hd = libByName("Holidays");
     let hds = hd.entries();
-    let hdent = null;
-    let gdate = my.gdate(my.date(date))
     
-    for(let i=0; i<hds.length; i++) {
-      if(my.gdate(my.date(hds[i].field("Date")))==gdate){
-        hdent = hds[i];
-        break;
-      }
-    }
-    return hdent;
+    return hds.find(e=>e.field("Date").toDateString()==date.toDateString());
   },
   // check opdate is not working elsewhere 
   opdateOutOfDuty : function(e) {
