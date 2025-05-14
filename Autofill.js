@@ -114,7 +114,7 @@ var script = {
     let hd = libByName("Holidays");
     let hds = hd.entries();
     
-    return hds.fiilter(e=>{
+    return hds.filter(e=>{
       if(my.dateIsValid(e.field("Date")) && my.dateIsValid(date)) {
         return e.field("Date").toDateString()==date.toDateString();
       }
