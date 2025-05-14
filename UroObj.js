@@ -475,7 +475,7 @@ var emx = {
     let calname = "";
     if(hdent) {
       outofduty = hdent.field("OutOfDuty");
-      holiday = hdent.field("Holiday") || my.gday(e.field("AppointDate"))==0 || my.gday(e.field("AppointDate"))==6);
+      holiday = hdent.field("Holiday") || my.gday(e.field("AppointDate"))==0 || my.gday(e.field("AppointDate"))==6;
       opextra = hdent.field("Title") == "ORนอกเวลา";
       calname = hdent.field("Calendar");
     }
