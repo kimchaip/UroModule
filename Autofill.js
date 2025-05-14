@@ -104,7 +104,6 @@ var script = {
   checkholiday : function(date) {
     let hd = libByName("Holidays");
     let hds = hd.entries();
-    let gdate = my.gdate(my.date(date))
     
     return hds.find(e=>e.field("Date").toDateString()==date.toDateString());
   },
