@@ -65,7 +65,7 @@ var script = {
       time["hr"] = Math.floor(m/60);
       time["min"] = m%60;
       if(time.hr>0)
-        return "ยังเหลือเวลาอยู่ " + time.hr + ":" + ("0" + time.min).slice(-2) + " น."
+        return "เต็มที่ ยังเหลือเวลาอยู่ " + time.hr + ":" + ("0" + time.min).slice(-2) + " น."
       else
         return "ยังเหลือเวลาอยู่ " + time.min + " น."
     }
@@ -104,16 +104,9 @@ var script = {
   checkholiday : function(date) {
     let hd = libByName("Holidays");
     let hds = hd.entries();
-    let hdent = null;
     let gdate = my.gdate(my.date(date))
     
-    for(let i=0; i<hds.length; i++) {
-      if(my.gdate(my.date(hds[i].field("Date")))==gdate){
-        hdent = hds[i];
-        break;
-      }
-    }
-    return hdent;
+    return hds.find(e=>e.field("Date").toDateString()==date.toDateString());
   },
   checkopdate : function (e, lb) {
     let all = lb.entries();
