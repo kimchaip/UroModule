@@ -83,16 +83,25 @@ var script = {
   },
   timeleft : function (m, ot, hd) {
     let textarr = [];
-    if(ot || hd) {
-      if(hd && hd.field("OutOfDuty"))
-        message("วันนี้ห้าม Set ติด '" + hd.field("Title") + "'");
+    const calName = ["Calendar","Sak","Krissana","Suthee"];
+    const translate = ["ชัยพร", "เอกณัฏฐ์","กฤษณะ","สุธี"];
+    if(ot || (hd && hd.length>0)) {
+      if(hd && hd.length>0 && hd.some(h=>h.field("OutOfDuty"))) {
+        let hde = hd.find(h=>h.field("OutOfDuty"));
+        message("วันนี้ห้าม Set ติด '" + hde.field("Title") + "'");
+      }
       else {
-        if(hd && hd.field("Holiday"))
-          textarr.push("วันหยุด" + hd.field("Title"));
-        if(ot)
+        if(hd && hd.length>0 && hd.some(h=>h.field("Holiday"))) {
+          let hde = hd.find(h=>h.field("Holiday"));
+          textarr.push("วันหยุด" + hde.field("Title"));
+        }
+        if(ot) {
           textarr.push("วันหยุดเสาร์-อาทิตย์");
-        if(hd && hd.field("Title")=="ORนอกเวลา")
-          textarr.push("ORนอกเวลา");
+        }
+        if(hd && hd.length>0 && hd.some(h=>h.field("Title")=="ORนอกเวลา") ) {
+          let hde = hd.find(h=>h.field("Title")=="ORนอกเวลา");
+          textarr.push("ORนอกเวลา"+translate[calName.indexOf(hde.field("Calendar"))]);
+        }
           
         message(textarr.join() + " " +  this.timeanswer(420-m));
       }
