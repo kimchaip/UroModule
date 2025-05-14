@@ -478,6 +478,7 @@ var emx = {
       holiday = hdent.field("Holiday") || my.gday(e.field("AppointDate"))==0 || my.gday(e.field("AppointDate"))==6;
       opextra = hdent.field("Title") == "ORนอกเวลา";
       calname = hdent.field("Calendar");
+      log("outofduty:"+outofduty+",holiday:"+holiday+",opextra:"+opextra+",calname:"+calname);
     }
     
     let duplicate = false;
