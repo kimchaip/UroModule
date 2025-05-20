@@ -2697,9 +2697,16 @@ var trig = {
     os.syncGoogleSheet();
   },
   HDBeforeEdit : function (e) {
-    e.set("ModifiedTime",e.lastModifiedTime);
+    
   }, 
-  HDAfterEdit : function (e) {
+  HDAfterEdit : function (e, value) {
+    if(value == "create") {
+      e.set("CreatedTime",e.creationTime);
+      e.set("ModifiedTime",e.lastModifiedTime);
+    }
+    else {
+      e.set("ModifiedTime",e.lastModifiedTime);
+    }
     hd.syncGoogleSheet();
   }
 };
