@@ -477,7 +477,8 @@ var emx = {
       outofduty = hdents.some(h=>h.field("OutOfDuty"));
       holiday = hdents.some(h=>h.field("Holiday")) || my.gday(e.field("AppointDate"))==0 || my.gday(e.field("AppointDate"))==6;
       opextra = hdents.some(h=>h.field("Title") == "ORนอกเวลา");
-      calname = hdents.find(h=>h.field("Title") == "ORนอกเวลา").field("Calendar");
+      let found = hdents.find(h=>h.field("Title") == "ORนอกเวลา");
+      if (found) calname = found.field("Calendar");
     }
     
     let duplicate = false;
