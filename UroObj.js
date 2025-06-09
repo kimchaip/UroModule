@@ -2697,7 +2697,7 @@ var trig = {
   OpUroAfterEdit : function (e) {
     os.syncGoogleSheet();
   },
-  HDBeforeEdit : function (e) {
+  HDBeforeEdit : function (e, value) {
     if(value == "create") {
       e.set("CreatedTime",e.creationTime);
       e.set("ModifiedTime",e.lastModifiedTime);
