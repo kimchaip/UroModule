@@ -2698,6 +2698,9 @@ var trig = {
     os.syncGoogleSheet();
   },
   HDBeforeEdit : function (e, value) {
+    
+  }, 
+  HDAfterEdit : function (e, value) {
     if(value == "create") {
       e.set("CreatedTime",e.creationTime);
       e.set("ModifiedTime",e.lastModifiedTime);
@@ -2705,8 +2708,6 @@ var trig = {
     else {
       e.set("ModifiedTime",e.lastModifiedTime);
     }
-  }, 
-  HDAfterEdit : function (e, value) {
     hd.syncGoogleSheet();
   }
 };
