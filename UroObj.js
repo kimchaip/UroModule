@@ -5,7 +5,6 @@ var bu = libByName("Backup") ;
 var dx = libByName("DxAutoFill") ;
 var op = libByName("OperationList") ;
 var rp = libByName("Report");
-var os = libByName("OpUroSx");
 var hd = libByName("Holidays");
 var wd = libByName("UroOfficeHour");
 
@@ -44,9 +43,6 @@ var old = {
       for(let f of fieldnames) {
         if(f=="Previous") {
           let prev = e.field(f)?JSON.parse(e.field(f)):{};
-          if("ossync" in prev) {
-            old.d["ossync"] = prev.ossync;
-          }
           if("orsync" in prev) {
             old.d["orsync"] = prev.orsync;
           }
@@ -354,15 +350,11 @@ var que = {
       que.load.call(this, e);
       que.sortque(que.o);
       que.sortque(que.q);
-      que.debug.call(this, "run : \nload o",que.o);
-      que.debug.call(this, "\nload q",que.q);
-      //e.field("Output", que.o.reduce((t,a)=>t+" "+a.field("Que")+":"+a.field("Date"),"")+"\n"+que.q.reduce((t,a)=>t+" "+a.field("Que")+":"+a.field("Date"),""));
       // remove old and save old
       if (my.gdate(e.field("Date")) != my.gdate(old.field("Date")) || e.field("ORType") != old.field("ORType")) {
         que.remove(e, que.o);
         que.save(que.o);
         e.set("Que", "00");   // for append to q
-        que.debug.call(this, "\nsave o",que.o);
       }
       // remove new or change new 
       if (e.field("Status") == "Not") {  // change Status -> Not
@@ -375,7 +367,6 @@ var que = {
       }
       //reorder by TimeIn -> set new que to every entry
       que.save(que.q);
-      que.debug.call(this, "save q",que.q);
     }
   },
   oldsave : function (arr) {
@@ -388,24 +379,11 @@ var que = {
       v.set("Previous", previous);
     });
   },
-  runeffect : function(e) { // when que.save -> every entry rearrange in que -> make change whice relate que in opu, and finally save que in previous
+  runeffect : function(e) { // when que.save -> every entry rearrange in que -> finally save que in previous
     if(e.field("ORType")!=old.field("ORType") || my.gdate(e.field("Date"))!=my.gdate(old.field("Date"))) {
       que.oldsave(que.o);
     }
     que.oldsave(que.q);
-  },
-  debug : function(title, arr) {
-    let group = "";
-    let arr = arr.map((v,i)=>{
-      if(this.lib == "OpUroSx") {
-        group = i==0?v.field("OpDate").toISOString()+"_"+v.field("OpType"):group;
-      }
-      else {
-        group = i==0?v.field("Date").toISOString()+"_"+v.field("ORType"):group;
-      }
-      let ptname = this.lib=="OpUroSx"?v.field("PtName"):v.field("Patient")[0].title;
-      return Number(v.field("Que")) + " : " + ptname;
-    });
   }
 };
 var emx = {
@@ -682,8 +660,6 @@ var dxop = {
         let ou = this.link.map(f=>old.field(f));
         if (this.title.every((f,i)=>u.field(this.link[i]) == e.field(f) && ou[i] == oe[i])) {
           rpo.updatenew(u);
-          if (l.lib=="UroBase")
-            opu.updateOp(u);
           old.save.call(l, u);
         }
       }
@@ -2041,310 +2017,6 @@ var rpo = {
   }
 };
 
-var opu = {
-  lib : "OpUroSx",
-  o : [],
-  q : [],
-  loadque : function (e) {
-    let oss = os.entries();
-    this.q = oss.filter(v=>my.gdate(my.date(v.field("OpDate")))==my.gdate(e.field("Date")) && v.field("OpType")==e.field("ORType"));
-    que.sortque(this.q);
-    if(my.gdate(e.field("Date"))!=my.gdate(old.field("Date")) || e.field("ORType")!=old.field("ORType")) {
-      this.o = oss.filter(v=>my.gdate(my.date(v.field("OpDate")))==my.gdate(old.field("Date")) && v.field("OpType")==old.field("ORType"));
-      que.sortque(this.o);
-    }
-    else {
-      this.o = this.q.slice(0);
-    }
-  },
-  saveque : function(arr) {
-    // set new que to every entry
-    arr.forEach((v,i)=>{
-      v.set("Que", i+1);
-    });
-  },
-  findent : function(e) {
-    //return oss entry by this entry Date, ORType, Dr, PtName, HN, Dx, Op
-    let ptname = old.field("Patient");
-    let parr = this.splitPtName(ptname);
-    parr[2] = parr[2]?parr[2]:null;
-    let result;
-    if(this.o.length>0) {
-      result = this.o.find(v=>v.field("Dr")==old.field("Dr") && v.field("PtName")==parr[0] && v.field("HN")==parr[2] && v.field("Dx")==old.field("Dx") && v.field("Op")==old.field("Op"));
-    }
-    if(result)
-      return result
-    else
-      return null;   
-  },
-  removeque: function(e, arr) {
-    // findInx and remove this entry from arr
-    let inx = que.findInx(e, arr);
-    if(inx>-1) {
-      arr.splice(inx, 1);
-    }
-  },
-  runque: function(e) {
-    // get this que
-    let change = false;
-    let myent = [];
-    let myque = [];
-    que.q.forEach(v=>{
-      v = v.id==e.id?e:v;
-      if(v.field("Patient").length>0 && opu.q.length>0) {
-        let ptname = v.field("Patient")[0].title;
-        let parr = opu.splitPtName(ptname);
-        parr[2] = parr[2]?parr[2]:null;
-        for(let i=0; i<opu.q.length; i++) {
-          if(opu.q[i].field("Dr")==v.field("Dr") && opu.q[i].field("PtName")==parr[0] && opu.q[i].field("HN")==parr[2] && opu.q[i].field("Dx")==v.field("Dx") && opu.q[i].field("Op")==v.field("Op")) {
-            myent.push(opu.q[i]);
-            myque.push(opu.q[i].field("Que"));
-            break;
-          }
-        }
-      }
-    });
-    if(myque.length>0) {
-      myque.sort((a,b)=>a-b);
-      myent.forEach((v,i)=> {
-        if(v.field("Que")!=myque[i]) {
-          v.set("Que", myque[i]);
-          change = true;
-        }
-      });
-    }
-    return change;
-  },
-  setnewdate : function (e) {
-    if(my.gdate(my.date(e.field("OpDate")))!=my.gdate(e.field("OpDate")))
-      e.set("OpDate", my.date(e.field("OpDate")));
-  }, 
-  splitPtName : function (ptName) {
-    let arr = [];
-    let inx = ptName.search(/\d+/); // search for number
-    if(inx>-1){
-      arr[0] = ptName.slice(0,inx).trim(); // alphabet
-      ptName = ptName.slice(inx).trim(); // number +/- alphabet
-    }
-    else {
-      arr[0] = ptName.trim();
-      arr[1] = '';
-      arr[2] = '';
-    }
-    inx = ptName.search(/\D/); // search for alphabet
-    if(inx>-1){
-      let num = ptName.slice(0,inx).trim(); // number
-      ptName = ptName.slice(inx); // alphabet +/- number
-      inx = ptName.search(/\d/); // search for number
-      if(inx>-1){
-        arr[1] = num + ' ' + ptName.slice(0,inx).trim(); // alphabet
-        arr[2] = ptName.slice(inx);  // number
-      }
-      else {
-        arr[1] = num + ' ' + ptName;
-        arr[2] = '';
-      }
-    }
-    else {
-      inx = ptName.search(/\s/); // search for space
-      if(inx>-1){
-        arr[1] = ptName.slice(0,inx);
-        arr[2] = ptName.slice(inx).trim();
-      }
-      else {
-        if(Number(ptName)<120){
-          arr[1] = ptName.trim();
-          arr[2] = '';
-        }
-        else{
-          arr[1] = '';
-          arr[2] = ptName.trim();
-        }
-      }
-    }
-    return arr;
-  },
-  createOp : function (e) {
-    let change = false;
-    if(e.field("OpExtra") && e.field("Status") != "Not"){
-      this.loadque(e);
-      que.debug.call(opu, "\ncreate opu: \nload o", opu.o);
-      que.debug.call(opu, "\nload q", opu.q);
-      let s = this.findent(e);
-      let link = e.field("Patient").length>0?e.field("Patient")[0]:null;
-      if (s && link) {
-        if(my.gdate(e.field("Date"))!=my.gdate(old.field("Date")) || e.field("ORType")!=old.field("ORType")) {
-          // remove this entry from que
-          this.removeque(s, this.o);
-          this.saveque(this.o);
-          que.debug.call(opu, "\nsave o", opu.o);
-        }
-      }
-      // ceeate new opu entry
-      let ent = new Object() ;
-      let links = e.field("Patient");
-      if(links.length>0){
-        let link = links[0];
-        ent["OpDate"] = my.date(e.field("Date")) ;
-        ent["Dr"] =  e.field("Dr");
-        ent["OpType"] =  e.field("ORType");
-        ent["PtName"] =  link.field("PtName");
-        ent["Age"] =  Number(link.field("Age").replace(/\s*ปี/,""));
-        ent["HN"] =  link.field("HN");
-        ent["Dx"] =  e.field("Dx");
-        ent["Op"] = e.field("Op");
-        ent["Note"] =  link.field("Underlying").join();
-        ent["Que"] = this.q.length+1;  // assign que as the last member
-        ent["OffCase"] = e.field("Status")=="Not";
-        ent["CreationTime"] =  e.creationTime;
-        ent["ModifiedTime"] =  e.lastModifiedTime;
-        let newent = os.create(ent);
-        //message("create OpUroSx!");
-        change = true;
-        // append this entry to que
-        this.q.push(newent);
-        this.saveque(this.q);
-        que.debug.call(opu, "\nsave q", opu.q);
-        this.runque(e);
-        que.debug.call(opu, "\nrunque q", opu.q);
-      }
-    }
-    return change;
-  },
-  updateOp : function (e) {
-    let change = false;
-    if(old.field("OpExtra") == true && e.field("OpExtra") == true && old.field("Status") != "Not" && e.field("Status") != "Not"){
-      this.loadque(e);
-      que.debug.call(opu, "\nupdate :\nload o", opu.o);
-      que.debug.call(opu, "\nload q", opu.q);
-      let s = this.findent(e);
-      let link = e.field("Patient").length>0?e.field("Patient")[0]:null;
-      if (s && link) {
-        if(my.gdate(e.field("Date"))!=my.gdate(old.field("Date")) || e.field("ORType")!=old.field("ORType")) {
-          // remove this entry from o
-          this.removeque(s, this.o);
-          this.saveque(this.o);
-          que.debug.call(opu, "\nsave o", opu.o);
-          // append this entry to q
-          this.q.push(s);
-        }
-        //update opu entry
-        s.set("OpDate", my.date(e.field("Date")));
-        s.set("Dr", e.field("Dr"));
-        s.set("OpType", e.field("ORType"));
-        s.set("PtName", link.field("PtName"));
-        s.set("Age", Number(link.field("Age").replace(/\s*ปี/,"")));
-        s.set("HN", link.field("HN"));
-        s.set("Dx", e.field("Dx"));
-        s.set("Op", e.field("Op"));
-        
-        let note = s.field("Note").split(",");
-        let underly = link.field("Underlying").join().toLowerCase();
-        note = note.map(v=>v.trim());
-        note = note.filter(v=>underly.indexOf(v.toLowerCase())==-1);
-        let udnote = link.field("Underlying").join().split(",");
-        udnote = udnote.concat(note);
-        udnote = udnote.filter(v=>v);
-        s.set("Note", udnote.join(", "));
-        s.set("OffCase", e.field("Status")=="Not");
-        s.set("CreationTime", e.creationTime);
-        s.set("ModifiedTime", e.lastModifiedTime);
-        //message("update OpUroSx!");
-        change = true;
-        // update this entry to que
-        this.saveque(this.q);
-        que.debug.call(opu, "\nsave q", opu.q);
-        this.runque(e);
-        que.debug.call(opu, "\nrunque q", opu.q);
-      }
-    }
-   else if(e.field("OpExtra") == true && e.field("Status") != "Not"){
-      //create
-      change = this.createOp(e);
-    }
-    else {
-      //delete
-      change = this.deleteOp(e);
-    }
-    return change;
-  },
-  deleteOp : function (e) {
-    let change = false;
-    if(e.field("OpExtra") == false || e.field("Status") == "Not"){
-      this.loadque(e);
-      que.debug.call(opu, "\ndelete opu: load o", opu.o);
-      que.debug.call(opu, "\nload q", opu.q);
-      let s = this.findent(e);
-      let link = e.field("Patient").length>0?e.field("Patient")[0]:null;
-      if (s && link) {
-        if(my.gdate(e.field("Date"))!=my.gdate(old.field("Date")) || e.field("ORType")!=old.field("ORType")) {
-          // remove this entry from que
-          this.removeque(s, this.o);
-          this.saveque(this.o);
-          que.debug.call(opu, "\nsave o", opu.o);
-        }
-        s.trash();
-        //message("delete OpUroSx!");
-        change = true;
-        // delete this entry from que
-        this.removeque(s, this.q);
-        this.saveque(this.q);
-        que.debug.call(opu, "\nsave q", opu.q);
-      }
-    }
-    return change;
-  },
-  ptTrigOpuro : function (e) {
-    let change = false;
-    if(old.field("PtName") != e.field("PtName") || old.field("Age") != e.field("Age") || old.field("YY") != e.field("YY") || old.field("MM") != e.field("MM")  || old.field("DD") != e.field("DD") || my.gdate(old.field("Birthday")) != my.gdate(e.field("Birthday")) || old.field("HN") != e.field("HN") || old.field("Underlying").join() != e.field("Underlying").join() ){
-      let orlinks = e.linksFrom("UroBase", "Patient");
-      let bulinks = e.linksFrom("Backup", "Patient");
-      let found = [];
-      if(orlinks.length+bulinks.length>0) {
-        for (let i=0; i<orlinks.length; i++) {
-          if (orlinks[i].field("OpExtra")==true ) {
-            found.push(orlinks[i]);
-            fill.orbridge(orlinks[i]);
-          }
-        }
-        for (let i=0; i<bulinks.length; i++) {
-          if (bulinks[i].field("OpExtra")==true ) {
-            found.push(bulinks[i]);
-            fill.orbridge(bulinks[i]);
-          }
-        }
-      }
-      if(found.length>0) {
-        //update OpUroSx
-        let oss = os.entries();
-        let count = 0;
-        for(let i=0; i<oss.length; i++) {
-          if(old.field("PtName") && old.field("PtName") == oss[i].field("PtName") || old.field("HN") && old.field("HN") == oss[i].field("HN")) {
-            oss[i].set("PtName", e.field("PtName"));
-            oss[i].set("Age", Number(e.field("Age").replace(/\s*ปี/,"")));
-            oss[i].set("HN", e.field("HN"));
-            
-            let note = oss[i].field("Note").split(",");
-            let underly = old.field("Underlying").join().toLowerCase();
-            note = note.map(v=>v.trim());
-            note = note.filter(v=>underly.indexOf(v.toLowerCase())==-1);
-            let udnote = e.field("Underlying").join().split(",");
-            udnote = udnote.concat(note);
-            udnote = udnote.filter(v=>v);
-            oss[i].set("Note", udnote.join(", "));
-            count++;
-          }
-        }
-        if(count) {
-          //message("Update related PtName in OpUroSx!");
-          change = true;
-        }
-      }
-    }
-    return change;
-  }
-};
-
 var cal = {
   lib : "Holidays",
   notify : function (outofduty, holiday, opextra, own) {
@@ -2371,10 +2043,7 @@ var sync = {
     }
     
     if(old.field(fieldname)==null || diff>=1) {
-      if(fieldname=="ossync") {
-        os.syncGoogleSheet();
-      }
-      else if(fieldname=="orsync") {
+      if(fieldname=="orsync") {
         or.syncGoogleSheet();
       }
       old.savesync(e, fieldname);
@@ -2427,7 +2096,6 @@ var trig = {
     }
     if(change) {
       or.syncGoogleSheet();
-      os.syncGoogleSheet();
     }
   }, 
   DailyHDUpdate : function (all) {
@@ -2470,12 +2138,8 @@ var trig = {
     }
   }, 
   PatientAfterEdit : function (e, value) {
-    let change = false;
     old.load(e);
-    if(value=="update")
-      change |=opu.ptTrigOpuro(e);
-    if(change)
-      sync.run(e, "ossync");
+
     old.save.call(pto, e);
   }, 
   PatientUpdatingField : function (e) {
@@ -2553,27 +2217,20 @@ var trig = {
     if (this.lib!="Consult") {
       let change = false;
       fill.ptDetail(e);
-      // manipulate que in urobase, opu and save que to previous
+      // manipulate que in urobase and save que to previous
       que.load.call(this, e);
       que.sortque(que.o);
       que.sortque(que.q);
       if (value=="create") {
         rpo.createnew(e);
-        if (this.lib=="UroBase")
-          change |=opu.createOp(e);
       }
       else if (value=="update") {
         rpo.updatenew(e);
-        if (this.lib=="UroBase")
-          change |=opu.updateOp(e);
       }
       que.runeffect(e);
       
       if (this.lib=="UroBase") {
         sync.run(e, "orsync");
-      }
-      if(change) {
-        sync.run(e, "ossync");
       }
     }
     old.save.call(this, e);
@@ -2608,18 +2265,13 @@ var trig = {
     old.load(e);
     if (this.lib!="Consult") {
       let change = false;
-      // manipulate que in urobase, opu and save que to previous
+      // manipulate que in urobase and save que to previous
       que.load.call(this, e);
       que.sortque(que.o);
       que.sortque(que.q);
-      if (this.lib=="UroBase")
-        change |= opu.updateOp(e);
       que.runeffect(e);
       
       sync.run(e, "orsync");
-      if(change) {
-        sync.run(e, "ossync");
-      }
     }
     old.save.call(this, e);
   }, 
@@ -2651,17 +2303,13 @@ var trig = {
       dxop.deletelink.call(dxo, e);
       dxop.deletelink.call(opo, e);
       rpo.deleteold(e);
-      // manipulate que in urobase, opu and save que to previous
+      // manipulate que in urobase and save que to previous
       que.load.call(this, e);
       que.sortque(que.o);
       que.sortque(que.q);
-      if (this.lib=="UroBase") 
-        change |= opu.deleteOp(e);
       que.runeffect(e);
       
       sync.run(e, "orsync");
-      if(change) 
-        sync.run(e, "ossync");
     }
     fill.deletept(e);
   }, 
@@ -2691,12 +2339,6 @@ var trig = {
     dxop.effectother.call(opo, e);
     old.save.call(opo, e);
   }, 
-  OpUroBeforeEdit : function (e) {
-    opu.setnewdate(e);
-  }, 
-  OpUroAfterEdit : function (e) {
-    os.syncGoogleSheet();
-  },
   HDBeforeEdit : function (e, value) {
     
   }, 
