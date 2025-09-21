@@ -1536,7 +1536,7 @@ var pto = {
         ymd.push(e.field("YY")?e.field("YY"):0);
         ymd.push(e.field("MM")?e.field("MM"):0);
         ymd.push(e.field("DD")?e.field("DD"):0);
-        e.set("Birthday", this.getBirthday(e.field("YY")))
+        e.set("Birthday", this.getBirthday(ymd))
         this.agetext(e, [e.field("YY"),e.field("MM"),e.field("DD")]);
       }
       else {
