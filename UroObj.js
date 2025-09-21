@@ -1474,7 +1474,7 @@ var pto = {
     if(my.isDate(birthday)) {
       let ageDifMs = Date.now() - birthday.getTime();
       let ageDate = new Date(ageDifMs); // miliseconds from epoch
-      ymd.push(Math.abs(ageDate.getUTCFullYear() - 1970);
+      ymd.push(Math.abs(ageDate.getUTCFullYear() - 1970));
       ymd.push(ageDate.getUTCMonth()+1);
       ymd.push(ageDate.getUTCDate());
       return ymd
