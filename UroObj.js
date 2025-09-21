@@ -1469,30 +1469,88 @@ var pto = {
     let newname = e.field("PtName").replace(/\s+/g, ' ').trim();
     e.set("PtName", newname);
   }, 
-  agetext : function (e, diff) {
-    if (diff>365){
-      e.set("Age", Math.floor(diff/365.2425) + " ปี");
+  getYMD : function(birthday) {
+    let ymd = []
+    if(my.isDate(birthday)) {
+      let ageDifMs = Date.now() - birthday.getTime();
+      let ageDate = new Date(ageDifMs); // miliseconds from epoch
+      ymd.push(Math.abs(ageDate.getUTCFullYear() - 1970);
+      ymd.push(ageDate.getUTCMonth()+1);
+      ymd.push(ageDate.getUTCDate());
+      return ymd
     }
-    else if (diff>30){
-      e.set("Age", Math.floor(diff/30.4375) + " เดือน");
+    else if(my.isDateStr(birthday)) {
+      let ageDifMs = Date.now() - new Date(birthday).getTime();
+      let ageDate = new Date(ageDifMs); // miliseconds from epoch
+      ymd.push(Math.abs(ageDate.getUTCFullYear() - 1970);
+      ymd.push(ageDate.getUTCMonth()+1);
+      ymd.push(ageDate.getUTCDate());
+      return ymd
     }
     else {
-      e.set("Age" , diff + " วัน");
+      return null
+    }
+  },
+  getBirthday : function(ymd) {
+    if(ymd.length==3) {
+      return new Date(today.getFullYear()-ymd[0], today.getMonth()-(ymd[1]-1), today.getDate()-ymd[2], 7)
+    }
+    else {
+      return null
+    }
+  },
+  agetext : function (e, ymd) {
+    if (ymd[0]){
+      e.set("Age", ymd[0] + " ปี");
+    }
+    else if (ymd[1]){
+      e.set("Age", ymd[1] + " เดือน");
+    }
+    else if(ymd[2]) {
+      e.set("Age" , ymd[2] + " วัน");
+    }
+    else {
+      e.set("Age", "");
     }
   }, 
   //Age
   age : function (e) {
-    let d = 0;
-    if (e.field("YY") && !e.field("Birthday")) {
-      let month = e.field("MM")?e.field("MM"):0;
-      let day = e.field("DD")?e.field("DD"):0;
-      d = Math.round(e.field("YY")*365.2425 + month*30.4375 + day);
-      e.set("Birthday", my.dateminus(today, d));
+    if(old.field("Birthday") != e.field("Birthday") {
+      if(e.field("Birthday") {
+        let ymd = this.getYMD(e.field("Birthday"));
+        e.set("YY", ymd[0]);
+        e.set("MM", ymd[1]);
+        e.set("DD", ymd[2]);
+        this.agetext(e, ymd);
+      }
+      else {
+        e.set("YY", null)
+        e.set("MM", null);
+        e.set("DD", null);
+        this.agetext(e, [0,0,0]);
+      }
     }
-    if (e.field("Birthday")) {
-      d = Math.floor((ntoday-my.gdate(e.field("Birthday")))/86400000);
-      if (parseInt(e.field("Age")) != d)
-        pto.agetext(e, d);
+    else if(old.field("YY") != e.field("YY") || old.field("MM") != e.field("MM") || old.field("DD") != e.field("DD")) {
+      if(e.field("YY") || e.field("MM") || e.field("DD")) {
+        let ymd = []
+        ymd.push(e.field("YY")?e.field("YY"):0);
+        ymd.push(e.field("MM")?e.field("MM"):0);
+        ymd.push(e.field("DD")?e.field("DD"):0);
+        e.set("Birthday", this.getBirthday(e.field("YY")))
+        this.agetext(e, [e.field("YY"),e.field("MM"),e.field("DD")]);
+      }
+      else {
+        e.set("Birthday", null)
+      }
+    }
+    else {
+      if(e.field("Birthday")) {
+        let ymd = this.getYMD(e.field("Birthday"));
+        e.set("YY", ymd[0]);
+        e.set("MM", ymd[1]);
+        e.set("DD", ymd[2]);
+        this.agetext(e, ymd);
+      }
     }
   }, 
   //DJ stent
