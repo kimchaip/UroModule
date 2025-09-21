@@ -13,29 +13,6 @@ var my = {
   timeIsValid : function(value) {
     return value instanceof Date && !isNaN(value) && value.getTime()<86400000;
   },
-  calAge : function(birthday) {
-    if(this.isDate(birthday)) {
-      let ageDifMs = Date.now() - birthday.getTime();
-      let ageDate = new Date(ageDifMs); // miliseconds from epoch
-      return Math.abs(ageDate.getUTCFullYear() - 1970);
-    }
-    else if(this.isDateStr(birthday)) {
-      let ageDifMs = Date.now() - new Date(birthday).getTime();
-      let ageDate = new Date(ageDifMs); // miliseconds from epoch
-      return Math.abs(ageDate.getUTCFullYear() - 1970);
-    }
-    else {
-      return null
-    }
-  },
-  calBirthday : function(age) {
-    if(age>0) {
-      return new Date(today.getFullYear()-age, today.getMonth(), today.getDate(), 7)
-    }
-    else {
-      return null
-    }
-  },
   date : function (value)  {
     if (value) {
       if (this.dateIsValid(value)) {
