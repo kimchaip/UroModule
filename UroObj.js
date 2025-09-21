@@ -1522,6 +1522,7 @@ var pto = {
         e.set("MM", ymd[1]);
         e.set("DD", ymd[2]);
         this.agetext(e, ymd);
+        e.set("Output", "birthday:birthday->ymd" + ymd.join())
       }
       else {
         e.set("YY", null)
@@ -1538,6 +1539,7 @@ var pto = {
         ymd.push(e.field("DD")?e.field("DD"):0);
         e.set("Birthday", this.getBirthday(ymd))
         this.agetext(e, [e.field("YY"),e.field("MM"),e.field("DD")]);
+        e.set("Output", "ymd:ymd->birthday" + ymd.join())
       }
       else {
         e.set("Birthday", null)
@@ -1550,6 +1552,7 @@ var pto = {
         e.set("MM", ymd[1]);
         e.set("DD", ymd[2]);
         this.agetext(e, ymd);
+        e.set("Output", "else:birthday->ymd" + ymd.join())
       }
     }
   }, 
