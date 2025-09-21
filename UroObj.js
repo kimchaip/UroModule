@@ -1475,7 +1475,7 @@ var pto = {
       let ageDifMs = Date.now() - birthday.getTime();
       let ageDate = new Date(ageDifMs); // miliseconds from epoch
       ymd.push(Math.abs(ageDate.getUTCFullYear() - 1970));
-      ymd.push(ageDate.getUTCMonth()+1);
+      ymd.push(ageDate.getUTCMonth());
       ymd.push(ageDate.getUTCDate());
       return ymd
     }
@@ -1483,7 +1483,7 @@ var pto = {
       let ageDifMs = Date.now() - new Date(birthday).getTime();
       let ageDate = new Date(ageDifMs); // miliseconds from epoch
       ymd.push(Math.abs(ageDate.getUTCFullYear() - 1970));
-      ymd.push(ageDate.getUTCMonth()+1);
+      ymd.push(ageDate.getUTCMonth());
       ymd.push(ageDate.getUTCDate());
       return ymd
     }
@@ -1493,7 +1493,7 @@ var pto = {
   },
   getBirthday : function(ymd) {
     if(ymd.length==3) {
-      return new Date(today.getFullYear()-ymd[0], today.getMonth()-(ymd[1]-1), today.getDate()-ymd[2], 7)
+      return new Date(today.getFullYear()-ymd[0], today.getMonth()-ymd[1], today.getDate()-ymd[2], 7)
     }
     else {
       return null
