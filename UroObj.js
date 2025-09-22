@@ -1515,7 +1515,7 @@ var pto = {
   }, 
   //Age
   age : function (e) {
-    if(old.field("Birthday") != e.field("Birthday")) {
+    if(my.gdate(old.field("Birthday")) != my.gdate(e.field("Birthday"))) {
       if(e.field("Birthday")) {
         let ymd = this.getYMD(e.field("Birthday"));
         e.set("YY", ymd[0]);
