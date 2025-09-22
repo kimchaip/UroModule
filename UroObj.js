@@ -2112,11 +2112,13 @@ var sync = {
 var trig = {
   DailyPtUpdate : function (all) {
     for (let i=0; i<all.length; i++) {
-      if (my.gdate(all[i].lastModifiedTime) < ntoday) {
-        if (all[i].field("Done")==true) {
-          all[i].set("Done", false) ;
-        }
-        pto.age(all[i]);
+      let p = all[i]
+      old.load(p)
+      if (p.field("Done")==true) {
+        p.set("Done", false) ;
+      }
+      if(p.field("Birthday")) {
+        pto.age(p);
       }
     }
   },
