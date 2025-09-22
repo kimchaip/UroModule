@@ -1522,7 +1522,7 @@ var pto = {
         e.set("MM", ymd[1]);
         e.set("DD", ymd[2]);
         this.agetext(e, ymd);
-        e.set("Output", "birthday:birthday->ymd" + ymd.join())
+        e.set("Output", "birthday:birthday->ymd " + ymd.join() + " ,old:" + old.field("Birthday") + " ,e:" + e.field("Birthday"))
       }
       else {
         e.set("YY", null)
