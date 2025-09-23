@@ -2115,12 +2115,15 @@ var trig = {
   DailyPtUpdate : function (all) {
     for (let i=0; i<all.length; i++) {
       let p = all[i]
-      old.load(p)
       if (p.field("Done")==true) {
         p.set("Done", false) ;
       }
       if(p.field("Birthday")) {
-        pto.age(p);
+        let ymd = pto.getYMD(p.field("Birthday"));
+        p.set("YY", ymd[0]);
+        p.set("MM", ymd[1]);
+        p.set("DD", ymd[2]);
+        pto.agetext(p, ymd);
       }
     }
   },
