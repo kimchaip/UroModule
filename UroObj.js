@@ -1515,8 +1515,10 @@ var pto = {
   }, 
   //Age
   age : function (e) {
-    if(old.field("Birthday").toDateString() != e.field("Birthday").toDateString()) {
-      if(e.field("Birthday")) {
+    let oldDOB = old.field("Birthday")?old.field("Birthday").toDateString():"";
+    let eDOB = e.field("Birthday")?e.field("Birthday").toDateString():"";
+    if(oldDOB != eDOB) {
+      if(eDOB) {
         let ymd = this.getYMD(e.field("Birthday"));
         e.set("YY", ymd[0]);
         e.set("MM", ymd[1]);
@@ -1544,7 +1546,7 @@ var pto = {
       }
     }
     else {
-      if(e.field("Birthday")) {
+      if(eDOB) {
         let ymd = this.getYMD(e.field("Birthday"));
         e.set("YY", ymd[0]);
         e.set("MM", ymd[1]);
