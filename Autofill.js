@@ -112,7 +112,7 @@ var script = {
         notification()
           .id(1)
           .title("ผลการประเมิน")
-          .text("textarr.join() + " " +  this.timeanswer(420-m))
+          .text(textarr.join() + " " +  this.timeanswer(420-m))
           .bigText("Long message content here...")
           .show();
         //message(textarr.join() + " " +  this.timeanswer(420-m));
