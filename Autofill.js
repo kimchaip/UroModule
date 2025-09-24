@@ -92,7 +92,7 @@ var script = {
           .id(1)
           .title("ผลการประเมิน")
           .text("วันนี้ห้าม Set ติด '" + hde.field("Title") + "'")
-          .bigText("Long message content here...")
+          .bigText("วันนี้ห้าม Set ติด '" + hde.field("Title") + "'")
           .show();
         //message("วันนี้ห้าม Set ติด '" + hde.field("Title") + "'");
       }
@@ -113,7 +113,7 @@ var script = {
           .id(1)
           .title("ผลการประเมิน")
           .text(textarr.join() + " " +  this.timeanswer(420-m))
-          .bigText("Long message content here...")
+          .bigText(textarr.join() + " " +  this.timeanswer(420-m))
           .show();
         //message(textarr.join() + " " +  this.timeanswer(420-m));
       }
@@ -123,7 +123,7 @@ var script = {
           .id(1)
           .title("ผลการประเมิน")
           .text(timeanswer(360-m))
-          .bigText("Long message content here...")
+          .bigText(timeanswer(360-m))
           .show();
       //message(timeanswer(360-m));
     }
