@@ -88,13 +88,7 @@ var script = {
     if(ot || (hd && hd.length>0)) {
       if(hd && hd.length>0 && hd.some(h=>h.field("OutOfDuty"))) {
         let hde = hd.find(h=>h.field("OutOfDuty"));
-        notification()
-          .id(1)
-          .title("ผลการประเมิน")
-          .text("วันนี้ห้าม Set ติด '" + hde.field("Title") + "'")
-          .bigText("วันนี้ห้าม Set ติด '" + hde.field("Title") + "'")
-          .show();
-        //message("วันนี้ห้าม Set ติด '" + hde.field("Title") + "'");
+        message("วันนี้ห้าม Set ติด '" + hde.field("Title") + "'");
       }
       else {
         if(hd && hd.length>0 && hd.some(h=>h.field("Holiday"))) {
@@ -109,23 +103,11 @@ var script = {
           textarr.push("ORนอกเวลา"+translate[calName.indexOf(hde.field("Calendar"))]);
         }
           
-        notification()
-          .id(1)
-          .title("ผลการประเมิน")
-          .text(textarr.join() + " " +  this.timeanswer(420-m))
-          .bigText(textarr.join() + " " +  this.timeanswer(420-m))
-          .show();
-        //message(textarr.join() + " " +  this.timeanswer(420-m));
+        message(textarr.join() + " " +  this.timeanswer(420-m));
       }
     }
     else {
-      notification()
-          .id(1)
-          .title("ผลการประเมิน")
-          .text(timeanswer(360-m))
-          .bigText(timeanswer(360-m))
-          .show();
-      //message(timeanswer(360-m));
+      message(timeanswer(360-m));
     }
   },
   checkholiday : function(date) {
