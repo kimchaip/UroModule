@@ -2194,6 +2194,8 @@ var trig = {
     pto.dj(e);
 
     let contact = e.field("Contact");
+    log(JSON.stringify(contact))
+    log(e.field("Phone") + ",old;" + old.field("Phone"))
     if(e.field("Phone") && old.field("Phone") != e.field("Phone")) {
       AndroidContacts.create(e.field("PtName"), 
         {phone:e.field("Phone")});
