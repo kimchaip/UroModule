@@ -479,7 +479,7 @@ var emx = {
             cal.notify(outofduty, holiday, opextra, calname)  // warning when outofduty, holiday, opextra
           }
           else {
-            message("This 'AppointDate' overlap with '" + hdent.field("Title") + "' . please change Appointdate or Dr");
+            message("This 'AppointDate' overlap with '" + hdents.field("Title") + "' . please change Appointdate or Dr");
           }
         }
         else {
