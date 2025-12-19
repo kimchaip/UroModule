@@ -479,7 +479,8 @@ var emx = {
             cal.notify(outofduty, holiday, opextra, calname)  // warning when outofduty, holiday, opextra
           }
           else {
-            message("This 'AppointDate' overlap with '" + hdents.field("Title") + "' . please change Appointdate or Dr");
+            let found = hdents.find(h=>h.field("OutOfDuty"));
+            if(found) message("This 'AppointDate' overlap with '" + found.field("Title") + "' . please change Appointdate or Dr");
           }
         }
         else {
