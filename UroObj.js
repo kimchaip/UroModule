@@ -1748,7 +1748,7 @@ var pto = {
     alllinks = alllinks.filter(v=>v.field("Status")!="Not");
     let result = [];
     if(alllinks.length>0){
-      result = alllinks.filter((v,i,a)=>a.some(u=>u.id != v.id && my.gdate(u.field("Date"))>=my.gdate(v.field("Date")) && Math.floor((my.gdate(u.field("Date"))-my.gdate(v.field("Date")))/86400000)<=14));
+      result = alllinks.filter((v,i,a)=>a.some(u=>u.id != v.id && my.gdate(u.field("Date"))>=my.gdate(v.field("Date")) && Math.floor((my.gdate(u.field("Date"))-my.gdate(v.field("Date")))/86400000)<=14 && u.field("Status")=="Done"));
     }
     ptent.set("ReOpValue", result.length);
   }
@@ -1828,7 +1828,7 @@ var uro = {
     }
   },
   setx15 : function (e) {
-    if((e.field("Dx") && old.field("Dx")!=e.field("Dx") || e.field("Date")!=null && my.gday(old.field("Date"))!=my.gday(e.field("Date")) || e.field("TimeIn")!=null && my.gdate(old.field("TimeIn"))!=my.gdate(e.field("TimeIn"))) && old.field("x1.5")==e.field("x1.5")) {
+    if((e.field("Dx") && old.field("Dx")!=e.field("Dx") || e.field("Date")!=null && my.gday(old.field("Date"))!=my.gday(e.field("Date")) || e.field("TimeIn")!=null && my.gdate(old.field("TimeIn"))!=my.gdate(e.field("TimeIn"))) ) {
       let str = e.field("Dx").toLowerCase();
       let isstone = false;
       let isorextra = false;
@@ -2042,7 +2042,7 @@ var rpo = {
         let rps = ptent.linksFrom("Report", "Patient");
         if (rps.length>0) {
           for (let r=0; r<rps.length; r++) {
-            if (my.gdate(rps[r].field("OpDate")) == my.gdate(old.field("Date")) && rps[r].field("ORType") == old.field("ORType") && rps[r].field("Dx") == old.field("Dx") && rps[r].field("Op") == old.field("Op")){
+            if (my.gdate(rps[r].field("OpDate")) == my.gdate(old.field("Date")) && rps[r].field("ORType") == old.field("ORType") && rps[r].field("Dx") == old.field("Dx") && rps[r].field("Op") == old.field("Op")) {
               rpo.setAll(rps[r], e);
               break;
             }
