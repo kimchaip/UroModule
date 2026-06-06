@@ -1986,21 +1986,13 @@ var opo = {
 
     // โหลดรายการ OperationList ทั้งหมด
     var entries = op.entries().filter(o => o.field("OpList"));
-    var ops = entries.map(o => ({
-      OpFill: o.field("OpFill"),
-      OpList: o.field("OpList"),
-      OpGroup: o.field("OpGroup"),
-      Price: o.field("Price"),
-      PriceExtra: o.field("PriceExtra"),
-      Optime: o.field("Optime")
-    }));
+    var ops = entries.map(o => o.field("OpFill"));
     log("You are a medical operation classifier. " +
         "Match new surgical terms to the closest known OpFill. " +
         "If similarity is low, return UNKNOWN." + "\n" + "Given this operation text: \"" + opText + "\"\n" +
         "Choose the closest OpFill from this list:\n" +
-        JSON.stringify(ops, null, 2) +
-        "\nReturn JSON only:\n" +
-        "{ \"OpFill\": string }");
+        JSON.stringify(ops, null, 0) +
+        "\nReturn string");
     // -----------------------------
     // STEP 1: ให้ AI เลือก OpList ที่ใกล้เคียงที่สุด
     // -----------------------------
@@ -2015,21 +2007,19 @@ var opo = {
         "Given this operation text: \"" + opText + "\"\n" +
         "Choose the closest OpFill from this list:\n" +
         JSON.stringify(ops, null, 2) +
-        "\nReturn JSON only:\n" +
-        "{ \"OpFill\": string }"
-      )
-      .asJson();
+        "\nReturn string"
+      );
 
     // ถ้าไม่พบ → ไม่ต้องทำอะไร
-    log("AI : " + response.OpFill);
-    if (!response.OpFill || response.OpFill === "UNKNOWN") {
+    log("AI : " + response);
+    if (!response || response === "UNKNOWN") {
       return;
     }
     
     // -----------------------------
     // STEP 2: หา entry ที่ match OpList
     // -----------------------------
-    var matched = entries.find(o => o.field("OpFill") === response.OpFill);
+    var matched = entries.find(o => o.field("OpFill") === response);
     log("match : " + matched);
     if (!matched) return; // ถ้าไม่เจอจริง ๆ → ปล่อย default
 
