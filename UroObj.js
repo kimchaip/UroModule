@@ -569,19 +569,29 @@ var dxop = {
       o["Dx"] = e.field("Dx");
       o["Op"] = e.field("Op");
       o["Count"] = 1;
+      
+      let found = lb.create(o);
+    
+      old.save.call(this, found);
+      return found;
     }
     else {
       lb = op;
       o["OpFill"] = e.field("Op");
+      o["OpList"] = "";
       o["Price"] = 0;
       o["PriceExtra"] = 0;
       o["Count"] = 1;
       o["Optime"] = fill.oplength(e);
+      o["Visible"] = false; 
+      
+      let found = lb.create(o);
+    
+      // try fill OpList by AI
+      opo.fillOpList(found);
+      old.save.call(this, found);
+      return found;
     }
-    let found = lb.create(o);
-    old.save.call(this, found);
-    //message("Create new " + this.lib + " Successfully");
-    return found;
   },
   deletelink : function (e) {
     if(e.field(this.lib).length>0) {
@@ -1953,6 +1963,67 @@ var opo = {
     else if(e.field("Price") > 0 && e.field("PriceExtra") > 0 && e.field("Price")*1.5 != e.field("PriceExtra")) {
       e.set("PriceExtra", e.field("Price")*1.5);
     }
+  },
+  fillOpList: function(e) {
+
+    // ใช้ AI เฉพาะเมื่อ Visible ยังไม่ถูกตั้งค่า
+    if (e.field("Visible") === true) return;
+
+    var opText = e.field("OpFill");
+    var currentOpList = e.field("OpList");
+
+    // ใช้ AI เฉพาะเมื่อ OpList ยังว่าง
+    if (currentOpList.trim() !== "") return;
+
+    // โหลดรายการ OperationList ทั้งหมด
+    var ops = op.entries().map(o => ({
+      OpFill: o.field("OpFill"),
+      OpList: o.field("OpList"),
+      OpGroup: o.field("OpGroup"),
+      Price: o.field("Price"),
+      PriceExtra: o.field("PriceExtra"),
+      Optime: o.field("Optime")
+    })).filter(o => o.OpList);
+
+    // -----------------------------
+    // STEP 1: ให้ AI เลือก OpList ที่ใกล้เคียงที่สุด
+    // -----------------------------
+    var response = ai()
+      .model("gpt-4o-mini")
+      .system(
+        "You are a medical operation classifier. " +
+        "Match new surgical terms to the closest known OpList. " +
+        "If similarity is low, return UNKNOWN."
+      )
+      .ask(
+        "Given this operation text: \"" + opText + "\"\n" +
+        "Choose the closest OpList from this list:\n" +
+        JSON.stringify(ops, null, 2) +
+        "\nReturn JSON only:\n" +
+        "{ \"OpList\": string }"
+      )
+      .asJson();
+
+    // ถ้าไม่พบ → ไม่ต้องทำอะไร
+    if (!response.OpList || response.OpList === "UNKNOWN") {
+      return;
+    }
+
+    // -----------------------------
+    // STEP 2: หา entry ที่ match OpList
+    // -----------------------------
+    var matched = ops.find(o => o.OpList === response.OpList);
+
+    if (!matched) return; // ถ้าไม่เจอจริง ๆ → ปล่อย default
+
+    // -----------------------------
+    // STEP 3: Autofill ค่าอื่น ๆ จากรายการที่ match
+    // -----------------------------
+    e.set("OpList", matched.OpList);
+    e.set("OpGroup", matched.OpGroup);
+    e.set("Price", matched.Price);
+    e.set("PriceExtra", matched.PriceExtra);
+    e.set("Visible", true);  // Visible = true = ผ่าน AI แล้ว 
   },
   effect : function(e, create, unique){
     let orlinks = e.linksFrom("UroBase", this.lib);
