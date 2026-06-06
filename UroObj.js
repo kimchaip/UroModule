@@ -2019,7 +2019,7 @@ var opo = {
     // -----------------------------
     // STEP 2: หา entry ที่ match OpList
     // -----------------------------
-    var matched = entries.find(o => o.field("OpFill") === response);
+    var matched = entries.find(o => o.field("OpFill") == response);
     log("matched : " + matched);
     if (!matched) return; // ถ้าไม่เจอจริง ๆ → ปล่อย default
 
