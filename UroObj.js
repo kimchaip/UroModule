@@ -587,8 +587,6 @@ var dxop = {
       
       let found = lb.create(o);
     
-      // try fill OpList by AI
-      opo.fillOpList(found);
       old.save.call(this, found);
       return found;
     }
@@ -1472,6 +1470,15 @@ var fill = {
       return pto.findLast(true, false, ptent, date, e, this);
     }
     return [];
+  },
+  opDetail : function (e) {
+    let links = e.field(opo.lib);
+    if (links.length>0) {
+      let opent = op.findById(links[0].id) ;
+      if(opent) {
+        opo.fillOpList(opent);
+      }
+    }
   }
 };
 var pto = {
@@ -2354,6 +2361,8 @@ var trig = {
     if (this.lib!="Consult") {
       let change = false;
       fill.ptDetail(e);
+      // try fill OpList by AI
+      fill.opDetail(e);
       // manipulate que in urobase and save que to previous
       que.load.call(this, e);
       que.sortque(que.o);
