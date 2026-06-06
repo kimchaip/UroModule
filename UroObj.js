@@ -1974,12 +1974,14 @@ var opo = {
   fillOpList: function(e) {
 
     // ใช้ AI เฉพาะเมื่อ Visible ยังไม่ถูกตั้งค่า
+    log("Visible : " + e.field("Visible"));
     if (e.field("Visible") === true) return;
 
     var opText = e.field("OpFill");
     var currentOpList = e.field("OpList");
 
     // ใช้ AI เฉพาะเมื่อ OpList ยังว่าง
+    log("Op : " + opText + " , OpList" + currentOpList);
     if (currentOpList.trim() !== "") return;
 
     // โหลดรายการ OperationList ทั้งหมด
@@ -1992,7 +1994,7 @@ var opo = {
       PriceExtra: o.field("PriceExtra"),
       Optime: o.field("Optime")
     }));
-
+    log(ops);
     // -----------------------------
     // STEP 1: ให้ AI เลือก OpList ที่ใกล้เคียงที่สุด
     // -----------------------------
@@ -2013,7 +2015,7 @@ var opo = {
       .asJson();
 
     // ถ้าไม่พบ → ไม่ต้องทำอะไร
-    e.set("Output", response.OpList);
+    log("AI : " + response.OpList);
     if (!response.OpList || response.OpList === "UNKNOWN") {
       return;
     }
@@ -2022,7 +2024,7 @@ var opo = {
     // STEP 2: หา entry ที่ match OpList
     // -----------------------------
     var matched = entries.find(o => o.field("OpList") === response.OpList);
-
+    log("match : " + matched);
     if (!matched) return; // ถ้าไม่เจอจริง ๆ → ปล่อย default
 
     // -----------------------------
