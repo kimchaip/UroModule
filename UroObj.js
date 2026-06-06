@@ -2012,10 +2012,11 @@ var opo = {
       .asJson();
 
     // ถ้าไม่พบ → ไม่ต้องทำอะไร
+    e.set("Output", response.OpList);
     if (!response.OpList || response.OpList === "UNKNOWN") {
       return;
     }
-
+    
     // -----------------------------
     // STEP 2: หา entry ที่ match OpList
     // -----------------------------
