@@ -1994,7 +1994,13 @@ var opo = {
       PriceExtra: o.field("PriceExtra"),
       Optime: o.field("Optime")
     }));
-    log(ops);
+    log("You are a medical operation classifier. " +
+        "Match new surgical terms to the closest known OpList. " +
+        "If similarity is low, return UNKNOWN." + "\n" + "Given this operation text: \"" + opText + "\"\n" +
+        "Choose the closest OpList from this list:\n" +
+        JSON.stringify(ops, null, 2) +
+        "\nReturn JSON only:\n" +
+        "{ \"OpList\": string }");
     // -----------------------------
     // STEP 1: ให้ AI เลือก OpList ที่ใกล้เคียงที่สุด
     // -----------------------------
