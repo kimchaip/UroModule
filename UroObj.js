@@ -1995,12 +1995,12 @@ var opo = {
       Optime: o.field("Optime")
     }));
     log("You are a medical operation classifier. " +
-        "Match new surgical terms to the closest known OpList. " +
+        "Match new surgical terms to the closest known OpFill. " +
         "If similarity is low, return UNKNOWN." + "\n" + "Given this operation text: \"" + opText + "\"\n" +
-        "Choose the closest OpList from this list:\n" +
+        "Choose the closest OpFill from this list:\n" +
         JSON.stringify(ops, null, 2) +
         "\nReturn JSON only:\n" +
-        "{ \"OpList\": string }");
+        "{ \"OpFill\": string }");
     // -----------------------------
     // STEP 1: ให้ AI เลือก OpList ที่ใกล้เคียงที่สุด
     // -----------------------------
@@ -2008,28 +2008,28 @@ var opo = {
       .model("gpt-4o-mini")
       .system(
         "You are a medical operation classifier. " +
-        "Match new surgical terms to the closest known OpList. " +
+        "Match new surgical terms to the closest known OpFill. " +
         "If similarity is low, return UNKNOWN."
       )
       .ask(
         "Given this operation text: \"" + opText + "\"\n" +
-        "Choose the closest OpList from this list:\n" +
+        "Choose the closest OpFill from this list:\n" +
         JSON.stringify(ops, null, 2) +
         "\nReturn JSON only:\n" +
-        "{ \"OpList\": string }"
+        "{ \"OpFill\": string }"
       )
       .asJson();
 
     // ถ้าไม่พบ → ไม่ต้องทำอะไร
-    log("AI : " + response.OpList);
-    if (!response.OpList || response.OpList === "UNKNOWN") {
+    log("AI : " + response.OpFill);
+    if (!response.OpFill || response.OpFill === "UNKNOWN") {
       return;
     }
     
     // -----------------------------
     // STEP 2: หา entry ที่ match OpList
     // -----------------------------
-    var matched = entries.find(o => o.field("OpList") === response.OpList);
+    var matched = entries.find(o => o.field("OpFill") === response.OpFill);
     log("match : " + matched);
     if (!matched) return; // ถ้าไม่เจอจริง ๆ → ปล่อย default
 
@@ -2037,7 +2037,7 @@ var opo = {
     // STEP 3: Autofill ค่าอื่น ๆ จากรายการที่ match
     // -----------------------------
     e.set("OpList", matched.field("OpList"));
-    e.set("OpGroup", matched.field("OpGroup"));
+    e.set("OpGroup", matched.field("OpGroup").join(","));
     e.set("Price", matched.field("Price"));
     e.set("PriceExtra", matched.field("PriceExtra"));
     e.set("Visible", true);  // Visible = true = ผ่าน AI แล้ว 
