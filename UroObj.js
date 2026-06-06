@@ -1974,13 +1974,7 @@ var opo = {
   fillOpList: function(e) {
 
     // ใช้ AI เฉพาะเมื่อ Visible ยังไม่ถูกตั้งค่า
-    if (e.field("Visible") === true)  {
-        log(old.field("OpList") + " : " + e.field("OpList"));
-        if (old.field("OpList").trim() != e.field("OpList")) {
-            e.set("Visible", false);
-        }
-        return;
-    }
+    if (e.field("Visible") === true) return;
 
     var opText = e.field("OpFill");
     var currentOpList = e.field("OpList");
@@ -2027,6 +2021,12 @@ var opo = {
     e.set("Price", matched.field("Price"));
     e.set("PriceExtra", matched.field("PriceExtra"));
     e.set("Visible", true);  // Visible = true = ผ่าน AI แล้ว 
+  },
+  fillVisible : function(e) {
+    log(old.field("OpList") + " : " + e.field("OpList"));
+    if (old.field("OpList").trim() != e.field("OpList")) {
+        e.set("Visible", false);
+    }
   },
   effect : function(e, create, unique){
     let orlinks = e.linksFrom("UroBase", this.lib);
@@ -2474,7 +2474,7 @@ var trig = {
   OpListBeforeEdit : function (e, value) {
     old.load(e);
     opo.validate(e);
-    opo.fillOpList(e);
+    opo.fillVisible(e);
     opo.effect(e, value=="create", valid.uniqueDxOp.call(opo, e, value=="create"));
   }, 
   OpListAfterEdit : function (e, value) {
