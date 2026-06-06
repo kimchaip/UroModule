@@ -1971,7 +1971,7 @@ var opo = {
       e.set("PriceExtra", e.field("Price")*1.5);
     }
   },
-  fillOpList: function(e) {
+  fillOpList : function(e) {
 
     // ใช้ AI เฉพาะเมื่อ Visible ยังไม่ถูกตั้งค่า
     if (e.field("Visible") === true) return;
