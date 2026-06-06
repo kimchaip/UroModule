@@ -1983,14 +1983,15 @@ var opo = {
     if (currentOpList.trim() !== "") return;
 
     // โหลดรายการ OperationList ทั้งหมด
-    var ops = op.entries().map(o => ({
+    var entries = op.entries().filter(o => o.field("OpList"));
+    var ops = entries.map(o => ({
       OpFill: o.field("OpFill"),
       OpList: o.field("OpList"),
       OpGroup: o.field("OpGroup"),
       Price: o.field("Price"),
       PriceExtra: o.field("PriceExtra"),
       Optime: o.field("Optime")
-    })).filter(o => o.OpList);
+    }));
 
     // -----------------------------
     // STEP 1: ให้ AI เลือก OpList ที่ใกล้เคียงที่สุด
@@ -2020,17 +2021,17 @@ var opo = {
     // -----------------------------
     // STEP 2: หา entry ที่ match OpList
     // -----------------------------
-    var matched = ops.find(o => o.OpList === response.OpList);
+    var matched = entries.find(o => o.field("OpList") === response.OpList);
 
     if (!matched) return; // ถ้าไม่เจอจริง ๆ → ปล่อย default
 
     // -----------------------------
     // STEP 3: Autofill ค่าอื่น ๆ จากรายการที่ match
     // -----------------------------
-    e.set("OpList", matched.OpList);
-    e.set("OpGroup", matched.OpGroup);
-    e.set("Price", matched.Price);
-    e.set("PriceExtra", matched.PriceExtra);
+    e.set("OpList", matched.field("OpList"));
+    e.set("OpGroup", matched.field("OpGroup"));
+    e.set("Price", matched.field("Price"));
+    e.set("PriceExtra", matched.field("PriceExtra"));
     e.set("Visible", true);  // Visible = true = ผ่าน AI แล้ว 
   },
   effect : function(e, create, unique){
