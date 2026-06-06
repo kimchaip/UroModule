@@ -2007,7 +2007,7 @@ var opo = {
         "Given this operation text: \"" + opText + "\"\n" +
         "Choose the closest OpFill from this list:\n" +
         JSON.stringify(ops, null, 2) +
-        "\nReturn string"
+        "\nReturn plain text"
       );
 
     // ถ้าไม่พบ → ไม่ต้องทำอะไร
@@ -2019,7 +2019,7 @@ var opo = {
     // -----------------------------
     // STEP 2: หา entry ที่ match OpList
     // -----------------------------
-    var matched = entries.find(o => o.field("OpFill") == response);
+    var matched = entries.find(o => o.field("OpFill") === response);
     log("matched : " + matched);
     if (!matched) return; // ถ้าไม่เจอจริง ๆ → ปล่อย default
 
