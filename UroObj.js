@@ -1974,25 +1974,23 @@ var opo = {
   fillOpList: function(e) {
 
     // ใช้ AI เฉพาะเมื่อ Visible ยังไม่ถูกตั้งค่า
-    log("Visible : " + e.field("Visible"));
-    if (e.field("Visible") === true) return;
+    if (e.field("Visible") === true)  {
+        log(old.field("OpList") + " : " + e.field("OpList"));
+        if (old.field("OpList").trim() != e.field("OpList")) {
+            e.set("Visible", false);
+        }
+        return;
+    }
 
     var opText = e.field("OpFill");
     var currentOpList = e.field("OpList");
 
     // ใช้ AI เฉพาะเมื่อ OpList ยังว่าง
-    log("Op : " + opText + " , OpList" + currentOpList);
     if (currentOpList.trim() !== "") return;
 
     // โหลดรายการ OperationList ทั้งหมด
     var entries = op.entries().filter(o => o.field("OpList"));
     var ops = entries.map(o => o.field("OpFill"));
-    log("You are a medical operation classifier. " +
-        "Match new surgical terms to the closest known OpFill. " +
-        "If similarity is low, return UNKNOWN." + "\n" + "Given this operation text: \"" + opText + "\"\n" +
-        "Choose the closest OpFill from this list:\n" +
-        JSON.stringify(ops, null, 0) +
-        "\nReturn string");
     // -----------------------------
     // STEP 1: ให้ AI เลือก OpList ที่ใกล้เคียงที่สุด
     // -----------------------------
@@ -2011,7 +2009,6 @@ var opo = {
       );
 
     // ถ้าไม่พบ → ไม่ต้องทำอะไร
-    log("AI : " + response);
     if (!response || response === "UNKNOWN") {
       return;
     }
@@ -2020,7 +2017,6 @@ var opo = {
     // STEP 2: หา entry ที่ match OpList
     // -----------------------------
     var matched = entries.find(o => o.field("OpFill") == response);
-    log("matched : " + matched);
     if (!matched) return; // ถ้าไม่เจอจริง ๆ → ปล่อย default
 
     // -----------------------------
@@ -2478,6 +2474,7 @@ var trig = {
   OpListBeforeEdit : function (e, value) {
     old.load(e);
     opo.validate(e);
+    opo.fillOpList(e);
     opo.effect(e, value=="create", valid.uniqueDxOp.call(opo, e, value=="create"));
   }, 
   OpListAfterEdit : function (e, value) {
