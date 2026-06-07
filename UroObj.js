@@ -1009,48 +1009,74 @@ var fill = {
     }
   },
   djbyresult : function(e) {
-    let opresult = e.field(this.result);
-    if(this.lib!="Consult" && e.field("Status") != "Not") {
-      if(opresult) {
-        Array.prototype.match = function (a2) {
-          let arr = [];
-          this.forEach(v=>{a2.forEach(u=>{arr.push(v+" "+u)});});
-          return arr;
-        };
-        let arr1 = ["can't","don't","not"];
-        let arr2 = ["on","retain","change"];
-        let arr3 = ["dj"];
-        let arr4 = ["no"];
-        let txt = arr4.match(arr3).concat(arr1.match(arr2).match(arr3)).join(`|`).replace(/ /g,`\\s+`);
-        let reg = new RegExp(txt,"i");
-        let notdj = opresult.match(reg);
-        notdj = notdj==null?0:notdj.length;
-        let ondj = opresult.match(/dj/i);
-        ondj = ondj==null?0:ondj.length;
-        let opon = e.field("Op").match(/dj/i);
-        opon = opon==null?0:opon.length;
-        let offdj = opresult.match(/((off)(\s+)[a-z]*(\s*)(dj))/ig);
-        offdj = offdj==null?0:offdj.length;
-        let opoff = e.field("Op").match(/((off)(\s+)[a-z]*(\s*)(dj))/ig);
-        opoff = opoff==null?0:opoff.length;
-        let changedj = opresult.match(/((change)(\s+)[a-z]*(\s*)(dj))/ig);
-        changedj = changedj==null?0:changedj.length;
-        let opchange = e.field("Op").match(/((change)(\s+)[a-z]*(\s*)(dj))/ig);
-        opchange = opchange==null?0:opchange.length;
+    let opresult = (e.field(this.result) || "").toLowerCase();
+    let optext   = (e.field("Op") || "").toLowerCase()ว
+
+    if (this.lib != "Consult" && e.field("Status") != "Not") {
+        if (!opresult) {
+            e.set("DJstent", null);
+            return;
+        }
+
+        // -----------------------------
+        // 1) หมวด "ไม่ใช่ DJ / ทำไม่สำเร็จ"
+        // -----------------------------
+        const notDJregex = new RegExp(
+            "\\b(" +
+            "no|not|can't|cannot|dont|don't|failed|fail|unable|retain|keep|hold" +
+            ")\\s+dj\\b|" +
+            "(ไม่ใส่|ไม่ได้ใส่|ไม่สามารถใส่|ใส่ไม่ได้|ทำไม่สำเร็จ|retain|ค้าง)\\s*dj",
+            "i"
+        );
+
+        // -----------------------------
+        // 2) on DJ
+        // -----------------------------
+        const onDJregex = new RegExp(
+            "\\b(on|insert|place|put)\\s+dj\\b|" +
+            "(ใส่|ทำ)\\s*dj",
+            "i"
+        );
+
+        // -----------------------------
+        // 3) off DJ
+        // -----------------------------
+        const offDJregex = new RegExp(
+            "\\b(off|remove|take\\s*out)\\s+dj\\b|" +
+            "(เอา|ถอน)\\sdj\\s(ออก)?",
+            "i"
+        );
+        
+        // -----------------------------
+        // 4) change DJ
+        // -----------------------------
+        const changeDJregex = new RegExp(
+            "\\b(change|replace|redo)\\s+dj\\b|" +
+            "(เปลี่ยน)\\s*dj",
+            "i"
+        );
+
+        /// -----------------------------
+        // 5) ตรวจผล
+        // -----------------------------
+        const isNotDJ   = notDJregex.test(opresult);
+        const isOn      = onDJregex.test(opresult)     || onDJregex.test(optext);
+        const isOff     = offDJregex.test(opresult)    || offDJregex.test(optext);
+        const isChange  = changeDJregex.test(opresult) || changeDJregex.test(optext);
         
         e.set("DJstent", null);
-        if(!notdj) {
-          if(changedj>0||opchange>0)
-            e.set("DJstent", "change DJ");
-          else if(offdj>0||opoff>0)
-            e.set("DJstent", "off DJ");
-          else if(ondj>0||opon>0)
-            e.set("DJstent", "on DJ");
+
+        if (!isNotDJ) {
+            if (isChange)
+                e.set("DJstent", "change DJ");
+            else if (isOff)
+                e.set("DJstent", "off DJ");
+            else if (isOn)
+                e.set("DJstent", "on DJ");
         }
-      }
     }
-    else if(this.lib!="Consult" && e.field("Status") == "Not") {
-      e.set("DJstent", null);
+    else if (this.lib != "Consult" && e.field("Status") == "Not") {
+        e.set("DJstent", null);
     }
   },
   resultbydate : function(e) {
