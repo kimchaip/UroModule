@@ -1022,10 +1022,16 @@ var fill = {
         // 1) หมวด "ไม่ใช่ DJ / ทำไม่สำเร็จ"
         // -----------------------------
         const notDJregex = new RegExp(
-            "\\b(" +
-            "no|not|can't|cannot|dont|don't|failed|fail|unable|retain|keep|hold" +
-            ")\\s+dj\\b|" +
-            "(ไม่ใส่|ไม่ได้ใส่|ไม่สามารถใส่|ใส่ไม่ได้|ทำไม่สำเร็จ|retain|ค้าง)\\s*dj",
+            "(" +
+            // อังกฤษ: fail … dj
+            "\\b(no|not|can't|cannot|dont|don't|failed|fail|unable)\\b.*\\bdj\\b" +
+            "|" +
+            // ไทย: ไม่สามารถ … dj
+            "(ไม่ใส่|ไม่ได้ใส่|ไม่สามารถใส่).*dj" +
+            "|" +
+            // ไทย: ใส่ … dj … ไม่ได้
+            "(ใส่|ทำ|on|insert).*dj.*(ไม่ได้|ไม่สำเร็จ)" +
+            ")",
             "i"
         );
 
