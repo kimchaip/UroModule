@@ -1010,7 +1010,7 @@ var fill = {
   },
   djbyresult : function(e) {
     let opresult = (e.field(this.result) || "").toLowerCase();
-    let optext   = (e.field("Op") || "").toLowerCase()ว
+    let optext   = (e.field("Op") || "").toLowerCase();
 
     if (this.lib != "Consult" && e.field("Status") != "Not") {
         if (!opresult) {
