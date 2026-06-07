@@ -107,7 +107,7 @@ var script = {
       }
     }
     else {
-      message(timeanswer(360-m));
+      message(this.timeanswer(360-m));
     }
   },
   checkholiday : function(date) {
