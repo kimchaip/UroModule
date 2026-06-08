@@ -1057,8 +1057,8 @@ var fill = {
         // 4) change DJ
         // -----------------------------
         const changeDJregex = new RegExp(
-            "\\b(change|replace|redo)\\s+dj\\b|" +
-            "(เปลี่ยน)\\s*dj",
+            "\\b(change|replace|redo)\\b.*\\bdj\\b" +
+            "(เปลี่ยน).*dj",
             "i"
         );
 
