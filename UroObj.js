@@ -1039,7 +1039,7 @@ var fill = {
         // 2) on DJ
         // -----------------------------
         const onDJregex = new RegExp(
-            "\\b(on|insert|place|put)\\b.*\\bdj\\b" +
+            "\\b(on|insert|place|put)\\b.*\\bdj\\b|" +
             "(ใส่|ทำ).*dj",
             "i"
         );
@@ -1048,7 +1048,7 @@ var fill = {
         // 3) off DJ
         // -----------------------------
         const offDJregex = new RegExp(
-            "\\b(off|remove|take\\s*out)\\b.*\\bdj\\b" +
+            "\\b(off|remove|take\\s*out)\\b.*\\bdj\\b|" +
             "(เอา|ถอน).*dj.*(ออก)?",
             "i"
         );
