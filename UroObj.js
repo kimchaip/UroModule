@@ -2220,12 +2220,12 @@ var cal = {
     if (old.length > 0) {
       let mapId = {};
       old.forEach(o => mapId[o.id] = o);
-      founds.forEach(f => 
+      founds.forEach(f => {
         if (!mapId[f.id]) {
           e.link(cal.lib, f);
         }
         delete mapId[f.id];
-      );
+      });
       Object.values(mapId).forEach(o => e.unlink(cal.lib, o);
     }
     else {
