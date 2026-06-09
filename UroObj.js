@@ -2226,7 +2226,7 @@ var cal = {
         }
         delete mapId[f.id];
       });
-      Object.values(mapId).forEach(o => e.unlink(cal.lib, o));
+      Object.values(mapId).forEach(o => e.unlink(cal.lib, o)); 
     }
     else {
       founds.forEach(f => e.link(cal.lib, f));
