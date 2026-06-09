@@ -2186,6 +2186,60 @@ var rpo = {
 
 var cal = {
   lib : "Holidays",
+
+  run : function(e) {
+    let opdate = e.field(this.opdate);   // field opdate ใน UroBase
+
+    if (!opdate) {
+      cal.deletelink(e);
+      return;
+    }
+
+    let founds = cal.findlink(e, opdate);
+
+    if (founds.length > 0) {
+      cal.updatelink(e, founds);
+    }
+    else {
+      cal.deletelink(e);
+    }
+  },
+
+  findlink : function(e, opdate) {
+    let lbs = holidays.entries();   // library Holidays
+    if (lbs.length == 0) return [];
+
+    // ค้นหา วันตรงกับ opdate + วันหยุดนักขัตร + วันที่ไม่อยู่ รพ.
+    let strdate = opdate.toDateString();
+    return lbs.filter(h => h.field(this.opdate).toDateString() == strdate);
+  },
+
+  updatelink : function(e, founds) {
+    let old = e.field(cal.lib);
+
+    if (old.length > 0) {
+      let mapId = {};
+      old.forEach(o => mapId[o.id] = o);
+      founds.forEach(f => 
+        if (!mapId[f.id]) {
+          e.link(cal.lib, f);
+        }
+        delete mapId[f.id];
+      );
+      Object.values(mapId).forEach(o => e.unlink(cal.lib, o);
+    }
+    else {
+      founds.forEach(f => e.link(cal.lib, f);
+    }
+  },
+
+  deletelink : function(e) {
+    let old = e.field(cal.lib);
+    if (old.length > 0) {
+      old.forEach(o => e.unlink(cal.lib, o);
+    }
+  },
+  
   notify : function (outofduty, holiday, opextra, own) {
     if(outofduty || holiday || opextra) {  // warning when outofduty, holiday, opextra
       let textarr = [];
@@ -2349,6 +2403,7 @@ var trig = {
     valid.opdateOutOfDuty.call(this, e);
     valid.dxop.call(this, e); //fill dx,op complete 
     fill.setnewdate.call(this, e);
+    cal.run.call(this, e);
     valid.uniqueVisit.call(this, e, value=="create");
     fill.underlying.call(this, e);
     fill.resulteffect.call(this, e);
@@ -2485,6 +2540,7 @@ var trig = {
       
       sync.run(e, "orsync");
     }
+    cal.deletelink(e);
     fill.deletept(e);
   }, 
   DxOpenEdit : function(e, value) {
