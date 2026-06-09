@@ -2226,17 +2226,17 @@ var cal = {
         }
         delete mapId[f.id];
       });
-      Object.values(mapId).forEach(o => e.unlink(cal.lib, o);
+      Object.values(mapId).forEach(o => e.unlink(cal.lib, o));
     }
     else {
-      founds.forEach(f => e.link(cal.lib, f);
+      founds.forEach(f => e.link(cal.lib, f));
     }
   },
 
   deletelink : function(e) {
     let old = e.field(cal.lib);
     if (old.length > 0) {
-      old.forEach(o => e.unlink(cal.lib, o);
+      old.forEach(o => e.unlink(cal.lib, o));
     }
   },
   
