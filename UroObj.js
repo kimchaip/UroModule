@@ -2206,7 +2206,7 @@ var cal = {
   },
 
   findlink : function(e, opdate) {
-    let lbs = holidays.entries();   // library Holidays
+    let lbs = hd.entries();   // library Holidays
     if (lbs.length == 0) return [];
 
     // ค้นหา วันตรงกับ opdate + วันหยุดนักขัตร + วันที่ไม่อยู่ รพ.
