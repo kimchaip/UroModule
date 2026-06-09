@@ -2210,8 +2210,8 @@ var cal = {
     if (lbs.length == 0) return [];
 
     // ค้นหา วันตรงกับ opdate + วันหยุดนักขัตร + วันที่ไม่อยู่ รพ.
-    let strdate = opdate.toDateString();
-    return lbs.filter(h => h.field(this.opdate).toDateString() == strdate);
+    let strdate = my.date(opdate).toDateString();
+    return lbs.filter(h => my.date(h.field(this.opdate)).toDateString() == strdate);
   },
 
   updatelink : function(e, founds) {
