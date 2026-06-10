@@ -2175,7 +2175,7 @@ var rpo = {
 var cal = {
   lib : "Holidays",
 
-  run : function(e) {
+  run : function(e, isCreate) {
     let opdate = e.field(this.opdate);   // field opdate ใน UroBase
 
     if (!opdate) {
@@ -2186,7 +2186,7 @@ var cal = {
     let founds = cal.findlink(e, opdate);
 
     if (founds.length > 0) {
-      cal.updatelink(e, founds);
+      cal.updatelink(e, founds, isCreate);
     }
     else {
       cal.deletelink(e);
@@ -2200,7 +2200,7 @@ var cal = {
     let strdate = opdate.toDateString();
     return lbs.filter(h => h.field("Date").toDateString() == strdate);
   },
-  updatelink : function(e, founds) {
+  updatelink : function(e, founds, isCreate) {
     let old = e.field(cal.lib);
 
     if (old.length > 0) {
@@ -2215,7 +2215,10 @@ var cal = {
       Object.values(mapId).forEach(o => e.unlink(cal.lib, o));
     }
     else {
-      founds.forEach(f => e.link(cal.lib, f));
+      founds.forEach(f => {
+        if (isCreate) e.set(cal.lib, f.title);
+        else e.link(cal.lib, f);
+      });
     }
   },
   deletelink : function(e) {
@@ -2394,7 +2397,7 @@ var trig = {
     valid.opdateOutOfDuty.call(this, e);
     valid.dxop.call(this, e); //fill dx,op complete 
     fill.setnewdate.call(this, e);
-    cal.run.call(this, e);
+    cal.run.call(this, e, value=="create");
     valid.uniqueVisit.call(this, e, value=="create");
     fill.underlying.call(this, e);
     fill.resulteffect.call(this, e);
