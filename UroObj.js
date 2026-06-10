@@ -2195,7 +2195,7 @@ var cal = {
       return;
     }
 
-    let founds = cal.findlink.call(this, e, opdate);
+    let founds = cal.findlink(e, opdate);
 
     if (founds.length > 0) {
       cal.updatelink(e, founds);
@@ -2211,7 +2211,7 @@ var cal = {
 
     // ค้นหา วันตรงกับ opdate + วันหยุดนักขัตร + วันที่ไม่อยู่ รพ.
     let strdate = opdate.toDateString();
-    return lbs.filter(h => h.field(this.opdate).toDateString() == strdate);
+    return lbs.filter(h => h.field("Date").toDateString() == strdate);
   },
 
   updatelink : function(e, founds) {
