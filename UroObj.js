@@ -2394,10 +2394,10 @@ var trig = {
   }, 
   BeforeEdit : function (e, value) {
     old.load(e);
-    valid.opdateOutOfDuty.call(this, e);
     valid.dxop.call(this, e); //fill dx,op complete 
     fill.setnewdate.call(this, e);
     cal.run.call(this, e, value=="create");
+    valid.opdateOutOfDuty.call(this, e);
     valid.uniqueVisit.call(this, e, value=="create");
     fill.underlying.call(this, e);
     fill.resulteffect.call(this, e);
