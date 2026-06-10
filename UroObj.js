@@ -446,7 +446,7 @@ var emx = {
   }, 
   run : function (e) {
     let last = null;
-    let hdents = valid.checkholiday(e.field("AppointDate"));
+    let hdents = cal.getEntries(e.field("AppointDate"));
     let outofduty = false;
     let holiday = false;
     let opextra = false;
@@ -765,26 +765,14 @@ var valid = {
     return unique;
   },
   // check opdate is not working elsewhere 
-  checkholiday : function(date) {
-    let hds = hd.entries();
-    
-    return hds.filter(e=>{
-      if(my.dateIsValid(e.field("Date")) && my.dateIsValid(date)) {
-        return e.field("Date").toDateString()==date.toDateString();
-      }
-      else {
-        return false;
-      }
-    });
-  },
-  // check opdate is not working elsewhere 
   opdateOutOfDuty : function(e) {
-    let hdents = valid.checkholiday(e.field(this.opdate));
-    if (hdents && hdents.length && hdents.some(h=>h.field("OutOfDuty"))) {
-      if(this.lib != "Consult" && e.field("Dr")=="ชัยพร") {
-        message("This 'OpDate' overlap with '" + hdents.find(h=>h.field("OutOfDuty")).field("Title") + "' . please change Opdate or Dr");
+    let hds = e.field(cal.lib);
+    if (hds.length > 0) {
+      let found = hds.find(h => h.field("OutOfDuty") === true);
+      if (found) {
+        let title = found.field("Title");
+        message("วันนี้ไม่ว่าง : " + title + ", กรุณาเปลี่ยนวันผ่าตัด";
         cancel();
-        exit();
       }
     }
   }
@@ -2204,7 +2192,6 @@ var cal = {
       cal.deletelink(e);
     }
   },
-
   findlink : function(e, opdate) {
     let lbs = hd.entries();   // library Holidays
     if (lbs.length == 0) return [];
@@ -2213,7 +2200,6 @@ var cal = {
     let strdate = opdate.toDateString();
     return lbs.filter(h => h.field("Date").toDateString() == strdate);
   },
-
   updatelink : function(e, founds) {
     let old = e.field(cal.lib);
 
@@ -2232,14 +2218,19 @@ var cal = {
       founds.forEach(f => e.link(cal.lib, f));
     }
   },
-
   deletelink : function(e) {
     let old = e.field(cal.lib);
     if (old.length > 0) {
       old.forEach(o => e.unlink(cal.lib, o));
     }
   },
-  
+  getEntries : function(date) {
+    let hds = hd.entries();
+    if (!my.dateIsValid(date) || hds.length == 0) return [];
+    
+    let strDate = date.toDateString();
+    return hds.filter(h => h.field("Date").toDateString()==strdate);
+  },
   notify : function (outofduty, holiday, opextra, own) {
     if(outofduty || holiday || opextra) {  // warning when outofduty, holiday, opextra
       let textarr = [];
