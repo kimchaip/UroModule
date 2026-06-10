@@ -771,7 +771,7 @@ var valid = {
       let found = hds.find(h => h.field("OutOfDuty") === true);
       if (found) {
         let title = found.field("Title");
-        message("วันนี้ไม่ว่าง : " + title + ", กรุณาเปลี่ยนวันผ่าตัด";
+        message("วันนี้ไม่ว่าง : " + title + ", กรุณาเปลี่ยนวันผ่าตัด");
         cancel();
       }
     }
