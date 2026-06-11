@@ -610,7 +610,16 @@ var dxop = {
     let op = e.field("Op").toLowerCase();
 
     let hds = e.field(cal.lib);
-    if (hds.length == 0) return;
+    if (hds.length == 0) {
+      if (dow >= 1 && dow <= 5) {
+        opList.setAttr("OpType", "ES");
+        return;
+      }
+      else {  // OH
+        opList.setAttr("OpType", "OH");
+        return;
+      }
+    }
     if (hds.some(h => h.field("OutOfDuty"))) return;
     
     // link entry object
