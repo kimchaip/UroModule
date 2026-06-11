@@ -613,7 +613,7 @@ var dxop = {
     let dow = date.getDay();   // 0-6
     let op = e.field("Op").toLowerCase();
     let timein = e.field("TimeIn");
-    let timeout = (timein && timein.getHours()<8 || timein.getHours()>=16 ? true : false;
+    let timeout = (timein && (timein.getHours()<8 || timein.getHours()>=16)) ? true : false;
 
     // link entry object
     let opLinks = e.field(opo.lib);
