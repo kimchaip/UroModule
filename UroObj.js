@@ -508,7 +508,6 @@ var dxop = {
     else { // status plan/done
       let found = dxop.findlink.call(this, e);
       if(found) {
-        dxop.autofill.call(this, e, found);
         dxop.updatelink.call(this, e, found, create);
       }
       else {
@@ -526,22 +525,27 @@ var dxop = {
     }
     return found?found:null;
   },
-  autofill : function (e, found) {
-    if(this.lib=="OperationList") {
-      if (e.field("OpExtra")) {
-        if(e.field("x1.5")) {
-          e.set("Bonus", found.field("PriceExtra"));
-        }
-        else {
-          e.set("Bonus", found.field("Price"));
-        }
+  autofill : function (e) {
+    if (this.lib != opo.lib) return;
+
+    let opLinks = e.field(opo.lib);
+    if (opLinks.length == 0) return;
+
+    let opList = opLinks[0];
+    
+    if (e.field("OpExtra")) {
+      if(e.field("x1.5")) {
+        e.set("Bonus", opList.field("PriceExtra"));
       }
-      else if(!e.field("OpExtra")){
-        e.set("Bonus", 0);
+      else {
+        e.set("Bonus", opList.field("Price"));
       }
-      if (!fill.oplength(e)) {
-        e.set("OpLength", found.field("Optime"));
-      }
+    }
+    else if(!e.field("OpExtra")){
+      e.set("Bonus", 0);
+    }
+    if (!fill.oplength(e)) {
+      e.set("OpLength", opList.field("Optime"));
     }
   },
   updatelink : function (e, found, create) {
@@ -608,15 +612,18 @@ var dxop = {
     let date = e.field("Date");
     let dow = date.getDay();   // 0-6
     let op = e.field("Op").toLowerCase();
+    let timein = e.field("TimeIn");
+    let timeout = (timein && timein.getHours()<8 || timein.getHours()>=16 ? true : false;
 
     // link entry object
     let opLinks = e.field(opo.lib);
     if (opLinks.length == 0) return;
     
-    let opList = opLinks[0];let hds = e.field(cal.lib);
+    let opList = opLinks[0];
+    let hds = e.field(cal.lib);
     
     if (hds.length == 0) {
-      if (dow >= 1 && dow <= 5) {
+      if (!timeout && dow >= 1 && dow <= 5) {
         opList.setAttr("OpType", "ES");
         return;
       }
@@ -646,7 +653,7 @@ var dxop = {
     // ES (Elective Surgery)
     // จันทร์–ศุกร์ + ไม่ใช่วันหยุด + ไม่ใช่ OutOfDuty + เวลา 08:00–15:59
     let isholiday = hds.some(h => h.field("Holiday"));
-    if (dow >= 1 && dow <= 5 && !isholiday) {
+    if (!timeout && dow >= 1 && dow <= 5 && !isholiday) {
       opList.setAttr("OpType", "ES");
       return;
     }
@@ -1485,46 +1492,6 @@ var fill = {
     else
       return value.toString();
   },
-  orbridge : function(e) {
-    if(e.field("Status")!="Not" && e.field("OpExtra")==true) {
-      let a=[] ;
-      a.push(e.field("Que"));
-      a.push(e.field("Patient")[0].field("PtName") + " " + e.field("Patient")[0].field("Age") + "; " + e.field("Patient")[0].field("HN"));
-      let strdx = e.field("Dx");
-      let strop = e.field("Op");
-      if(strdx.indexOf(",")>-1) 
-        strdx = "\"" + strdx + "\"" ;
-      if(strop.indexOf(",")>-1)
-        strop = "\"" + strop + "\"" ;
-      a.push(strdx + "->" + strop);    
-      a.push(e.field("Bonus"));
-      if(e.field("DJstent")=="on DJ" ||e.field("DJstent")=="change DJ") 
-        a.push("/");
-      else
-        a.push("");
-      if(e.field("VisitType")=="OPD"){
-        a.push("OPD");
-      }
-      else {
-        a.push(e.field("Ward"));
-      }
-      if(e.field("TimeIn")!=null && e.field("TimeOut")!=null) 
-        a.push(e.field("TimeIn").getHours() + ":" + fill.twodigit(e.field("TimeIn").getMinutes()) + "-" + e.field("TimeOut").getHours() +":" + fill.twodigit(e.field("TimeOut").getMinutes()));
-      else
-        a.push("");
-      if(e.field("Patient")[0].field("Underlying").length>0) {
-        a.push("\"" + e.field("Patient")[0].field("Underlying").join() + "\"");
-      }
-      else
-        a.push("");
-      if(e.field("OpResult")!="") {
-        a.push("\"" + e.field("OpResult").replace(/\n/g, ", ") + "\"");
-      }
-      e.set("ORbridge", a.join());
-    }
-    else
-      e.set("ORbridge", "");
-  },
   ptDetail : function (e) {
     let links = e.field("Patient");
     if (links.length>0) {
@@ -1851,20 +1818,16 @@ var uro = {
   notdonereg : /ไม่ทำ/,
   notdone : null,
   setopextra : function (e) {
-    let hds = hd.entries();
-    let holiday = false;
-    let timeout = false;
-    if(e.field("TimeIn")!=null)
-      if(e.field("TimeIn").getHours()<8 || e.field("TimeIn").getHours()>=16)
-        timeout = true;
-    for(let i=0; i<hds.length; i++) {
-      if(my.gdate(my.date(hds[i].field("Date")))==my.gdate(my.date(e.field("Date"))) && hds[i].field("Holiday") == true){
-        holiday = true;
-        break;
-      }
+    let opLinks = e.field(opo.lib);
+    if (opLinks.length == 0) {
+      e.set("OpExtra", false);
+      return;
     }
+
+    let opList = opLinks[0];
+    
     if(e.field("AutoOpExtra")){
-      if (holiday || timeout || my.gday(e.field("Date"))==6 || my.gday(e.field("Date"))==0) {
+      if (opList.attr("OpType") == "OH") {
         e.set("OpExtra", true);
       }
       else {
@@ -1998,7 +1961,8 @@ var dxo = {
           // op link is update
           dxop.run.call(opo, u, create);
           dxop.setOpType(u);
-          fill.orbridge(u);
+          uro.setopextra(u);
+          dxop.autofill(u);
         }
       }
     }
@@ -2120,9 +2084,10 @@ var opo = {
           let pid = unique?0:e.id;
           dxop.run.call(this, u, create, pid);
           dxop.setOpType(u);
+          uro.setopextra(u);
+          dxop.autofill(u);
           // dx link is update
           dxop.run.call(dxo, u, create);
-          fill.orbridge(u);
         }
       }
     }
@@ -2457,7 +2422,6 @@ var trig = {
     fill.resulteffect.call(this, e);
     fill.future.call(this, e);
     if (this.lib!="Consult") {
-      uro.setopextra(e);
       fill.setortype(e, value=="create");
     }
     fill.setvisittype.call(this, e, value=="create");
@@ -2475,10 +2439,11 @@ var trig = {
       e.set("OpLength", fill.oplength(e));
       dxop.run.call(opo, e, value=="create");
       dxop.setOpType(e);
+      uro.setopextra(e);
+      dxop.autoFill(e);
       dxop.run.call(dxo, e, value=="create");
       que.run.call(this, e);
       fill.opdatecal(e);
-      fill.orbridge(e);
     }
     fill.los.call(this, e);
     fill.dr(e, value=="create");
@@ -2531,7 +2496,6 @@ var trig = {
     mer.merge.call(this, e);
     if (this.lib!="Consult") {
       que.run.call(this, e);
-      fill.orbridge(e);
     }
     fill.los.call(this, e);
     fill.active.call(this, e);
