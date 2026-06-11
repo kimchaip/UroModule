@@ -2439,7 +2439,7 @@ var trig = {
       dxop.run.call(opo, e, value=="create");
       dxop.setOpType(e);
       uro.setopextra(e);
-      dxop.autoFill(e);
+      dxop.autofill(e);
       dxop.run.call(dxo, e, value=="create");
       que.run.call(this, e);
       fill.opdatecal(e);
