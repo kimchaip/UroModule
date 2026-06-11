@@ -1904,7 +1904,7 @@ var uro = {
     let result = {};
     
     let opdate = e.field("Date");
-    let dow = date.getDay();
+    let dow = opdate.getDay();
     let hdLinks = e.field(cal.lib);
     if (hdLinks.length == 0) {
       if (dow >= 1 && dow <= 5) {
