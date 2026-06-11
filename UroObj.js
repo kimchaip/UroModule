@@ -544,9 +544,9 @@ var dxop = {
     else if(!e.field("OpExtra")){
       e.set("Bonus", 0);
     }
-    if (!fill.oplength(e)) {
-      e.set("OpLength", opList.field("Optime"));
-    }
+    
+    let oplength = fill.oplength(e);
+    e.set("OpLength", oplength ? oplength : opList.field("Optime"));
   },
   updatelink : function (e, found, create) {
     if(e.field(this.lib).length>0) {
@@ -2436,7 +2436,6 @@ var trig = {
     if (this.lib!="Consult") {
       uro.setDJstent(e);
       uro.setx15(e);
-      e.set("OpLength", fill.oplength(e));
       dxop.run.call(opo, e, value=="create");
       dxop.setOpType(e);
       uro.setopextra(e);
