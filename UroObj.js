@@ -603,6 +603,47 @@ var dxop = {
       }
     }
   },
+  setOpType : function (e) {
+    let date = e.field("Date");
+    let dow = date.getDay();   // 0-6
+    let op = e.field("Op").toLowerCase();
+
+    let hds = e.field(cal.lib);
+    if (hds.length == 0) return;
+    if (hds.some(h => h.field("OutOfDuty"))) return;
+    
+    // link entry object
+    let opLinks = e.field(opo.lib);
+    if (opLinks.length == 0) return;
+    
+    let opList = opLinks[0];
+
+    // SM (Special Medical)
+    if (op.indexOf("smc") >  -1) {
+      opList.setAttr("OpType", "SM");
+      return;
+    }
+
+    // OH (Off-Hour)
+    // เงื่อนไข: Holidays-Title = OR นอกเวลา
+    let holOH = hds.some(h => h.field("Title") == "OR นอกเวลา");
+    if (holOH) {
+      opList.setAttr("OpType", "OH");
+      return;
+    }
+
+    // ES (Elective Surgery)
+    // จันทร์–ศุกร์ + ไม่ใช่วันหยุด + ไม่ใช่ OutOfDuty + เวลา 08:00–15:59
+    let isholiday = hds.some(h => h.field("Holiday"));
+    if (dow >= 1 && dow <= 5 && !isholiday) {
+      opList.setAttr("OpType", "ES");
+      return;
+    }
+    else {  // EM (Emergency)
+      opList.setAttr("OpType", "EM");
+      return;
+    }
+  },
   count : function (e) {
     let linkuro = e.linksFrom("UroBase", this.lib);
     let linkbup = e.linksFrom("Backup", this.lib);
