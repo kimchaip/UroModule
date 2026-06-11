@@ -2277,7 +2277,7 @@ var cal = {
     if (!my.dateIsValid(date) || hds.length == 0) return [];
     
     let strDate = date.toDateString();
-    return hds.filter(h => h.field("Date").toDateString()==strdate);
+    return hds.filter(h => h.field("Date").toDateString()==strDate);
   },
   notify : function (outofduty, holiday, opextra, own) {
     if(outofduty || holiday || opextra) {  // warning when outofduty, holiday, opextra
