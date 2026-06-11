@@ -1986,6 +1986,7 @@ var dxo = {
           dxop.run.call(this, u, create, pid);
           // op link is update
           dxop.run.call(opo, u, create);
+          dxop.setOpType(u);
           fill.orbridge(u);
         }
       }
@@ -2107,6 +2108,7 @@ var opo = {
           // if non unique, move op link to other entry
           let pid = unique?0:e.id;
           dxop.run.call(this, u, create, pid);
+          dxop.setOpType(u);
           // dx link is update
           dxop.run.call(dxo, u, create);
           fill.orbridge(u);
@@ -2461,6 +2463,7 @@ var trig = {
       uro.setx15(e);
       e.set("OpLength", fill.oplength(e));
       dxop.run.call(opo, e, value=="create");
+      dxop.setOpType(e);
       dxop.run.call(dxo, e, value=="create");
       que.run.call(this, e);
       fill.opdatecal(e);
