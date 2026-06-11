@@ -1932,7 +1932,7 @@ var uro = {
       result.optype = opLinks[0].attr("OpType");
     }
     
-    e.set("ORbridge", json.stringify(result));
+    e.set("ORbridge", JSON.stringify(result));
   }
 };
 var buo = {
