@@ -452,10 +452,11 @@ var emx = {
     let opextra = false;
     let calname = "";
     if(hdents && hdents.length) {
-      outofduty = hdents.some(h=>h.field("OutOfDuty"));
-      holiday = hdents.some(h=>h.field("Holiday")) || my.gday(e.field("AppointDate"))==0 || my.gday(e.field("AppointDate"))==6;
-      opextra = hdents.some(h=>h.field("Title") == "ORนอกเวลา");
-      let found = hdents.find(h=>h.field("Title") == "ORนอกเวลา");
+      const regOH = new RegExp("or//s*นอกเวลา", "i");
+      outofduty = hdents.some(h => h.field("OutOfDuty"));
+      holiday = hdents.some(h => h.field("Holiday")) || my.gday(e.field("AppointDate"))==0 || my.gday(e.field("AppointDate"))==6;
+      opextra = hdents.some(h => regOH.test(h.field("Title")));
+      let found = hdents.find(h => regOH.test(h.field("Title")));
       if (found) calname = found.field("Calendar");
     }
     
@@ -626,7 +627,8 @@ var dxop = {
 
     // OH (Off-Hour)
     // เงื่อนไข: Holidays-Title = OR นอกเวลา
-    let holOH = hds.some(h => h.field("Title") == "OR นอกเวลา");
+    const regOH = new RegExp("or//s*นอกเวลา", "i");
+    let holOH = hds.some(h => regOH.test(h.field("Title")));
     if (holOH) {
       opList.setAttr("OpType", "OH");
       return;
