@@ -609,7 +609,12 @@ var dxop = {
     let dow = date.getDay();   // 0-6
     let op = e.field("Op").toLowerCase();
 
-    let hds = e.field(cal.lib);
+    // link entry object
+    let opLinks = e.field(opo.lib);
+    if (opLinks.length == 0) return;
+    
+    let opList = opLinks[0];let hds = e.field(cal.lib);
+    
     if (hds.length == 0) {
       if (dow >= 1 && dow <= 5) {
         opList.setAttr("OpType", "ES");
@@ -620,13 +625,8 @@ var dxop = {
         return;
       }
     }
+    
     if (hds.some(h => h.field("OutOfDuty"))) return;
-    
-    // link entry object
-    let opLinks = e.field(opo.lib);
-    if (opLinks.length == 0) return;
-    
-    let opList = opLinks[0];
 
     // SM (Special Medical)
     if (op.indexOf("smc") >  -1) {
