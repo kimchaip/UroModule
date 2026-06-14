@@ -116,7 +116,7 @@ var script = {
       if(hinfo.holiday) continue;      // ไม่เอาวันหยุด
 
       let all = lb.entries();
-      let datestr = checkDatedate.toDateString();
+      let datestr = checkDate.toDateString();
 
       let cases = all.filter(a =>
         a.field("Date").toDateString() == datestr &&
@@ -155,7 +155,7 @@ var script = {
       if(hinfo.orExtra) continue;  // จันทร์ปกติเท่านั้น
 
       let all = lb.entries();
-      let datestr = checkDatedate.toDateString();
+      let datestr = checkDate.toDateString();
 
       let cases = all.filter(a =>
         a.field("Date").toDateString() == datestr &&
