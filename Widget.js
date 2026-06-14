@@ -52,17 +52,92 @@ var widget = {
   
       dayBlock.add(header);
   
-      // --- Case list ---
-      let caseList = layout("linear").orientation("vertical");
-  
+      // -------------------------
+      // SORT: LA → GA, Que → น้อย → มาก
+      // -------------------------
+      cases.sort((a, b) => {
+        const order = { "LA": 0, "GA": 1 };
+        let t1 = order[a.field("ORType")] ?? 99;
+        let t2 = order[b.field("ORType")] ?? 99;
+      
+        if (t1 !== t2) return t1 - t2;
+        return (a.field("Que") || 999) - (b.field("Que") || 999);
+      });
+      
+      // -------------------------
+      // CASE ROW (Material UI)
+      // -------------------------
       cases.forEach(c => {
-        let row = layout("linear").orientation("horizontal").padding(5,5,5,5);
-  
-        row.add(textView(c.field("Name")).weight(1));
-        row.add(textView(c.field("ORType")));
-        row.add(textView(c.field("OpLength") + " min"));
-  
-        caseList.add(row);
+      
+        let card = layout("linear")
+            .orientation("vertical")
+            .padding(10,8,10,8)
+            .margin(0,0,0,10)
+            .background("#FFFFFF")
+            .elevation(3);   // shadow แบบ Material
+      
+        // -------------------------
+        // บรรทัด 1: Que + Name + ORType badge
+        // -------------------------
+        let line1 = layout("linear").orientation("horizontal");
+      
+        // Que chip
+        line1.add(
+          textView("#" + (c.field("Que") || "-"))
+            .padding(8,2,8,2)
+            .margin(0,0,10,0)
+            .background("#E3F2FD")     // ฟ้าอ่อนแบบ Material
+            .textColor("#0D47A1")      // ฟ้าเข้ม
+            .textSize(14)
+            .cornerRadius(12)
+        );
+      
+        // Name
+        line1.add(
+          textView(c.field("Name"))
+            .textSize(15)
+            .textColor("#000000")
+            .weight(1)
+        );
+      
+        // ORType badge
+        let typeColor = c.field("ORType") == "LA" ? "#4CAF50" : "#F44336"; // LA=เขียว, GA=แดง
+      
+        line1.add(
+          textView(c.field("ORType"))
+            .padding(8,2,8,2)
+            .background(typeColor)
+            .textColor("#FFFFFF")
+            .textSize(13)
+            .cornerRadius(12)
+        );
+      
+        // -------------------------
+        // บรรทัด 2: Dx | Op
+        // -------------------------
+        let line2 = layout("linear").orientation("horizontal");
+      
+        line2.add(
+          textView("Dx: " + (c.field("Dx") || "-"))
+            .textSize(13)
+            .textColor("#616161")
+            .weight(1)
+        );
+      
+        line2.add(
+          textView("Op: " + (c.field("Operation") || "-"))
+            .textSize(13)
+            .textColor("#616161")
+            .weight(1)
+        );
+      
+        // -------------------------
+        // รวมทุกอย่างลง card
+        // -------------------------
+        card.add(line1);
+        card.add(line2);
+      
+        caseList.add(card);
       });
   
       dayBlock.add(caseList);
