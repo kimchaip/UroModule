@@ -1900,39 +1900,14 @@ var uro = {
       }
     }
   },
-  setorbridge : function (e) {
-    let result = {};
-    
-    let opdate = e.field("Date");
-    let dow = opdate.getDay();
-    let hdLinks = e.field(cal.lib);
-    if (hdLinks.length == 0) {
-      if (dow >= 1 && dow <= 5) {
-        result.cal = "WD";
-      }
-      else {
-        result.cal = "WE";
-      }
-    }
-    else {
-      let od = hdLinks.some(h => h.field("OutOfDuty"));
-      let hd = hdLinks.some(h => h.field("Holiday"));
-      
-      if (od) result.cal = "OD";
-      else if (dow < 1 || dow >5) result.cal = "WE";
-      else if (hd) result.cal = "HD";
-      else result.call = "WD";
-    }
-    
+  setoptype : function (e) {
     let opLinks = e.field(opo.lib);
     if (opLinks.length == 0) {
-      result.optype = "";
+      e.set("OpType", "");
     }
     else {
-      result.optype = opLinks[0].attr("OpType");
+      e.set("OpType", opLinks[0].attr("OpType"));
     }
-    
-    e.set("ORbridge", JSON.stringify(result));
   }
 };
 var buo = {
@@ -1995,7 +1970,7 @@ var dxo = {
           dxop.setOpType(u);
           uro.setopextra(u);
           dxop.autofill(u);
-          uro.setorbridge(u);
+          uro.setoptype(u);
         }
       }
     }
@@ -2119,7 +2094,7 @@ var opo = {
           dxop.setOpType(u);
           uro.setopextra(u);
           dxop.autofill(u);
-          uro.setorbridge(u);
+          uro.setoptype(u);
           // dx link is update
           dxop.run.call(dxo, u, create);
         }
@@ -2474,7 +2449,7 @@ var trig = {
       dxop.setOpType(e);
       uro.setopextra(e);
       dxop.autofill(e);
-      uro.setorbridge(e);
+      uro.setoptype(e);
       dxop.run.call(dxo, e, value=="create");
       que.run.call(this, e);
       fill.opdatecal(e);
