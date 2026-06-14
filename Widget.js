@@ -1,5 +1,5 @@
 var widget = {
-  function buildUpcomingORList(lb) {
+  buildUpcomingORList : function (lb) {
     const entries = lb.entries();
   
     const root = layout("linear").orientation("vertical");
@@ -148,5 +148,4 @@ var widget = {
   
     return root;
   }
-
 }
