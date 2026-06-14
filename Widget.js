@@ -19,17 +19,17 @@ var widget = {
         }
         return false;
       });
-      caseList.push(
-        ui().text("DEBUG: JS date = " + d.toDateString())
-          .textColor("#FF00FF")
-      );
+      // caseList.push(
+      //   ui().text("DEBUG: JS date = " + d.toDateString())
+      //     .textColor("#FF00FF")
+      // );
       
-      cases.forEach(c => {
-        caseList.push(
-          ui().text("DEBUG: Entry date = " + c.field("Date").toDateString())
-            .textColor("#FF00FF")
-        );
-      });
+      // cases.forEach(c => {
+      //   caseList.push(
+      //     ui().text("DEBUG: Entry date = " + c.field("Date").toDateString())
+      //       .textColor("#FF00FF")
+      //   );
+      // });
 
 
       // --- วิเคราะห์สถานะวัน ---
@@ -83,13 +83,14 @@ var widget = {
       // CASE LIST (Material UI)
       // -------------------------
 
+      let caseList = [];
+      
       caseList.push(
         ui().text("DEBUG: cases.length = " + cases.length)
           .textColor("#0000FF")
       );
 
-      let caseList = [];
-
+      
       cases.forEach(c => {
         caseList.push(
           ui().text("DEBUG: Patient=" + JSON.stringify(c.field("Patient")))
