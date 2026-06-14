@@ -67,7 +67,7 @@ var script = {
   calcOpMinutes : function(entries, isORExtra) {
     return entries.reduce((t,a)=>{
       let base = a.field("OpLength");
-      let bufferGA = isORExtra ? 900000 : 2700000;   // GA 15 vs 45 นาที
+      let bufferGA = isORExtra ? 900000 : 1800000;   // GA 15 vs 30 นาที
       let bufferLA = 600000;  // LA 10 นาที
       let buffer = a.field("ORType") == "GA" ? bufferGA : bufferLA;
       return t + base + buffer;
@@ -165,7 +165,7 @@ var script = {
       );
 
       let totalMin = this.calcOpMinutes(cases, false);
-      let cutoff = (5*60 + 30);   // 9.00-14.30 = 5.30
+      let cutoff = 5*60 + 30;   // 9.00-14.30 = 5.30
 
       if(totalMin <= cutoff) {
         return { date:new Date(checkDate), totalMin };
@@ -198,26 +198,19 @@ var script = {
     const dlg = dialog()
       .title("เลือกวันที่ต้องการ Set OR")
       .text(txtMon + "\n" + txtExtra)
-      .neutralButton("OR วันจันทร์", () => {
-        if(monday) {
-          e.set("Date", monday.date);
-          message("Success");
-        } else {
-          message("Failure");
-        }
-        return true;
-      })
       .positiveButton("OR นอกเวลา", () => {
         if(orExtra) {
           e.set("Date", orExtra.date);
-          message("Success");
-        } else {
-          message("ไม่พบวัน OR นอกเวลา");
+        } 
+        return true;
+      })
+      .neutralButton("OR วันจันทร์", () => {
+        if(monday) {
+          e.set("Date", monday.date);
         }
         return true;
       })
       .negativeButton("Cancel", () => {
-        message("CanCel");
         return true;
       })
       .show();
