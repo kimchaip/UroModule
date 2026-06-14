@@ -19,6 +19,18 @@ var widget = {
         }
         return false;
       });
+      caseList.push(
+        ui().text("DEBUG: JS date = " + d.toDateString())
+          .textColor("#FF00FF")
+      );
+      
+      cases.forEach(c => {
+        caseList.push(
+          ui().text("DEBUG: Entry date = " + c.field("Date").toDateString())
+            .textColor("#FF00FF")
+        );
+      });
+
 
       // --- วิเคราะห์สถานะวัน ---
       let hd = script.checkholiday(d);
@@ -70,6 +82,12 @@ var widget = {
       // -------------------------
       // CASE LIST (Material UI)
       // -------------------------
+
+      caseList.push(
+        ui().text("DEBUG: cases.length = " + cases.length)
+          .textColor("#0000FF")
+      );
+
       let caseList = [];
 
       cases.forEach(c => {
