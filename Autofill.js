@@ -90,10 +90,10 @@ var script = {
     const hd = libByName("Holidays");
     const hds = hd.entries();
 
-    const datestr = date.toDateString();
+    const gdate = my.gdate(date);
     return hds.filter(e=>{
       if(my.dateIsValid(e.field("Date"))) {
-        return e.field("Date").toDateString()==datestr;
+        return my.gdate(e.field("Date"))==gdate;
       }
       return false;
     });
@@ -105,10 +105,9 @@ var script = {
   findEarliestORExtra : function(lb) {
 
     let today = new Date();
-    let checkDate = new Date(today);
 
     for(let i=0; i<60; i++) {
-      checkDate.setDate(today.getDate() + i);
+      let checkDate = new Date(today.getTime() + i * 86400000);
 
       let hd = this.checkholiday(checkDate);
       let hinfo = this.analyzeHoliday(hd);
@@ -118,10 +117,10 @@ var script = {
       if(hinfo.holiday) continue;      // ไม่เอาวันหยุด
 
       let all = lb.entries();
-      let datestr = checkDate.toDateString();
-
+      
+      let gdate = my.gdate(checkDate);
       let cases = all.filter(a =>
-        a.field("Date").toDateString() == datestr &&
+        my.gdate(a.field("Date")) == gdate &&
         a.field("Status") != "Not"
       );
 
@@ -142,10 +141,9 @@ var script = {
   findEarliestMonday : function(lb) {
 
     let today = new Date();
-    let checkDate = new Date(today);
 
     for(let i=0; i<60; i++) {
-      checkDate.setDate(today.getDate() + i);
+      let checkDate = new Date(today.getTime() + i * 86400000);
 
       if(checkDate.getDay() !== 1) continue;  // ต้องเป็นวันจันทร์
 
@@ -157,10 +155,10 @@ var script = {
       if(hinfo.orExtra) continue;  // จันทร์ปกติเท่านั้น
 
       let all = lb.entries();
-      let datestr = checkDate.toDateString();
-
+      
+      let gdate = my.gdate(checkDate);
       let cases = all.filter(a =>
-        a.field("Date").toDateString() == datestr &&
+        my.gdate(a.field("Date")) == gdate &&
         a.field("Status") != "Not"
       );
 
@@ -198,19 +196,19 @@ var script = {
     const dlg = dialog()
       .title("เลือกวันที่ต้องการ Set OR")
       .text(txtMon + "\n" + txtExtra)
-      .positiveButton("OR นอกเวลา", () => {
-        if(orExtra) {
-          e.set("Date", orExtra.date);
-        } 
-        return true;
-      })
       .neutralButton("OR วันจันทร์", () => {
         if(monday) {
           e.set("Date", monday.date);
         }
         return true;
       })
-      .negativeButton("Cancel", () => {
+      .negativeButton("OR นอกเวลา", () => {
+        if(orExtra) {
+          e.set("Date", orExtra.date);
+        } 
+        return true;
+      })
+      .positiveButton("Cancel", () => {
         return true;
       })
       .show();
