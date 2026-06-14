@@ -75,7 +75,7 @@ var widget = {
       cases.forEach(c => {
 
         let que = c.field("Que") || "-";
-        let name = c.field("Patient").length > 0 ? c.field("Patient")[0].title : "-";
+        let name = (c.field("Patient") && c.field("Patient").length > 0) ? c.field("Patient")[0].title : "-";
         let type = c.field("ORType") || "-";
         let dx = c.field("Dx") || "-";
         let op = c.field("Op") || "-";
