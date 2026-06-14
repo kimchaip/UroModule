@@ -67,7 +67,9 @@ var script = {
   calcOpMinutes : function(entries, isORExtra) {
     return entries.reduce((t,a)=>{
       let base = a.field("OpLength");
-      let buffer = isORExtra ? 900000 : 1800000;   // 15 vs 30 นาที
+      let bufferGA = isORExtra ? 900000 : 2700000;   // GA 15 vs 45 นาที
+      let bufferLA = 600000;  // LA 10 นาที
+      let buffer = e.field("ORType") == "GA" ? bufferGA : bufferLA;
       return t + base + buffer;
     },0) / 60000;
   },
@@ -124,7 +126,7 @@ var script = {
       );
 
       let totalMin = this.calcOpMinutes(cases, true);
-      let cutoff = 15*60 + 30;   // 15.30
+      let cutoff = 7*60;   // 8.30-15.30 = 7.00
 
       if(totalMin <= cutoff) {
         return { date:new Date(checkDate), totalMin };
@@ -163,7 +165,7 @@ var script = {
       );
 
       let totalMin = this.calcOpMinutes(cases, false);
-      let cutoff = 14*60 + 30;   // 14.30
+      let cutoff = (5*60 + 30);   // 9.00-14.30 = 5.30
 
       if(totalMin <= cutoff) {
         return { date:new Date(checkDate), totalMin };
@@ -196,26 +198,26 @@ var script = {
     const dlg = dialog()
       .title("เลือกวันที่ต้องการ Set OR")
       .text(txtMon + "\n" + txtExtra)
-      .positiveButton("OR วันจันทร์", () => {
+      .neutralButton("OR วันจันทร์", () => {
         if(monday) {
           e.set("Date", monday.date);
-          toast("ตั้งวันจันทร์ให้แล้ว");
+          message("Success");
         } else {
-          toast("ไม่พบวันจันทร์ที่สามารถ Set ได้");
+          message("Failure");
         }
         return true;
       })
-      .negativeButton("OR นอกเวลา", () => {
+      .positiveButton("OR นอกเวลา", () => {
         if(orExtra) {
           e.set("Date", orExtra.date);
-          toast("ตั้งวัน OR นอกเวลาให้แล้ว");
+          message("Success");
         } else {
-          toast("ไม่พบวัน OR นอกเวลา");
+          message("ไม่พบวัน OR นอกเวลา");
         }
         return true;
       })
-      .neutralButton("Cancel", () => {
-        toast("ยกเลิกแล้ว");
+      .negativeButton("Cancel", () => {
+        message("CanCel");
         return true;
       })
       .show();
