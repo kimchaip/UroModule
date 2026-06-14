@@ -79,6 +79,13 @@ var widget = {
         let type = c.field("ORType") || "-";
         let dx = c.field("Dx") || "-";
         let op = c.field("Op") || "-";
+        
+        // log
+        log("Patient=" + name);
+        log("Dx=" + dx);
+        log("Op=" + op);
+        log("ORType=" + type);
+        log("Que=" + que);
 
         let typeColor = (type === "LA") ? "#4CAF50" : "#F44336";
 
