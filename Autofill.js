@@ -69,7 +69,7 @@ var script = {
       let base = a.field("OpLength");
       let bufferGA = isORExtra ? 900000 : 2700000;   // GA 15 vs 45 นาที
       let bufferLA = 600000;  // LA 10 นาที
-      let buffer = e.field("ORType") == "GA" ? bufferGA : bufferLA;
+      let buffer = a.field("ORType") == "GA" ? bufferGA : bufferLA;
       return t + base + buffer;
     },0) / 60000;
   },
