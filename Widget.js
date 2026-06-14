@@ -72,67 +72,67 @@ var widget = {
       // -------------------------
       let caseList = [];
 
-      cases.forEach(c => {
+      // cases.forEach(c => {
 
-        let que = c.field("Que") || "-";
-        let name = c.field("Patient").length > 0 ? c.field("Patient")[0].title : "-";
-        let type = c.field("ORType") || "-";
-        let dx = c.field("Dx") || "-";
-        let op = c.field("Op") || "-";
-        
-        // log
-        log("Patient=" + name);
-        log("Dx=" + dx);
-        log("Op=" + op);
-        log("ORType=" + type);
-        log("Que=" + que);
+      //   let que = c.field("Que") || "-";
+      //   let name = c.field("Patient").length > 0 ? c.field("Patient")[0].title : "-";
+      //   let type = c.field("ORType") || "-";
+      //   let dx = c.field("Dx") || "-";
+      //   let op = c.field("Op") || "-";
 
-        let typeColor = (type === "LA") ? "#4CAF50" : "#F44336";
+      //   let typeColor = (type === "LA") ? "#4CAF50" : "#F44336";
 
-        let card = ui().layout([
+      //   let card = ui().layout([
           
-          // line 1
-          ui().layout([
-            ui().text("#" + que)
-              .padding(8,2,8,2)
-              .background("#E3F2FD")
-              .textColor("#0D47A1")
-              .cornerRadius(12)
-              .margin(0,0,10,0),
+      //     // line 1
+      //     ui().layout([
+      //       ui().text("#" + que)
+      //         .padding(8,2,8,2)
+      //         .background("#E3F2FD")
+      //         .textColor("#0D47A1")
+      //         .cornerRadius(12)
+      //         .margin(0,0,10,0),
 
-            ui().text(name)
-              .weight(1)
-              .textSize(15),
+      //       ui().text(name)
+      //         .weight(1)
+      //         .textSize(15),
 
-            ui().text(type)
-              .padding(8,2,8,2)
-              .background(typeColor)
-              .textColor("#FFFFFF")
-              .cornerRadius(12)
+      //       ui().text(type)
+      //         .padding(8,2,8,2)
+      //         .background(typeColor)
+      //         .textColor("#FFFFFF")
+      //         .cornerRadius(12)
 
-          ]).orientation("horizontal"),
+      //     ]).orientation("horizontal"),
 
-          // line 2
-          ui().layout([
-            ui().text("Dx: " + dx)
-              .weight(1)
-              .textColor("#616161")
-              .textSize(13),
+      //     // line 2
+      //     ui().layout([
+      //       ui().text("Dx: " + dx)
+      //         .weight(1)
+      //         .textColor("#616161")
+      //         .textSize(13),
 
-            ui().text("Op: " + op)
-              .weight(1)
-              .textColor("#616161")
-              .textSize(13)
-          ]).orientation("horizontal")
+      //       ui().text("Op: " + op)
+      //         .weight(1)
+      //         .textColor("#616161")
+      //         .textSize(13)
+      //     ]).orientation("horizontal")
 
-        ])
-        .padding(10,8,10,8)
-        .margin(0,0,0,10)
-        .background("#FFFFFF")
-        .elevation(3);
+      //   ])
+      //   .padding(10,8,10,8)
+      //   .margin(0,0,0,10)
+      //   .background("#FFFFFF")
+      //   .elevation(3);
 
-        caseList.push(card);
-      });
+      //   caseList.push(card);
+      // });
+
+      caseList.push(
+        ui().text("Patient=" + name + " | Dx=" + dx + " | Op=" + op + " | Type=" + type + " | Que=" + que)
+          .textColor("#FF0000")
+          .textSize(12)
+      );
+
 
       // -------------------------
       // รวมเป็น Day Block
