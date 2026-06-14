@@ -60,7 +60,7 @@ var widget = {
         let t1 = order[a.field("ORType")] ?? 99;
         let t2 = order[b.field("ORType")] ?? 99;
       
-        if (t1 !== t2) return t1 - t2;
+        if (t1 != t2) return t1 - t2;
         return (a.field("Que") || 999) - (b.field("Que") || 999);
       });
       
