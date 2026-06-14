@@ -57,100 +57,152 @@ var autofill = {
     result.sort((a,b)=>b.count-a.count);
     return result;
   }
-}
+};
+
 var script = {
-  timeanswer : function (m) {
-    let time = {};
-    if(m>=10) {
-      time["hr"] = Math.floor(m/60);
-      time["min"] = m%60;
-      if(time.hr>0)
-        return "เต็มที่ ยังเหลือเวลาอยู่ " + time.hr + ":" + ("0" + time.min).slice(-2) + " น."
-      else
-        return "ยังเหลือเวลาอยู่ " + time.min + " น."
-    }
-    else if(m>=0){
-      return "้เต็มแล้ว ยังเหลือเวลา " + m + " น."
-    }
-    else {
-      time["hr"] = Math.floor(Math.abs(m)/60);
-      time["min"] = Math.abs(m)%60;
-      if(time.hr>0)
-        return "เต็มแล้ว เกินเวลา " + time.hr + ":" + ("0" + time.min).slice(-2) + " น."
-      else
-        return "เต็มแล้ว เกินเวลา " + time.min + " น."
-    }
+
+  // -----------------------------
+  // Utility
+  // -----------------------------
+  calcOpMinutes : function(entries, isORExtra) {
+    return entries.reduce((t,a)=>{
+      let base = a.field("OpLength");
+      let buffer = isORExtra ? 900000 : 1800000;   // 15 vs 30 นาที
+      return t + base + buffer;
+    },0) / 60000;
   },
-  timeleft : function (m, ot, hd) {
-    let textarr = [];
-    const calName = ["Calendar","Sak","Krissana","Suthee"];
-    const translate = ["ชัยพร", "เอกณัฏฐ์","กฤษณะ","สุธี"];
-    if(ot || (hd && hd.length>0)) {
-      if(hd && hd.length>0 && hd.some(h=>h.field("OutOfDuty"))) {
-        let hde = hd.find(h=>h.field("OutOfDuty"));
-        message("วันนี้ห้าม Set ติด '" + hde.field("Title") + "'");
-      }
-      else {
-        if(hd && hd.length>0 && hd.some(h=>h.field("Holiday"))) {
-          let hde = hd.find(h=>h.field("Holiday"));
-          textarr.push("วันหยุด" + hde.field("Title"));
-        }
-        if(ot) {
-          textarr.push("วันหยุดเสาร์-อาทิตย์");
-        }
-        if(hd && hd.length>0 && hd.some(h=>h.field("Title")=="ORนอกเวลา") ) {
-          let hde = hd.find(h=>h.field("Title")=="ORนอกเวลา");
-          textarr.push("ORนอกเวลา"+translate[calName.indexOf(hde.field("Calendar"))]);
-        }
-          
-        message(textarr.join() + " " +  this.timeanswer(420-m));
-      }
-    }
-    else {
-      message(this.timeanswer(360-m));
-    }
+
+  analyzeHoliday : function(hd) {
+    if(!hd || hd.length==0) return { holiday:false, orExtra:false, banned:false };
+
+    return {
+      holiday : hd.some(h=>h.field("Holiday")),
+      orExtra : hd.some(h=>h.field("Title")=="ORนอกเวลา" && h.field("Calendar")=="Kim"),
+      banned  : hd.some(h=>h.field("OutOfDuty"))
+    };
   },
+
   checkholiday : function(date) {
-    let hd = libByName("Holidays");
-    let hds = hd.entries();
+    if (!my.dateIsValid(date)) return [];
     
+    const hd = libByName("Holidays");
+    const hds = hd.entries();
+
+    const datestr = date.toDateString();
     return hds.filter(e=>{
-      if(my.dateIsValid(e.field("Date")) && my.dateIsValid(date)) {
-        return e.field("Date").toDateString()==date.toDateString();
+      if(my.dateIsValid(e.field("Date"))) {
+        return e.field("Date").toDateString()==datestr;
       }
-      else {
-        return false;
-      }
+      return false;
     });
   },
-  checkopdate : function (e, lb) {
-    let all = lb.entries();
-    let opdate = my.gdate(my.date(e.field("Date")));
-    
-    let holiday = this.checkholiday(e.field("Date"));
-    
-    let result = all.filter(a=>my.gdate(a.field("Date"))==opdate && a.field("Status")!="Not");
-    let optime;
-    let wd = my.gday(e.field("Date"));
-    if(wd==0 || wd==6) {
-      optime = result.reduce((t,a)=>{
-        if(a.field("ORType")=="GA")
-          t+=a.field("OpLength")+600000;
-        else
-          t+=a.field("OpLength")+300000;
-        return t;
-      },0);
+
+  // -----------------------------
+  // หา earliest OR Extra
+  // -----------------------------
+  findEarliestORExtra : function(lb) {
+
+    let today = new Date();
+    let checkDate = new Date(today);
+
+    for(let i=0; i<60; i++) {
+      checkDate.setDate(today.getDate() + i);
+
+      let hd = this.checkholiday(checkDate);
+      let hinfo = this.analyzeHoliday(hd);
+
+      if(!hinfo.orExtra) continue;     // ต้องเป็น OR นอกเวลา
+      if(hinfo.banned) continue;       // ห้าม set
+      if(hinfo.holiday) continue;      // ไม่เอาวันหยุด
+
+      let all = lb.entries();
+      let datestr = checkDatedate.toDateString();
+
+      let cases = all.filter(a =>
+        a.field("Date").toDateString() == datestr &&
+        a.field("Status") != "Not"
+      );
+
+      let totalMin = this.calcOpMinutes(cases, true);
+      let cutoff = 15*60 + 30;   // 15.30
+
+      if(totalMin <= cutoff) {
+        return { date:new Date(checkDate), totalMin };
+      }
     }
-    else {
-      optime = result.reduce((t,a)=>{
-        if(a.field("ORType")=="GA")
-          t+=a.field("OpLength")+1200000;
-        else
-          t+=a.field("OpLength")+900000;
-        return t;
-      },0);
+
+    return null;
+  },
+
+  // -----------------------------
+  // หา earliest Monday
+  // -----------------------------
+  findEarliestMonday : function(lb) {
+
+    let today = new Date();
+    let checkDate = new Date(today);
+
+    for(let i=0; i<60; i++) {
+      checkDate.setDate(today.getDate() + i);
+
+      if(checkDate.getDay() !== 1) continue;  // ต้องเป็นวันจันทร์
+
+      let hd = this.checkholiday(checkDate);
+      let hinfo = this.analyzeHoliday(hd);
+
+      if(hinfo.banned) continue;
+      if(hinfo.holiday) continue;
+      if(hinfo.orExtra) continue;  // จันทร์ปกติเท่านั้น
+
+      let all = lb.entries();
+      let datestr = checkDatedate.toDateString();
+
+      let cases = all.filter(a =>
+        a.field("Date").toDateString() == datestr &&
+        a.field("Status") != "Not"
+      );
+
+      let totalMin = this.calcOpMinutes(cases, false);
+      let cutoff = 14*60 + 30;   // 14.30
+
+      if(totalMin <= cutoff) {
+        return { date:new Date(checkDate), totalMin };
+      }
     }
-    let optimemin = Math.floor(optime/60000);
-    this.timeleft(optimemin, wd==0||wd==6, holiday);
+
+    return null;
+  },
+
+  // -----------------------------
+  // ใช้ในปุ่ม
+  // -----------------------------
+  run : function(lb) {
+
+    let orExtra = this.findEarliestORExtra(lb);
+    let monday  = this.findEarliestMonday(lb);
+
+    let msg = [];
+
+    if(orExtra) {
+      msg.push(
+        "วัน OR นอกเวลา ที่ set ได้เร็วที่สุด:\n" +
+        orExtra.date.toDateString() +
+        " (ใช้เวลาไปแล้ว " + orExtra.totalMin + " นาที)"
+      );
+    } else {
+      msg.push("ไม่พบวัน OR นอกเวลา ที่สามารถ set ได้ใน 60 วัน");
+    }
+
+    if(monday) {
+      msg.push(
+        "วันจันทร์ปกติ ที่ set ได้เร็วที่สุด:\n" +
+        monday.date.toDateString() +
+        " (ใช้เวลาไปแล้ว " + monday.totalMin + " นาที)"
+      );
+    } else {
+      msg.push("ไม่พบวันจันทร์ปกติ ที่สามารถ set ได้ใน 60 วัน");
+    }
+
+    message(msg.join("\n\n"));
   }
-}
+};
