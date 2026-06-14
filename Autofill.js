@@ -176,33 +176,48 @@ var script = {
   // -----------------------------
   // ใช้ในปุ่ม
   // -----------------------------
-  run : function(lb) {
+  run : function(e, lb) {
 
     let orExtra = this.findEarliestORExtra(lb);
     let monday  = this.findEarliestMonday(lb);
 
-    let msg = [];
+    // เตรียมข้อความ
+    let txtExtra = orExtra
+      ? "OR นอกเวลา: " + orExtra.date.toDateString()
+      : "ไม่พบวัน OR นอกเวลา";
 
-    if(orExtra) {
-      msg.push(
-        "วัน OR นอกเวลา ที่ set ได้เร็วที่สุด:\n" +
-        orExtra.date.toDateString() +
-        " (ใช้เวลาไปแล้ว " + orExtra.totalMin + " นาที)"
-      );
-    } else {
-      msg.push("ไม่พบวัน OR นอกเวลา ที่สามารถ set ได้ใน 60 วัน");
-    }
+    let txtMon = monday
+      ? "OR วันจันทร์: " + monday.date.toDateString()
+      : "ไม่พบวันจันทร์";
 
-    if(monday) {
-      msg.push(
-        "วันจันทร์ปกติ ที่ set ได้เร็วที่สุด:\n" +
-        monday.date.toDateString() +
-        " (ใช้เวลาไปแล้ว " + monday.totalMin + " นาที)"
-      );
-    } else {
-      msg.push("ไม่พบวันจันทร์ปกติ ที่สามารถ set ได้ใน 60 วัน");
-    }
-
-    message(msg.join("\n\n"));
+    // -----------------------------
+    // Dialog ให้เลือก
+    // -----------------------------
+    const dlg = dialog()
+      .title("เลือกวันที่ต้องการ Set OR")
+      .text(txtMon + "\n" + txtExtra)
+      .positiveButton("OR วันจันทร์", () => {
+        if(monday) {
+          e.set("Date", monday.date);
+          toast("ตั้งวันจันทร์ให้แล้ว");
+        } else {
+          toast("ไม่พบวันจันทร์ที่สามารถ Set ได้");
+        }
+        return true;
+      })
+      .negativeButton("OR นอกเวลา", () => {
+        if(orExtra) {
+          e.set("Date", orExtra.date);
+          toast("ตั้งวัน OR นอกเวลาให้แล้ว");
+        } else {
+          toast("ไม่พบวัน OR นอกเวลา");
+        }
+        return true;
+      })
+      .neutralButton("Cancel", () => {
+        toast("ยกเลิกแล้ว");
+        return true;
+      })
+      .show();
   }
 };
