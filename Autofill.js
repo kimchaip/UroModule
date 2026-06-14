@@ -90,10 +90,10 @@ var script = {
     const hd = libByName("Holidays");
     const hds = hd.entries();
 
-    const gdate = my.gdate(date);
+    const datestr = date.toDateString();
     return hds.filter(e=>{
       if(my.dateIsValid(e.field("Date"))) {
-        return my.gdate(e.field("Date"))==gdate;
+        return e.field("Date").toDateString()==datestr;
       }
       return false;
     });
@@ -107,7 +107,7 @@ var script = {
     let today = new Date();
 
     for(let i=0; i<60; i++) {
-      let checkDate = new Date(today.getTime() + i * 86400000);
+      let checkDate = my.dateadd(today, i);
 
       let hd = this.checkholiday(checkDate);
       let hinfo = this.analyzeHoliday(hd);
@@ -118,9 +118,9 @@ var script = {
 
       let all = lb.entries();
       
-      let gdate = my.gdate(checkDate);
+      let datestr = checkDate.toDateString();
       let cases = all.filter(a =>
-        my.gdate(a.field("Date")) == gdate &&
+        a.field("Date").toDateString() == datestr &&
         a.field("Status") != "Not"
       );
 
@@ -143,7 +143,7 @@ var script = {
     let today = new Date();
 
     for(let i=0; i<60; i++) {
-      let checkDate = new Date(today.getTime() + i * 86400000);
+      let checkDate = my.dateadd(today, i);
 
       if(checkDate.getDay() !== 1) continue;  // ต้องเป็นวันจันทร์
 
@@ -156,9 +156,9 @@ var script = {
 
       let all = lb.entries();
       
-      let gdate = my.gdate(checkDate);
+      let datestr = checkDate.toDateString();
       let cases = all.filter(a =>
-        my.gdate(a.field("Date")) == gdate &&
+        a.field("Date").toDateString() == datestr &&
         a.field("Status") != "Not"
       );
 
@@ -196,19 +196,19 @@ var script = {
     const dlg = dialog()
       .title("เลือกวันที่ต้องการ Set OR")
       .text(txtMon + "\n" + txtExtra)
-      .neutralButton("OR วันจันทร์", () => {
+      .neutralButton("Cancel", () => {
+        return true;
+      })
+      .negativeButton("OR วันจันทร์", () => {
         if(monday) {
           e.set("Date", monday.date);
         }
         return true;
       })
-      .negativeButton("OR นอกเวลา", () => {
+      .positiveButton("OR นอกเวลา", () => {
         if(orExtra) {
           e.set("Date", orExtra.date);
         } 
-        return true;
-      })
-      .positiveButton("Cancel", () => {
         return true;
       })
       .show();
