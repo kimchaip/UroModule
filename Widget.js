@@ -125,15 +125,14 @@ var widget = {
       // -------------------------
       // รวมเป็น Day Block
       // -------------------------
-      let dayBlock = ui().layout([
-        header,
-        ...caseList
-      ])
-      .orientation("vertical")
-      .padding(10,10,10,10)
-      .background("#FAFAFA")
-      .margin(0,0,0,20);
+      let children = [header].concat(caseList);
 
+      let dayBlock = ui().layout(children)
+        .orientation("vertical")
+        .padding(10,10,10,10)
+        .background("#FAFAFA")
+        .margin(0,0,0,20);
+      
       dayBlocks.push(dayBlock);
     }
 
