@@ -9,11 +9,16 @@ var widget = {
 
     for (let i = 0; i < 30; i++) {
 
-      let d = new Date(today.getTime() + i * 86400000);
-      let gdate = my.gdate(d);
+      let d = my.dateadd(today, i);
+      let datestr = d.toDateString();
 
       // --- หาเคสของวันนั้น ---
-      let cases = entries.filter(e => my.gdate(e.field("Date")) == gdate);
+      let cases = entries.filter(e => {
+        if (my.dateIsValid(e.field("Date"))) {
+          return e.field("Date").toDateString() == datestr;
+        }
+        return false;
+      });
 
       // --- วิเคราะห์สถานะวัน ---
       let hd = script.checkholiday(d);
@@ -35,8 +40,8 @@ var widget = {
       // -------------------------
       cases.sort((a, b) => {
         const order = { "LA": 0, "GA": 1 };
-        let t1 = order[a.field("ORType")] != null ? order[a.field("ORType")] : 99;
-        let t2 = order[b.field("ORType")] != null ? order[b.field("ORType")] : 99;
+        let t1 = order[a.field("ORType")] != undefined ? order[a.field("ORType")] : 99;
+        let t2 = order[b.field("ORType")] != undefined ? order[b.field("ORType")] : 99;
 
         if (t1 != t2) return t1 - t2;
         return (a.field("Que") || 999) - (b.field("Que") || 999);
