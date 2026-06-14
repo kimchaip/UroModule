@@ -95,7 +95,7 @@ var widget = {
       
         // Name
         line1.add(
-          textView(c.field("Name"))
+          textView(c.field("Patient")[0].title)
             .textSize(15)
             .textColor("#000000")
             .weight(1)
@@ -126,7 +126,7 @@ var widget = {
         );
       
         line2.add(
-          textView("Op: " + (c.field("Operation") || "-"))
+          textView("Op: " + (c.field("Op") || "-"))
             .textSize(13)
             .textColor("#616161")
             .weight(1)
