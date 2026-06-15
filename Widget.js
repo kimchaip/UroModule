@@ -6,9 +6,9 @@ var widget = {
     var entryCount = lb.entries().length;
     // return the entry count as a string
     ui().layout([
-      ui().text("Header");
-      ui().text("Total Entries: " + entryCount);
-      ui().text("end");
+      ui().text("Header"),
+      ui().text("Total Entries: " + entryCount),
+      ui().text("end")
     ])
   }
 };
