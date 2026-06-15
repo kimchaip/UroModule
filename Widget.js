@@ -2,13 +2,19 @@ var widget = {
 
   buildUpcomingORList : function (lb) {
 
-    // get the number of entries in the library
-    var entryCount = lb.entries().length;
-    // return the entry count as a string
+    let now = new Date();
+
     return ui().layout([
-      ui().text("Header"),
-      ui().text("Total Entries: " + entryCount),
-      ui().text("end")
+      ui().text("now = " + now),
+      ui().text("toDateString = " + now.toDateString()),
+      ui().text("ISO = " + now.toISOString()),
+      ui().text("Year = " + now.getFullYear()),
+      ui().text("Month = " + now.getMonth()),
+      ui().text("Date = " + now.getDate()),
+      ui().text("Timezone offset (min) = " + now.getTimezoneOffset())
     ])
+    // .orientation("vertical")
+    // .padding(20,20,20,20);
   }
 };
+
