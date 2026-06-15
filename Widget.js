@@ -43,7 +43,7 @@ var widget = {
       }
 
       // คำนวณ “อีกกี่วัน”
-      let diff = e.field("Future");
+      let diff = Math.floor((my.gdate(my.date(d))-my.gdate(my.date(today)))/86400000);
       let dayLeft = "";
 
       if (diff === 0) {
