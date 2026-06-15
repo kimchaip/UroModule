@@ -12,7 +12,5 @@ var widget = {
       ui().text("getDate = " + now.getDate()),
       ui().text("ISO = " + now.toISOString())
     ])
-    .orientation("vertical")
-    .padding(20,20,20,20);
   }
 };
