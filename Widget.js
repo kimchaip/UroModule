@@ -43,17 +43,17 @@ var widget = {
       }
 
       // คำนวณ “อีกกี่วัน”
-      let diff = Math.round((d - today) / (1000 * 60 * 60 * 24));
+      let diff = e.field("Future");
       let dayLeft = "";
 
       if (diff === 0) {
         dayLeft = "ผ่าตัดวันนี้";
       } else if (diff === 1) {
-        dayLeft = "อีก 1 วัน";
+        dayLeft = "ผ่าตัดพรุ่งนี้";
       } else if (diff > 1) {
         dayLeft = "อีก " + diff + " วัน";
       } else {
-        dayLeft = "ผ่าตัดวันนี้";
+        dayLeft = "ผ่านไปแล้ว";
       }
 
       // SORT: LA → GA, Que น้อย → มาก
@@ -88,7 +88,7 @@ var widget = {
       // ===== LA GROUP =====
       if (laCases.length > 0) {
         caseList.push(
-          ui().text("================== LA ==================")
+          ui().text("================= LA =================")
             .font({ size: 15, color: "white", style: "bold" })
         );
 
@@ -98,7 +98,7 @@ var widget = {
       // ===== GA GROUP =====
       if (gaCases.length > 0) {
         caseList.push(
-          ui().text("================== GA ==================")
+          ui().text("================= GA =================")
             .font({ size: 15, color: "white", style: "bold" })
         );
 
