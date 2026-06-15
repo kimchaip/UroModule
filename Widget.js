@@ -2,19 +2,19 @@ var widget = {
 
   buildUpcomingORList : function (lb) {
 
-    let now = new Date();
+    let items = lb.entries();
+    let uiList = [];
 
-    return ui().layout([
-      ui().text("now = " + now),
-      ui().text("toDateString = " + now.toDateString()),
-      ui().text("ISO = " + now.toISOString()),
-      ui().text("Year = " + now.getFullYear()),
-      ui().text("Month = " + now.getMonth()),
-      ui().text("Date = " + now.getDate()),
-      ui().text("Timezone offset (min) = " + now.getTimezoneOffset())
-    ])
-    // .orientation("vertical")
-    // .padding(20,20,20,20);
+    items.forEach(e => {
+      uiList.push(
+        ui().text(
+          "RAW Date = " + JSON.stringify(e.field("Date"))
+        ).textColor("#FF0000")
+      );
+    });
+
+    return ui().layout(uiList);
   }
 };
+
 
