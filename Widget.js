@@ -39,12 +39,22 @@ var widget = {
       // แจ้งเตือนถ้าวันอื่นมีเคส
       let warn = "";
       if (!isMonday && !isORExtra && cases.length > 0) {
-        warn = " ⚠ มีเคสวันนอกกลุ่มที่กำหนด";
+        warn = " ⚠ มี case นอกระบบ";
       }
 
       // คำนวณ “อีกกี่วัน”
       let diff = Math.round((d - today) / (1000 * 60 * 60 * 24));
-      let dayLeft = diff === 0 ? "วันนี้" : "อีก " + diff + " วัน";
+      let dayLeft = "";
+
+      if (diff === 0) {
+        dayLeft = "ผ่าตัดวันนี้";
+      } else if (diff === 1) {
+        dayLeft = "อีก 1 วัน";
+      } else if (diff > 1) {
+        dayLeft = "อีก " + diff + " วัน";
+      } else {
+        dayLeft = "ผ่าตัดวันนี้";
+      }
 
       // SORT: LA → GA, Que น้อย → มาก
       const order = { "LA": 0, "GA": 1 };
@@ -57,18 +67,16 @@ var widget = {
         return (a.field("Que") || 999) - (b.field("Que") || 999);
       });
 
-      // -------------------------
-      // Header + เส้นคั่นบน
-      // -------------------------
+      // Header + เส้นคั่นบน/ล่าง
       let header = ui().layout([
-        ui().text("================================").font({ size: 12, color: "white" }),
+        ui().text("================================").font({ size: 14, color: "white" }),
         ui().text(
           d.toDateString() +
           " | " + cases.length + " case(s)" +
           " | " + dayLeft +
           warn
-        ).font({ size: 14, color: "white", style: "bold" }),
-        ui().text("================================").font({ size: 12, color: "white" })
+        ).font({ size: 16, color: "white", style: "bold" }),
+        ui().text("================================").font({ size: 14, color: "white" })
       ]);
 
       // แบ่งกลุ่ม LA / GA
@@ -81,19 +89,19 @@ var widget = {
       if (laCases.length > 0) {
         caseList.push(
           ui().text("===== LA =====")
-            .font({ size: 13, color: "white", style: "bold" })
+            .font({ size: 15, color: "white", style: "bold" })
         );
-      
+
         laCases.forEach(c => caseList.push(makeCaseBlock(c)));
       }
-      
+
       // ===== GA GROUP =====
       if (gaCases.length > 0) {
         caseList.push(
           ui().text("===== GA =====")
-            .font({ size: 13, color: "white", style: "bold" })
+            .font({ size: 15, color: "white", style: "bold" })
         );
-      
+
         gaCases.forEach(c => caseList.push(makeCaseBlock(c)));
       }
 
@@ -107,12 +115,11 @@ var widget = {
 
 
 // -------------------------
-// ฟังก์ชันสร้างบล็อกเคสแบบอ่านง่าย
+// ฟังก์ชันสร้างบล็อกเคสแบบอ่านง่าย (ไม่มี ORType แล้ว)
 // -------------------------
 function makeCaseBlock(c) {
 
   let que = c.field("Que") || "-";
-  let type = c.field("ORType") || "-";
   let dx = c.field("Dx") || "-";
   let op = c.field("Op") || "-";
 
@@ -126,11 +133,12 @@ function makeCaseBlock(c) {
 
   return ui().layout([
     ui().text(
-      "#" + que + " | " + name + " | " + type
-    ).font({ size: 12, color: "white", style: "bold" }),
+      "#" + que + " | " + name
+    ).font({ size: 14, color: "white", style: "bold" }),
 
     ui().text(
       "Dx: " + dx + " | Op: " + op
-    ).font({ size: 12, color: "white" })
+    ).font({ size: 14, color: "white" })
   ]);
 }
+
