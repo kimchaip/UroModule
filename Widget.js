@@ -29,7 +29,7 @@ var widget = {
       // Header ของวัน
       // -------------------------
       let header = ui().text(
-        my.dateFormat(d, "dd MMM yyyy") + 
+        d.toDateString() + 
         "  |  " + cases.length + " case(s)"
       ).font({ size: 14, color: "white", style: "bold" });
 
@@ -49,12 +49,11 @@ var widget = {
         let p = c.field("Patient");
         let name = "-";
 
-        if (p) {
-          if (Array.isArray(p)) {
-            if (p.length > 0) name = p[0].title;
-          } else if (typeof p === "object") {
-            name = p.title || "-";
-          }
+        if (p && p.length > 0) {
+          name = p[0].title;
+        } 
+        else {
+          name = "-";
         }
 
         caseList.push(
