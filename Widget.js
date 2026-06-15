@@ -2,19 +2,17 @@ var widget = {
 
   buildUpcomingORList : function (lb) {
 
-    let items = lb.entries();
+    let entries = lb.entries();
     let uiList = [];
 
-    items.forEach(e => {
+    entries.forEach(e => {
       uiList.push(
         ui().text(
           "RAW Date = " + JSON.stringify(e.field("Date"))
-        ).textColor("#FF0000")
+        ).font({ size: 12, color: "red" })
       );
     });
 
     return ui().layout(uiList);
   }
 };
-
-
