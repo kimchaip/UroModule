@@ -57,13 +57,19 @@ var widget = {
         return (a.field("Que") || 999) - (b.field("Que") || 999);
       });
 
-      // Header ของวัน
-      let header = ui().text(
-        d.toDateString() +
-        " | " + cases.length + " case(s)" +
-        " | " + dayLeft +
-        warn
-      ).font({ size: 14, color: "white", style: "bold" });
+      // -------------------------
+      // Header + เส้นคั่นบน
+      // -------------------------
+      let header = ui().layout([
+        ui().text("================================").font({ size: 12, color: "white" }),
+        ui().text(
+          d.toDateString() +
+          " | " + cases.length + " case(s)" +
+          " | " + dayLeft +
+          warn
+        ).font({ size: 14, color: "white", style: "bold" }),
+        ui().text("================================").font({ size: 12, color: "white" })
+      ]);
 
       // แบ่งกลุ่ม LA / GA
       let laCases = cases.filter(c => c.field("ORType") === "LA");
@@ -74,25 +80,21 @@ var widget = {
       // ===== LA GROUP =====
       if (laCases.length > 0) {
         caseList.push(
-          ui().text("LA Cases").font({ size: 13, color: "white", style: "bold" })
+          ui().text("===== LA =====")
+            .font({ size: 13, color: "white", style: "bold" })
         );
-        caseList.push(
-          ui().text("--------------------------------").font({ size: 12, color: "white" })
-        );
-
-        laCases.forEach(c => caseList.push(makeCaseBlock(c, "green")));
+      
+        laCases.forEach(c => caseList.push(makeCaseBlock(c)));
       }
-
+      
       // ===== GA GROUP =====
       if (gaCases.length > 0) {
         caseList.push(
-          ui().text("GA Cases").font({ size: 13, color: "white", style: "bold" })
+          ui().text("===== GA =====")
+            .font({ size: 13, color: "white", style: "bold" })
         );
-        caseList.push(
-          ui().text("--------------------------------").font({ size: 12, color: "white" })
-        );
-
-        gaCases.forEach(c => caseList.push(makeCaseBlock(c, "yellow")));
+      
+        gaCases.forEach(c => caseList.push(makeCaseBlock(c)));
       }
 
       let block = ui().layout([header].concat(caseList));
@@ -105,9 +107,9 @@ var widget = {
 
 
 // -------------------------
-// ฟังก์ชันสร้างบล็อกเคสแบบอ่านง่าย + แท็กสี
+// ฟังก์ชันสร้างบล็อกเคสแบบอ่านง่าย
 // -------------------------
-function makeCaseBlock(c, colorTag) {
+function makeCaseBlock(c) {
 
   let que = c.field("Que") || "-";
   let type = c.field("ORType") || "-";
@@ -122,17 +124,13 @@ function makeCaseBlock(c, colorTag) {
     name = p[0].title;
   }
 
-  // แท็กสี
-  let tag = "[" + type + "]";
-
   return ui().layout([
     ui().text(
-      tag + "  #" + que + " | " + name
-    ).font({ size: 12, color: colorTag, style: "bold" }),
+      "#" + que + " | " + name + " | " + type
+    ).font({ size: 12, color: "white", style: "bold" }),
 
     ui().text(
       "Dx: " + dx + " | Op: " + op
     ).font({ size: 12, color: "white" })
   ]);
 }
-
