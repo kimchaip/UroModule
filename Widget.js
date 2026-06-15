@@ -69,14 +69,14 @@ var widget = {
 
       // Header + เส้นคั่นบน/ล่าง
       let header = ui().layout([
-        ui().text("================================").font({ size: 14, color: "white" }),
+        ui().text("==========================================").font({ size: 14, color: "white" }),
         ui().text(
           d.toDateString() +
           " | " + cases.length + " case(s)" +
           " | " + dayLeft +
           warn
         ).font({ size: 16, color: "white", style: "bold" }),
-        ui().text("================================").font({ size: 14, color: "white" })
+        ui().text("==========================================").font({ size: 14, color: "white" })
       ]);
 
       // แบ่งกลุ่ม LA / GA
@@ -88,7 +88,7 @@ var widget = {
       // ===== LA GROUP =====
       if (laCases.length > 0) {
         caseList.push(
-          ui().text("===== LA =====")
+          ui().text("================== LA ==================")
             .font({ size: 15, color: "white", style: "bold" })
         );
 
@@ -98,7 +98,7 @@ var widget = {
       // ===== GA GROUP =====
       if (gaCases.length > 0) {
         caseList.push(
-          ui().text("===== GA =====")
+          ui().text("================== GA ==================")
             .font({ size: 15, color: "white", style: "bold" })
         );
 
