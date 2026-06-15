@@ -58,8 +58,8 @@ var widget = {
       // -------------------------
       cases.sort((a, b) => {
         const order = { "LA": 0, "GA": 1 };
-        let t1 = order[a.field("ORType")] ?? 99;
-        let t2 = order[b.field("ORType")] ?? 99;
+        let t1 = order[a.field("ORType")] != undefined ? order[a.field("ORType")] : 99;
+        let t2 = order[b.field("ORType")] != undefined ? order[b.field("ORType")] : 99;
 
         if (t1 !== t2) return t1 - t2;
         return (a.field("Que") || 999) - (b.field("Que") || 999);
