@@ -2,15 +2,10 @@ var widget = {
 
   buildUpcomingORList : function (lb) {
 
-    let now = new Date();
+    // get the number of entries in the library
+    var entryCount = lb.entries().length;
+    // return the entry count as a string
+    "Total Entries: " + entryCount;
 
-    return ui().layout([
-      ui().text("JS Date = " + now),
-      ui().text("toDateString = " + now.toDateString()),
-      ui().text("getFullYear = " + now.getFullYear()),
-      ui().text("getMonth = " + now.getMonth()),
-      ui().text("getDate = " + now.getDate()),
-      ui().text("ISO = " + now.toISOString())
-    ])
   }
 };
