@@ -6,7 +6,7 @@ var widget = {
     const today = new Date();
     let dayBlocks = [];
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 90; i++) {
 
       let d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
       let dstr = d.toDateString();
