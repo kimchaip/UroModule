@@ -67,7 +67,7 @@ var script = {
   calcOpMinutes : function(entries, isORExtra) {
     return entries.reduce((t,a)=>{
       let base = a.field("OpLength");
-      let bufferGA = isORExtra ? 900000 : 1800000;   // GA 15 vs 30 นาที
+      let bufferGA = isORExtra ? 900000 : 2700000;   // GA 15 vs 45 นาที
       let bufferLA = 600000;  // LA 10 นาที
       let buffer = a.field("ORType") == "GA" ? bufferGA : bufferLA;
       return t + base + buffer;
@@ -163,7 +163,7 @@ var script = {
       );
 
       let totalMin = this.calcOpMinutes(cases, false);
-      let cutoff = 6*60 + 30;   // 9.00-15.00 = 6.00
+      let cutoff = 6*60;   // 9.00-15.00 = 6.00
 
       if(totalMin <= cutoff) {
         return { date:new Date(checkDate), totalMin };
