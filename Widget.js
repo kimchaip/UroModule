@@ -91,8 +91,20 @@ var widget = {
         status = "setได้";
         color = "green";
       }
+
+      // ถ้ามี case นอกระบบ → ไม่ต้องแสดง status
+      let statusText = "";
+      if (warn === "") {
+        statusText = ui().text("[" + status + "]")
+                        .font({ size: 16, color: statusColor, style: "bold" });
+      } else {
+        statusText = ui().text("")  // ไม่แสดงอะไรเลย
+                        .font({ size: 16, color: "white" });
+      }
       
-      // Header + เส้นคั่นบน/ล่าง
+      // -------------------------
+      // Header 2 แถว + เส้นคั่น
+      // -------------------------
       let header = ui().layout([
         ui().text("==========================================").font({ size: 14, color: "white" }),
         
@@ -101,10 +113,12 @@ var widget = {
           d.toDateString() +
           " | " + cases.length + " case(s)").font({ size: 16, color: "white", style: "bold" }),
           
-        // แถว 2: อีกกี่วัน + นอกระบบ + สถานะสี
-        ui().text(
-          dayLeft + "   " + warn + "   [" + status + "]"
-        ).font({ size: 16, color: color, style: "bold" }),
+        // แถว 2: อีกกี่วัน + นอกระบบ + status (เฉพาะคำ)
+        ui().layout([
+          ui().text(dayLeft).font({ size: 16, color: "white" }),
+          ui().text(warn).font({ size: 16, color: "yellow" }),
+          statusText
+        ]).horizontal(),
         
         ui().text("==========================================").font({ size: 14, color: "white" })
       ]);
