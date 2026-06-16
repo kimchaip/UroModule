@@ -96,7 +96,7 @@ var widget = {
       let statusText = "";
       if (warn === "") {
         statusText = ui().text("[" + status + "]")
-                        .font({ size: 16, color: statusColor, style: "bold" });
+                        .font({ size: 16, color: color, style: "bold" });
       } else {
         statusText = ui().text("")  // ไม่แสดงอะไรเลย
                         .font({ size: 16, color: "white" });
