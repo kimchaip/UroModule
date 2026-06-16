@@ -118,9 +118,8 @@ var widget = {
           ui().text(dayLeft).font({ size: 16, color: "white" }),
           ui().text(warn).font({ size: 16, color: "yellow" }),
           statusText
-        ]).horizontal(),
+        ]).horizontal()
         
-        ui().text("==========================================").font({ size: 14, color: "white" })
       ]);
 
       // แบ่งกลุ่ม LA / GA
