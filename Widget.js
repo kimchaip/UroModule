@@ -28,17 +28,19 @@ var widget = {
 
       let isMonday = (d.getDay() === 1);
       let isORExtra = hinfo.orExtra;
+      let isHoliday = hinfo.holiday;
+      let isBanned = hinfo.banned;
 
       let shouldShow = false;
       if (isMonday) shouldShow = true;
-      if (isORExtra) shouldShow = true;
+      if (isORExtra && !isBanned) shouldShow = true;
       if (cases.length > 0) shouldShow = true;
 
       if (!shouldShow) continue;
 
       // แจ้งเตือนถ้าวันอื่นมีเคส
       let warn = "";
-      if (!isMonday && !isORExtra && cases.length > 0) {
+      if (((!isMonday && !isORExtra) || (isBanned || isHoliday)) && cases.length > 0) {
         warn = " ⚠ มี case นอกระบบ";
       }
 
@@ -67,15 +69,43 @@ var widget = {
         return (a.field("Que") || 999) - (b.field("Que") || 999);
       });
 
+      // -------------------------
+      // คำนวณสถานะ OR
+      // -------------------------
+      let totalMin = script.calcOpMinutes(cases, hinfo.orExtra);
+      let totalHr = totalMin / 60;
+
+      let limitAlmost = isMonday ? 5.5 : 7.0;
+      let limitFull   = isMonday ? 6.0 : 7.5;
+
+      let status = "";
+      let color = "white";
+
+      if (totalHr >= limitFull) {
+        status = "เต็มแล้ว";
+        color = "red";
+      } else if (totalHr >= limitAlmost) {
+        status = "เกือบเต็ม";
+        color = "orange";
+      } else {
+        status = "setได้";
+        color = "green";
+      }
+      
       // Header + เส้นคั่นบน/ล่าง
       let header = ui().layout([
         ui().text("==========================================").font({ size: 14, color: "white" }),
+        
+        // แถว 1: วันที่ + จำนวนเคส
         ui().text(
           d.toDateString() +
-          " | " + cases.length + " case(s)" +
-          " | " + dayLeft +
-          warn
-        ).font({ size: 16, color: "white", style: "bold" }),
+          " | " + cases.length + " case(s)").font({ size: 16, color: "white", style: "bold" }),
+          
+        // แถว 2: อีกกี่วัน + นอกระบบ + สถานะสี
+        ui().text(
+          dayLeft + "   " + warn + "   [" + status + "]"
+        ).font({ size: 16, color: color, style: "bold" }),
+        
         ui().text("==========================================").font({ size: 14, color: "white" })
       ]);
 
