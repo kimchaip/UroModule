@@ -125,7 +125,7 @@ var script = {
       );
 
       let totalMin = this.calcOpMinutes(cases, true);
-      let cutoff = 7*60;   // 8.30-15.30 = 7.00
+      let cutoff = 7*60+30;   // 8.30-16.00 = 7.30
 
       if(totalMin <= cutoff) {
         return { date:new Date(checkDate), totalMin };
@@ -163,7 +163,7 @@ var script = {
       );
 
       let totalMin = this.calcOpMinutes(cases, false);
-      let cutoff = 5*60 + 30;   // 9.00-14.30 = 5.30
+      let cutoff = 6*60 + 30;   // 9.00-15.00 = 6.00
 
       if(totalMin <= cutoff) {
         return { date:new Date(checkDate), totalMin };
