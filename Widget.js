@@ -95,7 +95,7 @@ var widget = {
       // ถ้ามี case นอกระบบ → ไม่ต้องแสดง status
       let statusText = "";
       if (warn === "") {
-        statusText = ui().text("[" + status + "]")
+        statusText = ui().text(" [" + status + "]")
                         .font({ size: 16, color: color, style: "bold" });
       } else {
         statusText = ui().text("")  // ไม่แสดงอะไรเลย
@@ -106,7 +106,7 @@ var widget = {
       // Header 2 แถว + เส้นคั่น
       // -------------------------
       let header = ui().layout([
-        ui().text("==========================================").font({ size: 14, color: "white" }),
+        ui().text("=======================================").font({ size: 15, color: "white", style: "bold" }),
         
         // แถว 1: วันที่ + จำนวนเคส
         ui().text(
