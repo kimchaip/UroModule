@@ -131,7 +131,7 @@ var widget = {
       // ===== LA GROUP =====
       if (laCases.length > 0) {
         caseList.push(
-          ui().text("------------------ LA ------------------")
+          ui().text("--------------------- LA ---------------------")
             .font({ size: 15, color: "white", style: "bold" })
         );
 
@@ -141,7 +141,7 @@ var widget = {
       // ---== GA GROUP ---==
       if (gaCases.length > 0) {
         caseList.push(
-          ui().text("------------------ GA ------------------")
+          ui().text("--------------------- GA ---------------------")
             .font({ size: 15, color: "white", style: "bold" })
         );
 
