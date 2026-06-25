@@ -546,7 +546,7 @@ var dxop = {
     }
     
     let oplength = fill.oplength(e);
-    e.set("OpLength", oplength ? oplength : opList.field("Optime"));
+    e.set("OpLength", oplength != null ? oplength : opList.field("Optime"));
   },
   updatelink : function (e, found, create) {
     if(e.field(this.lib).length>0) {
