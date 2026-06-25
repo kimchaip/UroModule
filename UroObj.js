@@ -526,8 +526,6 @@ var dxop = {
     return found?found:null;
   },
   autofill : function (e) {
-    if (this.lib != opo.lib) return;
-
     let opLinks = e.field(opo.lib);
     if (opLinks.length == 0) return;
 
