@@ -1,6 +1,6 @@
 var white = "#f5f4f0";
 var red = "#ea3d2d";
-var orange = "#f5f4f0";
+var orange = "#ffc247";
 var green = "#69BE86";
 var blue = "#2596be";
 var yellow = "#f2d76b";
@@ -139,20 +139,20 @@ var widget = {
       if (laCases.length > 0) {
         caseList.push(
           ui().text("------------------------- LA -------------------------")
-            .font({ size: 15, color: white, style: "bold" })
+            .font({ size: 15, color: green, style: "bold" })
         );
 
-        laCases.forEach(c => caseList.push(makeCaseBlock(c)));
+        laCases.forEach(c => caseList.push(makeCaseBlock(c, green)));
       }
 
       // ---== GA GROUP ---==
       if (gaCases.length > 0) {
         caseList.push(
           ui().text("------------------------- GA -------------------------")
-            .font({ size: 15, color: white, style: "bold" })
+            .font({ size: 15, color: yellow, style: "bold" })
         );
 
-        gaCases.forEach(c => caseList.push(makeCaseBlock(c)));
+        gaCases.forEach(c => caseList.push(makeCaseBlock(c, yellow)));
       }
 
       let block = ui().layout([header].concat(caseList));
@@ -167,7 +167,7 @@ var widget = {
 // -------------------------
 // ฟังก์ชันสร้างบล็อกเคสแบบอ่านง่าย (ไม่มี ORType แล้ว)
 // -------------------------
-function makeCaseBlock(c) {
+function makeCaseBlock(c, color) {
 
   let que = c.field("Que") || "-";
   let dx = c.field("Dx") || "-";
@@ -182,9 +182,10 @@ function makeCaseBlock(c) {
   }
 
   return ui().layout([
-    ui().text(
-      "#" + que + " | " + name
-    ).font({ size: 14, color: white, style: "bold" }),
+    ui().layout([
+      ui().text("#" + que).font({ size: 14, color: color, style: "bold" }),
+      ui().text(" | " + name).font({ size: 14, color: white, style: "bold" })
+    ]).horizontal(),
 
     ui().text(
       "Dx: " + dx + " | Op: " + op
