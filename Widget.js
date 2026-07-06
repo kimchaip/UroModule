@@ -1,3 +1,8 @@
+var white = "#f5f4f0";
+var red = "#ea3d2d";
+var orange = "#2596be";
+var green = "#69BE86";
+
 var widget = {
 
   buildUpcomingORList : function (lb) {
@@ -77,19 +82,19 @@ var widget = {
 
       let limitAlmost = isMonday ? 5.5 : 7.0;
       let limitFull   = isMonday ? 6.0 : 7.5;
-
+      
       let status = "";
-      let color = "white";
+      let color = white;
 
       if (totalHr >= limitFull) {
         status = "เต็มแล้ว";
-        color = "red";
+        color = red;
       } else if (totalHr >= limitAlmost) {
         status = "เกือบเต็ม";
-        color = "orange";
+        color = orange;
       } else {
         status = "setได้";
-        color = "green";
+        color = green;
       }
 
       // ถ้ามี case นอกระบบ → ไม่ต้องแสดง status
@@ -99,23 +104,23 @@ var widget = {
                         .font({ size: 16, color: color, style: "bold" });
       } else {
         statusText = ui().text("")  // ไม่แสดงอะไรเลย
-                        .font({ size: 16, color: "white" });
+                        .font({ size: 16, color: white });
       }
       
       // -------------------------
       // Header 2 แถว + เส้นคั่น
       // -------------------------
       let header = ui().layout([
-        ui().text("\n=======================================").font({ size: 15, color: "white", style: "bold" }),
+        ui().text("\n=======================================").font({ size: 15, color: white, style: "bold" }),
         
         // แถว 1: วันที่ + จำนวนเคส
         ui().text(
           d.toDateString() +
-          " | " + cases.length + " case(s)").font({ size: 16, color: "white", style: "bold" }),
+          " | " + cases.length + " case(s)").font({ size: 16, color: white, style: "bold" }),
           
         // แถว 2: อีกกี่วัน + นอกระบบ + status (เฉพาะคำ)
         ui().layout([
-          ui().text(dayLeft).font({ size: 16, color: "white" }),
+          ui().text(dayLeft).font({ size: 16, color: white }),
           ui().text(warn).font({ size: 16, color: "yellow" }),
           statusText
         ]).horizontal()
@@ -132,7 +137,7 @@ var widget = {
       if (laCases.length > 0) {
         caseList.push(
           ui().text("------------------------- LA -------------------------")
-            .font({ size: 15, color: "white", style: "bold" })
+            .font({ size: 15, color: white, style: "bold" })
         );
 
         laCases.forEach(c => caseList.push(makeCaseBlock(c)));
@@ -142,7 +147,7 @@ var widget = {
       if (gaCases.length > 0) {
         caseList.push(
           ui().text("------------------------- GA -------------------------")
-            .font({ size: 15, color: "white", style: "bold" })
+            .font({ size: 15, color: white, style: "bold" })
         );
 
         gaCases.forEach(c => caseList.push(makeCaseBlock(c)));
@@ -177,11 +182,11 @@ function makeCaseBlock(c) {
   return ui().layout([
     ui().text(
       "#" + que + " | " + name
-    ).font({ size: 14, color: "white", style: "bold" }),
+    ).font({ size: 14, color: white, style: "bold" }),
 
     ui().text(
       "Dx: " + dx + " | Op: " + op
-    ).font({ size: 14, color: "white" })
+    ).font({ size: 14, color: white })
   ]);
 }
 
