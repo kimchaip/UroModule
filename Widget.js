@@ -122,7 +122,7 @@ var widget = {
           
         // แถว 2: อีกกี่วัน + นอกระบบ + status (เฉพาะคำ)
         ui().layout([
-          ui().text(dayLeft).font({ size: 16, color: white }),
+          ui().text(dayLeft).font({ size: 16, color: blue }),
           ui().text(warn).font({ size: 16, color: yellow }),
           statusText
         ]).horizontal()
