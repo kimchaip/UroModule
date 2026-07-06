@@ -1,7 +1,9 @@
 var white = "#f5f4f0";
 var red = "#ea3d2d";
-var orange = "#2596be";
+var orange = "#f5f4f0";
 var green = "#69BE86";
+var blue = "#2596be";
+var yellow = "#f2d76b";
 
 var widget = {
 
@@ -111,17 +113,17 @@ var widget = {
       // Header 2 แถว + เส้นคั่น
       // -------------------------
       let header = ui().layout([
-        ui().text("\n=======================================").font({ size: 15, color: white, style: "bold" }),
+        ui().text("\n=======================================").font({ size: 15, color: blue, style: "bold" }),
         
         // แถว 1: วันที่ + จำนวนเคส
         ui().text(
           d.toDateString() +
-          " | " + cases.length + " case(s)").font({ size: 16, color: white, style: "bold" }),
+          " | " + cases.length + " case(s)").font({ size: 16, color: blue, style: "bold" }),
           
         // แถว 2: อีกกี่วัน + นอกระบบ + status (เฉพาะคำ)
         ui().layout([
           ui().text(dayLeft).font({ size: 16, color: white }),
-          ui().text(warn).font({ size: 16, color: "yellow" }),
+          ui().text(warn).font({ size: 16, color: yellow }),
           statusText
         ]).horizontal()
         
