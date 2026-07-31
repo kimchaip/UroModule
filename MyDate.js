@@ -5,7 +5,7 @@ var my = {
     return value instanceof Date && !isNaN(value)
   },
   isDateStr : function(value) {
-    return typeof value == "string" && new Date(date) instanceof Date
+    return typeof value == "string" && new Date(value) instanceof Date
   },
   dateIsValid : function(value) {
     return value instanceof Date && !isNaN(value) && value.getTime()>86400000;
