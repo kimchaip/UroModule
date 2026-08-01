@@ -2591,7 +2591,13 @@ var trig = {
     old.save.call(opo, e);
   }, 
   HDBeforeEdit : function (e, value) {
-    
+    if(e.field("AllDay")) {
+        if(e.field("EndDate").toDateString() == e.field("Date").toDateString()) {
+            e.set("EndDate", my.dateadd(e.field("Date"), 1));
+        }
+        e.set("StartTime", new Date().setTime(61200000));
+        e.set("EndTime", new Date().setTime(61200000));
+    }
   }, 
   HDAfterEdit : function (e, value) {
     if(value == "create") {
