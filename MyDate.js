@@ -32,7 +32,7 @@ var my = {
   dateadd : function (value, add)  {
     value = this.date(value);
     if (value) {
-      this.d = new Date(value.getTime() + (add*86400000))​;
+      this.d = new Date(value.getFullYear(), value.getMonth(), value.getDate() + add, value.getHours())​;
     }
     else {
       this.d = null;
@@ -83,6 +83,25 @@ var my = {
     else {
       return "";
     }
+  },
+  compDate : function(date1, date2) {
+    if (this.isDate(date1) && this.isDate(date2)) {
+      if (date1.getFullYear() < date2.getFullYear())
+        return -1;
+      else if (date1.getFullYear() > date2.getFullYear()) 
+        return 1;
+      else if (date1.getMonth() < date2.getMonth())
+        return -1;
+      else if (date1.getMonth() > date2.getMonth())
+        return 1;
+      else if (date1.getDate() < date2.getDate())
+        return -1;
+      else if (date1.getDate() > date2.getDate())
+        return 1;
+      else
+        return 0;
+    }
+    return undefined;
   }
 }​;
 
