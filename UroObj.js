@@ -1135,8 +1135,8 @@ var fill = {
     
     if(opresult) {
       if(this.lib!="Consult") {
-        if(my.gdate(e.field("Date"))<=ntoday) {
-          let d = Math.floor((ntoday-my.gdate(e.field("Date")))/86400000);
+        if(my.compDate(e.field("Date"), today) != more) {
+          let d = my.diffDate(today, e.field("Date")).day;
           let found = opresult.match(/today\s?[+-]?[\d\s]+/ig);
           if (found) {
             let txtarr = found.map((v, i)=>{
@@ -1151,8 +1151,8 @@ var fill = {
         }
       }
       else {
-        if(my.gdate(e.field("VisitDate"))<=ntoday) {
-          let d = Math.floor((ntoday-my.gdate(e.field("VisitDate")))/86400000);
+        if(my.compDate(e.field("VisitDate"), today) != more) {
+          let d = my.diffDate(today, e.field("VisitDate")).day;
           let found = opresult.match(/today\s?[+-]?[\d\s]+/ig);
           if (found) {
             let txtarr = found.map((v, i)=>{
@@ -1176,11 +1176,11 @@ var fill = {
     fill.djbyresult.call(this, e);
   },
   track : function (e) {
-    if (!this.notdone && e.field("VisitType")=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && e.field("DischargeDate") == null && e.field("Summary") == true && old.field("Summary") == false) {
+    if (!this.notdone && e.field("VisitType")=="Admit" && my.compDate(e.field("VisitDate"), today) != more  && e.field("DischargeDate") == null && e.field("Summary") == true && old.field("Summary") == false) {
       e.set("Track", 3);
       e.set("DischargeDate", today);
     }
-    else if (!this.notdone && e.field("VisitType")=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate") == null || my.gdate(e.field("DischargeDate")) > ntoday) ) {//Admit
+    else if (!this.notdone && e.field("VisitType")=="Admit" && my.compDate(e.field("VisitDate"), today) != more && (e.field("DischargeDate") == null || my.compDate(e.field("DischargeDate"), today) == more ) ) {//Admit
       if (e.field("Track") == 0) {
         e.set("Track", 1) ;
       }
@@ -1189,11 +1189,11 @@ var fill = {
       }
       e.set("DischargeDate", null);
     }
-    else if (!this.notdone && e.field("VisitType")=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && my.gdate(e.field("DischargeDate")) <= ntoday ) { // D/C
+    else if (!this.notdone && e.field("VisitType")=="Admit" && my.compDate(e.field("VisitDate"), today) != more && my.compDate(e.field("DischargeDate"), today) != more ) { // D/C
       e.set("Track", 3) ;
       e.set("Summary", true);
     }
-    else if (e.field("VisitType")=="Admit" && my.gdate(e.field("VisitDate")) > ntoday) { // future
+    else if (e.field("VisitType")=="Admit" && my.compDate(e.field("VisitDate"), today) == more) { // future
       e.set("Track", 0) ;
       e.set("DischargeDate", null);
     }
@@ -1238,11 +1238,11 @@ var fill = {
     if(this.notdone) {
       diff = null;
     }
-    else if (e.field("VisitDate") != null && e.field("DischargeDate") != null && my.gdate(e.field("DischargeDate"))>=my.gdate(e.field("VisitDate"))) {
-      diff = Math.floor((my.gdate(e.field("DischargeDate"))-my.gdate(e.field("VisitDate")))/86400000);
+    else if (e.field("VisitDate") != null && e.field("DischargeDate") != null && my.compDate(e.field("VisitDate"), e.field("DischargeDate")) != more ) {
+      diff = my.diffDate(e.field("DischargeDate"), e.field("VisitDate")).day;
     }
-    else if(e.field("VisitDate") != null && e.field("DischargeDate") == null && ntoday>=my.gdate(e.field("VisitDate"))){
-      diff = Math.floor((ntoday-my.gdate(e.field("VisitDate")))/86400000);
+    else if(e.field("VisitDate") != null && e.field("DischargeDate") == null && my.compDate(e.field("VisitDate"), today) != more){
+      diff = my.diffDate(today, e.field("VisitDate")).day;
     }
     else {
       diff = null;
@@ -1362,8 +1362,8 @@ var fill = {
         links[0].set("NextDescript", str);
         links[0].set("NextVisit", o[0].e.field("VisitDate"));
 
-        let vsdiff = Math.floor((my.gdate(o[0].e.field("VisitDate"))-ntoday)/86400000);
-        if(vsdiff>=0 && vsdiff<8) {
+        let vsdiff = my.diffDate(o[0].e.field("VisitDate"), today).day;
+        if(my.compDate(o[0].e.field("VisitDate"), today) != less && vsdiff<8) {
           links[0].set("Descript", str);
         }
       }
@@ -1377,11 +1377,11 @@ var fill = {
       let ptent = links[0];
       o = o.filter(v=>v.lib!="Consult" && v.e.field("Status")!="Not");
       n = n.filter(v=>v.lib!="Consult" && v.e.field("Status")!="Not");
-      if(o.length>0 && (my.gdate(ptent.field("WardStamp"))<=ntoday) && ((ptent.field("LastDischarge")==null) || (ntoday < my.gdate(ptent.field("LastDischarge")))) ) { // admit or OPD OR LA
-        ptent.set("OpDiff", Math.floor((my.gdate(o[0].e.field("Date"))-ntoday)/86400000));
+      if(o.length>0 && my.compDate(ptent.field("WardStamp"), today) != more && ((ptent.field("LastDischarge")==null) || my.compDate(today, ptent.field("LastDischarge") == less)) ) { // admit or OPD OR LA
+        ptent.set("OpDiff", my.diffDate(o[0].e.field("Date"), today).day * -1);
       }
       else if(n.length>0) { // found next visit
-        ptent.set("OpDiff", Math.floor((my.gdate(n[0].e.field("Date"))-ntoday)/86400000));
+        ptent.set("OpDiff", my.diffDate(o[0].e.field("Date"), today).day);
       }
       else { // pass last admit, or no visit
         ptent.set("OpDiff", -1000);
@@ -1453,15 +1453,16 @@ var fill = {
     }
   },
   future : function(e){
-    if(my.gdate(e.field(this.opdate))>=ntoday)
-      e.set("Future", Math.floor((my.gdate(e.field(this.opdate))-ntoday)/86400000));
+    if(my.compDate(e.field(this.opdate), today) != less)
+      e.set("Future", my.diffDate(e.field(this.opdate), today).day);
     else
       e.set("Future", null);
   },
   active : function(e){
-    if( !this.notdone && ( (e.field("VisitType")=="Admit" && my.gdate(e.field("VisitDate")) <= ntoday && (e.field("DischargeDate") == null || my.gdate(e.field("DischargeDate")) > ntoday)) || (e.field("VisitType")=="OPD" && my.gdate(e.field("VisitDate")) == ntoday) ) ) {//Admit or OPD visit today
+    if( !this.notdone && ( (e.field("VisitType")=="Admit" && my.compDate(e.field("VisitDate"), today) != more) || 
+                            (e.field("VisitType")=="OPD" && my.compDate(e.field("VisitDate"), today) == equal) ) ) {//Admit or OPD visit today
       if (e.field("VisitType")=="Admit") {
-        e.set("Active", Math.floor((ntoday-my.gdate(e.field("VisitDate")))/86400000));
+        e.set("Active", my.diffDate(today, e.field("VisitDate")).day);
       }
       else if (e.field("VisitType")=="OPD") {
         e.set("Active", 0);
