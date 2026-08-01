@@ -1,3 +1,7 @@
+
+var more = 1;
+var less = -1;
+var equal = 0;
 var my = {
   d : null, 
   nd : 0,
@@ -77,27 +81,33 @@ var my = {
   compDate : function(date1, date2) {
     if (this.isDate(date1) && this.isDate(date2)) {
       if (date1.getFullYear() < date2.getFullYear())
-        return -1;
+        return less;
       else if (date1.getFullYear() > date2.getFullYear()) 
-        return 1;
+        return more;
       else if (date1.getMonth() < date2.getMonth())
-        return -1;
+        return less;
       else if (date1.getMonth() > date2.getMonth())
-        return 1;
+        return more;
       else if (date1.getDate() < date2.getDate())
-        return -1;
+        return less;
       else if (date1.getDate() > date2.getDate())
-        return 1;
+        return more;
       else
-        return 0;
+        return equal;
     }
     return undefined;
+  },
+  function diffDate(d1, d2) {
+    const ms = d2 > d1 ? d2 - d1 : d1 - d2;                     // difference in milliseconds
+    const sec = ms / 1000;
+    const min = sec / 60;
+    const hr  = min / 60;
+    const day = hr / 24;
+  
+    return { ms, sec, min, hr, day };
   }
 }​;
 
 var today = my.date(new Date())​;
 var ntoday = my.gdate(today);​
 var hour = new Date().getHours();
-var more = 1;
-var less = -1;
-var equal = 0;
