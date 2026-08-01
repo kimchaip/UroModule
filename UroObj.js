@@ -242,8 +242,8 @@ var mer = {
       else {  // inx>0: cancel child
         if (this.lib!="Consult") {
           // Child : e=normal, o=old parent
-          if (my.gdate(e.field("VisitDate"))<my.gdate(my.dateminus(e.field("Date"), 1)))
-            e.set("VisitDate", my.dateminus(e.field("Date"), 1));
+          if (my.compDate(e.field("VisitDate"), my.dateadd(e.field("Date"), -1)) == less)
+            e.set("VisitDate", my.dateadd(e.field("Date"), -1));
           // Parent+other child : e=normal, o=old parent
           if (l=="Consult" && o.field("Rx")=="set "+e.field("Op")) {
             if (mer.m.length>1 && mer.m[1].lib!="Consult" && mer.m[1].e.field("Op")) {
@@ -258,9 +258,9 @@ var mer = {
         }
         else {// Consult
           // Child : e=normal, o=old parent
-          e.set("VisitDate", my.dateminus(e.field("ConsultDate"), 1));
+          e.set("VisitDate", my.dateadd(e.field("ConsultDate"), -1));
         }
-        if (my.gdate(e.field("VisitDate"))>ntoday) {
+        if (my.compDate(e.field("VisitDate"), today) == more) {
           e.set("Ward", e.field("VisitType")=="Admit"?"Uro":"OPD");
           e.set("DischargeDate", null);
           e.set("Track", 0);
@@ -880,21 +880,21 @@ var fill = {
   } ,
   setvisitdate : function (e) {
     if(this.lib!="Consult") {
-      if(e.field("ORType") == "LA" && e.field("VisitType") == "OPD" && (my.gdate(e.field("VisitDate")) != my.gdate(e.field(this.opdate)) || !e.field("VisitDate"))) {
+      if(e.field("ORType") == "LA" && e.field("VisitType") == "OPD" && (my.compDate(e.field("VisitDate"), e.field(this.opdate)) != equal || !e.field("VisitDate"))) {
         e.set("VisitDate", e.field(this.opdate));
       }
-      else if(e.field("ORType") == "LA" && e.field("VisitType") == "Admit" && (my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate)) || !e.field("VisitDate"))) {
+      else if(e.field("ORType") == "LA" && e.field("VisitType") == "Admit" && (my.compDate(e.field("VisitDate"), e.field(this.opdate)) == more || !e.field("VisitDate"))) {
         e.set("VisitDate", e.field(this.opdate));
       }
-      else if(e.field("ORType") == "GA" && e.field("VisitType") == "Admit" && (my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate)) || !e.field("VisitDate"))) {
-        e.set("VisitDate", my.dateminus(e.field(this.opdate), 1));
+      else if(e.field("ORType") == "GA" && e.field("VisitType") == "Admit" && (my.compDate(e.field("VisitDate"), e.field(this.opdate)) == more || !e.field("VisitDate"))) {
+        e.set("VisitDate", my.dateadd(e.field(this.opdate), -1));
       }
     }
     else { // this.lib == "Consult"
-      if(e.field("VisitType") == "OPD" && (my.gdate(e.field("VisitDate")) != my.gdate(e.field(this.opdate)) || !e.field("VisitDate"))) {
+      if(e.field("VisitType") == "OPD" && (my.compDate(e.field("VisitDate"), e.field(this.opdate)) != equal || !e.field("VisitDate"))) {
         e.set("VisitDate", e.field(this.opdate));
       }
-      else if(e.field("VisitType") == "Admit" && (my.gdate(e.field("VisitDate")) > my.gdate(e.field(this.opdate)) || !e.field("VisitDate"))) {
+      else if(e.field("VisitType") == "Admit" && (my.compDate(e.field("VisitDate"), e.field(this.opdate)) == more || !e.field("VisitDate"))) {
         e.set("VisitDate", e.field(this.opdate));
       }
     }
@@ -936,7 +936,7 @@ var fill = {
     let links = e.field("Patient");
     if(links.length && !e.field("PastHx")){
       let ptent = pt.findById(links[0].id) ;
-      e.set("PastHx", fill.sumpasthx(ptent, my.dateminus(e.field(this.opdate), 1)));
+      e.set("PastHx", fill.sumpasthx(ptent, my.dateadd(e.field(this.opdate), -1)));
     }
   },
   ortypebyop : function (e) {
@@ -1862,7 +1862,7 @@ var uro = {
         }
         else { // this entry is on DJ, must check last DJStamp before
           let ptent = pt.findById(links[0].id) ;
-          let d = pto.lastDJStamp(ptent, my.dateminus(e.field("Date"), 1)) ;
+          let d = pto.lastDJStamp(ptent, my.dateadd(e.field("Date"), -1)) ;
           if (d != null && d.field("DJstent") != "off DJ") { // ever on or change DJ before -> get only off or change DJ
             if (e.field("DJstent") == "on DJ") 
               e.set("DJstent", null) ;
