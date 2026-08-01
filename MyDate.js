@@ -39,16 +39,6 @@ var my = {
     }
     return this.d;
   },
-  dateminus : function (value, minus)  {
-    value = this.date(value);
-    if (value) {
-      this.d = new Date(value.getTime() -​ (minus*86400000))​;
-    }
-    else {
-      this.d = null;
-    }
-    return this.d;
-  }, 
   gdate : function (value)  {
     if (value) {
       this.nd = value.getTime()​;
