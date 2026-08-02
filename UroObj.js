@@ -1839,11 +1839,11 @@ var uro = {
         if(e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ")
           e.set("DJstent", null);
       }
-      else if (e.field("Date") > links[0].field("DJStamp") && my.gdate(e.field("Date")) > ntoday) { // ever DJStamp, future entry
+      else if (my.compDate(e.field("Date"), links[0].field("DJStamp")) == more && my.compDate(e.field("Date"), today) == more) { // ever DJStamp, future entry
         if (e.field("DJstent"))
           e.set("DJstent", null) ;
       }
-      else if (e.field("Date") > links[0].field("DJStamp") && my.gdate(e.field("Date")) <= ntoday) { // ever DJStamp, after Stamp but not future entry
+      else if (my.compDate(e.field("Date"), links[0].field("DJStamp")) == more && my.compDate(e.field("Date"), today) != more) { // ever DJStamp, after Stamp but not future entry
         if (!links[0].field("DJstent")) {// ever off DJ, get only on DJ
           if (e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ")
             e.set("DJstent", null) ;
@@ -2312,7 +2312,7 @@ var trig = {
   DailyChildUpdate : function (all) {
     let change = false;
     for (let i=0; i<all.length; i++) {
-      if (my.gdate(all[i].lastModifiedTime) < ntoday) {
+      if (my.compDate(all[i].lastModifiedTime, today) == less) {
         if (all[i].field("Done")==true) 
           all[i].set("Done", false);
       }
@@ -2324,12 +2324,12 @@ var trig = {
           end = my.dateadd(all[i].field(this.opdate),1);
         else if (all[i].field("VisitType")=="Admit" && all[i].field("DischargeDate")==null)
           end = today;
-        else if (my.gdate(all[i].field("DischargeDate"))<my.gdate(all[i].field(this.opdate)))
+        else if (my.compDate(all[i].field("DischargeDate"), all[i].field(this.opdate) == less))
           end = my.dateadd(all[i].field(this.opdate),1);
         else
           end = my.dateadd(all[i].field("DischargeDate"),1);
 
-        if (ntoday <= my.gdate(end)) { 
+        if (compDate(today, end) != more) { 
           fill.future.call(this, all[i]);
           fill.track.call(this, all[i]);
           fill.los.call(this, all[i]);
