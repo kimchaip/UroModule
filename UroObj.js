@@ -1381,7 +1381,7 @@ var fill = {
         ptent.set("OpDiff", my.diffDate(o[0].e.field("Date"), today).day * -1);
       }
       else if(n.length>0) { // found next visit
-        ptent.set("OpDiff", my.diffDate(o[0].e.field("Date"), today).day);
+        ptent.set("OpDiff", my.diffDate(n[0].e.field("Date"), today).day);
       }
       else { // pass last admit, or no visit
         ptent.set("OpDiff", -1000);
