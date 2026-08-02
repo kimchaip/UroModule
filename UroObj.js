@@ -2324,12 +2324,10 @@ var trig = {
           end = my.dateadd(all[i].field(this.opdate),1);
         else if (all[i].field("VisitType")=="Admit" && all[i].field("DischargeDate")==null)
           end = today;
-        else if (my.compDate(all[i].field("DischargeDate"), all[i].field(this.opdate) == less))
-          end = my.dateadd(all[i].field(this.opdate),1);
         else
           end = my.dateadd(all[i].field("DischargeDate"),1);
 
-        if (compDate(today, end) != more) { 
+        if (my.compDate(today, end) != more) { 
           fill.future.call(this, all[i]);
           fill.track.call(this, all[i]);
           fill.los.call(this, all[i]);
