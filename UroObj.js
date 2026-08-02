@@ -1459,7 +1459,7 @@ var fill = {
       e.set("Future", null);
   },
   active : function(e){
-    if( !this.notdone && ( (e.field("VisitType")=="Admit" && my.compDate(e.field("VisitDate"), today) != more && (e.field("DischargeDate") == null || compDate(e.field("DischargeDate"), today) == more)) || 
+    if( !this.notdone && ( (e.field("VisitType")=="Admit" && my.compDate(e.field("VisitDate"), today) != more && (e.field("DischargeDate") == null || my.compDate(e.field("DischargeDate"), today) == more)) || 
                             (e.field("VisitType")=="OPD" && my.compDate(e.field("VisitDate"), today) == equal) ) ) {//Admit or OPD visit today
       if (e.field("VisitType")=="Admit") {
         e.set("Active", my.diffDate(today, e.field("VisitDate")).day);
