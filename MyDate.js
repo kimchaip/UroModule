@@ -97,7 +97,7 @@ var my = {
     }
     return undefined;
   },
-  function diffDate(d1, d2) {
+  diffDate : function (d1, d2) {
     const ms = d2 > d1 ? d2 - d1 : d1 - d2;                     // difference in milliseconds
     const sec = ms / 1000;
     const min = sec / 60;
