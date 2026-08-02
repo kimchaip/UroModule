@@ -1378,7 +1378,7 @@ var fill = {
       o = o.filter(v=>v.lib!="Consult" && v.e.field("Status")!="Not");
       n = n.filter(v=>v.lib!="Consult" && v.e.field("Status")!="Not");
       if(o.length>0 && my.compDate(ptent.field("WardStamp"), today) != more && ((ptent.field("LastDischarge")==null) || my.compDate(today, ptent.field("LastDischarge") != less)) ) { // admit or OPD OR LA
-        ptent.set("OpDiff", my.diffDate(o[0].e.field("Date"), today).day * -1);
+        ptent.set("OpDiff", my.diffDate(o[0].e.field("Date"), today).day * (my.compDate(o[0].e.field("Date"), today) == less ? -1 : 1));
       }
       else if(n.length>0) { // found next visit
         ptent.set("OpDiff", my.diffDate(n[0].e.field("Date"), today).day);
