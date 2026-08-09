@@ -2312,31 +2312,19 @@ var trig = {
   DailyChildUpdate : function (all) {
     let change = false;
     for (let i=0; i<all.length; i++) {
-      if (my.compDate(all[i].lastModifiedTime, today) == less) {
-        if (all[i].field("Done")==true) 
-          all[i].set("Done", false);
+      const e = all[i];
+      if (e.field("Future") != null || e.field("Active") != null) { 
+        fill.future.call(this, e);
+        fill.track.call(this, e);
+        fill.los.call(this, e);
+        fill.active.call(this, e);
+        fill.opdiff.call(this, e, fill.ptstatus.call(this, e), fill.ptnextstatus.call(this, e));
+        fill.color.call(this, e);
+        e.set("Done", true);
+        change = true;
       }
-      if (all[i].field("Done")==false) {
-        let end = null;
-        let notdone = all[i].field(this.result).match(this.notdonereg);
-        this.notdone = notdone==null?0:notdone.length;
-        if (all[i].field("VisitType")=="OPD" || this.notdone)
-          end = my.dateadd(all[i].field(this.opdate),1);
-        else if (all[i].field("VisitType")=="Admit" && all[i].field("DischargeDate")==null)
-          end = today;
-        else
-          end = my.dateadd(all[i].field("DischargeDate"),1);
-
-        if (my.compDate(today, end) != more) { 
-          fill.future.call(this, all[i]);
-          fill.track.call(this, all[i]);
-          fill.los.call(this, all[i]);
-          fill.active.call(this, all[i]);
-          fill.opdiff.call(this, all[i], fill.ptstatus.call(this, all[i]), fill.ptnextstatus.call(this, all[i]));
-          fill.color.call(this, all[i]);
-          all[i].set("Done", true);
-          change = true;
-        }
+      else {
+        e.set("Done", false);
       }
     }
     if(change) {
