@@ -2337,21 +2337,21 @@ var trig = {
   DailyUpdateAll : function () {
     let pta = pt.entries();
     trig.DailyPtUpdate(pta);
-    log("patient update done!");
+    //log("patient update done!");
       
     let ura = or.entries();
     trig.DailyChildUpdate.call(uro, ura);
-    log("urobase update done!");
+    //log("urobase update done!");
       
     let csa = cs.entries();
     trig.DailyChildUpdate.call(cso, csa);
-    log("cosult update done!");
+    //log("cosult update done!");
       
     trig.DailyHDUpdate();
-    log("holiday update done!");
+    //log("holiday update done!");
       
     wd.syncGoogleSheet();
-    log("UroCRH update done!");
+    //log("UroCRH update done!");
   }, 
   PatientBeforeViewCard : function (e) {
     pto.djStamp(e);
