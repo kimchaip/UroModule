@@ -2327,7 +2327,7 @@ var trig = {
         e.set("Done", false);
       }
     }
-    if(change && this.lib = "UroBase") {
+    if(change && this.lib == "UroBase") {
       or.syncGoogleSheet();
     }
   }, 
