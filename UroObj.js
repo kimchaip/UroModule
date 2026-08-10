@@ -2312,7 +2312,7 @@ var trig = {
   DailyChildUpdate : function (all) {
     let change = false;
     for (let i=0; i<all.length; i++) {
-      const e = all[i];
+      let e = all[i];
       if (e.field("Future") != null || e.field("Active") != null) { 
         fill.future.call(this, e);
         fill.track.call(this, e);
