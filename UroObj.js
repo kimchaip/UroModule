@@ -2327,13 +2327,7 @@ var trig = {
         e.set("Done", false);
       }
     }
-    if(change && this.lib == "UroBase") {
-      or.syncGoogleSheet();
-    }
   }, 
-  DailyHDUpdate : function () {
-    hd.syncGoogleSheet();
-  },
   DailyUpdateAll : function () {
     let pta = pt.entries();
     trig.DailyPtUpdate(pta);
@@ -2346,12 +2340,6 @@ var trig = {
     let csa = cs.entries();
     trig.DailyChildUpdate.call(cso, csa);
     //log("cosult update done!");
-      
-    trig.DailyHDUpdate();
-    //log("holiday update done!");
-      
-    wd.syncGoogleSheet();
-    //log("UroCRH update done!");
   }, 
   PatientBeforeViewCard : function (e) {
     pto.djStamp(e);
