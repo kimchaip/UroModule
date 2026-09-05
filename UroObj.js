@@ -1117,8 +1117,8 @@ var fill = {
         
         e.set("DJstent", null);
         
-        console.log("isNotDJ : " + isNotDJ);
-        console.log("isChange : " + isChange);
+        log("isNotDJ : " + isNotDJ);
+        log("isChange : " + isChange);
         if (!isNotDJ) {
             if (isChange)
                 e.set("DJstent", "change DJ");
