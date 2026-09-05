@@ -1116,7 +1116,9 @@ var fill = {
         const isChange  = changeDJregex.test(opresult) || changeDJregex.test(optext);
         
         e.set("DJstent", null);
-
+        
+        console.log("isNotDJ : " + isNotDJ);
+        console.log("isChange : " + isChange);
         if (!isNotDJ) {
             if (isChange)
                 e.set("DJstent", "change DJ");
