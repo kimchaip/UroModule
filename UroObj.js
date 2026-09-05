@@ -1848,15 +1848,15 @@ var uro = {
           if (e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ")
             e.set("DJstent", null) ;
         }
-        else { // ever on DJ or change DJ, get off or change DJ
+        else { // ever on DJ or change DJ, get off or change DJ, if on -> change DJ
           if (e.field("DJstent") == "on DJ")
-            e.set("DJstent", null) ;
+            e.set("DJstent", "change DJ") ;
         }
       }
       else if (e.field("Date") < links[0].field("DJStamp")){// edit entry before last DJStamp, can't edit
         e.set("DJstent", old.field("DJstent"));
       }
-      else if (my.gdate(e.field("Date")) == my.gdate(links[0].field("DJStamp"))) {// this entry is last DJStamp
+      else if (my.compDate(e.field("Date"), links[0].field("DJStamp")) == equal) {// this entry is last DJStamp
         if (!links[0].field("DJstent")) {// this entry is off DJ, get only off or changeDJ
           if (e.field("DJstent") == "on DJ") 
               e.set("DJstent", null) ;
