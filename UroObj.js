@@ -1076,7 +1076,6 @@ var fill = {
             ")",
             "i"
         );
-        console.log(notDJregex)
 
         // -----------------------------
         // 2) on DJ
