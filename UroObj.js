@@ -1865,7 +1865,7 @@ var uro = {
           let d = pto.lastDJStamp(ptent, my.dateadd(e.field("Date"), -1)) ;
           if (d != null && d.field("DJstent") != "off DJ") { // ever on or change DJ before -> get only off or change DJ
             if (e.field("DJstent") == "on DJ") 
-              e.set("DJstent", null) ;
+              e.set("DJstent", "change DJ") ;
           } 
           else { // never on DJ or ever off DJ before -> get only on DJ
             if (e.field("DJstent") == "change DJ" || e.field("DJstent") == "off DJ") 
