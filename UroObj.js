@@ -1064,28 +1064,25 @@ var fill = {
         }
 
         // -----------------------------
-        // 1) หมวด "ไม่ใช่ DJ / ทำไม่สำเร็จ"
+        // 1) หมวด "ไม่ใส่ DJ / ทำไม่สำเร็จ"
         // -----------------------------
         const notDJregex = new RegExp(
             "(" +
-            // อังกฤษ: fail … dj
-            "\\b(no|not|can't|cannot|dont|don't|failed|fail|unable)\\b.*\\bdj\\b" +
-            "|" +
-            // ไทย: ไม่สามารถ … dj
-            "(ไม่ใส่|ไม่ได้ใส่|ไม่สามารถใส่).*dj" +
+            // อังกฤษ: fail … dj; ไทย: ไม่สามารถ … dj
+            "((no|not|cant|can't|cannot|dont|don't|failed|fail|unable|ไม่|ไม่ได้|ไม่สามารถ)\\s*(on|retain|insert|ใส่|ถอด|off|remove|change|exchange|replace|redo|เปลี่ยน)?\\s*(rt|lt|bilat|both|right|left|bilateral)?\\s*dj)" +
             "|" +
             // ไทย: ใส่ … dj … ไม่ได้
-            "(ใส่|ทำ|on|insert).*dj.*(ไม่ได้|ไม่สำเร็จ)" +
+            "((on|retain|insert|ใส่|ถอด|off|remove|change|exchange|replace|redo|เปลี่ยน)\\s*(rt|lt|bilat|both|right|left|bilateral)?\\s*dj\\s*(stent)?\\s*(ไม่ได้|ไม่สำเร็จ))" +
             ")",
             "i"
         );
+        console.log(notDJregex)
 
         // -----------------------------
         // 2) on DJ
         // -----------------------------
         const onDJregex = new RegExp(
-            "\\b(on|insert|place|put)\\b.*\\bdj\\b|" +
-            "(ใส่|ทำ).*dj",
+            "((on|retain|insert|ใส่)\\s*(rt|lt|bilat|both|right|left|bilateral)?\\s*dj)",
             "i"
         );
 
@@ -1093,8 +1090,9 @@ var fill = {
         // 3) off DJ
         // -----------------------------
         const offDJregex = new RegExp(
-            "\\b(off|remove|take\\s*out)\\b.*\\bdj\\b|" +
-            "(เอา|ถอน).*dj.*(ออก)?",
+            "( ((off|remove|ถอด)\\s*(rt|lt|bilat|both|right|left|bilateral)?\\s*dj)" +
+            "|" +
+            "((เอา|ถอด)\\s*(rt|lt|bilat|both|right|left|bilateral)?\\s*dj\\s*(ออก)) )",
             "i"
         );
         
@@ -1102,7 +1100,7 @@ var fill = {
         // 4) change DJ
         // -----------------------------
         const changeDJregex = new RegExp(
-            "\\b(change|replace|redo|เปลี่ยน)\\b.*\\bdj\\b",
+            "(change|exchange|replace|redo|เปลี่ยน)\\s*(rt|lt|bilat|both|right|left|bilateral)?\\s*dj",
             "i"
         );
 
