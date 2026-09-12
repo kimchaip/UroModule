@@ -1,3 +1,6 @@
+// URL ฝั่ง Apps Script (Web App)
+let APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyCtVxvej13qw2h_9ti7pDRcLuDmlDPv08sDUeJ4Bk34XhZ_BQ9Ki7sQT_XPt3GUOg60w/exec";
+
 // helper: ส่ง JSON ไป Apps Script
 function callAppScript(payload) {
     let res = http.post(
@@ -143,10 +146,10 @@ function syncFromQueue() {
                 "eid": eid,
                 "Calendar": calendar,
                 "Title": p.title,
-                "Date": p.date,
-                "EndDate": p.enddate,
-                "StartTime": p.start,
-                "EndTime": p.end,
+                "Date": moment(p.date).toDate(),
+                "EndDate": moment(p.enddate).toDate(),
+                "StartTime": moment(p.start).toDate(),
+                "EndTime": moment(p.end).toDate(),
                 "AllDay": p.allday,
                 "Description": p.description,
                 "Location": p.location,
@@ -154,8 +157,8 @@ function syncFromQueue() {
                 "OutOfDuty": p.outofduty,
                 "RemindSet": p.remindset,
                 "MinuteSet": p.minuteset,
-                "ModifiedTime": item.modified,
-                "CreatedTime": item.modified
+                "ModifiedTime": moment(item.modified).toDate(),
+                "CreatedTime": moment(item.modified).toDate()
             });
 
             ackIds.push(item.id);
@@ -166,10 +169,10 @@ function syncFromQueue() {
 
             e.set("Calendar", calendar);
             e.set("Title", p.title);
-            e.set("Date", p.date);
-            e.set("EndDate", p.enddate);
-            e.set("StartTime", p.start);
-            e.set("EndTime", p.end);
+            e.set("Date", moment(p.date).toDate());
+            e.set("EndDate", moment(p.enddate).toDate());
+            e.set("StartTime", moment(p.start).toDate());
+            e.set("EndTime", moment(p.end).toDate());
             e.set("AllDay", p.allday);
             e.set("Description", p.description);
             e.set("Location", p.location);
@@ -177,7 +180,7 @@ function syncFromQueue() {
             e.set("OutOfDuty", p.outofduty);
             e.set("RemindSet", p.remindset);
             e.set("MinuteSet", p.minuteset);
-            e.set("ModifiedTime", item.modified);
+            e.set("ModifiedTime", moment(item.modified).toDate());
 
             ackIds.push(item.id);
         }
