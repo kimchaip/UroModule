@@ -4,10 +4,18 @@ let APP_SCRIPT_URL =
 
 // helper: ส่ง JSON ไป Apps Script
 function callAppScript(payload) {
-  let res = http().post(APP_SCRIPT_URL, JSON.stringify(payload), {
-    "Content-Type": "application/json",
+  let client = http();
+  client.headers({
+      "Content-Type": "application/json"
   });
-  return JSON.parse(res.text || "{}");
+  
+  let res = client.post(APP_SCRIPT_URL, JSON.stringify(payload));
+
+  if (res.code !== 200) {
+    log("Sync error: " + res.code + " " + res.body);
+  }
+  
+  return JSON.parse(res.body);
 }
 
 function isBusy(calendar, title) {
