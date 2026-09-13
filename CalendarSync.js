@@ -86,8 +86,8 @@ function validate(e) {
   e.set("MinuteSet", minuteset);
   e.set("OutOfDuty", isOutOfDuty(e.field("Calendar"), e.field("Title")));
 }
-// after
 
+// after create/update entry
 function onCreateEntry(e) {
   let payload = {
     action: "createFromMemento",
@@ -219,7 +219,7 @@ function syncFromQueue() {
       return en.field("eid") === eid;
     });
 
-    if (action === "create" || !e) {
+    if (action === "create" || (action !== "delete" && !e)) {
       // ถ้า Calendar สร้างใหม่ → Memento ต้องสร้างตาม
       lib().create({
         eid: eid,
@@ -241,9 +241,7 @@ function syncFromQueue() {
       });
 
       ackIds.push(item.id);
-    } else if (action === "update") {
-      if (!e) return; // ไม่มี e ให้ข้ามไปก่อน
-
+    } else if (action === "update" && e) {
       e.set("Calendar", calendar);
       e.set("Title", p.title);
       e.set("Date", moment(p.date).toDate());
@@ -255,14 +253,12 @@ function syncFromQueue() {
       e.set("Location", p.location);
       e.set("Holiday", p.holiday);
       e.set("OutOfDuty", p.outofduty);
-      e.set("RemindSet", p.remindset);
-      e.set("MinuteSet", p.minuteset);
+      //e.set("RemindSet", p.remindset);
+      //e.set("MinuteSet", p.minuteset);
       e.set("ModifiedTime", moment(item.modified).toDate());
 
       ackIds.push(item.id);
-    } else if (action === "delete") {
-      if (!e) return; // ไม่มี e ให้ข้ามไปก่อน
-
+    } else if (action === "delete" && e) {
       e.trash();
 
       ackIds.push(item.id);
