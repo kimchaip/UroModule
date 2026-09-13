@@ -1,6 +1,6 @@
 // helper: ส่ง JSON ไป Apps Script
 function callAppScript(payload) {
-  let res = http.post(APP_SCRIPT_URL, JSON.stringify(payload), {
+  let res = http().post(APP_SCRIPT_URL, JSON.stringify(payload), {
     "Content-Type": "application/json",
   });
   return JSON.parse(res.text || "{}");
