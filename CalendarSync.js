@@ -1,3 +1,7 @@
+// URL ฝั่ง Apps Script (Web App)
+let APP_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbyCtVxvej13qw2h_9ti7pDRcLuDmlDPv08sDUeJ4Bk34XhZ_BQ9Ki7sQT_XPt3GUOg60w/exec";
+
 // helper: ส่ง JSON ไป Apps Script
 function callAppScript(payload) {
   let client = http();
