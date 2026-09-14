@@ -4,6 +4,9 @@ let APP_SCRIPT_URL =
 
 // helper: ส่ง JSON ไป Apps Script
 function callAppScript(payload) {
+  if (!payload || !payload.action) {
+    return {ok: false, error: "NoAction"};
+  }
   let client = http();
   client.headers({
       "Content-Type": "application/json"
