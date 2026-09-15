@@ -303,6 +303,7 @@ function syncNow() {
     return;
   }
 
+  for (let i = 0 ; i < 10000; i++) ;
   // manualSync เสร็จแล้ว → ดึง queue มาทำงาน
   syncFromQueue();
 }
