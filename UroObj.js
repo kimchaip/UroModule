@@ -2593,7 +2593,7 @@ var trig = {
             let start = new Date(sd.getFullYear(), sd.getMonth(), sd.getDate(), st.getHours(), st.getMinutes(), st.getSeconds());
             let ed = e.field("EndDate") ? new Date(e.field("EndDate")) : sd;
             let et = e.field("EndTime") ? new Date(e.field("EndTime")) : new Date(st.getTime() + 60 * 60 * 1000);
-            let end = = new Date(ed.getFullYear(), ed.getMonth(), ed.getDate(), et.getHours(), et.getMinutes(), et.getSeconds());
+            let end = new Date(ed.getFullYear(), ed.getMonth(), ed.getDate(), et.getHours(), et.getMinutes(), et.getSeconds());
             if (start.getTime() > end.getTime()) {
                 end = my.dateadd(end, 1);
             }
