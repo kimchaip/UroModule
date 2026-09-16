@@ -2572,9 +2572,11 @@ var trig = {
   HDBeforeEdit : function (e, value) {
     if(e.field("AllDay")) {
         if (e.field("Date")) {
-            let start = new Date(e.field("Date").toDateString());
-            let end = e.field("EndDate") ? new Date(e.field("EndDate").toDateString()) : null;
-            if (!end || start.getTime() >= end.getTime()) {
+            const sd = new Date(e.field("Date"));
+            let start = new Date(sd.getFullYear(), sd.getMonth(), sd.getDate());
+            let ed = e.field("EndDate") ? new Date(e.field("EndDate")) : my.dateadd(sd, 1);
+            let end = new Date(ed.getFullYear(), ed.getMonth(), ed.getDate());
+            if (start.getTime() >= end.getTime()) {
                 end = my.dateadd(start, 1);
             }
         
@@ -2586,17 +2588,14 @@ var trig = {
     }
     else {
         if (e.field("Date") && e.field("StartTime")) {
-            let starttime = e.field("StartTime").toISOString().slice(10);
-            let start = new Date(e.field("Date").toISOString().slice(0,10) + starttime);
-            let endtime = e.field("EndTime") ? e.field("EndTime").toISOString().slice(10) : new Date(new Date(starttime).getTime() + 60 * 60 * 1000).toISOString().slice(10);
-            let end = e.field("EndDate") ? new Date(new Date(e.field("EndDate")).toISOString().slice(0,10) + endtime) : null;
-            if (!end || start.getTime() > end.getTime()) {
-                if (starttime > endtime) {
-                    end = new Date(my.dateadd.(start, 1).toISOString().slice(0,10) + endtime);
-                }
-                else {
-                    end = new Date(start.toISOString().slice(0,10) + endtime);
-                }
+            const sd = new Date(e.field("Date"));
+            const st = new Date(e.field("StartTime"));
+            let start = new Date(sd.getFullYear(), sd.getMonth(), sd.getDate(), st.getHours(), st.getMinutes(), st.getSeconds());
+            let ed = e.field("EndDate") ? new Date(e.field("EndDate")) : sd;
+            let et = e.field("EndTime") ? new Date(e.field("EndTime")) : new Date(st.getTime() + 60 * 60 * 1000);
+            let end = = new Date(ed.getFullYear(), ed.getMonth(), ed.getDate(), et.getHours(), et.getMinutes(), et.getSeconds());
+            if (start.getTime() > end.getTime()) {
+                end = my.dateadd(end, 1);
             }
 
             e.set("Date", start);
