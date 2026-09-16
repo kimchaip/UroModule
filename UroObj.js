@@ -2572,7 +2572,7 @@ var trig = {
   HDBeforeEdit : function (e, value) {
     if(e.field("AllDay")) {
         if (e.field("Date")) {
-            const sd = new Date(e.field("Date"));
+            let sd = new Date(e.field("Date"));
             let start = new Date(sd.getFullYear(), sd.getMonth(), sd.getDate());
             let ed = e.field("EndDate") ? new Date(e.field("EndDate")) : my.dateadd(sd, 1);
             let end = new Date(ed.getFullYear(), ed.getMonth(), ed.getDate());
@@ -2588,8 +2588,8 @@ var trig = {
     }
     else {
         if (e.field("Date") && e.field("StartTime")) {
-            const sd = new Date(e.field("Date"));
-            const st = new Date(e.field("StartTime"));
+            let sd = new Date(e.field("Date"));
+            let st = new Date(e.field("StartTime"));
             let start = new Date(sd.getFullYear(), sd.getMonth(), sd.getDate(), st.getHours(), st.getMinutes(), st.getSeconds());
             let ed = e.field("EndDate") ? new Date(e.field("EndDate")) : sd;
             let et = e.field("EndTime") ? new Date(e.field("EndTime")) : new Date(st.getTime() + 60 * 60 * 1000);
