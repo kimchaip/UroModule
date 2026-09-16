@@ -5,7 +5,7 @@ let APP_SCRIPT_URL =
 // helper: ส่ง JSON ไป Apps Script
 function callAppScript(payload) {
   if (!payload || !payload.action) {
-    return {ok: false, error: "NoAction"};
+    return {ok: false, error: "No Action"};
   }
   let client = http();
   client.headers({
@@ -225,7 +225,6 @@ function syncFromQueue() {
   let entries = lib().entries();
   queue.forEach(function (item) {
     let eid = item.eid;
-    let calendar = item.calendar;
     let action = item.action;
     let p = item.payload || {};
 
@@ -238,7 +237,7 @@ function syncFromQueue() {
       // ถ้า Calendar สร้างใหม่ → Memento ต้องสร้างตาม
       lib().create({
         eid: eid,
-        Calendar: calendar,
+        Calendar: p.calendar,
         Title: p.title,
         Date: moment(p.date).toDate(),
         EndDate: moment(p.enddate).toDate(),
@@ -257,7 +256,7 @@ function syncFromQueue() {
 
       ackIds.push(item.id);
     } else if (action === "update" && e) {
-      e.set("Calendar", calendar);
+      e.set("Calendar", p.calendar);
       e.set("Title", p.title);
       e.set("Date", moment(p.date).toDate());
       e.set("EndDate", moment(p.enddate).toDate());
