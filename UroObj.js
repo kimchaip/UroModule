@@ -2580,8 +2580,8 @@ var trig = {
   }, 
   HDAfterEdit : function (e, value) {
     if(value == "create") {
-      e.set("CreatedTime",new Date(e.creationTime));
-      e.set("ModifiedTime",new Date(e.lastModifiedTime));
+      e.set("CreatedTime",e.creationTime);
+      e.set("ModifiedTime",e.lastModifiedTime);
     }
     else {
       e.set("ModifiedTime",e.lastModifiedTime);
