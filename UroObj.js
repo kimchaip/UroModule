@@ -2591,11 +2591,22 @@ var trig = {
             let endtime = e.field("EndTime") ? e.field("EndTime").toISOString().slice(10) : new Date(new Date(starttime).getTime() + 60 * 60 * 1000).toISOString().slice(10);
             let end = e.field("EndDate") ? new Date(new Date(e.field("EndDate")).toISOString().slice(0,10) + endtime) : null;
             if (!end || start.getTime() > end.getTime()) {
-                end = new Date(my.dateadd.(start, 1).toISOString().slice(0,10) + endtime);
+                if (starttime > endtime) {
+                    end = new Date(my.dateadd.(start, 1).toISOString().slice(0,10) + endtime);
+                }
+                else {
+                    end = new Date(start.toISOString().slice(0,10) + endtime);
+                }
             }
-            else {
-                end = new Date(start.toISOString().slice(0,10) + endtime);
-            }
+
+            e.set("Date", start);
+            e.set("EndDate", end);
+            e.set("StartTime", start);
+            e.set("EndTime", end);
+        }
+        else {
+            message("require StartTime");
+            cancel();
         }
     }
   }, 
