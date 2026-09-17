@@ -216,7 +216,7 @@ function syncFromQueue() {
   let res = callAppScript({ action: "getQueue" });
   let queue = res.queue || {};
 
-  if (!queue.length) {
+  if (Object.keys(queue).length === 0) {
     message("No changes from Calendar");
     return;
   }
