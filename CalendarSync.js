@@ -214,7 +214,7 @@ function onDeleteEntry(e) {
 function syncFromQueue() {
   // 1) ขอ queue จาก Apps Script
   let res = callAppScript({ action: "getQueue" });
-  let queue = res.queue || [];
+  let queue = res.queue || {};
 
   if (!queue.length) {
     message("No changes from Calendar");
@@ -223,8 +223,8 @@ function syncFromQueue() {
 
   let ackIds = [];
   let entries = lib().entries();
-  queue.forEach(function (item) {
-    let eid = item.eid;
+  for (let eid in queue) {
+    let item = queue[eid];
     let action = item.action;
     let p = item.payload || {};
 
@@ -254,7 +254,7 @@ function syncFromQueue() {
         CreatedTime: moment(item.modified).toDate(),
       });
 
-      ackIds.push(item.id);
+      ackIds.push(eid);
     } else if (action === "update" && e) {
       e.set("Calendar", p.calendar);
       e.set("Title", p.title);
@@ -271,11 +271,11 @@ function syncFromQueue() {
       //e.set("MinuteSet", p.minuteset);
       e.set("ModifiedTime", moment(item.modified).toDate());
 
-      ackIds.push(item.id);
+      ackIds.push(eid);
     } else if (action === "delete" && e) {
       e.trash();
 
-      ackIds.push(item.id);
+      ackIds.push(eid);
     }
   });
 
