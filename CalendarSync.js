@@ -277,7 +277,7 @@ function syncFromQueue() {
 
       ackIds.push(eid);
     }
-  });
+  }
 
   // 3) ส่ง ack กลับไป Apps Script เพื่อลบ queue ที่ apply แล้ว
   if (ackIds.length) {
