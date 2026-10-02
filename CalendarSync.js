@@ -8,6 +8,7 @@ function callAppScript(payload) {
     return {ok: false, error: "No Action"};
   }
   let res;
+  let startMs = Date.now();
   try {
     let client = http();
     client.headers({
@@ -15,20 +16,25 @@ function callAppScript(payload) {
     });
     res = client.post(APP_SCRIPT_URL, JSON.stringify(payload));
   } catch (err) {
-    log("Sync error: " + err);
+    log(payload.action + " error after " + (Date.now() - startMs) + " ms: " + err);
     return {ok: false, error: "Network error: " + err};
   }
 
   if (res.code !== 200) {
-    log("Sync error: " + res.code + " " + res.body);
+    log(payload.action + " error: " + res.code + " " + String(res.body).slice(0, 300));
   }
 
   // Apps Script อาจตอบกลับเป็นหน้า HTML (error/redirect) → ห้าม crash
+  let data;
   try {
-    return JSON.parse(res.body);
+    data = JSON.parse(res.body);
   } catch (err) {
     return {ok: false, error: "HTTP " + res.code + ": invalid response"};
   }
+
+  // เวลารวมฝั่ง Memento เทียบกับ timing ฝั่ง Apps Script → รู้ว่าช้าตรงไหน
+  log(payload.action + ": " + (Date.now() - startMs) + " ms, server timing " + JSON.stringify(data.timing || {}));
+  return data;
 }
 
 // สร้างข้อมูล event จาก entry สำหรับส่งไป Apps Script
