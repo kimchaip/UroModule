@@ -288,9 +288,15 @@ function syncFromQueue() {
 
   // 3) ส่ง ack กลับไป Apps Script เพื่อลบ queue ที่ apply แล้ว
   if (ackIds.length) {
+    // acks = {eid: modified} → Apps Script ไม่ลบรายการที่มี version ใหม่กว่าเข้ามาระหว่าง sync
+    let acks = {};
+    ackIds.forEach(function (eid) {
+      acks[eid] = queue[eid].modified;
+    });
     let reply = callAppScript({
       action: "ackQueue",
       ids: ackIds,
+      acks: acks,
     });
 
     if (reply.ok) {
