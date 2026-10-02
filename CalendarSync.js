@@ -7,21 +7,56 @@ function callAppScript(payload) {
   if (!payload || !payload.action) {
     return {ok: false, error: "No Action"};
   }
-  let client = http();
-  client.headers({
-      "Content-Type": "application/json"
-  });
-  
-  let res = client.post(APP_SCRIPT_URL, JSON.stringify(payload));
+  let res;
+  try {
+    let client = http();
+    client.headers({
+        "Content-Type": "application/json"
+    });
+    res = client.post(APP_SCRIPT_URL, JSON.stringify(payload));
+  } catch (err) {
+    log("Sync error: " + err);
+    return {ok: false, error: "Network error: " + err};
+  }
 
   if (res.code !== 200) {
     log("Sync error: " + res.code + " " + res.body);
   }
-  
-  return JSON.parse(res.body);
+
+  // Apps Script อาจตอบกลับเป็นหน้า HTML (error/redirect) → ห้าม crash
+  try {
+    return JSON.parse(res.body);
+  } catch (err) {
+    return {ok: false, error: "HTTP " + res.code + ": invalid response"};
+  }
+}
+
+// สร้างข้อมูล event จาก entry สำหรับส่งไป Apps Script
+function buildEvent(e, eid) {
+  let event = {
+    __id: e.id,
+    title: e.field("Title"),
+    calendar: e.field("Calendar"),
+
+    date: e.field("Date"),
+    enddate: e.field("EndDate"),
+    start: e.field("StartTime"),
+    end: e.field("EndTime"),
+    allday: e.field("AllDay"),
+
+    description: e.field("Description"),
+    location: e.field("Location"),
+    holiday: e.field("Holiday"),
+    outofduty: e.field("OutOfDuty"),
+    remindset: e.field("RemindSet"),
+    minuteset: e.field("MinuteSet"),
+  };
+  if (eid) event.eid = eid;
+  return event;
 }
 
 function isBusy(calendar, title) {
+  title = title || "";
   return (
     (calendar == "Kim" &&
       ["ORนอกเวลา", "Consult"].some((key) => key == title)) ||
@@ -34,6 +69,7 @@ function isBusy(calendar, title) {
 }
 
 function isOutOfDuty(calendar, title) {
+  title = title || "";
   return (
     (calendar === "Family" || calendar === "Remind") &&
     ["อบรม", "กลับ", "เที่ยว", "ประชุม", "งาน"].some((k) => title.includes(k))
@@ -42,7 +78,7 @@ function isOutOfDuty(calendar, title) {
 
 // before create/update entry
 function validate(e) {
-  if (e.field("allDay")) {
+  if (e.field("AllDay")) {
     if (e.field("Date")) {
       let start = moment(e.field("Date")).startOf("day");
       let end = e.field("EndDate")
@@ -97,7 +133,7 @@ function validate(e) {
   const remind = isBusy(e.field("Calendar"), e.field("Title"));
   const minuteset = remind ? (e.field("MinuteSet") ? e.field("MinuteSet") : 30) : "";
   e.set("Holiday", e.field("Calendar") === "Holidays");
-  e.set("Remindset", remind);
+  e.set("RemindSet", remind);
   e.set("MinuteSet", minuteset);
   e.set("OutOfDuty", isOutOfDuty(e.field("Calendar"), e.field("Title")));
 }
@@ -106,24 +142,7 @@ function validate(e) {
 function onCreateEntry(e) {
   let payload = {
     action: "createFromMemento",
-    event: {
-      __id: e.id,
-      title: e.field("Title"),
-      calendar: e.field("Calendar"),
-
-      date: e.field("Date"),
-      enddate: e.field("EndDate"),
-      start: e.field("StartTime"),
-      end: e.field("EndTime"),
-      allday: e.field("AllDay"),
-
-      description: e.field("Description"),
-      location: e.field("Location"),
-      holiday: e.field("Holiday"),
-      outofduty: e.field("OutOfDuty"),
-      remindset: e.field("RemindSet"),
-      minuteset: e.field("MinuteSet"),
-    },
+    event: buildEvent(e),
   };
 
   let res = callAppScript(payload);
@@ -149,25 +168,7 @@ function onUpdateEntry(e) {
 
   let payload = {
     action: "updateFromMemento",
-    event: {
-      __id: e.id,
-      eid: eid,
-      title: e.field("Title"),
-      calendar: e.field("Calendar"),
-
-      date: e.field("Date"),
-      enddate: e.field("EndDate"),
-      start: e.field("StartTime"),
-      end: e.field("EndTime"),
-      allday: e.field("AllDay"),
-
-      description: e.field("Description"),
-      location: e.field("Location"),
-      holiday: e.field("Holiday"),
-      outofduty: e.field("OutOfDuty"),
-      remindset: e.field("RemindSet"),
-      minuteset: e.field("MinuteSet"),
-    },
+    event: buildEvent(e, eid),
   };
 
   let res = callAppScript(payload);
@@ -214,6 +215,10 @@ function onDeleteEntry(e) {
 function syncFromQueue() {
   // 1) ขอ queue จาก Apps Script
   let res = callAppScript({ action: "getQueue" });
+  if (!res.ok && res.error) {
+    message("Sync from Calendar error: " + res.error);
+    return;
+  }
   let queue = res.queue || {};
 
   if (Object.keys(queue).length === 0) {
@@ -233,7 +238,7 @@ function syncFromQueue() {
       return en.field("eid") === eid;
     });
 
-    if (action === "create" || (action !== "delete" && !e)) {
+    if ((action === "create" || action === "update") && !e) {
       // ถ้า Calendar สร้างใหม่ → Memento ต้องสร้างตาม
       lib().create({
         eid: eid,
@@ -255,7 +260,8 @@ function syncFromQueue() {
       });
 
       ackIds.push(eid);
-    } else if (action === "update" && e) {
+    } else if ((action === "create" || action === "update") && e) {
+      // มี entry อยู่แล้ว (เช่น create ซ้ำ) → อัปเดตแทนการสร้างซ้ำ
       e.set("Calendar", p.calendar);
       e.set("Title", p.title);
       e.set("Date", moment(p.date).toDate());
@@ -272,8 +278,9 @@ function syncFromQueue() {
       e.set("ModifiedTime", moment(item.modified).toDate());
 
       ackIds.push(eid);
-    } else if (action === "delete" && e) {
-      e.trash();
+    } else if (action === "delete") {
+      // ไม่พบ entry แปลว่าลบไปแล้ว → ack ด้วย ไม่งั้นจะค้างใน queue ตลอด
+      if (e) e.trash();
 
       ackIds.push(eid);
     }
