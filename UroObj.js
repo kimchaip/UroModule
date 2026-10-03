@@ -1089,9 +1089,9 @@ var fill = {
         // 3) off DJ
         // -----------------------------
         const offDJregex = new RegExp(
-            "( ((off|remove|ถอด)\\s*(rt|lt|bilat|both|right|left|bilateral)?\\s*dj)" +
+            "(((off|remove|ถอด)\\s*(rt|lt|bilat|both|right|left|bilateral)?\\s*dj)" +
             "|" +
-            "((เอา|ถอด)\\s*(rt|lt|bilat|both|right|left|bilateral)?\\s*dj\\s*(ออก)) )",
+            "((เอา|ถอด)\\s*(rt|lt|bilat|both|right|left|bilateral)?\\s*dj\\s*(ออก)))",
             "i"
         );
         
