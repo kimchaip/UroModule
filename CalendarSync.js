@@ -1,11 +1,14 @@
-// URL ฝั่ง Apps Script (Web App)
-let APP_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbyCtVxvej13qw2h_9ti7pDRcLuDmlDPv08sDUeJ4Bk34XhZ_BQ9Ki7sQT_XPt3GUOg60w/exec";
+// URL ฝั่ง Apps Script (Web App) ประกาศเป็น APP_SCRIPT_URL ใน shared script ของ Memento
+// ไม่เก็บใน repo เพราะ repo เป็น public และ doPost ไม่ได้ตรวจสิทธิ์ผู้เรียก
 
 // helper: ส่ง JSON ไป Apps Script
 function callAppScript(payload) {
   if (!payload || !payload.action) {
     return {ok: false, error: "No Action"};
+  }
+  if (typeof APP_SCRIPT_URL === "undefined" || !APP_SCRIPT_URL) {
+    log(payload.action + " error: APP_SCRIPT_URL is not set");
+    return {ok: false, error: "APP_SCRIPT_URL is not set"};
   }
   let res;
   let startMs = Date.now();
