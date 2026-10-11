@@ -10,9 +10,19 @@ var wd = libByName("UroCRH");
 
 var old = {
     d : {}, 
+    cur : null, 
     load : function (e) {
       //get Previous to Obj
-      this.d = JSON.parse(e.field("Previous"), function (key, value) {
+      this.cur = null;
+      let prev = e.field("Previous");
+      if (!prev) {
+        // no Previous yet (eg. imported entry) -> use current value as old (nothing changed)
+        this.d = {};
+        this.cur = e;
+        return;
+      }
+      try {
+      this.d = JSON.parse(prev, function (key, value) {
         if (value) {
           if (typeof value == "string" && value.match(/^\d{4}-\d{2}-\d{2}/)) {
             return new Date(value);
@@ -28,10 +38,17 @@ var old = {
           return value;
         }
       });
+      }
+      catch (err) {
+        log("old.load: Previous is not JSON : " + err);
+        this.d = {};
+        this.cur = e;
+      }
     },
     save : function (e) {
       //save field value to Obj and set to Previous
       old.d = {};
+      old.cur = null;
       let lb;
       if(this.lib == "Patient") lb = pt;
       else if(this.lib == "UroBase") lb = or;
@@ -51,7 +68,7 @@ var old = {
           if(my.dateIsValid(e.field(f)) || my.timeIsValid(e.field(f))) {
             old.d[f] = my.date(e.field(f));
           }
-          else if(lb.lib!="Patient" && (f=="Patient" || f=="DxAutoFill" || f=="OperationList")) {
+          else if(this.lib!="Patient" && (f=="Patient" || f=="DxAutoFill" || f=="OperationList")) {
             old.d[f] = e.field(f).length>0? e.field(f)[0].title: ""; 
           }
           else {
@@ -60,12 +77,26 @@ var old = {
         }
       }
 
-      e.set("Previous", JSON.stringify(old.d));
+      // set only when changed -> view card does not rewrite entry every time
+      let str = JSON.stringify(old.d);
+      if (e.field("Previous") != str)
+        e.set("Previous", str);
     },
     field : function (fieldname) {
       //get data by field
+      if(this.cur)
+        return this.value(this.cur, fieldname);
       if(fieldname in this.d)
         return this.d[fieldname];
+    },
+    value : function (e, f) {
+      // current value in the same form as Previous
+      let v = e.field(f);
+      if(my.dateIsValid(v) || my.timeIsValid(v))
+        return my.date(v);
+      else if(f=="Patient" || f=="DxAutoFill" || f=="OperationList")
+        return Array.isArray(v) && v.length>0? v[0].title: "";
+      return v;
     },
     savesync : function (e, fieldname) {
       this.d[fieldname] = hour;
@@ -2271,20 +2302,46 @@ var cal = {
 };
 
 var sync = {
+  // sync Google Sheet not more than once per HOURS for whole library (per phone)
+  HOURS : 1,
+  path : function (fieldname) {
+    return "lastsync_" + fieldname + ".txt";   // default folder (/Workload)
+  },
+  // last sync time (ms) : use last non-empty line, in case write appends to file
+  last : function (fieldname) {
+    try {
+      let f = file(this.path(fieldname));
+      let text = String(f.readAll() || "");
+      f.close();
+      let lines = text.split(/\r?\n/).filter(l=>l.trim());
+      return lines.length? Number(lines[lines.length-1]) || 0: 0;
+    }
+    catch (err) {
+      return 0;
+    }
+  },
+  savetime : function (fieldname, ms) {
+    try {
+      let f = file(this.path(fieldname));
+      f.writeLine(String(ms));
+      f.close();
+    }
+    catch (err) {
+      log("save sync time: " + err);
+    }
+  },
   run : function(e, fieldname) {
-    let diff = 0;
-    if(hour>=old.field(fieldname)) {
-      diff = hour-old.field(fieldname);
-    }
-    else {
-      diff = 24-(hour-old.field(fieldname));
-    }
-    
-    if(old.field(fieldname)==null || diff>=1) {
+    let now = Date.now();
+    if(now - this.last(fieldname) < this.HOURS*3600000)
+      return;
+    try {
       if(fieldname=="orsync") {
         or.syncGoogleSheet();
       }
-      old.savesync(e, fieldname);
+      this.savetime(fieldname, now);   // sync fail -> not save time, try again next time
+    }
+    catch (err) {
+      log("syncGoogleSheet " + fieldname + ": " + err);
     }
   }
 };
