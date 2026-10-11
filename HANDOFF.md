@@ -77,7 +77,7 @@ Memento ไม่มี API ให้อ่านค่าเดิมตอน�
 
 ## ข้อควรระวัง / งานค้าง
 
-- `CalendarSync.js` มี URL ของ Apps Script Web App อยู่ในโค้ด และ `doPost` ไม่ได้ตรวจสิทธิ์ผู้เรียก ใครมี URL ก็ส่งคำสั่งไปแก้ปฏิทินได้
+- `CalendarSync.js` อ่าน URL ของ Apps Script Web App จากตัวแปร `APP_SCRIPT_URL` ที่ประกาศใน shared script ของ Memento (ไม่อยู่ใน repo) เพราะ `doPost` ไม่ได้ตรวจสิทธิ์ผู้เรียก ใครมี URL ก็ส่งคำสั่งไปแก้ปฏิทินได้ ห้าม commit URL ลง repo
 - การเปลี่ยนแปลงวันที่ 2026-10-11 (PR #46, #47: guard `Previous`, sync รายชั่วโมงแบบไฟล์, reviver วันที่) ยังไม่ได้ทดสอบในแอปจริง
 - `old.savesync` และการ carry `orsync` ใน `old.save` ไม่ได้ใช้แล้ว ลบได้เมื่อแน่ใจ
 - งานที่วางแผนไว้: library FollowUp สำหรับค่า PSA / ภาพถ่ายทางรังสีที่ตรวจซ้ำหลายครั้ง และ tag ผลการรักษาใน OpResult ที่ `rpo.setAll` แยกเข้า Report
