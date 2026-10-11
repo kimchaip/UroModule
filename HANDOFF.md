@@ -66,8 +66,8 @@ Memento ไม่มี API ให้อ่านค่าเดิมตอน�
 ## ขั้นตอนแก้โค้ด
 
 1. แก้ใน branch ใหม่ ตรวจ syntax ด้วย `node --check UroObj.js` (รันจริงได้เฉพาะในแอป)
-2. commit แล้วเปิด PR ที่อธิบาย Before / After / How จากนั้น merge เข้า `master`
-3. `git pull` ใน `C:\Users\HP\UroModule` บน PC แล้วทดสอบในแอปบนมือถือ
+2. commit แล้วเปิด PR ที่อธิบาย Before / After / How จากนั้น merge เข้า `master` (Memento โหลด script จาก GitHub master จึงมีผลกับแอปทันทีหลัง merge)
+3. ทดสอบในแอปบนมือถือ แล้ว `git pull` ใน `C:\Users\HP\UroModule` บน PC ให้ตรงกับ GitHub
 4. ถ้ามีปัญหา revert PR นั้นบน GitHub
 
 ## สิ่งที่อยู่นอก repo
@@ -78,6 +78,6 @@ Memento ไม่มี API ให้อ่านค่าเดิมตอน�
 ## ข้อควรระวัง / งานค้าง
 
 - `CalendarSync.js` อ่าน URL ของ Apps Script Web App จากตัวแปร `APP_SCRIPT_URL` ที่ประกาศใน shared script ของ Memento (ไม่อยู่ใน repo) เพราะ `doPost` ไม่ได้ตรวจสิทธิ์ผู้เรียก ใครมี URL ก็ส่งคำสั่งไปแก้ปฏิทินได้ ห้าม commit URL ลง repo
-- การเปลี่ยนแปลงวันที่ 2026-10-11 (PR #46, #47: guard `Previous`, sync รายชั่วโมงแบบไฟล์, reviver วันที่) ยังไม่ได้ทดสอบในแอปจริง
+- การเปลี่ยนแปลงวันที่ 2026-10-11 (PR #46, #47: guard `Previous`, sync รายชั่วโมงแบบไฟล์, reviver วันที่) ทดสอบในแอปแล้ว ไม่มี error และไฟล์ `lastsync_orsync.txt` ถูกสร้างใน /Workload
 - `old.savesync` และการ carry `orsync` ใน `old.save` ไม่ได้ใช้แล้ว ลบได้เมื่อแน่ใจ
 - งานที่วางแผนไว้: library FollowUp สำหรับค่า PSA / ภาพถ่ายทางรังสีที่ตรวจซ้ำหลายครั้ง และ tag ผลการรักษาใน OpResult ที่ `rpo.setAll` แยกเข้า Report
