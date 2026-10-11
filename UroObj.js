@@ -58,13 +58,7 @@ var old = {
       else if(this.lib == "OperationList") lb = op;
       let fieldnames = lb.fields();
       for(let f of fieldnames) {
-        if(f=="Previous") {
-          let prev = e.field(f)?JSON.parse(e.field(f)):{};
-          if("orsync" in prev) {
-            old.d["orsync"] = prev.orsync;
-          }
-        }
-        else if(f!= "OpDateCal" && f!= "Output") {
+        if(f!="Previous" && f!= "OpDateCal" && f!= "Output") {
           if(my.dateIsValid(e.field(f)) || my.timeIsValid(e.field(f))) {
             old.d[f] = my.date(e.field(f));
           }
@@ -97,11 +91,6 @@ var old = {
       else if(f=="Patient" || f=="DxAutoFill" || f=="OperationList")
         return Array.isArray(v) && v.length>0? v[0].title: "";
       return v;
-    },
-    savesync : function (e, fieldname) {
-      this.d[fieldname] = hour;
-        
-      e.set("Previous", JSON.stringify(this.d));
     }
 };
 
