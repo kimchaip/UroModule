@@ -1,4 +1,4 @@
-// ===== Consult : นำเข้า consult จาก Memento/consultInbox.json =====
+// ===== Consult : นำเข้า consult จาก consultInbox.json =====
 // ใช้เป็น Action script ใน library "Consult" (ต้องเลือก library UroObj.js และ MyDate.js
 // ในหน้า script เหมือน trigger อื่น และเปิดสิทธิ์ Read files / Write files)
 // Tasker (emrextract.js) เขียนต่อท้ายไฟล์ทีละบรรทัด: {"hn":..,"date":"d/m/yyyy","dx":..,"pasthx":..,"name":..}
@@ -8,8 +8,9 @@
 // เลยจดรหัส (t) ของบรรทัดที่นำเข้าแล้ว
 // ไว้ใน consultInbox.done แล้วข้ามบรรทัดเหล่านั้นในครั้งต่อไป แม้จะลบ entry ใน Memento ไปแล้วก็ตาม
 (function () {
-  var PATH = "/sdcard/Memento/consultInbox.json";
-  var DONE = "/sdcard/Memento/consultInbox.done";
+  // ชื่อไฟล์เปล่า: Memento อ่าน/เขียนในโฟลเดอร์ที่ตั้งไว้ใน Settings > Folder accessible to scripts
+  var PATH = "consultInbox.json";
+  var DONE = "consultInbox.done";
 
   function readLines(path) {
     try {

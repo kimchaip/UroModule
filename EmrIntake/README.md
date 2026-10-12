@@ -5,22 +5,26 @@
 | ไฟล์ | ใช้ที่ไหน |
 |---|---|
 | `emrextract.js` | Tasker action JavaScript อ่านข้อความ EMR แล้วตั้งตัวแปร `%name %hnx %yearx %monthx %dayx %cdate %dxx %pasthx %jsonline` |
-| `ConsultImport.js` | Memento Action script ใน library Consult อ่าน `Memento/consultInbox.json` แล้วสร้าง Consult |
+| `ConsultImport.js` | Memento Action script ใน library Consult อ่าน `consultInbox.json` แล้วสร้าง Consult |
 
 ต้องมี: Memento Database รุ่นเต็ม, Tasker และ plugin Memento ของ Tasker (action "Add/edit an entry") และติดตั้ง UroModule ตาม [README](../README.md) แล้ว
 
-## 1. วางไฟล์ในมือถือ
-copy `emrextract.js` ไปไว้ในโฟลเดอร์ `Memento/` ของมือถือ
+## 1. โฟลเดอร์ไฟล์
+Memento ให้ script อ่าน/เขียนไฟล์ได้เฉพาะในโฟลเดอร์ที่ตั้งไว้ที่ Memento > Settings > **Folder accessible to scripts** และ `ConsultImport.js` อ้างไฟล์ด้วยชื่อเปล่า (`consultInbox.json`, `consultInbox.done`) จึงต้องให้ Tasker เขียนไฟล์ลงโฟลเดอร์เดียวกันนี้
+
+คู่มือนี้ใช้โฟลเดอร์ `Workload` เป็นตัวอย่าง ถ้าตั้งเป็นโฟลเดอร์อื่น ให้เปลี่ยน `Workload/` ในตารางข้อ 2 เป็นชื่อโฟลเดอร์นั้น (path ของ Tasker นับจาก `/sdcard`)
+
+copy `emrextract.js` ไปไว้ในโฟลเดอร์ `Workload/` ของมือถือ
 
 ## 2. Tasker: task `setConsult`
 
 | # | Action | ค่า | If |
 |---|---|---|---|
 | 1 | Variables > Variable Set | Name `%txt` To `%CLIP` | `%CLIP` Set |
-| 2 | Code > JavaScript | Path `Memento/emrextract.js`, Auto Exit ✓, Timeout 2, Continue Task After Error ✓ | `%txt` ~R `HN\s*:\s*\d` |
+| 2 | Code > JavaScript | Path `Workload/emrextract.js`, Auto Exit ✓, Timeout 2, Continue Task After Error ✓ | `%txt` ~R `HN\s*:\s*\d` |
 | 3 | Task > If | | `%hnx` Set AND `%name` Set AND `%cdate` Set |
 | 4 | Plugin Memento > Add/edit an entry | library **Patient**, ค้นด้วย `HN` = `%hnx`, `PtName` = `%name`, `YY` = `%yearx`, `MM` = `%monthx`, `DD` = `%dayx` | |
-| 5 | File > Write File | File `Memento/consultInbox.json`, Text `%jsonline`, **Append ✓**, **Add Newline ✓** | |
+| 5 | File > Write File | File `Workload/consultInbox.json`, Text `%jsonline`, **Append ✓**, **Add Newline ✓** | |
 | 6 | Alert > Notify | Title `Consult รอนำเข้า` Text `%name HN %hnx` / `Dx: %dxx` / `วันที่: %cdate` | |
 | 7 | Task > End If | | |
 
@@ -66,7 +70,7 @@ Create
 - ConsultDate = วันที่แรกใต้บรรทัด "Create" (ปี 69 → 2569 → 2026)
 - Dx = Final Dx ตัวแรก โดยตัดรหัส ICD เช่น `[R31]` ออก ถ้าไม่มี Final Dx ใช้บรรทัด # แรก
 - PastHx = Final Dx ที่เหลือ + บรรทัด # ใน Progress note (บรรทัดที่ OCR ตัดจะต่อกลับให้) ต่อท้ายประวัติผ่าตัดที่ระบบเติมเอง
-- บรรทัดที่นำเข้าแล้วจดไว้ใน `Memento/consultInbox.done` และไม่นำเข้าซ้ำ แม้ลบ entry ใน Memento ไปแล้ว (`file().write` ของ Memento ล้างไฟล์ไม่ได้ จึงใช้วิธีจดแทน)
+- บรรทัดที่นำเข้าแล้วจดไว้ใน `consultInbox.done` (โฟลเดอร์เดียวกัน) และไม่นำเข้าซ้ำ แม้ลบ entry ใน Memento ไปแล้ว (`file().write` ของ Memento ล้างไฟล์ไม่ได้ จึงใช้วิธีจดแทน)
 - ข้ามรายการที่ไม่พบ HN ใน Patient, ไม่มีวันที่หรือ Dx, หรือมี Consult วันเดียวกัน คนเดียวกัน Dx เดียวกันแล้ว
 
 รูปแบบหน้า EMR ของแต่ละโรงพยาบาลต่างกัน ถ้าใช้กับ EMR อื่นต้องแก้ regex ใน `emrextract.js`
