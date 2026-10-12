@@ -72,7 +72,8 @@ Memento ไม่มี API ให้อ่านค่าเดิมตอน�
 
 ## สิ่งที่อยู่นอก repo
 
-- `AppsScript/Code.gs` (ฝั่ง Google Apps Script ของ CalendarSync) และ `MementoScripts/` (เช่น `UroCRH_SheetSync.js`) อยู่ใน folder บน PC แต่ไม่ได้ commit (ถูก exclude ใน `.git/info/exclude`)
+- `MementoScripts/` (เช่น `UroCRH_SheetSync.js`) อยู่ใน folder บน PC แต่ไม่ได้ commit (ถูก exclude ใน `.git/info/exclude`)
+- ฝั่ง Apps Script ของ CalendarSync อยู่ใน `AppsScript/` แล้ว แต่ Calendar ID (Script Properties `CAL:<ชื่อ>`) และ URL ของ Web App อยู่นอก repo ดู [AppsScript/SETUP.md](AppsScript/SETUP.md)
 - โครงสร้าง library อยู่ใน template ของ Memento ที่แชร์ไว้ (ลิงก์ใน README หัวข้อการติดตั้ง)
 
 ## ข้อควรระวัง / งานค้าง

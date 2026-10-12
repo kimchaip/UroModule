@@ -46,6 +46,7 @@
 | `UroObj.js` | logic หลักของทุก library และ trigger (`trig.*`) เช่น เติมข้อมูลอัตโนมัติ, ตรวจซ้ำ, จัดคิว OR, merge การ admit, DJ stent, LOS, สร้าง Report |
 | `Autofill.js` | ค้นหาและเรียงตัวเลือก Dx/Op/ชื่อ ตามความถี่ และปุ่มหาวันว่าง OR (วันจันทร์ / OR นอกเวลา) |
 | `CalendarSync.js` | sync library Holidays กับ Google Calendar ผ่าน Apps Script Web App |
+| `AppsScript/` | ฝั่ง Google Apps Script ของ CalendarSync (`Code.gs`), ตัวจำลองทดสอบ `test/sim.js` และวิธีตั้งค่า [SETUP.md](AppsScript/SETUP.md) |
 | `Widget.js` | สร้าง widget แสดงรายการ OR ที่จะมาถึง 90 วัน |
 
 ## การติดตั้ง
