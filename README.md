@@ -51,18 +51,22 @@
 
 ## การติดตั้ง
 
-Template ที่แชร์ไว้ เปิดลิงก์บนมือถือที่ติดตั้ง Memento Database เพื่อเพิ่ม library เข้าแอปได้ทันที:
+1. ติดตั้งแอป Memento Database บนมือถือ
+2. เปิดลิงก์ template ของแต่ละ library บนมือถือเครื่องนั้น เพื่อเพิ่ม library เข้าแอป (template มีแต่โครงสร้าง ไม่มีข้อมูล):
 
-- [Patient](https://mementodb.com/t/4669873801396224)
-- [UroBase](https://mementodb.com/t/6472042078797824)
+   | Library | Template |
+   |---|---|
+   | Patient | [mementodb.com/t/4669873801396224](https://mementodb.com/t/4669873801396224) |
+   | UroBase | [mementodb.com/t/6472042078797824](https://mementodb.com/t/6472042078797824) |
+   | Consult | [mementodb.com/t/5131125304590336](https://mementodb.com/t/5131125304590336) |
+   | Report | [mementodb.com/t/4809232152264704](https://mementodb.com/t/4809232152264704) |
+   | Holidays | [mementodb.com/t/5193434878181376](https://mementodb.com/t/5193434878181376) |
+   | DxAutoFill | [mementodb.com/t/6612057375113216](https://mementodb.com/t/6612057375113216) |
+   | OperationList | [mementodb.com/t/5468366136672256](https://mementodb.com/t/5468366136672256) |
+   | Backup | [mementodb.com/t/4921686727327744](https://mementodb.com/t/4921686727327744) |
 
-ถ้าต้องการโครงสร้างครบทุก library ให้ใช้วิธี restore ด้านล่าง
-
-1. ดาวน์โหลด zip โครงสร้างฐานข้อมูลจาก [Google Drive](https://drive.google.com/file/d/1EQxo1GUh1thZnCH3xzjhITYhuYa9Z5pX/view?usp=drive_link) เก็บไว้ที่ folder "Download" ในโทรศัพท์
-2. ติดตั้งแอป Memento Database
-3. Restore: เปิดแอป > Settings > Restore > เลือกไฟล์ `memento_backup_******.zip` แล้วรอติดตั้ง
-4. ให้สิทธิ์ script: เปิด library "Patient" > ... > Scripts > กดไอคอนโล่มุมขวาบน เปิด Libraries, Read files, Write files, Network ทำแบบเดียวกันกับทุก library (UroBase, Consult, Backup, DxAutoFill, OperationList, Report, Holidays) ถ้าแอปถามว่าจะ "upload" ไหมตอนเปิด library ครั้งแรก ให้ตอบ "No, Thanks"
-5. แก้ได้เฉพาะ field ประเภท selection เช่น Ward, Dr, Underlying field อื่นอย่าแก้ เพราะ script อ้างชื่อ field โดยตรง
+3. ให้สิทธิ์ script: เปิด library "Patient" > ... > Scripts > กดไอคอนโล่มุมขวาบน เปิด Libraries, Read files, Write files, Network ทำแบบเดียวกันกับทุก library (UroBase, Consult, Backup, DxAutoFill, OperationList, Report, Holidays) ถ้าแอปถามว่าจะ "upload" ไหมตอนเปิด library ครั้งแรก ให้ตอบ "No, Thanks"
+4. แก้ได้เฉพาะ field ประเภท selection เช่น Ward, Dr, Underlying field อื่นอย่าแก้ เพราะ script อ้างชื่อ field โดยตรง
 
 หมายเหตุ: Memento เวอร์ชันฟรีจำกัด 3 library และ 1 script ต่อ library จึงเพิ่ม library หรือ script ไม่ได้ ถ้าต้องการใช้เต็มที่ต้องซื้อเวอร์ชันเต็ม
 
