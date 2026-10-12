@@ -10,7 +10,7 @@
 
 | object | หน้าที่ |
 |---|---|
-| `pt`, `or`, `cs`, `bu`, `dx`, `op`, `rp`, `hd`, `wd` | handle ของแต่ละ library (`libByName`) |
+| `pt`, `or`, `cs`, `bu`, `dx`, `op`, `rp`, `hd` | handle ของแต่ละ library (`libByName`) |
 | `uro`, `buo`, `cso` | config ของ UroBase / Backup / Consult (`lib`, ชื่อ field วันที่ `opdate`, field ผล `result`, regex "ไม่ทำ"/"งด") ใช้เป็น `this` ให้ฟังก์ชันส่วนกลาง |
 | `pto`, `dxo`, `opo`, `rpo` | logic ของ Patient / DxAutoFill / OperationList / Report |
 | `old` | snapshot ค่าก่อนแก้ไข (ดูหัวข้อถัดไป) |
