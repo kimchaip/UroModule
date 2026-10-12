@@ -22,7 +22,7 @@
         │ Backup │ (ข้อมูล UroBase ที่เก่ากว่า ~2 ปี)
         └────────┘
   Holidays ◄──► Google Calendar (CalendarSync.js + Apps Script)
-  UroBase / UroCRH ──► Google Sheet (syncGoogleSheet)
+  UroBase ──► Google Sheet (syncGoogleSheet)
 ```
 
 ### Library ใน Memento
@@ -37,7 +37,6 @@
 | **DxAutoFill** | คู่ Dx → Op ที่เคยใช้ พร้อมจำนวนครั้ง ใช้เติมอัตโนมัติ |
 | **OperationList** | รายการหัตถการ, กลุ่ม (`OpList`, `OpGroup`), ประเภท (`OpType` เช่น OH = OR นอกเวลา) |
 | **Holidays** | วันหยุด, วันไม่อยู่, OR นอกเวลา sync กับ Google Calendar |
-| **UroCRH** | ตารางที่ sync ไป Google Sheet ให้เพื่อนร่วมงานดู |
 
 ### ไฟล์ใน repo
 
