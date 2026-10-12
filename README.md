@@ -48,6 +48,7 @@
 | `CalendarSync.js` | sync library Holidays กับ Google Calendar ผ่าน Apps Script Web App |
 | `AppsScript/` | ฝั่ง Google Apps Script ของ CalendarSync (`Code.gs`), ตัวจำลองทดสอบ `test/sim.js` และวิธีตั้งค่า [SETUP.md](AppsScript/SETUP.md) |
 | `Widget.js` | สร้าง widget แสดงรายการ OR ที่จะมาถึง 90 วัน |
+| `EmrIntake/` | ถ่ายภาพ EMR แล้วให้ Tasker + Memento สร้าง Patient และ Consult อัตโนมัติ วิธีตั้งค่าใน [EmrIntake/README.md](EmrIntake/README.md) |
 
 ## การติดตั้ง
 
