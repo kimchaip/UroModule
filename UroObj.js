@@ -6,7 +6,6 @@ var dx = libByName("DxAutoFill") ;
 var op = libByName("OperationList") ;
 var rp = libByName("Report");
 var hd = libByName("Holidays");
-var wd = libByName("UroCRH");
 
 var old = {
     d : {}, 
