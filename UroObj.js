@@ -2308,9 +2308,8 @@ var rpo = {
   updatenew : function (e) {
     if(old.field("Status") != "Not" && e.field("Status") != "Not"){
       //update
-      let ptlks = pt.find(old.field("Patient"));
-      if (ptlks.length>0) {
-        let ptent = pt.findById(ptlks[0].id);
+      let ptent = rpo.oldpt(e);
+      if (ptent) {
         let rps = ptent.linksFrom("Report", "Patient");
         if (rps.length>0) {
           for (let r=0; r<rps.length; r++) {
@@ -2331,11 +2330,21 @@ var rpo = {
       this.deleteold(e);
     }
   }, 
+  // Patient ของค่าเดิม (old): ใช้ link ใน entry ตรงๆ ถ้ายังเป็นคนเดิม
+  // ไม่ใช้ pt.find() เป็นหลัก เพราะค้นจากข้อความ อาจหาไม่เจอหรือได้คนอื่น
+  oldpt : function (e) {
+    let name = old.field("Patient");
+    let cur = e.field("Patient");
+    if (cur.length > 0 && (!name || cur[0].title == name))
+      return cur[0];
+    if (!name) return null;
+    let ptlks = pt.find(name);
+    return ptlks.length > 0 ? pt.findById(ptlks[0].id) : null;
+  },
   deleteold : function (e) {
     if(old.field("Status") != "Not"){
-      let ptlks = pt.find(old.field("Patient"));
-      if (ptlks.length>0) {
-        let ptent = pt.findById(ptlks[0].id);
+      let ptent = rpo.oldpt(e);
+      if (ptent) {
         let rps = ptent.linksFrom("Report", "Patient");
         if (rps.length>0) {
           for (let r=0;  r<rps.length; r++){
