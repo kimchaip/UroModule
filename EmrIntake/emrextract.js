@@ -1,5 +1,5 @@
 /*
-emrextract.js : อ่านข้อความ EMR (หน้า Order) ที่ LINE แปลงจากภาพ
+emrextract.js : อ่านข้อความ EMR (หน้า Order) หรือใบ MOPH Refer ที่ LINE แปลงจากภาพ
 ใช้ใน Tasker action JavaScript โดยตัวแปร %txt = ข้อความ
 ผลลัพธ์ (ตัวแปร Tasker):
   %name %hnx %agex %yearx %monthx %dayx %dob  -> ใช้กับ Add/edit entry Patient เดิม
@@ -8,6 +8,10 @@ emrextract.js : อ่านข้อความ EMR (หน้า Order) ท�
           (ชื่อตัวแปร Tasker ต้องยาวอย่างน้อย 3 ตัวอักษร จึงใช้ dxx ไม่ใช่ dx)
   %pasthx Final Dx ที่เหลือ + บรรทัด # ใน Progress note
   %jsonline 1 บรรทัด JSON สำหรับเขียนต่อท้าย consultInbox.json
+ใบ MOPH Refer: HN ใช้เลขของ รพ.เราในรูปแบบ "HN 200-66-58 (03)" -> 2006658
+  (ไม่ใช้ "HN:" ของ รพ.ต้นทาง), ชื่อจากบรรทัด "ชื่อ ..." (สติกเกอร์ รพ.เรา)
+  หรือหลัง "ขอส่งผู้ป่วยชื่อ", วันที่จาก "วันที่ 12 เดือน ตุลาคม พ.ศ. 2569",
+  Dx จาก "IMP :", PastHx จาก "U/D :" และ "ประวัติผ่าตัด"
 */
 var prefix = ["นาย", "นาง", "นส.", "น.ส.", "mr.", "mrs.", "miss", "จสอ.","ร.ต.อ.","ร.ต.ท.","ร.ต.ต.","พ.จ.อ.", "ดต.", "ดช.","ด.ช.", "ดญ.", "ด.ญ.","จอ.","รต.","ส.ท.","พระ","นท.","พภ.","สณ.","พ.ท.","สอ.","นางสาว"];
 
@@ -25,22 +29,40 @@ var jsonline = "";
 
 var lines = txt.split(/\r?\n/).map(function (s) { return s.replace(/\s+/g, " ").trim(); }).filter(Boolean);
 
-// HN
-var m = txt.match(/HN\s*:?\s*(\d{3,})/i);
-if (m) hnx = Number(m[1]);
+var refer = /MOPH\s*Refer|ระบบส่งตัวผู้ป่วย|แบบส่งต่อ/i.test(txt);
 
-// ชื่อ: หลัง "ชื่อ-สกุล :" (OCR อาจอ่านเป็น ซื่อ) ตัดส่วน HN ที่อยู่บรรทัดเดียวกันออก
-m = txt.match(/[ชซ]ื่อ\s*-?\s*สกุล\s*:?\s*([^\n]+)/);
-if (m) {
-  name = m[1].replace(/HN\s*:?.*$/i, "").replace(/\s+/g, " ").trim();
-  // ติดคำนำหน้ากับชื่อแบบเดียวกับ txtextract.js เช่น "นาย ทดสอบ" -> "นายทดสอบ"
+// ติดคำนำหน้ากับชื่อแบบเดียวกับ txtextract.js เช่น "นาย ทดสอบ" -> "นายทดสอบ"
+function glueprefix(s) {
+  s = s.replace(/\s+/g, " ").trim();
   prefix.sort(function (a, b) { return b.length - a.length; });
   for (var i = 0; i < prefix.length; i++) {
-    if (name.toLowerCase().indexOf(prefix[i] + " ") == 0) {
-      name = name.slice(0, prefix[i].length) + name.slice(prefix[i].length + 1);
-      break;
+    if (s.toLowerCase().indexOf(prefix[i] + " ") == 0) {
+      return s.slice(0, prefix[i].length) + s.slice(prefix[i].length + 1);
     }
   }
+  return s;
+}
+
+var m;
+if (refer) {
+  // HN ของ รพ.เรา เช่น "HN 200-66-58 (03)" -> 2006658
+  m = txt.match(/HN\s*:?\s*(\d{3})\s*-\s*(\d{2})\s*-\s*(\d{2})/i);
+  if (m) hnx = Number(m[1] + m[2] + m[3]);
+  // ชื่อ: บรรทัดที่ขึ้นต้นด้วย "ชื่อ" ถ้าไม่มีใช้หลัง "ขอส่งผู้ป่วยชื่อ"
+  var nl = lines.find(function (l) { return /^[ชซ]ื่อ\s/.test(l); });
+  if (nl) name = glueprefix(nl.replace(/^[ชซ]ื่อ\s*/, ""));
+  else {
+    m = txt.match(/ผู้ป่วยชื่อ\s*([^\n]+?)\s*HN/);
+    if (m) name = glueprefix(m[1]);
+  }
+} else {
+  // HN
+  m = txt.match(/HN\s*:?\s*(\d{3,})/i);
+  if (m) hnx = Number(m[1]);
+
+  // ชื่อ: หลัง "ชื่อ-สกุล :" (OCR อาจอ่านเป็น ซื่อ) ตัดส่วน HN ที่อยู่บรรทัดเดียวกันออก
+  m = txt.match(/[ชซ]ื่อ\s*-?\s*สกุล\s*:?\s*([^\n]+)/);
+  if (m) name = glueprefix(m[1].replace(/HN\s*:?.*$/i, ""));
 }
 
 // อายุ
@@ -64,8 +86,15 @@ function toDate(s) {
   if (y > 2400) y -= 543;      // พ.ศ. -> ค.ศ.
   return Number(r[1]) + "/" + Number(r[2]) + "/" + y;
 }
-var ci = lines.findIndex(function (l) { return /^create\b/i.test(l); });
-for (var i = (ci > -1 ? ci : 0); i < lines.length && !cdate; i++) cdate = toDate(lines[i]);
+var thmonth = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+if (refer) {
+  // "วันที่ 12 เดือน ตุลาคม พ.ศ. 2569"
+  m = txt.match(/วันที่\s*(\d{1,2})\s*เดือน\s*([ก-๙]+)\s*พ\.?\s*ศ\.?\s*(\d{4})/);
+  if (m && thmonth.indexOf(m[2]) > -1) cdate = Number(m[1]) + "/" + (thmonth.indexOf(m[2]) + 1) + "/" + (Number(m[3]) - 543);
+} else {
+  var ci = lines.findIndex(function (l) { return /^create\b/i.test(l); });
+  for (var i = (ci > -1 ? ci : 0); i < lines.length && !cdate; i++) cdate = toDate(lines[i]);
+}
 
 // Final Dx: บรรทัดต่อจาก "Final Dx." จนถึงหัวข้อถัดไป
 var dxs = [];
@@ -90,6 +119,27 @@ for (var k = 0; k < lines.length; k++) {
     }
     probs.push(p.trim());
   }
+}
+
+// ใบ Refer: Dx จาก "IMP :", PastHx จาก "U/D :" และ "ประวัติผ่าตัด" (ต่อบรรทัดที่ OCR ตัด)
+function after(re, more) {
+  for (var a = 0; a < lines.length; a++) {
+    var r = lines[a].match(re);
+    if (r) {
+      var v = r[1];
+      while (a + 1 < lines.length && more.test(lines[a + 1])) v += " " + lines[++a];
+      return v.replace(/\s+/g, " ").trim();
+    }
+  }
+  return "";
+}
+if (refer) {
+  var imp = after(/IMP\s*:?\s*(.*)$/i, /^[a-z]/);
+  if (imp) dxs.push(imp);
+  var ud = after(/U\/D\s*:?\s*(.*)$/i, /^[^\-#\d]/);
+  if (ud) probs.push("U/D: " + ud.replace(/[\s,]+$/, ""));
+  var sx = after(/ประวัติผ่าตัด\s*[=:]?\s*(.*)$/, /(?!)/);
+  if (sx) probs.push("ประวัติผ่าตัด: " + sx);
 }
 
 dxx = dxs.length ? dxs[0] : (probs.length ? probs[0] : "");
