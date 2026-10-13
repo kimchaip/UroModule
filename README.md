@@ -49,6 +49,7 @@
 | `AppsScript/` | ฝั่ง Google Apps Script ของ CalendarSync (`Code.gs`), ตัวจำลองทดสอบ `test/sim.js` และวิธีตั้งค่า [SETUP.md](AppsScript/SETUP.md) |
 | `Widget.js` | สร้าง widget แสดงรายการ OR ที่จะมาถึง 90 วัน |
 | `EmrIntake/` | ถ่ายภาพ EMR แล้วให้ Tasker + Memento สร้าง Patient และ Consult อัตโนมัติ วิธีตั้งค่าใน [EmrIntake/README.md](EmrIntake/README.md) |
+| `Outcome/` | ผลการรักษา: เดา Clavien และเก็บผลตรวจหลังผ่าตัด (patho, imaging, PSA, lab) ใน library FollowUp แล้วรวมเข้า Report วิธีตั้งค่าใน [Outcome/README.md](Outcome/README.md) |
 
 ## การติดตั้ง
 
