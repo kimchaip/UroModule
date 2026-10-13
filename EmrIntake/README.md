@@ -9,6 +9,13 @@
 
 ต้องมี: Memento Database รุ่นเต็ม, Tasker และ plugin Memento ของ Tasker (action "Add/edit an entry") และติดตั้ง UroModule ตาม [README](../README.md) แล้ว
 
+Tasker ต้องได้สิทธิ์อ่าน log (`READ_LOGS`) จึงจะอ่าน `%CLIP` ได้บน Android 10 ขึ้นไป ให้ grant ครั้งเดียวผ่าน adb (หรือแอป Tasker Permissions) แล้วปิด USB debugging ได้ สิทธิ์จะอยู่ถาวร **อย่า revoke** ไม่อย่างนั้นปุ่มจะอ่าน clipboard ไม่ได้
+
+```
+adb shell pm grant net.dinglisch.android.taskerm android.permission.READ_LOGS
+adb shell am force-stop net.dinglisch.android.taskerm
+```
+
 ## 1. โฟลเดอร์ไฟล์
 Memento ให้ script อ่าน/เขียนไฟล์ได้เฉพาะในโฟลเดอร์ที่ตั้งไว้ที่ Memento > Settings > **Folder accessible to scripts** และ `ConsultImport.js` อ้างไฟล์ด้วยชื่อเปล่า (`consultInbox.json`, `consultInbox.done`) จึงต้องให้ Tasker เขียนไฟล์ลงโฟลเดอร์เดียวกันนี้
 
@@ -35,7 +42,7 @@ copy `emrextract.js` ไปไว้ในโฟลเดอร์ `Workload/` �
 
 ใช้งาน: copy ข้อความ OCR ใน LINE > ดึงแถบลง > Tasker > setConsult
 
-ทำไมไม่ใช้ profile อัตโนมัติ: บน Android 13 ขึ้นไป event Clipboard Changed ต้องให้ Tasker อ่าน log ของระบบ ซึ่งบางเครื่อง (ทดสอบบน Samsung Android 16) ไม่ยอมให้สิทธิ์แม้ grant `READ_LOGS` ผ่าน adb แล้ว และ event Received Share ก็ไม่ทำให้ Tasker ขึ้นในเมนูแชร์ แต่ Tasker อ่าน `%CLIP` ได้เมื่อสั่งรันเอง ถ้าเครื่องของคุณใช้ Clipboard Changed ได้ จะสร้าง profile นั้นเรียก setConsult แทนปุ่มก็ได้
+ทำไมไม่ใช้ profile อัตโนมัติ: บน Android 13 ขึ้นไป event Clipboard Changed ต้องให้ Tasker อ่าน log ของระบบ ซึ่งบางเครื่อง (ทดสอบบน Samsung Android 16) ไม่ยอมให้สิทธิ์แม้ grant `READ_LOGS` ผ่าน adb แล้ว และ event Received Share ก็ไม่ทำให้ Tasker ขึ้นในเมนูแชร์ แต่ Tasker อ่าน `%CLIP` ได้เมื่อสั่งรันเอง (ยังต้องมีสิทธิ์ `READ_LOGS` ตามด้านบน) ถ้าเครื่องของคุณใช้ Clipboard Changed ได้ จะสร้าง profile นั้นเรียก setConsult แทนปุ่มก็ได้
 
 ## 4. Memento: ปุ่ม "นำเข้า consult"
 1. เปิด library **Consult** > ⋮ > **Scripts** > **+**
