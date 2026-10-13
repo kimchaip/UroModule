@@ -24,11 +24,15 @@ function first(re, s, i) { var m = s.match(re); return m ? m[i === undefined ? 1
 var MONTHS = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12,
   "ม.ค.": 1, "ก.พ.": 2, "มี.ค.": 3, "เม.ย.": 4, "พ.ค.": 5, "มิ.ย.": 6, "ก.ค.": 7, "ส.ค.": 8, "ก.ย.": 9, "ต.ค.": 10, "พ.ย.": 11, "ธ.ค.": 12 };
 
-// d/m/yy(yy), d-m-yyyy, 12 Mar 2024, 12-Mar-24, 12 มี.ค. 67 -> "d/m/yyyy" ค.ศ.
+var THMONTH = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+
+// d/m/yy(yy), d-m-yyyy, "12 เดือน ตุลาคม พ.ศ. 2569" (ใบส่งตัว), 12 Mar 2024, 12-Mar-24, 12 มี.ค. 67 -> "d/m/yyyy" ค.ศ.
 function toDate(s) {
   s = clean(s);
   var y, mo, d, r = s.match(/(\d{1,2})\s*[\/\-.]\s*(\d{1,2})\s*[\/\-.]\s*(\d{2,4})/);
+  var th = s.match(/(\d{1,2})\s*(?:เดือน)?\s*(มกราคม|กุมภาพันธ์|มีนาคม|เมษายน|พฤษภาคม|มิถุนายน|กรกฎาคม|สิงหาคม|กันยายน|ตุลาคม|พฤศจิกายน|ธันวาคม)\s*(?:พ\.?\s*ศ\.?)?\s*(\d{4})/);
   if (r) { d = Number(r[1]); mo = Number(r[2]); y = Number(r[3]); }
+  else if (th) { d = Number(th[1]); mo = THMONTH.indexOf(th[2]) + 1; y = Number(th[3]); }
   else {
     r = s.match(/(\d{1,2})\s*[\-\s]\s*([A-Za-z]{3}|[ก-๙]{1,3}\.[ก-๙]{1,2}\.)[A-Za-z]*\s*[\-\s,]\s*(\d{2,4})/);
     if (!r) return "";
@@ -258,8 +262,15 @@ function parseLab(t, d) {
 // ---------------- main ----------------
 var t = clean(txt);
 var lines = t.split(/\r?\n/).map(function (s) { return s.replace(/\s+/g, " ").trim(); }).filter(Boolean);
-var m0 = t.match(/HN\s*\.?\s*:?\s*(\d{3,})/i);
-if (m0) hnx = Number(m0[1]);
+// HN: ใช้เลขของ รพ.เราแบบ "HN 200-66-58 (03)" -> 2006658 ก่อนเสมอ (สติกเกอร์บนใบส่งตัว/ใบผลจาก รพ.อื่น)
+// ไม่มีจึงใช้ "HN: 123456" ตัวแรก (ใบส่งตัว MOPH Refer มี "HN:" ของ รพ.ต้นทางด้วย จึงห้ามใช้ก่อน) แบบเดียวกับ emrextract.js
+var refer = /MOPH\s*Refer|ระบบส่งตัวผู้ป่วย|แบบส่งต่อ/i.test(t);
+var m0 = t.match(/HN\s*:?\s*(\d{3})\s*-\s*(\d{2})\s*-\s*(\d{2})/i);
+if (m0) hnx = Number(m0[1] + m0[2] + m0[3]);
+else if (!refer) {
+  m0 = t.match(/HN\s*\.?\s*:?\s*(\d{3,})/i);
+  if (m0) hnx = Number(m0[1]);
+}
 
 var dd = {};
 if (/patholog|biopsy|specimen|histolog|carcinoma|gleason|margin/i.test(t) && /diagnosis|gross|microscop|specimen/i.test(t)) {
