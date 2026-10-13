@@ -173,9 +173,9 @@ function siteOf(s) { for (var i = 0; i < SITES.length; i++) if (SITES[i][0].test
 function parseImaging(t, lines) {
   var d = {};
   if (/\bMRI\b|\bMR\b|magnetic/i.test(t)) d.modality = "MRI";
-  else if (/\bCT\b|computed tomograph|\bNCCT\b|\bCTU\b/i.test(t)) d.modality = "CT";
+  else if (/\bCT\b|computed tomograph|\bNCCT\b|\bCTWA\b|\bCTU\b/i.test(t)) d.modality = "CT";
   else if (/\bIVP\b|intravenous pyelo/i.test(t)) d.modality = "IVP";
-  else if (/ultraso|\bUS\b|sonogra|TRUS/i.test(t)) d.modality = "US";
+  else if (/ultraso|\bUSG?\b|sonogra/i.test(t)) d.modality = "US";
   else if (/\bKUB\b|plain film|x-?ray/i.test(t)) d.modality = "KUB";
   var imp = section(lines, /^(impression|conclusion|summary|สรุป)/i, /^(radiologist|reported by|signed|dictated|recommend)/i);
   d.text = imp || undefined;
