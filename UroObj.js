@@ -2157,6 +2157,142 @@ var rpo = {
       r.set("Dead","Dead");
     else
       r.set("Dead","Alive");
+    //---Clavien + ผลตรวจจาก FollowUp
+    rpo.setResults(r, e);
+  },
+  // set ทีละ field ถ้า Report ยังไม่ได้สร้าง field นั้น จะไม่ทำให้ trigger ทั้งหมดล้ม
+  // ค่าว่างจะล้าง field (กรณีลบผลใน FollowUp ทีหลัง)
+  put : function (r, name, value) {
+    try {
+      r.set(name, (value === undefined || value === "") ? null : value);
+    }
+    catch (err) {
+      log("Report " + name + ": " + err);
+    }
+  },
+  // จับคู่ผลใน FollowUp กับการผ่าตัดนี้จากวันที่
+  //   ก่อนผ่าตัด: imaging / PSA ล่าสุดภายใน 180 วัน, biopsy (Patho) ล่าสุดภายใน 365 วันก่อนวันผ่าตัด
+  //   patho ของการผ่าตัดนี้: Patho ตั้งแต่วันผ่าตัดถึง 120 วัน ที่การผ่าตัดนี้เป็นครั้งล่าสุดก่อนวันที่ของผล
+  setResults : function (r, e) {
+    let cl = null;
+    try {
+      cl = e.field("Clavien");
+    }
+    catch (err) {}
+    rpo.put(r, "Clavien", cl);
+    let opdate = my.date(e.field("Date"));
+    if (!opdate || e.field("Patient").length == 0) return;
+    let ptent = e.field("Patient")[0];
+    let fus = [];
+    try {
+      fus = ptent.linksFrom("FollowUp", "Patient");
+    }
+    catch (err) {
+      return;
+    }
+    let dayms = 86400000;
+    let d0 = my.gdate(my.date(opdate));
+    let dayOf = function (f) {
+      return f.field("Date") ? my.gdate(my.date(f.field("Date"))) : null;
+    };
+    let has = function (v) {
+      return v !== undefined && v !== null && v !== "";
+    };
+    // ผลล่าสุดก่อนวันผ่าตัดที่มีค่าใน field นี้
+    let before = function (types, field, days, strict) {
+      let best = null, bd = -1;
+      fus.forEach(f => {
+        let fd = dayOf(f);
+        if (fd === null || types.indexOf(f.field("Type")) < 0 || !has(f.field(field))) return;
+        if ((strict ? fd < d0 : fd <= d0) && fd >= d0 - days * dayms && fd > bd) {
+          best = f;
+          bd = fd;
+        }
+      });
+      return best;
+    };
+    let val = function (f, field) {
+      return f ? f.field(field) : null;
+    };
+    let img = ["CT", "KUB", "US", "IVP", "MRI"];
+
+    //---ก่อนผ่าตัด: นิ่ว (ทุกค่าจากผลเดียวกัน), ต่อมลูกหมาก, PSA
+    let st = before(img, "StoneSize", 180, false);
+    rpo.put(r, "StoneSide", val(st, "StoneSide"));
+    rpo.put(r, "StoneSite", val(st, "StoneSite"));
+    rpo.put(r, "StoneSize", val(st, "StoneSize"));
+    rpo.put(r, "StoneN", val(st, "StoneN"));
+    rpo.put(r, "StoneHU", val(st, "StoneHU"));
+    rpo.put(r, "Hydro", val(st, "Hydro"));
+    let vol = val(before(img, "ProstateVol", 180, false), "ProstateVol");
+    rpo.put(r, "ProstateVol", vol);
+    rpo.put(r, "PIRADS", val(before(img, "PIRADS", 180, false), "PIRADS"));
+    let psa = val(before(["PSA"], "PSA", 180, false), "PSA");
+    rpo.put(r, "PSAPre", psa);
+    rpo.put(r, "PSAD", (psa && vol) ? Math.round(psa / vol * 100) / 100 : null);
+
+    //---biopsy ก่อนผ่าตัด
+    let bx = before(["Patho"], "Cell", 365, true);
+    rpo.put(r, "BxCell", val(bx, "Cell"));
+    rpo.put(r, "BxGleason", val(bx, "Gleason"));
+    rpo.put(r, "BxGG", val(bx, "GradeGroup"));
+    rpo.put(r, "BxCores", val(bx, "Cores"));
+
+    //---patho ของการผ่าตัดนี้
+    let opdays = [];
+    rpo.allops(ptent).forEach(v => {
+      if (v.field("Status") == "Done" && v.field("Date"))
+        opdays.push(my.gdate(my.date(v.field("Date"))));
+    });
+    let pa = null, pd = -1;
+    fus.forEach(f => {
+      let fd = dayOf(f);
+      if (fd === null || f.field("Type") != "Patho" || fd < d0 || fd > d0 + 120 * dayms) return;
+      // มีการผ่าตัดอื่นหลังการผ่าตัดนี้แต่ก่อนผล -> ผลนี้เป็นของการผ่าตัดนั้น
+      if (opdays.some(od => od > d0 && od <= fd)) return;
+      if (!pa || fd < pd) {
+        pa = f;
+        pd = fd;
+      }
+    });
+    rpo.put(r, "PathoCell", val(pa, "Cell"));
+    rpo.put(r, "PathoGrade", val(pa, "Grade"));
+    rpo.put(r, "Gleason", val(pa, "Gleason"));
+    rpo.put(r, "GradeGroup", val(pa, "GradeGroup"));
+    rpo.put(r, "pT", val(pa, "pT"));
+    rpo.put(r, "pN", val(pa, "pN"));
+    rpo.put(r, "Margin", val(pa, "Margin"));
+    rpo.put(r, "LVI", val(pa, "LVI"));
+    rpo.put(r, "Muscle", val(pa, "Muscle"));
+    rpo.put(r, "NodesPos", val(pa, "NodesPos"));
+    rpo.put(r, "NodesTotal", val(pa, "NodesTotal"));
+    rpo.put(r, "TumorSize", val(pa, "TumorSize"));
+    rpo.put(r, "PathoNo", val(pa, "PathoNo"));
+  },
+  // หา Report ของ entry นี้จากค่าปัจจุบัน (ใช้กับปุ่ม action และ trigger ของ FollowUp)
+  find : function (e) {
+    if (e.field("Patient").length == 0) return null;
+    let rps = e.field("Patient")[0].linksFrom("Report", "Patient");
+    for (let i = 0; i < rps.length; i++) {
+      if (my.gdate(my.date(rps[i].field("OpDate"))) == my.gdate(my.date(e.field("Date"))) && rps[i].field("Dx") == e.field("Dx") && rps[i].field("Op") == e.field("Op"))
+        return rps[i];
+    }
+    return null;
+  },
+  // อัปเดตผลตรวจใน Report ทุกการผ่าตัดของคนไข้คนนี้ (เรียกเมื่อ FollowUp เปลี่ยน)
+  allops : function (ptent) {
+    let all = [];
+    ptent.linksFrom("UroBase", "Patient").forEach(v => all.push(v));
+    ptent.linksFrom("Backup", "Patient").forEach(v => all.push(v));
+    return all;
+  },
+  syncPatient : function (ptent) {
+    rpo.allops(ptent).forEach(e => {
+      if (e.field("Status") == "Not") return;
+      let r = rpo.find(e);
+      if (r)
+        rpo.setResults(r, e);
+    });
   },
   createnew : function (e) {
     if(e.field("Status") != "Not"){
@@ -2587,6 +2723,14 @@ var trig = {
     cal.deletelink(e);
     fill.deletept(e);
   }, 
+  FollowUpAfterEdit : function (e, value) {
+    if (e.field("Patient").length > 0)
+      rpo.syncPatient(e.field("Patient")[0]);
+  },
+  FollowUpAfterDelete : function (e) {
+    if (e.field("Patient").length > 0)
+      rpo.syncPatient(e.field("Patient")[0]);
+  },
   DxOpenEdit : function(e, value) {
     old.save.call(dxo, e);
   },
