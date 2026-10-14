@@ -50,9 +50,10 @@ function glueprefix(s) {
 
 var m;
 if (refer) {
-  // HN ของ รพ.เรา เช่น "HN 200-66-58 (03)" -> 2006658
-  m = txt.match(/HN\s*:?\s*(\d{3})\s*-\s*(\d{2})\s*-\s*(\d{2})/i);
-  if (m) hnx = Number(m[1] + m[2] + m[3]);
+  // HN ของ รพ.เรา เช่น "HN 200-66-58 (03)" -> 2006658 หรือ "HN 1234567 (03)"
+  // ("HN:" มีโคลอนเป็นของ รพ.ต้นทาง ไม่ใช้)
+  m = txt.match(/HN\s*:?\s*(\d{3})\s*-\s*(\d{2})\s*-\s*(\d{2})/i) || txt.match(/HN(?!\s*:)\s*(\d{5,})/i);
+  if (m) hnx = Number(m.slice(1).join(""));
   // ชื่อ: บรรทัดที่ขึ้นต้นด้วย "ชื่อ" ถ้าไม่มีใช้หลัง "ขอส่งผู้ป่วยชื่อ"
   var nl = lines.find(function (l) { return /^[ชซ]ื่อ\s/.test(l); });
   if (nl) name = glueprefix(nl.replace(/^[ชซ]ื่อ\s*/, ""));
@@ -147,16 +148,16 @@ function after(re, more) {
   return "";
 }
 if (refer) {
-  var imp = after(/\bIMP\b\s*:?\s*(.*)$/, /^[a-z]/);
+  var imp = after(/\bIMP\b\s*:?\s*(.*)$/i, /^[a-z]/);
   if (imp) dxs.push(imp);
-  var ud = after(/U\/D\s*:?\s*(.*)$/i, /^[^\-#\d]/);
+  var ud = /\bno\s+U\/D/i.test(txt) ? "" : after(/U\/D\s*:?\s*(.*)$/i, /^[^\-#\d]/);
   if (ud) probs.push("U/D: " + ud.replace(/[\s,]+$/, ""));
   var sx = after(/ประวัติผ่าตัด\s*[=:]?\s*(.*)$/, /(?!)/);
   if (sx) probs.push("ประวัติผ่าตัด: " + sx);
 }
 
 if (crep) {
-  var cimp = after(/\bIMP\b\s*:?\s*(.*)$/, /^[a-z]/) || after(/Clinical\s*d[il1]agno\S*\s*:?\s*(.*)$/i, /(?!)/);
+  var cimp = after(/\bIMP\b\s*:?\s*(.*)$/i, /^[a-z]/) || after(/Clinical\s*d[il1]agno\S*\s*:?\s*(.*)$/i, /(?!)/);
   if (cimp) dxs.push(cimp);
 }
 

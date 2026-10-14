@@ -271,7 +271,12 @@ var lines = t.split(/\r?\n/).map(function (s) { return s.replace(/\s+/g, " ").tr
 var refer = /MOPH\s*Refer|ระบบส่งตัวผู้ป่วย|แบบส่งต่อ/i.test(t);
 var m0 = t.match(/HN\s*:?\s*(\d{3})\s*-\s*(\d{2})\s*-\s*(\d{2})/i);
 if (m0) hnx = Number(m0[1] + m0[2] + m0[3]);
-else if (!refer) {
+else if (refer) {
+  // ใบส่งตัวบางใบเขียน HN ของ รพ.เราแบบไม่มีขีด "HN 1234567 (03)" ("HN:" มีโคลอนเป็นของ รพ.ต้นทาง)
+  m0 = t.match(/HN(?!\s*:)\s*(\d{5,})/i);
+  if (m0) hnx = Number(m0[1]);
+}
+else {
   m0 = t.match(/HN\s*\.?\s*:?\s*(\d{3,})/i);
   if (m0) hnx = Number(m0[1]);
 }
