@@ -15,3 +15,5 @@ Report ไม่ได้ link กับ entry ใน UroBase/Backup โดย�
 4. Report ที่เหลือ (ไม่มีการผ่าตัดคู่ หรือซ้ำ): ใส่ `1` ใน field `Output` ไม่ลบ
 
 ใช้ field `Output` (Text) ที่มีอยู่แล้วใน Report (Report ที่จับคู่ได้จะถูกล้าง Output) ทุก Action ต้องเลือก JavaScript library `MyDate.js` และ `UroObj.js`
+
+ตั้งแต่ PR นี้ ทุกครั้งที่บันทึก entry ใน UroBase / Backup (ทั้งจาก edit card และแก้จากหน้า list) จะเรียก `rpo.sync` ซึ่ง reconcile คนไข้คนนั้นให้อัตโนมัติ Action `ReconcileReport.js` จึงใช้แค่ตรวจข้อมูลเก่าเป็นครั้งคราว

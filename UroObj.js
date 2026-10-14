@@ -2370,6 +2370,29 @@ var rpo = {
     });
     return res;
   },
+  // หลังบันทึก entry ใน UroBase / Backup: ให้ Report ของคนไข้ตรงกับการผ่าตัดปัจจุบัน
+  // เปลี่ยน Status เป็น Not -> ลบ Report เดิมก่อน (เหมือนเดิม) แล้ว reconcile คนไข้คนนี้
+  // และคนไข้เดิมถ้าเปลี่ยน Patient (Report ของคนเดิมที่ไม่มีคู่จะได้ Output = 1)
+  sync : function (e) {
+    if (old.field("Status") != "Not" && e.field("Status") == "Not")
+      rpo.deleteold(e);
+    let pts = [];
+    if (e.field("Patient").length > 0)
+      pts.push(e.field("Patient")[0]);
+    let name = old.field("Patient");
+    if (name && !pts.some(p => p.title == name)) {
+      let o = rpo.oldpt(e);
+      if (o) pts.push(o);
+    }
+    pts.forEach(p => {
+      try {
+        rpo.reconcile(p);
+      }
+      catch (err) {
+        log("Report sync " + p.title + ": " + err);
+      }
+    });
+  },
   syncPatient : function (ptent) {
     rpo.allops(ptent).forEach(e => {
       if (e.field("Status") == "Not") return;
@@ -2397,7 +2420,7 @@ var rpo = {
         let rps = ptent.linksFrom("Report", "Patient");
         if (rps.length>0) {
           for (let r=0; r<rps.length; r++) {
-            if (my.gdate(rps[r].field("OpDate")) == my.gdate(old.field("Date")) && rps[r].field("ORType") == old.field("ORType") && rps[r].field("Dx") == old.field("Dx") && rps[r].field("Op") == old.field("Op")) {
+            if (my.gdate(my.date(rps[r].field("OpDate"))) == my.gdate(my.date(old.field("Date"))) && rps[r].field("ORType") == old.field("ORType") && rps[r].field("Dx") == old.field("Dx") && rps[r].field("Op") == old.field("Op")) {
               rpo.setAll(rps[r], e);
               break;
             }
@@ -2432,7 +2455,7 @@ var rpo = {
         let rps = ptent.linksFrom("Report", "Patient");
         if (rps.length>0) {
           for (let r=0;  r<rps.length; r++){
-            if (my.gdate(rps[r].field("OpDate")) == my.gdate(old.field("Date")) && rps[r].field("Dx") == old.field("Dx") && rps[r].field("Op") == old.field("Op")){
+            if (my.gdate(my.date(rps[r].field("OpDate"))) == my.gdate(my.date(old.field("Date"))) && rps[r].field("Dx") == old.field("Dx") && rps[r].field("Op") == old.field("Op")){
               rps[r].trash();
               break;
             }
@@ -2724,12 +2747,7 @@ var trig = {
       que.load.call(this, e);
       que.sortque(que.o);
       que.sortque(que.q);
-      if (value=="create") {
-        rpo.createnew(e);
-      }
-      else if (value=="update") {
-        rpo.updatenew(e);
-      }
+      rpo.sync(e);
       que.runeffect(e);
       
       if (this.lib=="UroBase") {
@@ -2772,6 +2790,7 @@ var trig = {
       que.sortque(que.o);
       que.sortque(que.q);
       que.runeffect(e);
+      rpo.sync(e);
       
       sync.run(e, "orsync");
     }
