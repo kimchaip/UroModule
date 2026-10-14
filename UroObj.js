@@ -313,6 +313,38 @@ var mer = {
       this.fieldall(e);
       this.colorall(e);
     }
+  },
+  // rebuild MergeID of every admission of a patient (after entries moved UroBase -> Backup get new id)
+  // admission = Admit entries (not "not done") with the same VisitDate, sorted by opdate then Consult, Backup, UroBase
+  // return number of admissions whose MergeID was fixed
+  correct: function(ptent) {
+    let libs = [{"l":ptent.linksFrom("Consult", "Patient"),"o":cso},{"l":ptent.linksFrom("Backup", "Patient"),"o":buo},{"l":ptent.linksFrom("UroBase", "Patient"),"o":uro}];
+    let order = {"Consult":1, "Backup":2, "UroBase":3};
+    let entries = [];
+    libs.forEach(a=>{
+      a.l.forEach(v=>entries.push({"lib":a.o.lib, "o":a.o, "e":v}));
+    });
+    let groups = {};
+    let count = 0;
+    entries.forEach(x=>{
+      let marr;
+      try { marr = JSON.parse(x.e.field("MergeID")); } catch (err) { marr = null; }
+      if (!Array.isArray(marr)) return;  // never merged
+      let key = my.gdate(my.date(x.e.field("VisitDate")));
+      if (!groups[key]) {
+        let all = entries.filter(y=>y.e.field("VisitType")=="Admit" && !(y.e.field(y.o.result)||"").match(y.o.notdonereg) && my.gdate(my.date(y.e.field("VisitDate")))==key).map(y=>({"lib":y.lib, "e":y.e, "opd":my.gdate(my.date(y.e.field(y.o.opdate)))}));
+        all.sort((a,b)=>a.opd!=b.opd ? a.opd-b.opd : order[a.lib]-order[b.lib]);
+        groups[key] = all;
+      }
+      let all = groups[key];
+      if (all.length>0 && (marr.length!=all.length || all.some((a,i)=>marr[i].lib!=a.lib || marr[i].e!=a.e.id))) {
+        mer.save(x.e, all);
+        mer.m = all;
+        mer.setall("MergeID", x.e.field("MergeID"));
+        count++;
+      }
+    });
+    return count;
   }
 };
 var que = {
