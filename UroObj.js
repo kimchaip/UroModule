@@ -2392,21 +2392,46 @@ var rpo = {
   // หลังบันทึก entry ใน UroBase / Backup: ให้ Report ของคนไข้ตรงกับการผ่าตัดปัจจุบัน
   // เปลี่ยน Status เป็น Not หรือเปลี่ยน Patient -> ลบ Report ของค่าเดิมก่อน
   // แล้ว reconcile คนไข้คนนี้ และคนไข้เดิมถ้าเปลี่ยน Patient
+  // DEBUG (temporary): trace Report sync; logs ids and flags only, no patient names
+  dbg : function (s) {
+    log("RS " + s);
+  },
+  dbgstate : function (where, e) {
+    try {
+    let cur = e.field("Patient").length > 0 ? e.field("Patient")[0] : null;
+    let oname = old.field("Patient");
+    let day = function (v) { return v ? my.gdate(my.date(v)) : v; };
+    rpo.dbg(where + " entry=" + e.id + " lib=" + lib().title + " curPt=" + (cur ? cur.id : "none") +
+      " oldPtSame=" + (cur ? cur.title == oname : !oname) + " oldPtEmpty=" + !oname +
+      " status " + old.field("Status") + ">" + e.field("Status") +
+      " dateSame=" + (day(old.field("Date")) == day(e.field("Date"))) +
+      " dxSame=" + (old.field("Dx") == e.field("Dx")) + " opSame=" + (old.field("Op") == e.field("Op")));
+    } catch (err) { log("RS dbgstate: " + err); }
+  },
   sync : function (e) {
+    rpo.dbgstate("sync", e);
     let pts = [];
     if (e.field("Patient").length > 0)
       pts.push(e.field("Patient")[0]);
     let name = old.field("Patient");
     let ptchanged = name && !pts.some(p => p.title == name);
+    rpo.dbg("sync ptchanged=" + !!ptchanged);
     if ((old.field("Status") != "Not" && e.field("Status") == "Not") || ptchanged)
       rpo.deleteold(e);
     if (ptchanged) {
       let o = rpo.oldpt(e);
+      rpo.dbg("sync oldpt=" + (o ? o.id : "notfound"));
       if (o) pts.push(o);
     }
     pts.forEach(p => {
       try {
-        rpo.reconcile(p);
+        let ups = p.linksFrom("UroBase", "Patient");
+        let bus = p.linksFrom("Backup", "Patient");
+        let has = false;
+        for (let i = 0; i < ups.length; i++) if (ups[i].id == e.id) has = true;
+        for (let i = 0; i < bus.length; i++) if (bus[i].id == e.id) has = true;
+        let res = rpo.reconcile(p);
+        rpo.dbg("reconcile pt=" + p.id + " entryLinked=" + has + " " + JSON.stringify(res));
       }
       catch (err) {
         log("Report sync " + p.title + ": " + err);
@@ -2471,11 +2496,13 @@ var rpo = {
   deleteold : function (e) {
     if(old.field("Status") != "Not"){
       let ptent = rpo.oldpt(e);
+      rpo.dbg("deleteold oldpt=" + (ptent ? ptent.id : "notfound"));
       if (ptent) {
         let rps = ptent.linksFrom("Report", "Patient");
         if (rps.length>0) {
           for (let r=0;  r<rps.length; r++){
             if (my.gdate(my.date(rps[r].field("OpDate"))) == my.gdate(my.date(old.field("Date"))) && rps[r].field("Dx") == old.field("Dx") && rps[r].field("Op") == old.field("Op")){
+              rpo.dbg("deleteold pt=" + ptent.id + " trash report=" + rps[r].id + " of " + rps.length);
               rps[r].trash();
               break;
             }
@@ -2716,6 +2743,7 @@ var trig = {
   }, 
   BeforeEdit : function (e, value) {
     old.load(e);
+    if (this.lib != "Consult") rpo.dbgstate("BeforeEdit", e);
     valid.dxop.call(this, e); //fill dx,op complete 
     fill.setnewdate.call(this, e);
     cal.run.call(this, e, value=="create");
