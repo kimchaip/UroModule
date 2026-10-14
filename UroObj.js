@@ -2326,8 +2326,8 @@ var rpo = {
   //   1. คู่ที่ตรงกัน (วันที่ + ORType + Dx + Op): อัปเดต Report ด้วย setAll
   //   2. การผ่าตัดที่ไม่มีคู่ แต่มี Report ที่ไม่มีคู่วันเดียวกัน: ใช้ Report นั้น อัปเดตด้วย setAll
   //   3. การผ่าตัดที่ยังไม่มีคู่: สร้าง Report ใหม่
-  //   4. Report ที่เหลือ (ไม่มีการผ่าตัดคู่ หรือซ้ำ): ใส่ "1" ใน field Unmatch ไม่ลบ
-  // Report ที่จับคู่ได้จะล้าง Unmatch
+  //   4. Report ที่เหลือ (ไม่มีการผ่าตัดคู่ หรือซ้ำ): ใส่ "1" ใน field Output ไม่ลบ
+  // Report ที่จับคู่ได้จะล้าง Output
   reconcile : function (ptent) {
     let res = {"refreshed":0, "updated":0, "created":0, "unmatch":0};
     let day = function (v) { return my.gdate(my.date(v)); };
@@ -2341,7 +2341,7 @@ var rpo = {
       if (i > -1) {
         used[i] = true;
         rpo.setAll(rps[i], e);
-        rpo.put(rps[i], "Unmatch", null);
+        rpo.put(rps[i], "Output", null);
         res.refreshed++;
       }
       else
@@ -2353,7 +2353,7 @@ var rpo = {
       if (i > -1) {
         used[i] = true;
         rpo.setAll(rps[i], e);
-        rpo.put(rps[i], "Unmatch", null);
+        rpo.put(rps[i], "Output", null);
         res.updated++;
       }
       else {
@@ -2364,7 +2364,7 @@ var rpo = {
     // 4. mark the rest
     rps.forEach((r, k) => {
       if (!used[k]) {
-        rpo.put(r, "Unmatch", "1");
+        rpo.put(r, "Output", "1");
         res.unmatch++;
       }
     });
