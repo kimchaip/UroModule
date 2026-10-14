@@ -2371,16 +2371,17 @@ var rpo = {
     return res;
   },
   // หลังบันทึก entry ใน UroBase / Backup: ให้ Report ของคนไข้ตรงกับการผ่าตัดปัจจุบัน
-  // เปลี่ยน Status เป็น Not -> ลบ Report เดิมก่อน (เหมือนเดิม) แล้ว reconcile คนไข้คนนี้
-  // และคนไข้เดิมถ้าเปลี่ยน Patient (Report ของคนเดิมที่ไม่มีคู่จะได้ Output = 1)
+  // เปลี่ยน Status เป็น Not หรือเปลี่ยน Patient -> ลบ Report ของค่าเดิมก่อน
+  // แล้ว reconcile คนไข้คนนี้ และคนไข้เดิมถ้าเปลี่ยน Patient
   sync : function (e) {
-    if (old.field("Status") != "Not" && e.field("Status") == "Not")
-      rpo.deleteold(e);
     let pts = [];
     if (e.field("Patient").length > 0)
       pts.push(e.field("Patient")[0]);
     let name = old.field("Patient");
-    if (name && !pts.some(p => p.title == name)) {
+    let ptchanged = name && !pts.some(p => p.title == name);
+    if ((old.field("Status") != "Not" && e.field("Status") == "Not") || ptchanged)
+      rpo.deleteold(e);
+    if (ptchanged) {
       let o = rpo.oldpt(e);
       if (o) pts.push(o);
     }
