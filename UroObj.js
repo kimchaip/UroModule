@@ -108,6 +108,10 @@ var mer = {
         n["e"] =  libByName(o.lib).findById(o.e);
       }
       return n;
+    }).filter(n=>{
+      // skip entries that no longer exist (e.g. moved from UroBase to Backup)
+      if (!n.e) log("MergeID: entry not found in " + e.field("MergeID"));
+      return n.e != null;
     });
   },
   save : function(e, mergeobj) {
