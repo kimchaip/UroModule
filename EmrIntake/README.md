@@ -28,7 +28,7 @@ copy `emrextract.js` ไปไว้ในโฟลเดอร์ `Workload/` �
 | # | Action | ค่า | If |
 |---|---|---|---|
 | 1 | Variables > Variable Set | Name `%txt` To `%CLIP` | `%CLIP` Set |
-| 2 | Code > JavaScript | Path `Workload/emrextract.js`, Auto Exit ✓, Timeout 2, Continue Task After Error ✓ | `%txt` ~R `HN\s*:\s*\d` |
+| 2 | Code > JavaScript | Path `Workload/emrextract.js`, Auto Exit ✓, Timeout 2, Continue Task After Error ✓ | `%txt` ~R `HN\s*:?\s*\d` |
 | 3 | Task > If | | `%hnx` Set AND `%name` Set AND `%cdate` Set |
 | 4 | Plugin Memento > Add/edit an entry | library **Patient**, ค้นด้วย `HN` = `%hnx`, `PtName` = `%name`, `YY` = `%yearx`, `MM` = `%monthx`, `DD` = `%dayx` | |
 | 5 | File > Write File | File `Workload/consultInbox.json`, Text `%jsonline`, **Append ✓**, **Add Newline ✓** | |
@@ -101,6 +101,28 @@ MOPH Refer
 - ชาย 50 ปี , U/D : DM, HT
 - Admit since 8/10/2569, Present with fever -> IMP : acute
 pyelonephritis
+```
+
+### ใบ Consultation Report (consult ภายใน รพ.)
+ถ้าข้อความมี "Consultation Report", "Clinical diagnosis" หรือ "Patient name" (รวมคำที่ OCR อ่าน i เป็น l เช่น "Patlent") จะอ่านแบบนี้
+- HN = `HN 9999999` หรือ `HN 999-99-99` (ไม่มี `:` ก็ได้ ต้องตั้ง If ของ action 2 เป็น `HN\s*:?\s*\d`)
+- ชื่อ = หลัง `Patient name` (ตัด Sex/HN ที่อยู่บรรทัดเดียวกันออก)
+- อายุ = `Age 60 ปี 1 เดือน 2 วัน`
+- ConsultDate = **วันที่กดปุ่ม** เพราะในใบไม่มีวันที่ consult ถ้านำเข้าใบของวันก่อน ให้แก้วันที่ใน Memento เอง
+- Dx = ข้อความหลัง `IMP :` ถ้าไม่มีใช้ `Clinical diagnosis`
+- PastHx = บรรทัด `#` ใน Problem list
+
+ตัวอย่างปลอม (ส่วนที่ใช้):
+```
+Consultation Report
+Patlent name นาย ทดสอบ ระบบ
+Sex ชาย Age 60 ปี 1 เดือน 2 วัน HN 9999999
+Clinical dlagnosls BPH
+Problem list
+# Lt inguinal hernia
+# Hematoma at surgical site
+#UD: HT, DLP
+IMP : BPH
 ```
 
 รูปแบบหน้า EMR ของแต่ละโรงพยาบาลต่างกัน ถ้าใช้กับ EMR อื่นต้องแก้ regex ใน `emrextract.js`

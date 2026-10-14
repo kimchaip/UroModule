@@ -12,6 +12,9 @@ emrextract.js : อ่านข้อความ EMR (หน้า Order) ห�
   (ไม่ใช้ "HN:" ของ รพ.ต้นทาง), ชื่อจากบรรทัด "ชื่อ ..." (สติกเกอร์ รพ.เรา)
   หรือหลัง "ขอส่งผู้ป่วยชื่อ", วันที่จาก "วันที่ 12 เดือน ตุลาคม พ.ศ. 2569",
   Dx จาก "IMP :", PastHx จาก "U/D :" และ "ประวัติผ่าตัด"
+ใบ Consultation Report (consult ภายใน รพ.): ชื่อหลัง "Patient name", อายุจาก "Age",
+  HN แบบตัวเลขหรือ 999-99-99, วันที่ = วันที่กดปุ่ม (ในใบไม่มีวันที่ consult),
+  Dx จาก "IMP :" (ถ้าไม่มีใช้ "Clinical diagnosis"), PastHx จากบรรทัด # ใน Problem list
 */
 var prefix = ["นาย", "นาง", "นส.", "น.ส.", "mr.", "mrs.", "miss", "จสอ.","ร.ต.อ.","ร.ต.ท.","ร.ต.ต.","พ.จ.อ.", "ดต.", "ดช.","ด.ช.", "ดญ.", "ด.ญ.","จอ.","รต.","ส.ท.","พระ","นท.","พภ.","สณ.","พ.ท.","สอ.","นางสาว"];
 
@@ -30,6 +33,8 @@ var jsonline = "";
 var lines = txt.split(/\r?\n/).map(function (s) { return s.replace(/\s+/g, " ").trim(); }).filter(Boolean);
 
 var refer = /MOPH\s*Refer|ระบบส่งตัวผู้ป่วย|แบบส่งต่อ/i.test(txt);
+// OCR อาจอ่าน i เป็น l เช่น "Patlent name", "Clinical dlagnosls"
+var crep = !refer && /Consultation\s*Report|Clinical\s*d[il1]agno|Pat[il1]ent\s*name/i.test(txt);
 
 // ติดคำนำหน้ากับชื่อแบบเดียวกับ txtextract.js เช่น "นาย ทดสอบ" -> "นายทดสอบ"
 function glueprefix(s) {
@@ -55,6 +60,11 @@ if (refer) {
     m = txt.match(/ผู้ป่วยชื่อ\s*([^\n]+?)\s*HN/);
     if (m) name = glueprefix(m[1]);
   }
+} else if (crep) {
+  m = txt.match(/HN\s*:?\s*(\d{3})\s*-\s*(\d{2})\s*-\s*(\d{2})/i) || txt.match(/HN\s*:?\s*(\d{3,})/i);
+  if (m) hnx = Number(m.slice(1).join(""));
+  m = txt.match(/Pat[il1]ent\s*name\s*:?\s*([^\n]+)/i);
+  if (m) name = glueprefix(m[1].replace(/\s*(Sex|HN)\b.*$/i, ""));
 } else {
   // HN
   m = txt.match(/HN\s*:?\s*(\d{3,})/i);
@@ -66,7 +76,7 @@ if (refer) {
 }
 
 // อายุ
-m = txt.match(/อายุ\s*:?\s*(\d+)\s*ปี\s*(?:(\d+)\s*เดือน)?\s*(?:(\d+)\s*วัน)?/);
+m = txt.match(/(?:อายุ|Age)\s*:?\s*(\d+)\s*ปี\s*(?:(\d+)\s*เดือน)?\s*(?:(\d+)\s*วัน)?/);
 if (m) {
   yearx = Number(m[1]);
   monthx = Number(m[2] || 0);
@@ -91,6 +101,9 @@ if (refer) {
   // "วันที่ 12 เดือน ตุลาคม พ.ศ. 2569"
   m = txt.match(/วันที่\s*(\d{1,2})\s*เดือน\s*([ก-๙]+)\s*พ\.?\s*ศ\.?\s*(\d{4})/);
   if (m && thmonth.indexOf(m[2]) > -1) cdate = Number(m[1]) + "/" + (thmonth.indexOf(m[2]) + 1) + "/" + (Number(m[3]) - 543);
+} else if (crep) {
+  var now = new Date();
+  cdate = now.getDate() + "/" + (now.getMonth() + 1) + "/" + now.getFullYear();
 } else {
   var ci = lines.findIndex(function (l) { return /^create\b/i.test(l); });
   for (var i = (ci > -1 ? ci : 0); i < lines.length && !cdate; i++) cdate = toDate(lines[i]);
@@ -134,12 +147,17 @@ function after(re, more) {
   return "";
 }
 if (refer) {
-  var imp = after(/IMP\s*:?\s*(.*)$/i, /^[a-z]/);
+  var imp = after(/\bIMP\b\s*:?\s*(.*)$/, /^[a-z]/);
   if (imp) dxs.push(imp);
   var ud = after(/U\/D\s*:?\s*(.*)$/i, /^[^\-#\d]/);
   if (ud) probs.push("U/D: " + ud.replace(/[\s,]+$/, ""));
   var sx = after(/ประวัติผ่าตัด\s*[=:]?\s*(.*)$/, /(?!)/);
   if (sx) probs.push("ประวัติผ่าตัด: " + sx);
+}
+
+if (crep) {
+  var cimp = after(/\bIMP\b\s*:?\s*(.*)$/, /^[a-z]/) || after(/Clinical\s*d[il1]agno\S*\s*:?\s*(.*)$/i, /(?!)/);
+  if (cimp) dxs.push(cimp);
 }
 
 dxx = dxs.length ? dxs[0] : (probs.length ? probs[0] : "");
