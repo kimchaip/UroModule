@@ -2491,6 +2491,14 @@ var rpo = {
       return cur[0];
     if (!name) return null;
     let ptlks = pt.find(name);
+    // DEBUG (temporary): shows real patient names in the device log
+    try {
+      let ct = cur.length > 0 ? cur[0].title : "";
+      rpo.dbg("oldpt name=" + JSON.stringify(name) + " type=" + typeof name + " found=" + ptlks.length +
+        (ptlks.length > 0 ? " first=" + JSON.stringify(ptlks[0].title) : ""));
+      rpo.dbg("oldpt curTitle=" + JSON.stringify(ct) + " findCur=" + (ct ? pt.find(ct).length : "-") +
+        " curPtName=" + JSON.stringify(cur.length > 0 ? cur[0].field("PtName") : ""));
+    } catch (err) { log("RS oldpt dbg: " + err); }
     return ptlks.length > 0 ? pt.findById(ptlks[0].id) : null;
   },
   deleteold : function (e) {
