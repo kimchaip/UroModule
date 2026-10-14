@@ -63,6 +63,9 @@ var old = {
           }
           else if(this.lib!="Patient" && (f=="Patient" || f=="DxAutoFill" || f=="OperationList")) {
             old.d[f] = e.field(f).length>0? e.field(f)[0].title: ""; 
+            // keep the id too: finding the old Patient by title text is unreliable
+            if (f=="Patient")
+              old.d["PatientId"] = e.field(f).length>0? e.field(f)[0].id: "";
           }
           else {
             old.d[f] = e.field(f);
@@ -2328,10 +2331,12 @@ var rpo = {
   //   3. การผ่าตัดที่ยังไม่มีคู่: สร้าง Report ใหม่
   //   4. Report ที่เหลือ (ไม่มีการผ่าตัดคู่ หรือซ้ำ): ใส่ "1" ใน field Output ไม่ลบ
   // Report ที่จับคู่ได้จะล้าง Output
-  reconcile : function (ptent) {
+  // drop = true: trash unmatched Reports instead of marking Output = 1 (used for the old Patient)
+  // skip: entry id to leave out (the entry just moved to another Patient may still be listed here)
+  reconcile : function (ptent, drop, skip) {
     let res = {"refreshed":0, "updated":0, "created":0, "unmatch":0};
     let day = function (v) { return my.gdate(my.date(v)); };
-    let ops = rpo.allops(ptent).filter(e => e.field("Status") != "Not");
+    let ops = rpo.allops(ptent).filter(e => e.field("Status") != "Not" && (!skip || e.id != skip));
     // linksFrom returns a Java List: its forEach gives no index, so copy to a JS array and use index loops
     let rpl = ptent.linksFrom("Report", "Patient");
     let rps = [];
@@ -2383,7 +2388,10 @@ var rpo = {
     // 4. mark the rest
     for (let k = 0; k < rps.length; k++) {
       if (!used[k]) {
-        mark(rps[k], "1");
+        if (drop)
+          rps[k].trash();
+        else
+          mark(rps[k], "1");
         res.unmatch++;
       }
     }
@@ -2397,16 +2405,17 @@ var rpo = {
     if (e.field("Patient").length > 0)
       pts.push(e.field("Patient")[0]);
     let name = old.field("Patient");
-    let ptchanged = name && !pts.some(p => p.title == name);
+    let oldid = old.field("PatientId");
+    let ptchanged = oldid ? !pts.some(p => p.id == oldid) : (name && !pts.some(p => p.title == name));
     if ((old.field("Status") != "Not" && e.field("Status") == "Not") || ptchanged)
       rpo.deleteold(e);
-    if (ptchanged) {
-      let o = rpo.oldpt(e);
-      if (o) pts.push(o);
-    }
+    let o = ptchanged ? rpo.oldpt(e) : null;
+    if (o && pts.some(p => p.id == o.id)) o = null;
+    if (o) pts.push(o);
     pts.forEach(p => {
       try {
-        rpo.reconcile(p);
+        let isold = o != null && p.id == o.id;
+        rpo.reconcile(p, isold, isold ? e.id : null);
       }
       catch (err) {
         log("Report sync " + p.title + ": " + err);
@@ -2460,6 +2469,11 @@ var rpo = {
   // Patient ของค่าเดิม (old): ใช้ link ใน entry ตรงๆ ถ้ายังเป็นคนเดิม
   // ไม่ใช้ pt.find() เป็นหลัก เพราะค้นจากข้อความ อาจหาไม่เจอหรือได้คนอื่น
   oldpt : function (e) {
+    let id = old.field("PatientId");
+    if (id) {
+      let byid = pt.findById(id);
+      if (byid) return byid;
+    }
     let name = old.field("Patient");
     let cur = e.field("Patient");
     if (cur.length > 0 && (!name || cur[0].title == name))
