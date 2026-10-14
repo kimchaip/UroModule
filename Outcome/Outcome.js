@@ -247,6 +247,20 @@ var oco = {
     }
     return null;
   },
+  // ผลที่ไม่มี HN: หาจากชื่อ ตัดคำนำหน้าและช่องว่างออกก่อนเทียบ คืนทุกคนที่ตรง (ใช้เมื่อเจอคนเดียวเท่านั้น)
+  PREFIX : ["นางสาว", "น.ส.", "นส.", "นาย", "นาง", "ด.ช.", "ดช.", "ด.ญ.", "ดญ.", "mrs.", "mr.", "miss", "ms."],
+  normName : function (s) {
+    s = String(s || "").toLowerCase().replace(/\s+/g, " ").trim();
+    for (var i = 0; i < oco.PREFIX.length; i++) {
+      if (s.indexOf(oco.PREFIX[i]) == 0) { s = s.slice(oco.PREFIX[i].length); break; }
+    }
+    return s.replace(/\s+/g, "");
+  },
+  findByName : function (name) {
+    var key = oco.normName(name);
+    if (!key) return [];
+    return pt.entries().filter(function (e) { return oco.normName(e.field("PtName")) == key; });
+  },
   typeOf : function (o) {
     return oco.TYPES[o.type] || (o.d && o.d.modality) || "Other";
   },
@@ -319,12 +333,20 @@ var oco = {
     var made = [], skipped = [], pts = {};
     oco.pending(doneKeys).forEach(function (p) {
       var o = p.o;
-      var ptent = oco.findPatient(o.hn);
+      var who = o.hn ? "HN " + o.hn : "ชื่อ " + o.name;
+      var ptent = null;
+      if (o.hn) ptent = oco.findPatient(o.hn);
+      else {
+        var same = oco.findByName(o.name);
+        if (same.length > 1) { skipped.push(who + " ซ้ำ " + same.length + " คนใน Patient"); return; }
+        ptent = same[0] || null;
+      }
       var date = oco.parseDate(o.date);
-      if (!ptent) { skipped.push("HN " + o.hn + " ไม่พบใน Patient"); return; }
-      if (!date) { skipped.push("HN " + o.hn + " ไม่มีวันที่"); return; }
+      if (!ptent) { skipped.push(who + " ไม่พบใน Patient"); return; }
+      if (!date) { skipped.push(who + " ไม่มีวันที่"); return; }
       var added = oco.addFollowUp(ptent, o, date);
-      made.push((added ? "" : "(มีแล้ว) ") + "HN " + o.hn + " " + oco.typeOf(o) + " " + o.date);
+      if (!o.hn) who += " (HN " + ptent.field("HN") + ")";
+      made.push((added ? "" : "(มีแล้ว) ") + who + " " + oco.typeOf(o) + " " + o.date);
       if (added) pts[ptent.id] = ptent;
       newKeys.push(p.key);
     });
