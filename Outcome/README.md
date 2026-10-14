@@ -80,13 +80,15 @@ copy `outcomeextract.js` ไปไว้ในโฟลเดอร์ `Workload
 | 2 | Code > JavaScript | Path `Workload/outcomeextract.js`, Auto Exit ✓, Timeout 2, Continue Task After Error ✓ | |
 | 3 | Task > If | | `%jsonline` Set |
 | 4 | File > Write File | File `Workload/outcomeInbox.json`, Text `%jsonline`, **Append ✓**, **Add Newline ✓** | |
-| 5 | Alert > Notify | Title `ผล %otype รอนำเข้า` Text `HN %hnx วันที่ %odate` / `%osum` | |
+| 5 | Alert > Notify | Title `ผล %otype รอนำเข้า` Text `HN %hnx %namex วันที่ %odate` / `%osum` | |
 | 6 | Task > Else | | |
-| 7 | Alert > Flash | `อ่าน HN หรือวันที่ไม่ได้` | |
+| 7 | Alert > Flash | `อ่าน HN/ชื่อ หรือวันที่ไม่ได้` | |
 | 8 | Task > End If | | |
 
 เรียก task นี้ด้วยมือ (ปุ่ม/shortcut) หลัง copy ข้อความจาก LINE ไม่ผูกกับ Clipboard Changed เพราะ setConsult ใช้อยู่แล้ว
 **HN**: ใช้เลขของ รพ.เราแบบ `HN 200-66-58 (03)` ก่อนเสมอ (เช่นสติกเกอร์บนใบส่งตัวหรือใบผลจาก รพ.อื่น) ถ้าไม่มีจึงใช้ `HN: 123456` ตัวแรก ใบส่งตัว (MOPH Refer) ที่ไม่มี HN ของ รพ.เรา จะไม่ถูกฝากเข้าไฟล์ (ขึ้น "อ่าน HN หรือวันที่ไม่ได้") เพราะ `HN:` ในใบนั้นเป็นของ รพ.ต้นทาง วันที่แบบ `วันที่ 12 เดือน ตุลาคม พ.ศ. 2569` อ่านได้
+
+**ไม่มี HN** (เช่นผล CT จาก รพ.อื่น): อ่านชื่อจาก `Patient Name :` หรือ `ชื่อ-สกุล :` แทน (ไม่ใช้ Patient ID ของ รพ.อื่น) ตอนนำเข้า Memento หาคนไข้จากชื่อ โดยตัดคำนำหน้า (นาย นาง นางสาว ฯลฯ) และช่องว่างออกก่อนเทียบ นำเข้าเฉพาะเมื่อเจอชื่อตรงกัน**คนเดียว** ถ้าไม่เจอหรือชื่อซ้ำหลายคน จะข้ามและค้างไว้ในไฟล์ คนไข้ต้องมีอยู่ใน Patient แล้ว ถ้า Notify ไม่มี `%namex` ให้แก้ Notify ตามตารางข้างบน
 
 ตรวจ Notify ทุกครั้ง ถ้า `%osum` ดูผิด ให้แก้ใน FollowUp หลังนำเข้า
 
@@ -102,7 +104,7 @@ copy `outcomeextract.js` ไปไว้ในโฟลเดอร์ `Workload
 4. trigger และปุ่มทั้งหมดเลือก library `UroObj.js`, `MyDate.js` (ปุ่มเพิ่ม `Outcome.js`) และให้สิทธิ์ Read/Write files
 
 ### ปุ่มทำอะไร
-- **นำเข้าผลตรวจ**: นำทุกบรรทัดที่ค้างในไฟล์เข้า FollowUp (หา Patient จาก HN) แล้วอัปเดต Report ของคนไข้เหล่านั้น บรรทัดที่หา HN ไม่เจอค้างไว้ในไฟล์
+- **นำเข้าผลตรวจ**: นำทุกบรรทัดที่ค้างในไฟล์เข้า FollowUp (หา Patient จาก HN ถ้าไม่มี HN หาจากชื่อที่ตรงกันคนเดียว) แล้วอัปเดต Report ของคนไข้เหล่านั้น บรรทัดที่หาคนไข้ไม่เจอหรือชื่อซ้ำค้างไว้ในไฟล์
 - **Clavien**: เดา Clavien ของการผ่าตัดนี้ เติมถ้ายังว่าง เก็บค่าที่เดาและเหตุผลใน Report แล้วแสดงเหตุผล
 - **Clavien ทั้งหมด**: ทำแบบเดียวกันกับทุก entry ที่ Done, ผ่าตัดมาแล้ว ≥ 30 วัน และยังว่าง (Backup มีหลายพัน entry อาจใช้เวลาหลายนาที)
 

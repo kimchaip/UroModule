@@ -3,15 +3,17 @@ outcomeextract.js : อ่านข้อความผล patho / CT-KUB-US-MR
 ใช้ใน Tasker action JavaScript โดยตัวแปร %txt = ข้อความ (แบบเดียวกับ emrextract.js)
 ผลลัพธ์ (ตัวแปร Tasker):
   %hnx      HN
+  %namex    ชื่อคนไข้ (อ่านเฉพาะเมื่อไม่มี HN เช่นผลจาก รพ.อื่น ให้ Memento หาคนไข้จากชื่อแทน)
   %otype    patho | imaging | psa | lab  (Memento ใส่เป็น Type ใน FollowUp: Patho, CT/US/KUB/MRI/IVP, PSA, Lab)
   %odate    วันที่ของผล (d/m/yyyy ค.ศ.)
   %osum     สรุปสั้นๆ ไว้แสดงใน Notify ให้ดูว่าอ่านถูกไหม
   %jsonline 1 บรรทัด JSON สำหรับเขียนต่อท้ายไฟล์ outcomeInbox.json
-            {"hn":..,"type":..,"date":"d/m/yyyy","d":{ค่าที่อ่านได้},"t":..}
+            {"hn":..,"name":..,"type":..,"date":"d/m/yyyy","d":{ค่าที่อ่านได้},"t":..}
 ค่าที่อ่านได้ต้องให้หมอตรวจเสมอ ใบรายงานหลายใบไม่ได้เขียน TNM หรือ cell type ตรงๆ
 ค่าที่เดาจากคำบรรยาย (เช่น invade muscularis propria -> T2) ใส่ไว้ใน tGuess ไม่ใช่ pT
 */
 var hnx = "";
+var namex = "";
 var otype = "";
 var odate = "";
 var osum = "";
@@ -177,7 +179,7 @@ function parseImaging(t, lines) {
   else if (/\bIVP\b|intravenous pyelo/i.test(t)) d.modality = "IVP";
   else if (/ultraso|\bUSG?\b|sonogra/i.test(t)) d.modality = "US";
   else if (/\bKUB\b|plain film|x-?ray/i.test(t)) d.modality = "KUB";
-  var imp = section(lines, /^(impression|conclusion|summary|สรุป)/i, /^(radiologist|reported by|signed|dictated|recommend)/i);
+  var imp = section(lines, /^(impression|conclusion|summary|สรุป)/i, /^(radiologist|reported by|signed|dictated|recommend|print\s*(by|date)|on behalf|status\s*:|location\s*:|physician\s*:|[A-Za-z ,.]+,\s*M\.?D\.?\s*$)/i);
   d.text = imp || undefined;
 
   // ประโยคที่พูดถึงนิ่ว
@@ -224,12 +226,14 @@ function parseImaging(t, lines) {
   if (/\b(no|without)\b[^.]{0,30}(residual|remaining)?[^.]{0,10}(stone|calcul)|stone[\s\-]*free|ไม่พบนิ่ว|ไม่มีนิ่ว/i.test(t) && !stones.length) d.sf = "SF";
   else if (stones.length) d.sf = d.maxmm && d.maxmm <= 4 ? "Residual <=4mm" : "Residual >4mm";
 
-  var hy = t.match(/(no|mild|moderate|severe|marked|gross|grade\s*[1-4I-V]+)?\s*(?:degree of\s*)?hydro(?:uretero)?nephrosis/i);
+  // "without stone or hydronephrosis", "no evidence of hydronephrosis" -> none
+  var nohy = /\b(no|without)\s+(?:(?:evidence|signs?|of|renal|stones?|calculi|calculus|or|and|,)\s*)*hydro(?:uretero)?nephrosis/i.test(t);
+  var hy = nohy ? null : t.match(/(no|mild|moderate|severe|marked|gross|grade\s*[1-4I-V]+)?\s*(?:degree of\s*)?hydro(?:uretero)?nephrosis/i);
   if (hy) {
     var h = (hy[1] || "").toLowerCase();
     d.hydro = h == "no" ? "none" : /severe|marked|gross|grade\s*(3|4|iii|iv)/i.test(h) ? "severe" : /moderate|grade\s*(2|ii)/i.test(h) ? "moderate" : "mild";
   }
-  else if (/no\s+hydro/i.test(t)) d.hydro = "none";
+  else if (nohy || /no\s+hydro/i.test(t)) d.hydro = "none";
 
   var vol = t.match(/prostat[^.\n]{0,80}?(?:volume|vol\.?|weight|size)?[^.\n\d]{0,20}(\d+(?:[.,]\d+)?)\s*(ml|cc|gm|g|cm3)\b/i);
   if (vol) d.vol = num(vol[1]);
@@ -272,6 +276,16 @@ else if (!refer) {
   if (m0) hnx = Number(m0[1]);
 }
 
+// ไม่มี HN (ผลจาก รพ.อื่น): ใช้ชื่อหลัง "Patient Name :" หรือ "ชื่อ-สกุล :" (บรรทัดเดียวกันหรือบรรทัดถัดไป)
+// ไม่ใช้ "Patient ID" เพราะเป็นเลขของ รพ.อื่น
+if (!hnx) {
+  for (var ni = 0; ni < lines.length && !namex; ni++) {
+    var nm = lines[ni].match(/^(?:pat[il1]ent\s*name|[ชซ]ื่อ\s*-?\s*สกุล|[ชซ]ื่อ)\s*:?\s*(.*)$/i);
+    if (nm) namex = (nm[1] || (ni + 1 < lines.length ? lines[ni + 1] : "")).replace(/\s*\bHN\b.*$/i, "").trim();
+  }
+  if (/:\s*$|^(proc|study|sex|age)/i.test(namex)) namex = "";
+}
+
 var dd = {};
 if (/patholog|biopsy|specimen|histolog|carcinoma|gleason|margin/i.test(t) && /diagnosis|gross|microscop|specimen/i.test(t)) {
   otype = "patho";
@@ -301,6 +315,6 @@ else {
 // ลบค่าว่างออกให้ JSON สั้น
 for (var k in dd) if (dd[k] === undefined || dd[k] === "") delete dd[k];
 
-if (hnx && odate) {
-  jsonline = JSON.stringify({ hn: hnx, type: otype, date: odate, d: dd, t: Date.now() });
+if ((hnx || namex) && odate) {
+  jsonline = JSON.stringify({ hn: hnx, name: namex, type: otype, date: odate, d: dd, t: Date.now() });
 }
