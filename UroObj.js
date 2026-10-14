@@ -2322,6 +2322,54 @@ var rpo = {
     ptent.linksFrom("Backup", "Patient").forEach(v => all.push(v));
     return all;
   },
+  // จับคู่การผ่าตัด (UroBase + Backup ที่ Status ไม่ใช่ Not) กับ Report ของคนไข้คนนี้ แล้วแก้ให้ตรงกัน
+  //   1. คู่ที่ตรงกัน (วันที่ + ORType + Dx + Op): อัปเดต Report ด้วย setAll
+  //   2. การผ่าตัดที่ไม่มีคู่ แต่มี Report ที่ไม่มีคู่วันเดียวกัน: ใช้ Report นั้น อัปเดตด้วย setAll
+  //   3. การผ่าตัดที่ยังไม่มีคู่: สร้าง Report ใหม่
+  //   4. Report ที่เหลือ (ไม่มีการผ่าตัดคู่ หรือซ้ำ): ใส่ "1" ใน field Unmatch ไม่ลบ
+  // Report ที่จับคู่ได้จะล้าง Unmatch
+  reconcile : function (ptent) {
+    let res = {"refreshed":0, "updated":0, "created":0, "unmatch":0};
+    let day = function (v) { return my.gdate(my.date(v)); };
+    let ops = rpo.allops(ptent).filter(e => e.field("Status") != "Not");
+    let rps = ptent.linksFrom("Report", "Patient");
+    let used = rps.map(() => false);
+    let left = [];
+    // 1. exact match
+    ops.forEach(e => {
+      let i = rps.findIndex((r, k) => !used[k] && day(r.field("OpDate")) == day(e.field("Date")) && r.field("ORType") == e.field("ORType") && r.field("Dx") == e.field("Dx") && r.field("Op") == e.field("Op"));
+      if (i > -1) {
+        used[i] = true;
+        rpo.setAll(rps[i], e);
+        rpo.put(rps[i], "Unmatch", null);
+        res.refreshed++;
+      }
+      else
+        left.push(e);
+    });
+    // 2. same date, 3. create
+    left.forEach(e => {
+      let i = rps.findIndex((r, k) => !used[k] && day(r.field("OpDate")) == day(e.field("Date")));
+      if (i > -1) {
+        used[i] = true;
+        rpo.setAll(rps[i], e);
+        rpo.put(rps[i], "Unmatch", null);
+        res.updated++;
+      }
+      else {
+        rpo.createnew(e);
+        res.created++;
+      }
+    });
+    // 4. mark the rest
+    rps.forEach((r, k) => {
+      if (!used[k]) {
+        rpo.put(r, "Unmatch", "1");
+        res.unmatch++;
+      }
+    });
+    return res;
+  },
   syncPatient : function (ptent) {
     rpo.allops(ptent).forEach(e => {
       if (e.field("Status") == "Not") return;
