@@ -2332,42 +2332,61 @@ var rpo = {
     let res = {"refreshed":0, "updated":0, "created":0, "unmatch":0};
     let day = function (v) { return my.gdate(my.date(v)); };
     let ops = rpo.allops(ptent).filter(e => e.field("Status") != "Not");
-    let rps = ptent.linksFrom("Report", "Patient");
-    let used = rps.map(() => false);
+    // linksFrom returns a Java List: its forEach gives no index, so copy to a JS array and use index loops
+    let rpl = ptent.linksFrom("Report", "Patient");
+    let rps = [];
+    for (let k = 0; k < rpl.length; k++) rps.push(rpl[k]);
+    let used = [];
+    for (let k = 0; k < rps.length; k++) used.push(false);
+    let mark = function (r, v) {
+      try { r.set("Output", v); } catch (err) { log("Report Output: " + err); }
+    };
+    let take = function (i, e) {
+      used[i] = true;
+      rpo.setAll(rps[i], e);
+      mark(rps[i], "");
+    };
     let left = [];
     // 1. exact match
-    ops.forEach(e => {
-      let i = rps.findIndex((r, k) => !used[k] && day(r.field("OpDate")) == day(e.field("Date")) && r.field("ORType") == e.field("ORType") && r.field("Dx") == e.field("Dx") && r.field("Op") == e.field("Op"));
+    for (let j = 0; j < ops.length; j++) {
+      let e = ops[j];
+      let i = -1;
+      for (let k = 0; k < rps.length && i < 0; k++) {
+        let r = rps[k];
+        if (!used[k] && day(r.field("OpDate")) == day(e.field("Date")) && r.field("ORType") == e.field("ORType") && r.field("Dx") == e.field("Dx") && r.field("Op") == e.field("Op"))
+          i = k;
+      }
       if (i > -1) {
-        used[i] = true;
-        rpo.setAll(rps[i], e);
-        rpo.put(rps[i], "Output", null);
+        take(i, e);
         res.refreshed++;
       }
       else
         left.push(e);
-    });
+    }
     // 2. same date, 3. create
-    left.forEach(e => {
-      let i = rps.findIndex((r, k) => !used[k] && day(r.field("OpDate")) == day(e.field("Date")));
+    for (let j = 0; j < left.length; j++) {
+      let e = left[j];
+      let i = -1;
+      for (let k = 0; k < rps.length && i < 0; k++) {
+        if (!used[k] && day(rps[k].field("OpDate")) == day(e.field("Date")))
+          i = k;
+      }
       if (i > -1) {
-        used[i] = true;
-        rpo.setAll(rps[i], e);
-        rpo.put(rps[i], "Output", null);
+        take(i, e);
         res.updated++;
       }
       else {
         rpo.createnew(e);
         res.created++;
       }
-    });
+    }
     // 4. mark the rest
-    rps.forEach((r, k) => {
+    for (let k = 0; k < rps.length; k++) {
       if (!used[k]) {
-        rpo.put(r, "Output", "1");
+        mark(rps[k], "1");
         res.unmatch++;
       }
-    });
+    }
     return res;
   },
   // หลังบันทึก entry ใน UroBase / Backup: ให้ Report ของคนไข้ตรงกับการผ่าตัดปัจจุบัน
