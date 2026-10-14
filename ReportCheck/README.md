@@ -17,3 +17,5 @@ Report ไม่ได้ link กับ entry ใน UroBase/Backup โดย�
 ใช้ field `Output` (Text) ที่มีอยู่แล้วใน Report (Report ที่จับคู่ได้จะถูกล้าง Output) ทุก Action ต้องเลือก JavaScript library `MyDate.js` และ `UroObj.js`
 
 ตั้งแต่ PR นี้ ทุกครั้งที่บันทึก entry ใน UroBase / Backup (ทั้งจาก edit card และแก้จากหน้า list) จะเรียก `rpo.sync` ซึ่ง reconcile คนไข้คนนั้นให้อัตโนมัติ Action `ReconcileReport.js` จึงใช้แค่ตรวจข้อมูลเก่าเป็นครั้งคราว
+
+เปลี่ยน Patient ของ entry: ลบ Report ของการผ่าตัดนี้ที่คนเดิม และลบ Report อื่นของคนเดิมที่ไม่มีการผ่าตัดคู่ (ไม่ใส่ Output = 1) คนเดิมหาจาก id ที่เก็บใน Previous (`PatientId`) เพราะ `pt.find()` ค้นด้วย title รวม "ชื่อ อายุ ปี HN" ไม่เจอ
