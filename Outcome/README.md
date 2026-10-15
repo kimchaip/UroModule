@@ -57,6 +57,8 @@
 | Biopsy ก่อนผ่าตัด | `BxCell`, `BxGleason`, `BxGG`, `BxCores` | Patho ล่าสุดภายใน 365 วันก่อนวันผ่าตัด |
 | Patho การผ่าตัดนี้ | `PathoCell`, `PathoGrade`, `Gleason`, `GradeGroup`, `pT`, `pN`, `Margin`, `LVI`, `Muscle`, `NodesPos`, `NodesTotal`, `TumorSize`, `PathoNo` | Patho ตั้งแต่วันผ่าตัดถึง 120 วัน ที่การผ่าตัดนี้เป็นครั้งล่าสุดก่อนวันที่ของผล |
 
+**นิ่วและ Hydro ใช้เฉพาะข้างที่ผ่าตัด** ข้างอ่านจาก Op ก่อน ถ้าไม่มีดู Dx (Rt, Lt, Bilat หรือมีทั้ง Rt และ Lt) นิ่วที่ไม่มีข้าง (เช่น bladder) นับด้วย การผ่าตัดที่ไม่ระบุข้างใช้นิ่วทุกก้อน ค่ามาจากนิ่วแต่ละก้อนที่เก็บไว้ใน `Data` ของ FollowUp จึงใช้กับผลที่นำเข้าไปแล้วได้ ส่วน Hydro แยกข้างได้เฉพาะผลที่นำเข้าหลังอัปเดตนี้
+
 ถ้ายังไม่สร้าง field ไหน script จะข้าม field นั้นและเขียน log ไว้ ไม่ทำให้ trigger เดิมล้ม
 stone-free หลังผ่าตัด, PSA ระยะยาว และ recurrence คำนวณตอนวิเคราะห์จาก FollowUp โดยตรง
 

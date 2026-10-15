@@ -2255,14 +2255,25 @@ var rpo = {
     };
     let img = ["CT", "KUB", "US", "IVP", "MRI"];
 
-    //---ก่อนผ่าตัด: นิ่ว (ทุกค่าจากผลเดียวกัน), ต่อมลูกหมาก, PSA
-    let st = before(img, "StoneSize", 180, false);
-    rpo.put(r, "StoneSide", val(st, "StoneSide"));
-    rpo.put(r, "StoneSite", val(st, "StoneSite"));
-    rpo.put(r, "StoneSize", val(st, "StoneSize"));
-    rpo.put(r, "StoneN", val(st, "StoneN"));
-    rpo.put(r, "StoneHU", val(st, "StoneHU"));
-    rpo.put(r, "Hydro", val(st, "Hydro"));
+    //---ก่อนผ่าตัด: นิ่วข้างที่ผ่าตัด (ทุกค่าจากผลเดียวกัน), ต่อมลูกหมาก, PSA
+    let side = rpo.opside(e);
+    let st = null, sv = null, sd = -1;
+    fus.forEach(f => {
+      let fd = dayOf(f);
+      if (fd === null || img.indexOf(f.field("Type")) < 0 || fd > d0 || fd < d0 - 180 * dayms || fd <= sd) return;
+      let v = rpo.stonesFor(f, side);
+      if (v) {
+        st = f;
+        sv = v;
+        sd = fd;
+      }
+    });
+    rpo.put(r, "StoneSide", sv ? sv.side : null);
+    rpo.put(r, "StoneSite", sv ? sv.site : null);
+    rpo.put(r, "StoneSize", sv ? sv.size : null);
+    rpo.put(r, "StoneN", sv ? sv.n : null);
+    rpo.put(r, "StoneHU", sv ? sv.hu : null);
+    rpo.put(r, "Hydro", rpo.hydroFor(st, side));
     let vol = val(before(img, "ProstateVol", 180, false), "ProstateVol");
     rpo.put(r, "ProstateVol", vol);
     rpo.put(r, "PIRADS", val(before(img, "PIRADS", 180, false), "PIRADS"));
@@ -2307,6 +2318,63 @@ var rpo = {
     rpo.put(r, "NodesTotal", val(pa, "NodesTotal"));
     rpo.put(r, "TumorSize", val(pa, "TumorSize"));
     rpo.put(r, "PathoNo", val(pa, "PathoNo"));
+  },
+  // ข้างของการผ่าตัดจาก Op (ถ้าไม่ระบุ ดู Dx): "Rt", "Lt", "Bilat" หรือ null
+  opside : function (e) {
+    let one = function (t) {
+      t = String(t || "");
+      let rt = /\b(rt|right)\b|ขวา/i.test(t), lt = /\b(lt|left)\b|ซ้าย/i.test(t);
+      if (/bilat|both|ทั้งสองข้าง|2\s*ข้าง/i.test(t) || (rt && lt)) return "Bilat";
+      return rt ? "Rt" : lt ? "Lt" : null;
+    };
+    return one(e.field("Op")) || one(e.field("Dx"));
+  },
+  // ค่าในผล imaging ของ FollowUp
+  data : function (f) {
+    try {
+      return JSON.parse(f.field("Data") || "{}") || {};
+    }
+    catch (err) {
+      return {};
+    }
+  },
+  // นิ่วในผล imaging เฉพาะข้างที่ผ่าตัด (นิ่วที่ไม่มีข้าง เช่น bladder นับด้วย); ไม่มีนิ่วข้างนั้น -> null
+  stonesFor : function (f, side) {
+    let all = rpo.data(f).stones;
+    if (!Array.isArray(all) || all.length == 0) {
+      // ผลที่พิมพ์เอง (ไม่มี Data): ใช้ field ตรงๆ ถ้าข้างไม่ขัดกับการผ่าตัด
+      let fs = f.field("StoneSide");
+      if (!f.field("StoneSize") || (side && side != "Bilat" && fs && fs != side && fs != "Bilat")) return null;
+      return { side : fs, site : f.field("StoneSite"), size : f.field("StoneSize"), n : f.field("StoneN"), hu : f.field("StoneHU") };
+    }
+    let ss = all.filter(x => !side || side == "Bilat" || !x.side || x.side == side || x.side == "Bilat");
+    if (ss.length == 0) return null;
+    let big = ss[0];
+    ss.forEach(x => {
+      if ((x.mm || 0) > (big.mm || 0)) big = x;
+    });
+    if (!big.mm) return null;
+    let sides = [];
+    ss.forEach(x => {
+      if (x.side && sides.indexOf(x.side) < 0) sides.push(x.side);
+    });
+    return {
+      side : sides.length > 1 || sides.indexOf("Bilat") >= 0 ? "Bilat" : sides[0] || null,
+      site : big.site || null,
+      size : big.mm || null,
+      n : ss.reduce((a, x) => a + (typeof x.n == "number" ? x.n : 2), 0),
+      hu : big.hu || null
+    };
+  },
+  // Hydro ข้างที่ผ่าตัด; ผลที่ไม่ได้แยกข้าง (ผลเก่า หรือใบรายงานไม่ระบุข้าง) ใช้ค่ารวม
+  hydroFor : function (f, side) {
+    if (!f) return null;
+    let hs = rpo.data(f).hydroSide;
+    if (!hs) return f.field("Hydro");
+    if (side == "Rt" || side == "Lt") return hs[side] || null;
+    // ผ่าตัดสองข้างหรือไม่ระบุข้าง: เอาข้างที่หนักกว่า
+    let g = ["none", "mild", "moderate", "severe"];
+    return g.indexOf(hs.Rt) >= g.indexOf(hs.Lt) ? hs.Rt : hs.Lt;
   },
   // หา Report ของ entry นี้จากค่าปัจจุบัน (ใช้กับปุ่ม action และ trigger ของ FollowUp)
   find : function (e) {
