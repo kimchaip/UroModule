@@ -83,14 +83,14 @@ function sideOf(s) {
 // ---------------- patho ----------------
 function parsePatho(t, lines) {
   var d = {};
-  var dx = section(lines, /^(final\s*)?diagnosis|^pathologic(al)? diagnosis/i, /^(gross|microscopic|comment|clinical|specimen received|note|pathologist|synoptic)/i);
+  var dx = section(lines, /^(final\s*)?diagnosis|^pathologic(al)? diagnosis/i, /^(gross|microscopic|comment|clinical|specimen\s*(received|desc|no)|note|pathologist|synoptic|age\s*:)/i);
   var s = dx || t;
   d.text = dx || undefined;
-  d.no = first(/(?:surgical|patho(?:logy)?|accession|lab)\s*(?:no|number|#)\.?\s*:?\s*([A-Z]{1,3}\s*-?\s*\d{2}\s*-?\s*\d{2,6})/i, t);
+  d.no = first(/(?:surgical|patho(?:logy)?|accession|lab|specimen)\s*(?:no|number|#)\.?\s*:?\s*([A-Z]{1,3}\s*-?\s*\d{2}\s*-?\s*\d{2,6})/i, t);
   d.organ = first(/\b(prostate|urinary bladder|bladder|kidney|renal pelvis|ureter|testis|penis|urethra|adrenal)\b/i, s);
   if (d.organ) d.organ = d.organ.toLowerCase().replace("urinary ", "");
   d.side = sideOf(first(/(right|left|rt\.?|lt\.?|bilateral)\s*(kidney|ureter|testis|adrenal|renal)/i, s, 0) || "");
-  d.specimen = first(/\b(needle biopsy|core biopsy|biopsy|TURBT|transurethral resection|TURP|radical prostatectomy|radical nephrectomy|partial nephrectomy|nephroureterectomy|nephrectomy|cystectomy|orchiectomy|penectomy)\b/i, s);
+  d.specimen = first(/\b(needle biopsy|core biopsy|biopsy|TURBT|transurethral (?:electro)?resection|TUE?RP|radical prostatectomy|radical nephrectomy|partial nephrectomy|nephroureterectomy|nephrectomy|cystectomy|orchiectomy|penectomy)\b/i, s);
 
   var cells = [
     [/clear cell renal cell carcinoma|clear cell RCC|ccRCC/i, "clear cell RCC"],
@@ -280,12 +280,17 @@ else {
   m0 = t.match(/HN\s*\.?\s*:?\s*(\d{3,})/i);
   if (m0) hnx = Number(m0[1]);
 }
+// ใบ patho ที่ส่งตรวจนอก รพ. ไม่มีคำว่า HN แต่มี "Hosp. NO:1234567-12" (HN ของ รพ.เรา ตัดเลขหลังขีดออก)
+if (!hnx && !refer) {
+  m0 = t.match(/Hosp(?:ital)?\.?\s*(?:NO|number|#)\.?\s*:?\s*(\d{5,})/i);
+  if (m0) hnx = Number(m0[1]);
+}
 
 // ไม่มี HN (ผลจาก รพ.อื่น): ใช้ชื่อหลัง "Patient Name :" หรือ "ชื่อ-สกุล :" (บรรทัดเดียวกันหรือบรรทัดถัดไป)
 // ไม่ใช้ "Patient ID" เพราะเป็นเลขของ รพ.อื่น
 if (!hnx) {
   for (var ni = 0; ni < lines.length && !namex; ni++) {
-    var nm = lines[ni].match(/^(?:pat[il1]ent\s*name|[ชซ]ื่อ\s*-?\s*สกุล|[ชซ]ื่อ)\s*:?\s*(.*)$/i);
+    var nm = lines[ni].match(/^(?:pat[il1]ent\s*name|name|[ชซ]ื่อ\s*-?\s*สกุล|[ชซ]ื่อ)\s*:?\s*(.*)$/i);
     if (nm) namex = (nm[1] || (ni + 1 < lines.length ? lines[ni + 1] : "")).replace(/\s*\bHN\b.*$/i, "").trim();
   }
   if (/:\s*$|^(proc|study|sex|age)/i.test(namex)) namex = "";
