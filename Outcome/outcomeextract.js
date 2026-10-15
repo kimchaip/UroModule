@@ -172,6 +172,19 @@ var SITES = [
 ];
 function siteOf(s) { for (var i = 0; i < SITES.length; i++) if (SITES[i][0].test(s)) return SITES[i][1]; return undefined; }
 
+var HYDRO = ["none", "mild", "moderate", "severe"];
+// "without stone or hydronephrosis", "no evidence of hydronephrosis" -> none
+function hydroOf(t) {
+  var nohy = /\b(no|without)\s+(?:(?:evidence|signs?|of|renal|stones?|calculi|calculus|or|and|right|left|rt|lt|bilateral|both|sided?|,)\s*)*hydro(?:uretero)?nephrosis/i.test(t);
+  var hy = nohy ? null : t.match(/(no|mild|moderate|severe|marked|gross|grade\s*[1-4I-V]+)?\s*(?:degree of\s*)?(?:(?:right|left|rt|lt|bilateral|both)\s*)*hydro(?:uretero)?nephrosis/i);
+  if (hy) {
+    var h = (hy[1] || "").toLowerCase();
+    return h == "no" ? "none" : /severe|marked|gross|grade\s*(3|4|iii|iv)/i.test(h) ? "severe" : /moderate|grade\s*(2|ii)/i.test(h) ? "moderate" : "mild";
+  }
+  if (nohy || /no\s+hydro/i.test(t)) return "none";
+  return undefined;
+}
+
 function parseImaging(t, lines) {
   var d = {};
   if (/\bMRI\b|\bMR\b|magnetic/i.test(t)) d.modality = "MRI";
@@ -226,14 +239,22 @@ function parseImaging(t, lines) {
   if (/\b(no|without)\b[^.]{0,30}(residual|remaining)?[^.]{0,10}(stone|calcul)|stone[\s\-]*free|ไม่พบนิ่ว|ไม่มีนิ่ว/i.test(t) && !stones.length) d.sf = "SF";
   else if (stones.length) d.sf = d.maxmm && d.maxmm <= 4 ? "Residual <=4mm" : "Residual >4mm";
 
-  // "without stone or hydronephrosis", "no evidence of hydronephrosis" -> none
-  var nohy = /\b(no|without)\s+(?:(?:evidence|signs?|of|renal|stones?|calculi|calculus|or|and|,)\s*)*hydro(?:uretero)?nephrosis/i.test(t);
-  var hy = nohy ? null : t.match(/(no|mild|moderate|severe|marked|gross|grade\s*[1-4I-V]+)?\s*(?:degree of\s*)?hydro(?:uretero)?nephrosis/i);
-  if (hy) {
-    var h = (hy[1] || "").toLowerCase();
-    d.hydro = h == "no" ? "none" : /severe|marked|gross|grade\s*(3|4|iii|iv)/i.test(h) ? "severe" : /moderate|grade\s*(2|ii)/i.test(h) ? "moderate" : "mild";
+  d.hydro = hydroOf(t);
+  // hydro แยกข้าง (ใช้กับการผ่าตัดข้างเดียว): ทีละประโยค เก็บระดับสูงสุดของแต่ละข้าง
+  var hs = {};
+  sents.forEach(function (s) {
+    if (!/hydro/i.test(s)) return;
+    var side = sideOf(s), g = hydroOf(s);
+    if (!side || !g) return;
+    (side == "Bilat" ? ["Rt", "Lt"] : [side]).forEach(function (k) {
+      if (!hs[k] || HYDRO.indexOf(g) > HYDRO.indexOf(hs[k])) hs[k] = g;
+    });
+  });
+  if (hs.Rt || hs.Lt) {
+    d.hydroSide = hs;
+    // ค่ารวม = ข้างที่หนักกว่า ("No left hydronephrosis" ต้องไม่ทับ hydro ข้างขวา)
+    d.hydro = HYDRO.indexOf(hs.Rt) >= HYDRO.indexOf(hs.Lt) ? hs.Rt : hs.Lt;
   }
-  else if (nohy || /no\s+hydro/i.test(t)) d.hydro = "none";
 
   var vol = t.match(/prostat[^.\n]{0,80}?(?:volume|vol\.?|weight|size)?[^.\n\d]{0,20}(\d+(?:[.,]\d+)?)\s*(ml|cc|gm|g|cm3)\b/i);
   if (vol) d.vol = num(vol[1]);
