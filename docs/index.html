@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CalendarSync</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 720px; margin: 0 auto; padding: 24px 16px; line-height: 1.6; color: #222; background: #fff; }
+  @media (prefers-color-scheme: dark) { body { color: #ddd; background: #161616; } a { color: #8ab4f8; } }
+  h1 { margin-bottom: 0.2em; }
+</style>
+</head>
+<body>
+<h1>CalendarSync</h1>
+<p>CalendarSync is a personal Google Apps Script that keeps a calendar library in the
+<a href="https://mementodatabase.com/">Memento Database</a> app in sync with the owner's own Google Calendars.</p>
+
+<h2>What it does</h2>
+<ul>
+  <li>When an entry is created, changed or deleted in Memento, the same event is created, changed or deleted in Google Calendar.</li>
+  <li>Changes made in Google Calendar are collected every 30 minutes and pulled into Memento when the owner presses "Sync now".</li>
+</ul>
+<p>The script runs in the owner's own Google account and only works with calendars that account owns or has been given access to.
+It is not offered as a service to other people.</p>
+
+<p lang="th">CalendarSync คือ Google Apps Script ส่วนตัว ใช้ sync ปฏิทินในแอป Memento Database กับ Google Calendar ของเจ้าของบัญชีเอง</p>
+
+<ul>
+  <li><a href="privacy.html">Privacy policy</a></li>
+  <li><a href="https://github.com/kimchaip/UroModule/tree/master/AppsScript">Source code and setup guide</a></li>
+</ul>
+</body>
+</html>

@@ -109,6 +109,15 @@
 | `APP_SCRIPT_URL is not set` | Memento ยังไม่โหลด shared script ในขั้นตอน 5.3 |
 | 403 ตอนเรียก | deployment ไม่ได้ตั้ง Who has access = Anyone |
 
+## ถ้าต้องกด Allow ใหม่ทุก 7 วัน
+
+ถ้าโปรเจกต์ Apps Script ผูกกับ Google Cloud project ของตัวเอง และหน้า OAuth consent screen ยังเป็นสถานะ **Testing** สิทธิ์จะหมดอายุทุก 7 วัน Memento จะได้ error `403 <!DOCTYPE html>...` แก้ชั่วคราวด้วยการรัน `listCalendars` แล้วกด Allow
+
+แก้ถาวร: Google Cloud Console > **Google Auth Platform**
+1. **Branding**: App name, User support email, Application home page `https://kimchaip.github.io/UroModule/`, Privacy policy `https://kimchaip.github.io/UroModule/privacy.html`, Authorized domains `kimchaip.github.io` > Save (หน้าเว็บนี้มาจากโฟลเดอร์ `docs/` ผ่าน GitHub Pages ถ้า fork ไปใช้ ให้เปลี่ยนเป็นของตัวเอง)
+2. **Audience** > **Publish app** > Confirm
+3. รัน `listCalendars` แล้วกด Allow อีกครั้ง
+
 ## ถ้า URL หลุด
 
 ทำ **Deploy > New deployment** ใหม่ แก้ `APP_SCRIPT_URL` ใน Memento เป็น URL ใหม่ แล้ว **Manage deployments** > Archive อันเก่า
