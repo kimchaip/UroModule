@@ -6,6 +6,7 @@
 |---|---|
 | `emrextract.js` | Tasker action JavaScript อ่านข้อความ EMR แล้วตั้งตัวแปร `%name %hnx %yearx %monthx %dayx %cdate %dxx %pasthx %jsonline` |
 | `ConsultImport.js` | Memento Action script ใน library Consult อ่าน `consultInbox.json` แล้วสร้าง Consult |
+| `failmask.js` | Tasker action JavaScript (ใช้ร่วมกับ setOutcome) ถ้าอ่านไม่ครบ ปิดชื่อ/HN/เบอร์โทร/เลขบัตรเป็น X แล้วตั้ง `%failline` ไว้บันทึกลง `extractFail.json` ดูข้อ 6 |
 
 ต้องมี: Memento Database รุ่นเต็ม, Tasker และ plugin Memento ของ Tasker (action "Add/edit an entry") และติดตั้ง UroModule ตาม [README](../README.md) แล้ว
 
@@ -21,7 +22,7 @@ Memento ให้ script อ่าน/เขียนไฟล์ได้เฉ
 
 คู่มือนี้ใช้โฟลเดอร์ `Workload` เป็นตัวอย่าง ถ้าตั้งเป็นโฟลเดอร์อื่น ให้เปลี่ยน `Workload/` ในตารางข้อ 2 เป็นชื่อโฟลเดอร์นั้น (path ของ Tasker นับจาก `/sdcard`)
 
-copy `emrextract.js` ไปไว้ในโฟลเดอร์ `Workload/` ของมือถือ
+copy `emrextract.js` และ `failmask.js` ไปไว้ในโฟลเดอร์ `Workload/` ของมือถือ (ถ้าเก็บ script ไว้โฟลเดอร์อื่น ให้แก้ Path ของ action JavaScript ตาม)
 
 ## 2. Tasker: task `setConsult`
 
@@ -29,11 +30,17 @@ copy `emrextract.js` ไปไว้ในโฟลเดอร์ `Workload/` �
 |---|---|---|---|
 | 1 | Variables > Variable Set | Name `%txt` To `%CLIP` | `%CLIP` Set |
 | 2 | Code > JavaScript | Path `Workload/emrextract.js`, Auto Exit ✓, Timeout 2, Continue Task After Error ✓ | `%txt` ~R `HN\s*:?\s*\d` |
-| 3 | Task > If | | `%hnx` Set AND `%name` Set AND `%cdate` Set |
-| 4 | Plugin Memento > Add/edit an entry | library **Patient**, ค้นด้วย `HN` = `%hnx`, `PtName` = `%name`, `YY` = `%yearx`, `MM` = `%monthx`, `DD` = `%dayx` | |
-| 5 | File > Write File | File `Workload/consultInbox.json`, Text `%jsonline`, **Append ✓**, **Add Newline ✓** | |
-| 6 | Alert > Notify | Title `Consult รอนำเข้า` Text `%name HN %hnx` / `Dx: %dxx` / `วันที่: %cdate` | |
-| 7 | Task > End If | | |
+| 3 | Variables > Variable Set | Name `%fsrc` To `emr` | |
+| 4 | Code > JavaScript | Path เดียวกับ action 2 แต่ชื่อไฟล์ `failmask.js`, Auto Exit ✓, Timeout 2, Continue Task After Error ✓ | `%txt` Set |
+| 5 | File > Write File | File `Workload/extractFail.json`, Text `%failline`, **Append ✓**, **Add Newline ✓** | `%failline` Set |
+| 6 | Alert > Flash | `อ่านไม่ครบ บันทึกเคสไว้แล้ว` | `%failline` Set |
+| 7 | Task > If | | `%hnx` Set AND `%name` Set AND `%cdate` Set |
+| 8 | Plugin Memento > Add/edit an entry | library **Patient**, ค้นด้วย `HN` = `%hnx`, `PtName` = `%name`, `YY` = `%yearx`, `MM` = `%monthx`, `DD` = `%dayx` | |
+| 9 | File > Write File | File `Workload/consultInbox.json`, Text `%jsonline`, **Append ✓**, **Add Newline ✓** | |
+| 10 | Alert > Notify | Title `Consult รอนำเข้า` Text `%name HN %hnx` / `Dx: %dxx` / `วันที่: %cdate` | |
+| 11 | Task > End If | | |
+
+action 3-6 เพิ่มใหม่สำหรับบันทึกเคสที่อ่านไม่ครบ (ข้อ 6) ใส่ไว้ก่อน action If เดิม
 
 ชื่อตัวแปร local ของ Tasker ต้องยาวอย่างน้อย 3 ตัวอักษร จึงใช้ `%dxx` ไม่ใช่ `%dx`
 
@@ -71,6 +78,42 @@ Create
 - Memento > Consult > กด "นำเข้า consult" ได้ Consult วันที่ 12/10/2026, Dx `Gross hematuria`, PastHx = ประวัติผ่าตัดเดิม (ถ้ามี) + BPH + บรรทัด # 2 บรรทัด
 - กดซ้ำต้องไม่สร้างซ้ำ
 - ทดสอบเสร็จแล้วลบ Patient และ Consult ของ HN 9999999
+
+## 6. บันทึกเคสที่อ่านไม่สำเร็จ (extractFail.json)
+ถ้า setConsult หรือ setOutcome อ่านไม่ครบ `failmask.js` จะเขียนข้อความลง `Workload/extractFail.json` 1 บรรทัดต่อเคส (sync ไป PC ที่ `OneDrive\Workload`) แล้วนำไปปรับ regex ใน `emrextract.js` / `outcomeextract.js`
+
+**นับว่าอ่านไม่ครบเมื่อ**
+- consult (`emr`): ไม่ได้ HN, ชื่อ, วันที่ หรือ Dx
+- ผลตรวจ (`outcome`): ไม่ได้ทั้ง HN และชื่อ หรือไม่ได้วันที่
+- ปุ่ม "อ่านผิด" (`wrong`): อ่านได้แต่ค่าผิด หมอกดบันทึกเอง
+
+**ข้อมูลที่ปิดก่อนบันทึก** (เปลี่ยนเป็น X คงรูปแบบไว้ เช่น `นาย XXXXX XXXX`, `HN XXX-XX-XX`)
+- ชื่อ/HN ที่ script อ่านได้, ชื่อหลังคำนำหน้า (นาย นาง น.ส. ด.ช. นพ. Mr. Dr. ฯลฯ) และหลัง `ชื่อ` / `ชื่อ-สกุล` / `Patient name` / `Name` (ถ้าป้ายอยู่ท้ายบรรทัด ปิดบรรทัดถัดไป)
+- บรรทัดหลัง `ที่อยู่` / `บ้านเลขที่` / `Address`
+- เลขบัตรประชาชน 13 หลัก, เบอร์โทร, HN ทุกรูปแบบ และตัวเลขที่ติดกันตั้งแต่ 5 หลัก (ค่าแล็บที่ยาว 5 หลัก เช่น WBC 12000 จะถูกปิดด้วย)
+- ส่วนที่เหลือ เช่น Dx, วันที่, ผลตรวจ ยังอยู่ จึงยังไม่ควรส่งไฟล์นี้ให้คนอื่น
+
+รูปแบบ 1 บรรทัด:
+```
+{"t":1792900000000,"src":"emr","fail":["hn","date"],"got":{"name":"XXXXX XXXX","dx":"Ureteric stone"},"note":"","text":"ชื่อ-สกุล : นาย XXXXX XXXX\nH.N. XXXXXXX ..."}
+```
+`got` = ค่าที่อ่านได้ (ชื่อ/HN เป็น X), `note` = หมายเหตุจากปุ่มอ่านผิด
+
+**ปุ่ม "อ่านผิด"**: Tasker task ใหม่ชื่อ `reportWrong` เพิ่มเป็น Trigger อีกปุ่มใน Quick Settings ใช้ตอนเห็น Notify แล้วค่าไม่ถูก (clipboard ยังเป็นข้อความเดิม)
+
+| # | Action | ค่า | If |
+|---|---|---|---|
+| 1 | Variables > Variable Set | Name `%txt` To `%CLIP` | `%CLIP` Set |
+| 2 | Alert > Input Dialog | Title `ค่าไหนอ่านผิด` (ไม่พิมพ์ก็ได้ ไม่ต้องพิมพ์ชื่อหรือ HN) | |
+| 3 | Variables > Variable Set | Name `%fnote` To `%input` | `%input` Set |
+| 4 | Variables > Variable Set | Name `%fsrc` To `wrong` | |
+| 5 | Code > JavaScript | Path `failmask.js` (โฟลเดอร์เดียวกับ emrextract.js), Auto Exit ✓, Timeout 2, Continue Task After Error ✓ | `%txt` Set |
+| 6 | File > Write File | File `Workload/extractFail.json`, Text `%failline`, **Append ✓**, **Add Newline ✓** | `%failline` Set |
+| 7 | Alert > Flash | `บันทึกเคสอ่านผิดแล้ว` | `%failline` Set |
+
+**เคสที่แก้แล้ว** จดใน `extractFail.done` (โฟลเดอร์เดียวกัน) บรรทัดละ 1 เคส: ค่า `t` ของเคสนั้นตามด้วยเลข PR ที่แก้ เช่น `1792900000000 #85` ไม่ลบบรรทัดใน `extractFail.json` เอง (Tasker ต่อท้ายไฟล์อยู่ ลบพร้อมกันอาจชนกันตอน sync) จะล้างไฟล์บนมือถือเมื่อเคสในไฟล์จดใน .done ครบแล้ว
+
+ตัวอย่างที่นำไปทดสอบหรือใส่ใน repo ต้องเป็นข้อมูลปลอมทั้งหมด (repo เป็น public) เปลี่ยนวันที่และรายละเอียดเฉพาะของคนไข้ด้วย
 
 ## กติกาการอ่านข้อความ
 - HN จาก `HN : ตัวเลข`, ชื่อจากบรรทัด `ชื่อ-สกุล :` (ติดคำนำหน้ากับชื่อ เช่น "นายทดสอบ")
