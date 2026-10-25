@@ -80,12 +80,17 @@ copy `outcomeextract.js` ไปไว้ในโฟลเดอร์ `Workload
 |---|---|---|---|
 | 1 | Variables > Variable Set | Name `%txt` To `%CLIP` | `%CLIP` Set |
 | 2 | Code > JavaScript | Path `Workload/outcomeextract.js`, Auto Exit ✓, Timeout 2, Continue Task After Error ✓ | |
-| 3 | Task > If | | `%jsonline` Set |
-| 4 | File > Write File | File `Workload/outcomeInbox.json`, Text `%jsonline`, **Append ✓**, **Add Newline ✓** | |
-| 5 | Alert > Notify | Title `ผล %otype รอนำเข้า` Text `HN %hnx %namex วันที่ %odate` / `%osum` | |
-| 6 | Task > Else | | |
-| 7 | Alert > Flash | `อ่าน HN/ชื่อ หรือวันที่ไม่ได้` | |
-| 8 | Task > End If | | |
+| 3 | Variables > Variable Set | Name `%fsrc` To `outcome` | |
+| 4 | Code > JavaScript | Path เดียวกับ action 2 แต่ชื่อไฟล์ `failmask.js` (จาก [EmrIntake](../EmrIntake/failmask.js)), Auto Exit ✓, Timeout 2, Continue Task After Error ✓ | `%txt` Set |
+| 5 | File > Write File | File `Workload/extractFail.json`, Text `%failline`, **Append ✓**, **Add Newline ✓** | `%failline` Set |
+| 6 | Task > If | | `%jsonline` Set |
+| 7 | File > Write File | File `Workload/outcomeInbox.json`, Text `%jsonline`, **Append ✓**, **Add Newline ✓** | |
+| 8 | Alert > Notify | Title `ผล %otype รอนำเข้า` Text `HN %hnx %namex วันที่ %odate` / `%osum` | |
+| 9 | Task > Else | | |
+| 10 | Alert > Flash | `อ่าน HN/ชื่อ หรือวันที่ไม่ได้ บันทึกเคสไว้แล้ว` | |
+| 11 | Task > End If | | |
+
+action 3-5 บันทึกเคสที่อ่านไม่ครบลง `extractFail.json` (ปิดชื่อ/HN ก่อน) ดู [EmrIntake/README.md](../EmrIntake/README.md) ข้อ 6 ถ้าค่าใน Notify ผิด กดปุ่ม `reportWrong`
 
 เรียก task นี้ด้วยมือ (ปุ่ม/shortcut) หลัง copy ข้อความจาก LINE ไม่ผูกกับ Clipboard Changed เพราะ setConsult ใช้อยู่แล้ว
 **HN**: ใช้เลขของ รพ.เราแบบ `HN 200-66-58 (03)` ก่อนเสมอ (เช่นสติกเกอร์บนใบส่งตัวหรือใบผลจาก รพ.อื่น) ถ้าไม่มีจึงใช้ `HN: 123456` ตัวแรก ถ้าไม่มีคำว่า HN เลย (ใบ patho ที่ส่งตรวจนอก รพ.) ใช้ `Hosp. NO:1234567-12` → `1234567` ใบส่งตัว (MOPH Refer) ที่ไม่มี HN ของ รพ.เรา จะไม่ถูกฝากเข้าไฟล์ (ขึ้น "อ่าน HN หรือวันที่ไม่ได้") เพราะ `HN:` ในใบนั้นเป็นของ รพ.ต้นทาง วันที่แบบ `วันที่ 12 เดือน ตุลาคม พ.ศ. 2569` อ่านได้
