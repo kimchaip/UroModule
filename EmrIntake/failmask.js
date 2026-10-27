@@ -8,12 +8,14 @@ failmask.js : บันทึกเคสที่ emrextract.js / outcomeextrac
   ค่าที่ script ก่อนหน้าอ่านได้: emr = %hnx %name %cdate %dxx, outcome = %hnx %namex %otype %odate %osum
 ผลลัพธ์:
   %failline 1 บรรทัด JSON สำหรับเขียนต่อท้าย extractFail.json (ว่างถ้าอ่านครบ)
+  %failmsg  ข้อความ Flash (ว่างถ้าอ่านครบ)
             {"t":..,"src":"emr","fail":["hn","date"],"got":{..},"note":"..","text":"ข้อความที่ปิดแล้ว"}
 การปิดข้อมูล: เปลี่ยนเป็น X โดยคงรูปแบบไว้ เช่น นายXXXX XXXXX, HN XXX-XX-XX, XXX-XXX-XXXX
   ปิดชื่อ/HN ที่ script อ่านได้ ชื่อหลังคำนำหน้าหรือหลัง "ชื่อ"/"Patient name", ที่อยู่,
   เลขบัตรประชาชน, เบอร์โทร, HN และตัวเลขที่ติดกันตั้งแต่ 5 หลัก
 */
 var failline = "";
+var failmsg = "";
 
 // ตัวแปร Tasker ที่ไม่ได้ตั้งจะไม่มีใน JavaScript จึงต้องเช็ค typeof
 function tv(v) { return v === undefined || v === null ? "" : String(v).trim(); }
@@ -35,7 +37,7 @@ function shape(s) {
 }
 function esc(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
 
-var PREFIX = "นางสาว|นาง|นาย|น\\.ส\\.|นส\\.|ด\\.ช\\.|ดช\\.|ด\\.ญ\\.|ดญ\\.|เด็กชาย|เด็กหญิง|จสอ\\.|ร\\.ต\\.[อทต]\\.|พ\\.จ\\.อ\\.|ดต\\.|จอ\\.|รต\\.|ส\\.ท\\.|พระ|นท\\.|พภ\\.|สณ\\.|พ\\.ท\\.|สอ\\.|นพ\\.|พญ\\.|ทพ\\.|ทพญ\\.|mrs\\.|mr\\.|ms\\.|dr\\.|miss(?=\\s)";
+var PREFIX = "แพทย์หญิง|นายแพทย์|แพทย์|อ\\.|นางสาว|นาง|นาย|น\\.ส\\.|นส\\.|ด\\.ช\\.|ดช\\.|ด\\.ญ\\.|ดญ\\.|เด็กชาย|เด็กหญิง|จสอ\\.|ร\\.ต\\.[อทต]\\.|พ\\.จ\\.อ\\.|ดต\\.|จอ\\.|รต\\.|ส\\.ท\\.|พระ|นท\\.|พภ\\.|สณ\\.|พ\\.ท\\.|สอ\\.|นพ\\.|พญ\\.|ทพ\\.|ทพญ\\.|mrs\\.|mr\\.|ms\\.|dr\\.|miss(?=\\s)";
 var WORD = "[ก-๙A-Za-z][ก-๙A-Za-z.'\\-]*";
 var STOPW = /^(HN|Sex|เพศ|อายุ|Age|DOB|วันเกิด|AN|เลขที่|ID)$/i;
 
@@ -66,7 +68,7 @@ function mask(s) {
   }
   s = ls.join("\n");
   // 3. คำนำหน้า + ชื่อ นามสกุล (2 คำ)
-  s = s.replace(new RegExp("(^|[\\s:(])(" + PREFIX + ")(\\s*)(" + WORD + ")(\\s+" + WORD + ")?", "gim"), function (x, pre, p, sp, w1, w2) {
+  s = s.replace(new RegExp("(^|[\\s:(])(" + PREFIX + ")([ \\t]*)(" + WORD + ")([ \\t]+" + WORD + ")?", "gim"), function (x, pre, p, sp, w1, w2) {
     if (STOPW.test(w1)) return x;
     return pre + p + sp + shape(w1) + (w2 ? (STOPW.test(w2.trim()) ? w2 : shape(w2)) : "");
   });
@@ -109,6 +111,12 @@ if (src == "emr") {
 }
 for (var g in got) if (!got[g]) delete got[g];
 
-if (fail.length && ftxt) {
+// ใบส่งตัวที่ยังไม่มี HN ของ รพ.เรา (มีแต่ "HN:" ของ รพ.ต้นทาง) ไม่รับตามที่ตั้งใจ จึงไม่บันทึก
+var nohn = src == "emr" && !fhn && /MOPH\s*Refer|ระบบส่งตัวผู้ป่วย|แบบส่งต่อ/i.test(ftxt);
+if (nohn) failmsg = "ใบส่งตัวยังไม่มี HN ของ รพ.เรา ให้ copy ใบที่มีสติกเกอร์ HN";
+// ข้อความสั้นมาก (เช่น copy ผิด) ไม่บันทึก
+else if (fail.length && ftxt.length >= 30) {
   failline = JSON.stringify({ t: Date.now(), src: src || "wrong", fail: fail, got: got, note: mask(fn), text: mask(ftxt) });
+  failmsg = src == "wrong" ? "บันทึกเคสอ่านผิดแล้ว" : "อ่านไม่ครบ บันทึกเคสไว้แล้ว";
 }
+else if (fail.length && src != "wrong") failmsg = "ข้อความสั้นเกินไป copy ใหม่อีกครั้ง";
