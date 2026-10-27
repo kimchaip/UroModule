@@ -33,7 +33,7 @@ copy `emrextract.js` และ `failmask.js` ไปไว้ในโฟลเ�
 | 3 | Variables > Variable Set | Name `%fsrc` To `emr` | |
 | 4 | Code > JavaScript | Path เดียวกับ action 2 แต่ชื่อไฟล์ `failmask.js`, Auto Exit ✓, Timeout 2, Continue Task After Error ✓ | `%txt` Set |
 | 5 | File > Write File | File `Workload/extractFail.json`, Text `%failline`, **Append ✓**, **Add Newline ✓** | `%failline` Set |
-| 6 | Alert > Flash | `อ่านไม่ครบ บันทึกเคสไว้แล้ว` | `%failline` Set |
+| 6 | Alert > Flash | `%failmsg` | `%failmsg` Set |
 | 7 | Task > If | | `%hnx` Set AND `%name` Set AND `%cdate` Set |
 | 8 | Plugin Memento > Add/edit an entry | library **Patient**, ค้นด้วย `HN` = `%hnx`, `PtName` = `%name`, `YY` = `%yearx`, `MM` = `%monthx`, `DD` = `%dayx` | |
 | 9 | File > Write File | File `Workload/consultInbox.json`, Text `%jsonline`, **Append ✓**, **Add Newline ✓** | |
@@ -87,8 +87,10 @@ Create
 - ผลตรวจ (`outcome`): ไม่ได้ทั้ง HN และชื่อ หรือไม่ได้วันที่
 - ปุ่ม "อ่านผิด" (`wrong`): อ่านได้แต่ค่าผิด หมอกดบันทึกเอง
 
+**ไม่บันทึก** แต่ขึ้น Flash บอก: ใบส่งตัว (MOPH Refer) ที่ไม่มี HN ของ รพ.เรา (ไม่รับตามที่ตั้งใจ ให้ copy ใบที่มีสติกเกอร์ HN) และข้อความสั้นกว่า 30 ตัวอักษร (copy ผิด)
+
 **ข้อมูลที่ปิดก่อนบันทึก** (เปลี่ยนเป็น X คงรูปแบบไว้ เช่น `นาย XXXXX XXXX`, `HN XXX-XX-XX`)
-- ชื่อ/HN ที่ script อ่านได้, ชื่อหลังคำนำหน้า (นาย นาง น.ส. ด.ช. นพ. Mr. Dr. ฯลฯ) และหลัง `ชื่อ` / `ชื่อ-สกุล` / `Patient name` / `Name` (ถ้าป้ายอยู่ท้ายบรรทัด ปิดบรรทัดถัดไป)
+- ชื่อ/HN ที่ script อ่านได้, ชื่อหลังคำนำหน้า (นาย นาง น.ส. ด.ช. นพ. แพทย์หญิง อ. Mr. Dr. ฯลฯ) และหลัง `ชื่อ` / `ชื่อ-สกุล` / `Patient name` / `Name` (ถ้าป้ายอยู่ท้ายบรรทัด ปิดบรรทัดถัดไป)
 - บรรทัดหลัง `ที่อยู่` / `บ้านเลขที่` / `Address`
 - เลขบัตรประชาชน 13 หลัก, เบอร์โทร, HN ทุกรูปแบบ และตัวเลขที่ติดกันตั้งแต่ 5 หลัก (ค่าแล็บที่ยาว 5 หลัก เช่น WBC 12000 จะถูกปิดด้วย)
 - ส่วนที่เหลือ เช่น Dx, วันที่, ผลตรวจ ยังอยู่ จึงยังไม่ควรส่งไฟล์นี้ให้คนอื่น
@@ -109,7 +111,7 @@ Create
 | 4 | Variables > Variable Set | Name `%fsrc` To `wrong` | |
 | 5 | Code > JavaScript | Path `failmask.js` (โฟลเดอร์เดียวกับ emrextract.js), Auto Exit ✓, Timeout 2, Continue Task After Error ✓ | `%txt` Set |
 | 6 | File > Write File | File `Workload/extractFail.json`, Text `%failline`, **Append ✓**, **Add Newline ✓** | `%failline` Set |
-| 7 | Alert > Flash | `บันทึกเคสอ่านผิดแล้ว` | `%failline` Set |
+| 7 | Alert > Flash | `%failmsg` | `%failmsg` Set |
 
 **เคสที่แก้แล้ว** จดใน `extractFail.done` (โฟลเดอร์เดียวกัน) บรรทัดละ 1 เคส: ค่า `t` ของเคสนั้นตามด้วยเลข PR ที่แก้ เช่น `1792900000000 #85` ไม่ลบบรรทัดใน `extractFail.json` เอง (Tasker ต่อท้ายไฟล์อยู่ ลบพร้อมกันอาจชนกันตอน sync) จะล้างไฟล์บนมือถือเมื่อเคสในไฟล์จดใน .done ครบแล้ว
 
