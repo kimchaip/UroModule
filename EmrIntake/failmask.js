@@ -35,7 +35,7 @@ function shape(s) {
 }
 function esc(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
 
-var PREFIX = "นางสาว|นาง|นาย|น\\.ส\\.|นส\\.|ด\\.ช\\.|ดช\\.|ด\\.ญ\\.|ดญ\\.|เด็กชาย|เด็กหญิง|จสอ\\.|ร\\.ต\\.[อทต]\\.|พ\\.จ\\.อ\\.|ดต\\.|จอ\\.|รต\\.|ส\\.ท\\.|พระ|นท\\.|พภ\\.|สณ\\.|พ\\.ท\\.|สอ\\.|นพ\\.|พญ\\.|ทพ\\.|ทพญ\\.|mrs\\.|mr\\.|ms\\.|dr\\.|miss(?=\\s)";
+var PREFIX = "แพทย์หญิง|นายแพทย์|แพทย์|อ\\.|นางสาว|นาง|นาย|น\\.ส\\.|นส\\.|ด\\.ช\\.|ดช\\.|ด\\.ญ\\.|ดญ\\.|เด็กชาย|เด็กหญิง|จสอ\\.|ร\\.ต\\.[อทต]\\.|พ\\.จ\\.อ\\.|ดต\\.|จอ\\.|รต\\.|ส\\.ท\\.|พระ|นท\\.|พภ\\.|สณ\\.|พ\\.ท\\.|สอ\\.|นพ\\.|พญ\\.|ทพ\\.|ทพญ\\.|mrs\\.|mr\\.|ms\\.|dr\\.|miss(?=\\s)";
 var WORD = "[ก-๙A-Za-z][ก-๙A-Za-z.'\\-]*";
 var STOPW = /^(HN|Sex|เพศ|อายุ|Age|DOB|วันเกิด|AN|เลขที่|ID)$/i;
 
@@ -66,7 +66,7 @@ function mask(s) {
   }
   s = ls.join("\n");
   // 3. คำนำหน้า + ชื่อ นามสกุล (2 คำ)
-  s = s.replace(new RegExp("(^|[\\s:(])(" + PREFIX + ")(\\s*)(" + WORD + ")(\\s+" + WORD + ")?", "gim"), function (x, pre, p, sp, w1, w2) {
+  s = s.replace(new RegExp("(^|[\\s:(])(" + PREFIX + ")([ \\t]*)(" + WORD + ")([ \\t]+" + WORD + ")?", "gim"), function (x, pre, p, sp, w1, w2) {
     if (STOPW.test(w1)) return x;
     return pre + p + sp + shape(w1) + (w2 ? (STOPW.test(w2.trim()) ? w2 : shape(w2)) : "");
   });
@@ -109,6 +109,7 @@ if (src == "emr") {
 }
 for (var g in got) if (!got[g]) delete got[g];
 
-if (fail.length && ftxt) {
+// ข้อความสั้นมาก (เช่น copy ผิด) ไม่บันทึก
+if (fail.length && ftxt.length >= 30) {
   failline = JSON.stringify({ t: Date.now(), src: src || "wrong", fail: fail, got: got, note: mask(fn), text: mask(ftxt) });
 }
