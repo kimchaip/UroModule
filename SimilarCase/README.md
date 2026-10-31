@@ -4,7 +4,11 @@
 
 ## ติดตั้ง
 
-ใส่ `SimilarCase.js` เป็น Action ระดับ entry ทั้งใน UroBase และ Consult แล้วเลือก JavaScript library `MyDate.js` และ `UroObj.js` (ใช้ตัวแปร `or`, `bu`)
+สร้าง Action ระดับ entry (Entry view card) ทั้งใน UroBase และ Consult เลือก JavaScript library `UroObj.js`, `MyDate.js`, `SimilarCase.js` แล้วใส่ในช่อง script:
+
+```js
+simc.run(entry());
+```
 
 ## ทำงานอย่างไร
 
