@@ -3,7 +3,8 @@
 // แล้วแสดง Op ที่พบบ่อยใน 10 อันดับแรก และรายการ 10 เคส
 // คะแนน: Dx 0.65 + ประวัติ (Underlying, PastHx, InvResult) 0.20 + อายุ 0.10 + ขนาดนิ่ว 0.05 + เพศเดียวกัน 0.05
 //   ข้อความเทียบด้วย TF-IDF ของตัวอักษร 2-4 ตัว (char n-gram) ไม่ต้องใช้โมเดลหรืออินเทอร์เน็ต
-// เลือก library MyDate.js, UroObj.js ในหน้า script (ใช้ตัวแปร or, bu)
+// ใช้เป็น JavaScript library คู่กับ MyDate.js, UroObj.js (ใช้ตัวแปร or, bu)
+// แล้วใส่ในช่อง script ของ Action: simc.run(entry());
 var simc = {
   K : 10,
   W : { dx : 0.65, hist : 0.20, age : 0.10, size : 0.05, sex : 0.05 },
@@ -206,5 +207,3 @@ var simc = {
     }
   }
 };
-
-if (typeof entry === "function") simc.run(entry());
