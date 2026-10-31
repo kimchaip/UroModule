@@ -52,6 +52,7 @@
 | `ReportCheck/` | Action ตรวจ Report ให้ตรงกับ UroBase / Backup (ดู [ReportCheck/README.md](ReportCheck/README.md)) |
 | `EmrIntake/` | ถ่ายภาพ EMR แล้วให้ Tasker + Memento สร้าง Patient และ Consult อัตโนมัติ วิธีตั้งค่าใน [EmrIntake/README.md](EmrIntake/README.md) |
 | `Outcome/` | ผลการรักษา: เดา Clavien และเก็บผลตรวจหลังผ่าตัด (patho, imaging, PSA, lab) ใน library FollowUp แล้วรวมเข้า Report วิธีตั้งค่าใน [Outcome/README.md](Outcome/README.md) |
+| `SimilarCase/` | ปุ่มหาเคสคล้ายใน UroBase / Consult: Op ที่พบบ่อยใน 10 เคสคล้ายจากคนไข้อื่น (ดู [SimilarCase/README.md](SimilarCase/README.md)) |
 
 ## การติดตั้ง
 
