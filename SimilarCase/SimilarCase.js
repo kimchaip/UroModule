@@ -202,22 +202,11 @@ var simc = {
     return (k + 1) + ". " + who + "\n   " + simc.dstr(c.date) + " | " + (c.age !== null ? c.age + " ปี " : "") + (c.sex || "") + " | " + c.lib +
            "\n   Dx: " + c.dx + "\n   Op: " + c.op + (c.los !== "" ? " | LOS " + c.los : "");
   },
-  // แสดงผล: รายการที่แต่ละเคสเป็นปุ่มกดเปิด entry ถ้า dialog ใส่ปุ่มไม่ได้ ใช้แบบทีละเคส
+  // แสดงผล: หน้าสรุป แล้วดูทีละเคส (ปุ่มใน ui().button ของ dialog ไม่เรียกคำสั่งเมื่อกด จึงใช้ปุ่มของ dialog แทน)
   show : function (title, head, top) {
-    var labels = top.map(simc.label);
-    try {
-      var rows = [ui().text(head + "\n\nกดเคสเพื่อเปิด entry")];
-      top.forEach(function (c, k) {
-        rows.push(ui().button(labels[k], function () { c.e.show(); }));
-      });
-      dialog().title(title).view(ui().layout(rows)).positiveButton("ปิด", function () { return true; }).show();
-    }
-    catch (err) {
-      log("SimilarCase list view: " + err);
-      simc.step(title, head, top, labels, -1);
-    }
+    simc.step(title, head, top, top.map(simc.label), -1);
   },
-  // แบบสำรอง: สรุป แล้วดูทีละเคส ปุ่ม เปิด / ถัดไป / ปิด
+  // k = -1: หน้าสรุป, k >= 0: เคสที่ k ปุ่ม เปิด / ถัดไป / ปิด
   step : function (title, head, top, labels, k) {
     try {
       if (k < 0) {
