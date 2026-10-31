@@ -157,7 +157,7 @@ var simc = {
     var opl = "";
     try { if (e.field("OperationList").length > 0) opl = e.field("OperationList")[0].title; } catch (err) {}
     return {
-      e : e, lib : lib, pid : p ? p.id : "", dx : simc.f(e, "Dx"), hist : hist.join(" | "),
+      e : e, p : p, lib : lib, pid : p ? p.id : "", dx : simc.f(e, "Dx"), hist : hist.join(" | "),
       age : (bd && date) ? Math.round((new Date(date) - new Date(bd)) / 86400000 / 365.25) : null,
       sex : p ? simc.sex(simc.f(p, "PtName")) : "",
       date : date, op : simc.f(e, "Op"), opg : simc.opgroup(opl || simc.f(e, "Op")), los : simc.f(e, "LOS")
@@ -191,19 +191,51 @@ var simc = {
     }
     keys.sort(function (a, b) { return cnt[b] - cnt[a]; });
     var tally = keys.map(function (k) { return names[k] + " " + cnt[k] + "/" + nb.length; });
-    var lines = nb.map(function (x, k) {
-      var c = cases[x.i];
-      return (k + 1) + ". " + simc.dstr(c.date) + " | " + (c.age !== null ? c.age + " ปี " : "") + (c.sex || "") +
-             "\n   Dx: " + c.dx + "\n   Op: " + c.op + (c.los !== "" ? " | LOS " + c.los : "");
-    });
-    var text = "Op ที่พบบ่อย:\n" + tally.join("\n") + "\n\n" + lines.join("\n");
+    var top = nb.map(function (x) { return cases[x.i]; });
+    var title = "เคสคล้าย (เทียบ " + (cases.length - 1) + " ผ่าตัด, " + sec + " วินาที)";
     log("SimilarCase: " + cases.length + " cases, read " + (t1 - t0) + " ms, compute " + (t2 - t1) + " ms");
+    simc.show(title, "Op ที่พบบ่อย:\n" + tally.join("\n"), top);
+  },
+  // ชื่อ HN (อ่านเฉพาะ 10 เคสที่แสดง)
+  label : function (c, k) {
+    var who = c.p ? (simc.f(c.p, "PtName") + " " + simc.f(c.p, "HN")).trim() : "";
+    return (k + 1) + ". " + who + "\n   " + simc.dstr(c.date) + " | " + (c.age !== null ? c.age + " ปี " : "") + (c.sex || "") + " | " + c.lib +
+           "\n   Dx: " + c.dx + "\n   Op: " + c.op + (c.los !== "" ? " | LOS " + c.los : "");
+  },
+  // แสดงผล: รายการที่แต่ละเคสเป็นปุ่มกดเปิด entry ถ้า dialog ใส่ปุ่มไม่ได้ ใช้แบบทีละเคส
+  show : function (title, head, top) {
+    var labels = top.map(simc.label);
     try {
-      dialog().title("เคสคล้าย (เทียบ " + (cases.length - 1) + " ผ่าตัด, " + sec + " วินาที)").text(text)
-        .positiveButton("OK", function () { return true; }).show();
+      var rows = [ui().text(head + "\n\nกดเคสเพื่อเปิด entry")];
+      top.forEach(function (c, k) {
+        rows.push(ui().button(labels[k], function () { c.e.show(); }));
+      });
+      dialog().title(title).view(ui().layout(rows)).positiveButton("ปิด", function () { return true; }).show();
     }
     catch (err) {
-      message(text);
+      log("SimilarCase list view: " + err);
+      simc.step(title, head, top, labels, -1);
+    }
+  },
+  // แบบสำรอง: สรุป แล้วดูทีละเคส ปุ่ม เปิด / ถัดไป / ปิด
+  step : function (title, head, top, labels, k) {
+    try {
+      if (k < 0) {
+        dialog().title(title).text(head + "\n\n" + labels.join("\n"))
+          .neutralButton("ปิด", function () { return true; })
+          .positiveButton("ดูทีละเคส", function () { simc.step(title, head, top, labels, 0); return true; }).show();
+        return;
+      }
+      dialog().title("เคสคล้าย " + (k + 1) + "/" + top.length).text(labels[k])
+        .neutralButton("ปิด", function () { return true; })
+        .negativeButton("เปิด", function () { top[k].e.show(); return true; })
+        .positiveButton(k + 1 < top.length ? "ถัดไป" : "จบ", function () {
+          if (k + 1 < top.length) simc.step(title, head, top, labels, k + 1);
+          return true;
+        }).show();
+    }
+    catch (err) {
+      message(head + "\n\n" + labels.join("\n"));
     }
   }
 };
