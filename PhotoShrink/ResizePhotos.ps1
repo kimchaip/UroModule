@@ -1,7 +1,8 @@
-# ย่อรูปบนคอม Windows: ด้านยาวไม่เกิน 1600px, JPEG คุณภาพ 80, ชื่อไฟล์เดิม, หมุนตาม EXIF
-# ใช้: คลิกขวา > Run with PowerShell หรือ
-#   powershell -ExecutionPolicy Bypass -File ResizePhotos.ps1 -Src "C:\path\รูปต้นฉบับ" -Dst "C:\path\PhotoSmall"
-# ไม่แก้ไฟล์ต้นฉบับ ไฟล์ที่ไม่ใช่ jpg/jpeg/png จะถูกข้าม (เช่น heic)
+# Shrink photos on Windows: long side <= MaxSide px, JPEG quality 80, same file names, EXIF rotation applied.
+# ASCII only on purpose: Windows PowerShell 5.1 misreads UTF-8 files without a BOM.
+# Usage:
+#   powershell -ExecutionPolicy Bypass -File ResizePhotos.ps1 -Src "C:\path\originals" -Dst "C:\path\PhotoSmall"
+# Originals are never changed. Files other than jpg/jpeg/png (e.g. heic) are skipped.
 param(
   [Parameter(Mandatory = $true)][string]$Src,
   [Parameter(Mandatory = $true)][string]$Dst,
@@ -21,7 +22,7 @@ foreach ($f in $files) {
   if (Test-Path $out) { $skipped++; continue }
   try {
     $img = [System.Drawing.Image]::FromFile($f.FullName)
-    # หมุนตาม EXIF Orientation (0x0112) เพราะ System.Drawing ไม่หมุนให้เอง
+    # Apply EXIF Orientation (0x0112): System.Drawing does not rotate by itself
     if ($img.PropertyIdList -contains 0x0112) {
       switch ([int]$img.GetPropertyItem(0x0112).Value[0]) {
         3 { $img.RotateFlip([System.Drawing.RotateFlipType]::Rotate180FlipNone) }
@@ -40,8 +41,8 @@ foreach ($f in $files) {
     $before += $f.Length; $after += (Get-Item $out).Length; $done++
   }
   catch {
-    Write-Warning "ข้าม $($f.Name): $_"
+    Write-Warning "Skipped $($f.Name): $_"
     $skipped++
   }
 }
-"{0} รูป ย่อแล้ว, ข้าม {1}, ขนาดรวม {2:N0} MB -> {3:N0} MB" -f $done, $skipped, ($before / 1MB), ($after / 1MB)
+"Resized {0}, skipped {1}, total {2:N0} MB -> {3:N0} MB" -f $done, $skipped, ($before / 1MB), ($after / 1MB)
