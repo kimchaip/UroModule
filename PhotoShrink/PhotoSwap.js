@@ -55,11 +55,11 @@
     return;
   }
   try {
-    var log = file("photoswap_log.txt");
+    var logFile = file("photoswap_log.txt");
     var text = "";
-    try { text = String(log.readAll() || ""); } catch (err) { text = ""; }
-    log.write(text + JSON.stringify({ "at": new Date().toISOString(), "id": e.id, "field": FIELD, "old": oldList }) + "\n");
-    log.close();
+    try { text = String(logFile.readAll() || ""); } catch (err) { text = ""; }
+    logFile.write(text + JSON.stringify({ "at": new Date().toISOString(), "id": e.id, "field": FIELD, "old": oldList }) + "\n");
+    logFile.close();
   }
   catch (err) {
     message("เขียน log ไม่ได้ จึงไม่เปลี่ยนรูป: " + err);
