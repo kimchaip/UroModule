@@ -6,7 +6,26 @@
 // ไม่ต้องเลือก JavaScript library ใดๆ ในหน้า script
 (function () {
   var FIELD = "Photo";
-  var SMALL = "/storage/emulated/0/Workload/PhotoSmall/";
+  var DIR = "PhotoSmall/";                                   // relative to Memento's default folder (/Workload)
+  var SMALL = "/storage/emulated/0/Workload/" + DIR;          // full path stored in the Photo field
+  var probe = [];
+  // file() API: exists / length may be properties or methods depending on version, so accept both
+  var hasFile = function (path) {
+    try {
+      var f = file(path);
+      var ex = f.exists;
+      if (typeof ex === "function") ex = f.exists();
+      var len = f.length;
+      if (typeof len === "function") len = f.length();
+      try { f.close(); } catch (err) {}
+      if (probe.length < 2) probe.push(path + " exists=" + ex + " length=" + len);
+      return String(ex) === "true" || Number(len) > 0;
+    }
+    catch (err) {
+      if (probe.length < 2) probe.push(path + " error=" + err);
+      return false;
+    }
+  };
   var e = entry();
   var old = e.field(FIELD);
   if (!old || old.length === 0) {
@@ -19,15 +38,7 @@
     oldList.push(p);
     var name = decodeURIComponent(p.replace(/^.*\//, ""));
     var small = SMALL + name;
-    var exists = false;
-    try {
-      var f = file(small);
-      exists = f.exists();
-      f.close();
-    }
-    catch (err) {
-      exists = false;
-    }
+    var exists = hasFile(DIR + name) || hasFile(small);
     if (exists) {
       next.push("file://" + small);
       swapped++;
@@ -38,7 +49,7 @@
     }
   }
   if (swapped === 0) {
-    message("ไม่พบรูปย่อใน " + SMALL + " สำหรับ entry นี้\n" + missing.join("\n"));
+    message("ไม่พบรูปย่อใน " + SMALL + " สำหรับ entry นี้\n" + missing.join("\n") + "\nตรวจ: " + probe.join(" | "));
     return;
   }
   try {
