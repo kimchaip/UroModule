@@ -9,8 +9,10 @@ Memento Cloud ของแพ็ก Pro ได้ 5GB แต่รูปจา�
 | ขั้น | ไฟล์ | ทำอะไร | สถานะ |
 |---|---|---|---|
 | 1 | `PhotoList.js` | Action ระดับ library ใน UroBase / Consult / Backup ทำรายการไฟล์ในทุกฟิลด์รูป/ไฟล์เป็น `photolist_<library>_<เวลา>.json` ใน /Workload และสรุปจำนวนแยกตามฟิลด์ อ่านอย่างเดียว | พร้อมทดสอบ |
-| 2 | Tasker | อ่านรายการ ย่อรูปให้ด้านยาวไม่เกิน 1600px บันทึกเป็นไฟล์ใหม่ (ไม่ทับต้นฉบับ) | รอผลขั้น 1 |
-| 3 | Memento Action | เปลี่ยนฟิลด์ Photo ให้ชี้ไฟล์ที่ย่อแล้ว ทดลองกับ entry เดียวก่อน | รอผลขั้น 1 |
+| 2 | `ResizePhotos.ps1` (คอม Windows) | ดาวน์โหลดรูปของ library จากหน้า File storage ของ Memento แล้วย่อให้ด้านยาวไม่เกิน 1600px ใช้ชื่อไฟล์เดิม เก็บต้นฉบับไว้เป็นสำรอง | รอทดสอบ |
+| 3 | `PhotoSwap.js` | Action ระดับ entry: เปลี่ยน Photo ของ entry ที่เลือกเป็นรูปชื่อเดียวกันใน /Workload/PhotoSmall/ บันทึก path เดิมใน `photoswap_log.txt` | รอทดสอบกับ entry เดียว |
+
+ผลขั้น 1 (2026-11-05): UroBase มี 415 entry ที่มีรูป รวม 832 ไฟล์ทั้งหมดอยู่ในฟิลด์ Photo (jpg 830, heic 2) เก็บในพื้นที่ส่วนตัวของ Memento (`/data/user/0/com.luckydroid.droidbase/...`) ซึ่ง Tasker อ่านไม่ได้ จึงใช้การดาวน์โหลดจากหน้า File storage แทน
 
 ## ติดตั้ง PhotoList.js
 
