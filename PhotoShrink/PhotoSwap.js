@@ -49,7 +49,9 @@
     }
   }
   if (swapped === 0) {
-    message("ไม่พบรูปย่อใน " + SMALL + " สำหรับ entry นี้\n" + missing.join("\n") + "\nตรวจ: " + probe.join(" | "));
+    var detail = "ตรวจ: " + probe.join(" | ");
+    log("PhotoSwap ไม่พบรูปย่อ " + missing.length + " รูป: " + missing.join(", ") + "\n" + detail);
+    message(detail + "\nไม่พบรูปย่อ " + missing.length + " รูป (รายละเอียดใน log)");
     return;
   }
   try {
