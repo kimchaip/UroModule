@@ -6,26 +6,20 @@
 // ไม่ต้องเลือก JavaScript library ใดๆ ในหน้า script
 (function () {
   var FIELD = "Photo";
-  var DIR = "PhotoSmall/";                                   // relative to Memento's default folder (/Workload)
-  var SMALL = "/storage/emulated/0/Workload/" + DIR;          // full path stored in the Photo field
-  var probe = [];
-  // file() API: exists / length may be properties or methods depending on version, so accept both
-  var hasFile = function (path) {
-    try {
-      var f = file(path);
-      var ex = f.exists;
-      if (typeof ex === "function") ex = f.exists();
-      var len = f.length;
-      if (typeof len === "function") len = f.length();
-      try { f.close(); } catch (err) {}
-      if (probe.length < 2) probe.push(path + " exists=" + ex + " length=" + len);
-      return String(ex) === "true" || Number(len) > 0;
-    }
-    catch (err) {
-      if (probe.length < 2) probe.push(path + " error=" + err);
-      return false;
-    }
-  };
+  var SMALL = "/storage/emulated/0/Workload/PhotoSmall/";    // full path stored in the Photo field
+  // file() only finds files directly in Memento's default folder (/Workload), not in PhotoSmall/,
+  // so the names of the small photos come from photosmall_list.txt written by ResizePhotos.ps1.
+  var have = {};
+  try {
+    var lf = file("photosmall_list.txt");
+    var lines = String(lf.readAll() || "").split(/\r?\n/);
+    lf.close();
+    for (var n = 0; n < lines.length; n++) if (lines[n].trim()) have[lines[n].trim()] = true;
+  }
+  catch (err) {
+    message("ไม่พบ Workload/photosmall_list.txt ให้คัดลอกไฟล์นี้จากคอม (สร้างโดย ResizePhotos.ps1) มาไว้ใน Workload");
+    return;
+  }
   var e = entry();
   var old = e.field(FIELD);
   if (!old || old.length === 0) {
@@ -38,7 +32,7 @@
     oldList.push(p);
     var name = decodeURIComponent(p.replace(/^.*\//, ""));
     var small = SMALL + name;
-    var exists = hasFile(DIR + name) || hasFile(small);
+    var exists = have[name] === true;
     if (exists) {
       next.push("file://" + small);
       swapped++;
@@ -49,12 +43,7 @@
     }
   }
   if (swapped === 0) {
-    var detail = "ตรวจ: " + probe.join(" | ");
-    var full = "PhotoSwap ไม่พบรูปย่อ " + missing.length + " รูป: " + missing.join(", ") + "\n" + detail + "\n";
-    // also written to a file: log() is not available in every Memento script context
-    try { var cf = file("photoswap_check.txt"); cf.write(full + "\n\n\n\n\n\n\n\n"); cf.close(); } catch (err) {}
-    if (typeof log === "function") log(full);
-    message(detail + "\nไม่พบรูปย่อ " + missing.length + " รูป (รายละเอียดใน Workload/photoswap_check.txt)");
+    message("ไม่พบรูปชื่อเดียวกันใน photosmall_list.txt สำหรับ entry นี้: " + missing.join(", "));
     return;
   }
   try {

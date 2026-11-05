@@ -46,3 +46,9 @@ foreach ($f in $files) {
   }
 }
 "Resized {0}, skipped {1}, total {2:N0} MB -> {3:N0} MB" -f $done, $skipped, ($before / 1MB), ($after / 1MB)
+
+# Memento's file() only sees files directly in its default folder (/Workload), not subfolders,
+# so PhotoSwap.js reads this list (copy it to the phone's Workload) to know which small photos exist.
+$list = Join-Path (Split-Path -Parent (Resolve-Path $Dst)) "photosmall_list.txt"
+[System.IO.File]::WriteAllLines($list, [string[]](Get-ChildItem -Path $Dst -File | ForEach-Object { $_.Name }))
+"List of {0} files written to {1}" -f (Get-ChildItem -Path $Dst -File).Count, $list
