@@ -50,8 +50,11 @@
   }
   if (swapped === 0) {
     var detail = "ตรวจ: " + probe.join(" | ");
-    log("PhotoSwap ไม่พบรูปย่อ " + missing.length + " รูป: " + missing.join(", ") + "\n" + detail);
-    message(detail + "\nไม่พบรูปย่อ " + missing.length + " รูป (รายละเอียดใน log)");
+    var full = "PhotoSwap ไม่พบรูปย่อ " + missing.length + " รูป: " + missing.join(", ") + "\n" + detail + "\n";
+    // also written to a file: log() is not available in every Memento script context
+    try { var cf = file("photoswap_check.txt"); cf.write(full + "\n\n\n\n\n\n\n\n"); cf.close(); } catch (err) {}
+    if (typeof log === "function") log(full);
+    message(detail + "\nไม่พบรูปย่อ " + missing.length + " รูป (รายละเอียดใน Workload/photoswap_check.txt)");
     return;
   }
   try {
