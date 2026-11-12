@@ -1139,7 +1139,7 @@ var fill = {
         // 2) on DJ
         // -----------------------------
         const onDJregex = new RegExp(
-            "((on|retain|insert|ใส่)\\s*(rt|lt|bilat|both|right|left|bilateral)?\\s*dj)",
+            "((on|retain|insert|ใส่)?\\s*(rt|lt|bilat|both|right|left|bilateral)?\\s*dj)",
             "i"
         );
 
