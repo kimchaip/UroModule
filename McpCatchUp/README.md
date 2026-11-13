@@ -33,8 +33,12 @@ trigger **Opening a library** (After window display) วางโค้ดจา
 - trigger ทำงานเมื่อเปิด library ของ entry นั้นเท่านั้น (Memento sync library ตอนเปิด)
 - Holidays ที่แก้ผ่าน Claude ไม่ sync ไป Google Calendar จนกว่าจะเปิด entry แล้วกดบันทึกในแอป
 - การย้ายลงถังขยะ / กู้คืนผ่าน uro-mcp ยังไม่มี trigger ตามหลัง (BeforeDelete / AfterDelete)
-- ถ้าเปิดดูหรือแก้ entry ในแอปก่อน script ทำ (OpenEdit / BeforeViewCard เขียน Previous ใหม่)
-  เครื่องหมายจะหาย ถ้ากดบันทึก trigger ปกติจะทำงานแทน ถ้าแค่ดู ให้เปิดแก้แล้วกดบันทึกเอง
+- เปิดการ์ด entry ที่มีเครื่องหมาย (เช่น กดลิงก์ที่ AI ใน Memento ให้มา): BeforeViewCard, PatientBeforeViewCard,
+  DxBeforeViewCard, OpListBeforeViewCard เรียก `mcp.catchUp` ใน UroObj.js ทำ trigger ที่ค้างของ entry นั้นทันที
+  DxAutoFill / OperationList ต้องเพิ่ม trigger "Opening an Entry View card" เอง:
+  `trig.DxBeforeViewCard(entry());` และ `trig.OpListBeforeViewCard(entry());` (เลือก library MyDate.js, UroObj.js)
+- ถ้าเปิดฟอร์มแก้ entry ตรงๆ โดยไม่ผ่านการ์ด OpenEdit จะเขียน Previous ใหม่และเครื่องหมายจะหาย
+  กดบันทึกแล้ว trigger ปกติจะทำงานแทน (แต่เป็นแบบ update ไม่ใช่ create)
 - ถ้า script หยุดกลางทางเพราะ error ที่ไม่ใช่ validator เครื่องหมายของ entry นั้นถูกเอาออกแล้ว ดูใน log ของ script
 
 ## ประวัติ

@@ -37,7 +37,7 @@ trig.BeforeEdit.call(uro, entry(), "update");
 | Opening an Entry Edit card | `OpenEdit` (`PatientOpenEdit`, `DxOpenEdit`, `OpListOpenEdit`) |
 | Before saving | `BeforeEdit` (`PatientBeforeEdit`, `DxBeforeEdit`, `OpListBeforeEdit`, `HDBeforeEdit`) |
 | After saving | `AfterEdit` (`PatientAfterEdit`, `DxAfterEdit`, `OpListAfterEdit`, `HDAfterEdit`) |
-| Opening an Entry View card | `BeforeViewCard` (`PatientBeforeViewCard`) |
+| Opening an Entry View card | `BeforeViewCard` (`PatientBeforeViewCard`, `DxBeforeViewCard`, `OpListBeforeViewCard`) |
 | แก้ field จากหน้า list | `BeforeUpdatingField`, `AfterUpdatingField` |
 | ลบ entry | `BeforeDelete`, `AfterDelete` |
 | รายวัน | `DailyUpdateAll` อัปเดตอายุ, Track, LOS, Active, Future, Color |

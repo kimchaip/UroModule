@@ -2688,6 +2688,71 @@ var sync = {
   }
 };
 
+// ===== mcp : ทำ trigger ที่ขาดไปของ entry ที่ AI สร้างหรือแก้ (Memento AI / uro-mcp) =====
+// การเขียนโดย AI ไม่ทำให้ trigger ทำงาน AI จึงใส่ "_mcp": "create" | "update" ลงใน Previous
+// BeforeViewCard / PatientBeforeViewCard เรียก mcp.catchUp ก่อน old.save (ซึ่งจะลบเครื่องหมายทิ้ง)
+// ใช้ logic เดียวกับ McpCatchUp/McpCatchUp.js (ที่ทำตอนเปิด library)
+var mcp = {
+  marked : function (e) {
+    let p = e.field("Previous");
+    return !!p && String(p).indexOf('"_mcp"') >= 0;
+  },
+  // คืนค่า true ถ้า entry มีเครื่องหมายและได้ทำ trigger แล้ว (สำเร็จหรือไม่ก็ตาม เครื่องหมายถูกเอาออก)
+  catchUp : function (e, libname) {
+    if (!mcp.marked(e)) return false;
+    let map = {
+      "UroBase":       { obj: uro, before: "BeforeEdit",        after: "AfterEdit" },
+      "Backup":        { obj: buo, before: "BeforeEdit",        after: "AfterEdit" },
+      "Consult":       { obj: cso, before: "BeforeEdit",        after: "AfterEdit" },
+      "Patient":       { obj: pto, before: "PatientBeforeEdit", after: "PatientAfterEdit" },
+      "DxAutoFill":    { obj: dxo, before: "DxBeforeEdit",      after: "DxAfterEdit" },
+      "OperationList": { obj: opo, before: "OpListBeforeEdit",  after: "OpListAfterEdit" }
+    };
+    let m = map[libname];
+    if (!m) return false;
+    // เอาเครื่องหมายออกก่อน: ถ้า trigger ไม่ผ่าน จะไม่ถูกทำซ้ำทุกครั้งที่เปิด
+    // entry ที่สร้างใหม่ Previous จะว่างเหมือน entry ใหม่ในแอป entry ที่แก้ยังมีค่าเดิมให้เทียบ
+    let action = "update";
+    try {
+      let d = JSON.parse(e.field("Previous"));
+      if (d._mcp == "create") action = "create";
+      delete d._mcp;
+      e.set("Previous", Object.keys(d).length > 0 ? JSON.stringify(d) : "");
+    }
+    catch (err) {
+      e.set("Previous", "");
+    }
+    // validator เรียก message() + cancel() + exit() ซึ่งจะหยุด script และอาจยกเลิกการเปิดการ์ด
+    // ระหว่างทำจึงเก็บข้อความไว้แล้ว throw แทน
+    let realMessage = message, realCancel = cancel, realExit = exit;
+    let lastMsg = "";
+    let stop = {};
+    message = function (t) { lastMsg = String(t); };
+    cancel = function () {};
+    exit = function () { throw stop; };
+    let why = null;
+    try {
+      // ส่ง "update" ให้ Before เสมอ: entry ถูกบันทึกแล้ว ถ้าส่ง "create" ตัวตรวจข้อมูลซ้ำจะนับตัวเอง
+      trig[m.before].call(m.obj, e, "update");
+      trig[m.after].call(m.obj, e, action);
+    }
+    catch (err) {
+      why = err === stop ? lastMsg : String(err);
+      log("mcp.catchUp " + libname + " " + e.id + ": " + why);
+    }
+    finally {
+      message = realMessage;
+      cancel = realCancel;
+      exit = realExit;
+    }
+    if (why == null)
+      message("AI: ทำ trigger ที่ค้างของ entry นี้แล้ว");
+    else
+      message("AI: ทำ trigger ไม่ผ่าน ต้องเปิดแก้แล้วบันทึกเอง: " + why);
+    return true;
+  }
+};
+
 var trig = {
   DailyPtUpdate : function (all) {
     for (let i=0; i<all.length; i++) {
@@ -2737,6 +2802,7 @@ var trig = {
     //log("cosult update done!");
   }, 
   PatientBeforeViewCard : function (e) {
+    mcp.catchUp(e, "Patient");
     pto.djStamp(e);
     pto.reop(e);
     old.save.call(pto, e);
@@ -2859,6 +2925,8 @@ var trig = {
     old.save.call(this, e);
   }, 
   BeforeViewCard : function (e) {
+    // entry ที่ AI สร้าง/แก้: ทำ trigger ที่ค้างก่อน (AfterEdit เรียก old.save ให้แล้ว)
+    if (mcp.catchUp(e, this.lib)) return;
     old.save.call(this, e);
   },
   BeforeUpdatingField : function (e) {
@@ -2945,6 +3013,11 @@ var trig = {
     if (e.field("Patient").length > 0)
       rpo.syncPatient(e.field("Patient")[0]);
   },
+  // ไม่มี view card trigger มาก่อน: เพิ่มไว้สำหรับ entry ที่ AI สร้าง/แก้ (ตั้งใน Opening an Entry View card)
+  DxBeforeViewCard : function (e) {
+    if (mcp.catchUp(e, "DxAutoFill")) return;
+    old.save.call(dxo, e);
+  },
   DxOpenEdit : function(e, value) {
     old.save.call(dxo, e);
   },
@@ -2957,6 +3030,10 @@ var trig = {
     old.load(e);
     dxop.effectother.call(dxo, e);
     old.save.call(dxo, e);
+  },
+  OpListBeforeViewCard : function (e) {
+    if (mcp.catchUp(e, "OperationList")) return;
+    old.save.call(opo, e);
   },
   OpListOpenEdit : function(e, value) {
     old.save.call(opo, e);
