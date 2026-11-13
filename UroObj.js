@@ -3013,6 +3013,11 @@ var trig = {
     if (e.field("Patient").length > 0)
       rpo.syncPatient(e.field("Patient")[0]);
   },
+  // ไม่มี view card trigger มาก่อน: เพิ่มไว้สำหรับ entry ที่ AI สร้าง/แก้ (ตั้งใน Opening an Entry View card)
+  DxBeforeViewCard : function (e) {
+    if (mcp.catchUp(e, "DxAutoFill")) return;
+    old.save.call(dxo, e);
+  },
   DxOpenEdit : function(e, value) {
     old.save.call(dxo, e);
   },
@@ -3025,6 +3030,10 @@ var trig = {
     old.load(e);
     dxop.effectother.call(dxo, e);
     old.save.call(dxo, e);
+  },
+  OpListBeforeViewCard : function (e) {
+    if (mcp.catchUp(e, "OperationList")) return;
+    old.save.call(opo, e);
   },
   OpListOpenEdit : function(e, value) {
     old.save.call(opo, e);
