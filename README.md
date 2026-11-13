@@ -50,7 +50,7 @@
 | `Widget.js` | สร้าง widget แสดงรายการ OR ที่จะมาถึง 90 วัน |
 | `MoveBackup/` | Action สำหรับย้าย UroBase → Backup แล้วแก้ MergeID (ดู [MoveBackup/README.md](MoveBackup/README.md)) |
 | `ReportCheck/` | Action ตรวจ Report ให้ตรงกับ UroBase / Backup (ดู [ReportCheck/README.md](ReportCheck/README.md)) |
-| `EmrIntake/` | ถ่ายภาพ EMR แล้วให้ Tasker + Memento สร้าง Patient และ Consult อัตโนมัติ วิธีตั้งค่าใน [EmrIntake/README.md](EmrIntake/README.md) |
+| `AiCatchUp/` | ทำ trigger ที่ค้างของ entry ที่ AI ใน Memento สร้างหรือแก้ (ดู [AiCatchUp/README.md](AiCatchUp/README.md)) |
 | `Outcome/` | ผลการรักษา: เดา Clavien และเก็บผลตรวจหลังผ่าตัด (patho, imaging, PSA, lab) ใน library FollowUp แล้วรวมเข้า Report วิธีตั้งค่าใน [Outcome/README.md](Outcome/README.md) |
 
 ## การติดตั้ง

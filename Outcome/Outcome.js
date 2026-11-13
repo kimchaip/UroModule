@@ -1,14 +1,10 @@
-// ===== Outcome.js : ผลการรักษา (Clavien + นำเข้าผลตรวจเข้า FollowUp) =====
-// เป็น JavaScript library ใหม่ (แบบเดียวกับ MyDate.js) ใช้คู่กับ UroObj.js และ MyDate.js
+// ===== Outcome.js : ผลการรักษา (Clavien) =====
+// เป็น JavaScript library (แบบเดียวกับ MyDate.js) ใช้คู่กับ UroObj.js และ MyDate.js
 // ใช้เฉพาะปุ่ม Action (trigger เดิมไม่เรียกไฟล์นี้):
 //   UroBase/Backup (entry action)   "Clavien"          -> cdo.runOne(entry())
 //   UroBase/Backup (library action) "Clavien ทั้งหมด"   -> cdo.runAll(lib())
-//   FollowUp      (library action)  "นำเข้าผลตรวจ"      -> oco.importFollowUp()
 // กติกา: ระหว่างนอนโรงพยาบาลเขียนใน OpResult, ผลตรวจที่มีวันที่ของตัวเอง (CT, US, patho, lab, PSA) ลง FollowUp
 //        Report จับคู่ผลกับการผ่าตัดจากวันที่เอง (rpo.setResults ใน UroObj.js)
-// ไฟล์ inbox ที่ Tasker (outcomeextract.js) เขียน: outcomeInbox.json (1 บรรทัด 1 ผล)
-// บรรทัดที่นำเข้าแล้วจดไว้ใน outcomeInbox.done (แบบเดียวกับ consultInbox.done)
-// path เป็นชื่อเปล่า เพราะตั้ง default folder ของ Memento เป็น /Workload แล้ว
 
 var CD_GRADES = ["None", "I", "II", "IIIa", "IIIb", "IVa", "IVb", "V"];
 
@@ -117,6 +113,13 @@ var cdx = {
 
 // ---------- Clavien: ส่วนที่ต่อกับ Memento ----------
 var cdo = {
+  show : function (title, text) {
+    try {
+      dialog().title(title).text(text).positiveButton("OK", function () { return true; }).show();
+    } catch (err) {
+      message(title + "\n" + text);
+    }
+  },
   plain : function (e, libname) {
     var ol = e.field("OperationList");
     return {
@@ -171,7 +174,7 @@ var cdo = {
     var msg = "แนะนำ: " + cd.grade;
     if (!cd.set) msg += " (ค่าที่เลือกไว้: " + cd.cur + " ไม่ได้เปลี่ยน)";
     if (cd.why.length) msg += "\n" + cd.why.join("\n");
-    oco.show("Clavien", msg);
+    cdo.show("Clavien", msg);
   },
   // library action: ทุก entry ที่ Done, ผ่านมาแล้ว >= 30 วัน และยังไม่มี Clavien
   runAll : function (lb) {
@@ -184,177 +187,7 @@ var cdo = {
       if (r) { n++; count[r.grade] = (count[r.grade] || 0) + 1; }
     });
     var lines = CD_GRADES.filter(function (g) { return count[g]; }).map(function (g) { return g + " = " + count[g]; });
-    oco.show("Clavien ทั้งหมด", "ใส่ค่าให้ " + n + " entry\n" + lines.join("\n"));
-  }
-};
-
-// ---------- ผลตรวจจากรูป (inbox) -> FollowUp ----------
-var oco = {
-  PATH : "outcomeInbox.json",
-  DONE : "outcomeInbox.done",
-  TYPES : { patho : "Patho", psa : "PSA", lab : "Lab" },
-
-  show : function (title, text) {
-    try {
-      dialog().title(title).text(text).positiveButton("OK", function () { return true; }).show();
-    } catch (err) {
-      message(title + "\n" + text);
-    }
-  },
-  readLines : function (path) {
-    try {
-      var f = file(path);
-      var text = String(f.readAll() || "");
-      f.close();
-      return text.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
-    } catch (err) {
-      return [];
-    }
-  },
-  // ข้อความใหม่ยาวกว่าเดิมเสมอ จึงเขียนทับของเดิมได้หมด (file().write ไม่ตัดท้ายไฟล์)
-  saveDone : function (oldKeys, newKeys) {
-    if (!newKeys.length) return;
-    try {
-      var f = file(oco.DONE);
-      f.write(oldKeys.concat(newKeys).join("\n") + "\n");
-      f.close();
-    } catch (err) {
-      log("outcome done: " + err);
-    }
-  },
-  // บรรทัดที่ยังไม่นำเข้า: [{o, key}]
-  pending : function (doneKeys) {
-    var seen = {};
-    var out = [];
-    oco.readLines(oco.PATH).forEach(function (line) {
-      var o;
-      try { o = JSON.parse(line); } catch (err) { return; }
-      var key = String(o.t || line);
-      if (doneKeys.indexOf(key) > -1 || seen[key]) return;
-      seen[key] = true;
-      out.push({ o : o, key : key });
-    });
-    return out;
-  },
-  parseDate : function (s) {
-    var r = String(s || "").match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-    return r ? my.date(new Date(Number(r[3]), Number(r[2]) - 1, Number(r[1]))) : null;
-  },
-  findPatient : function (hn) {
-    var ents = pt.entries();
-    for (var i = 0; i < ents.length; i++) {
-      if (Number(ents[i].field("HN")) === Number(hn)) return ents[i];
-    }
-    return null;
-  },
-  // ผลที่ไม่มี HN: หาจากชื่อ ตัดคำนำหน้าและช่องว่างออกก่อนเทียบ คืนทุกคนที่ตรง (ใช้เมื่อเจอคนเดียวเท่านั้น)
-  PREFIX : ["นางสาว", "น.ส.", "นส.", "นาย", "นาง", "ด.ช.", "ดช.", "ด.ญ.", "ดญ.", "mrs.", "mr.", "miss", "ms."],
-  normName : function (s) {
-    s = String(s || "").toLowerCase().replace(/\s+/g, " ").trim();
-    for (var i = 0; i < oco.PREFIX.length; i++) {
-      if (s.indexOf(oco.PREFIX[i]) == 0) { s = s.slice(oco.PREFIX[i].length); break; }
-    }
-    return s.replace(/\s+/g, "");
-  },
-  findByName : function (name) {
-    var key = oco.normName(name);
-    if (!key) return [];
-    return pt.entries().filter(function (e) { return oco.normName(e.field("PtName")) == key; });
-  },
-  typeOf : function (o) {
-    return oco.TYPES[o.type] || (o.d && o.d.modality) || "Other";
-  },
-  // ค่าใน FollowUp จากผลที่ parse แล้ว (ชื่อ field ตาม SETUP.md)
-  setFollowUp : function (f, o) {
-    var d = o.d || {};
-    var put = function (name, v) {
-      if (v === undefined || v === null || v === "") return;
-      try { f.set(name, v); } catch (err) { log("FollowUp " + name + ": " + err); }
-    };
-    put("Type", oco.typeOf(o));
-    // imaging
-    put("StoneFree", d.sf);
-    put("StoneSize", d.maxmm);
-    put("StoneN", typeof d.n == "number" ? d.n : undefined);
-    put("StoneSide", d.side);
-    put("StoneSite", d.site);
-    put("StoneHU", d.hu);
-    put("Hydro", d.hydro);
-    put("ProstateVol", d.vol);
-    put("PIRADS", d.pirads);
-    // lab
-    put("PSA", d.psa);
-    put("Cr", d.cr);
-    put("eGFR", d.egfr);
-    // patho
-    put("Organ", d.organ);
-    put("Specimen", d.specimen);
-    put("Cell", d.cell);
-    put("Grade", d.grade || (d.isup ? "ISUP " + d.isup : undefined));
-    put("Gleason", d.gleason);
-    put("GradeGroup", d.gg);
-    put("pT", d.pT || (d.tGuess ? d.tGuess + "?" : undefined));
-    put("pN", d.pN);
-    put("Margin", d.margin);
-    put("LVI", d.lvi);
-    put("Muscle", d.mp);
-    put("NodesPos", d.nodesPos);
-    put("NodesTotal", d.nodesTotal);
-    put("TumorSize", d.sizeCm);
-    put("Cores", d.coresTotal ? d.coresPos + "/" + d.coresTotal : undefined);
-    put("PathoNo", d.no);
-    put("Finding", d.text);
-    put("Data", JSON.stringify(d));
-    put("Key", String(o.t || ""));
-  },
-  // สร้าง FollowUp ถ้ายังไม่มีผลชนิดเดียวกัน วันเดียวกัน (patho ดูเลข patho หรืออวัยวะด้วย เพราะวันเดียวอาจมีหลายชิ้น)
-  addFollowUp : function (ptent, o, date) {
-    var fu = libByName("FollowUp");
-    var type = oco.typeOf(o);
-    var d = o.d || {};
-    var dup = ptent.linksFrom("FollowUp", "Patient").some(function (v) {
-      if (!v.field("Date") || my.gdate(my.date(v.field("Date"))) != my.gdate(date) || v.field("Type") != type) return false;
-      if (type != "Patho") return true;
-      return (d.no && v.field("PathoNo") == d.no) || (!d.no && v.field("Organ") == (d.organ || ""));
-    });
-    if (dup) return false;
-    var f = fu.create(new Object());
-    f.set("Date", date);
-    f.link("Patient", ptent);
-    oco.setFollowUp(f, o);
-    return true;
-  },
-
-  // library action ใน FollowUp: นำเข้าทุกบรรทัดที่ค้าง แล้วอัปเดต Report ของคนไข้ที่มีผลใหม่
-  // (entry ที่ script สร้างไม่ผ่าน trigger จึงต้องเรียก rpo.syncPatient เอง)
-  importFollowUp : function () {
-    var doneKeys = oco.readLines(oco.DONE);
-    var newKeys = [];
-    var made = [], skipped = [], pts = {};
-    oco.pending(doneKeys).forEach(function (p) {
-      var o = p.o;
-      var who = o.hn ? "HN " + o.hn : "ชื่อ " + o.name;
-      var ptent = null;
-      if (o.hn) ptent = oco.findPatient(o.hn);
-      else {
-        var same = oco.findByName(o.name);
-        if (same.length > 1) { skipped.push(who + " ซ้ำ " + same.length + " คนใน Patient"); return; }
-        ptent = same[0] || null;
-      }
-      var date = oco.parseDate(o.date);
-      if (!ptent) { skipped.push(who + " ไม่พบใน Patient"); return; }
-      if (!date) { skipped.push(who + " ไม่มีวันที่"); return; }
-      var added = oco.addFollowUp(ptent, o, date);
-      if (!o.hn) who += " (HN " + ptent.field("HN") + ")";
-      made.push((added ? "" : "(มีแล้ว) ") + who + " " + oco.typeOf(o) + " " + o.date);
-      if (added) pts[ptent.id] = ptent;
-      newKeys.push(p.key);
-    });
-    oco.saveDone(doneKeys, newKeys);
-    for (var id in pts) rpo.syncPatient(pts[id]);
-    var msg = made.length ? "นำเข้า " + made.length + ":\n" + made.join("\n") : "ไม่มีผลรอนำเข้า";
-    if (skipped.length) msg += "\n\nข้าม " + skipped.length + " (ยังค้างในไฟล์):\n" + skipped.join("\n");
-    oco.show("FollowUp", msg);
+    cdo.show("Clavien ทั้งหมด", "ใส่ค่าให้ " + n + " entry\n" + lines.join("\n"));
   }
 };
 

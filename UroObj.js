@@ -2693,19 +2693,20 @@ var sync = {
   }
 };
 
-// ===== mcp : ทำ trigger ที่ขาดไปของ entry ที่ AI สร้างหรือแก้ (Memento AI / uro-mcp) =====
+// ===== aic : ทำ trigger ที่ขาดไปของ entry ที่ AI ใน Memento สร้างหรือแก้ =====
 // การเขียนโดย AI ไม่ทำให้ trigger ทำงาน AI จึงใส่ "_mcp": "create" | "update" ลงใน Previous
-// BeforeViewCard / PatientBeforeViewCard เรียก mcp.catchUp ก่อน old.save (ซึ่งจะลบเครื่องหมายทิ้ง)
-// ใช้ logic เดียวกับ McpCatchUp/McpCatchUp.js (ที่ทำตอนเปิด library)
-var mcp = {
-  marked : function (e) {
-    let p = e.field("Previous");
-    return !!p && String(p).indexOf('"_mcp"') >= 0;
-  },
-  // คืนค่า true ถ้า entry มีเครื่องหมายและได้ทำ trigger แล้ว (สำเร็จหรือไม่ก็ตาม เครื่องหมายถูกเอาออก)
-  catchUp : function (e, libname) {
-    if (!mcp.marked(e)) return false;
-    let map = {
+// (ชื่อ "_mcp" เป็นชื่อเดิมตั้งแต่สมัย uro-mcp คงไว้เพราะคำสั่งของ AI ใช้ชื่อนี้)
+// - เปิดการ์ด entry: BeforeViewCard / PatientBeforeViewCard / DxBeforeViewCard / OpListBeforeViewCard
+//   เรียก aic.catchUp ก่อน old.save (ซึ่งจะลบเครื่องหมายทิ้ง)
+// - เปิด library: trigger "Opening a library" เรียก aic.catchUpLibrary(lib()) (ดู AiCatchUp/README.md)
+// ส่ง "update" ให้ BeforeEdit เสมอ เพราะ entry ถูกบันทึกแล้ว ถ้าส่ง "create"
+// valid.uniqueHN / uniqueVisit / uniqueDxOp จะนับ entry ตัวเองเป็นข้อมูลซ้ำ
+var aic = {
+  DAYS : 30,          // เปิด library: ดูเฉพาะ entry ที่ถูกแก้ภายในกี่วัน
+  MAX_PER_RUN : 30,
+  FOLLOWUP_DAYS : 3,  // FollowUp ไม่มี Previous: sync Report ของคนไข้ที่มี FollowUp แก้ภายในกี่วัน
+  map : function (libname) {
+    let m = {
       "UroBase":       { obj: uro, before: "BeforeEdit",        after: "AfterEdit" },
       "Backup":        { obj: buo, before: "BeforeEdit",        after: "AfterEdit" },
       "Consult":       { obj: cso, before: "BeforeEdit",        after: "AfterEdit" },
@@ -2713,10 +2714,16 @@ var mcp = {
       "DxAutoFill":    { obj: dxo, before: "DxBeforeEdit",      after: "DxAfterEdit" },
       "OperationList": { obj: opo, before: "OpListBeforeEdit",  after: "OpListAfterEdit" }
     };
-    let m = map[libname];
-    if (!m) return false;
-    // เอาเครื่องหมายออกก่อน: ถ้า trigger ไม่ผ่าน จะไม่ถูกทำซ้ำทุกครั้งที่เปิด
-    // entry ที่สร้างใหม่ Previous จะว่างเหมือน entry ใหม่ในแอป entry ที่แก้ยังมีค่าเดิมให้เทียบ
+    return m[libname] || null;
+  },
+  marked : function (e) {
+    let p = e.field("Previous");
+    return !!p && String(p).indexOf('"_mcp"') >= 0;
+  },
+  // ทำ trigger ของ entry ที่มีเครื่องหมาย 1 ตัว คืนค่า null ถ้าผ่าน หรือข้อความถ้าไม่ผ่าน
+  // เอาเครื่องหมายออกก่อน: ถ้า trigger ไม่ผ่าน จะไม่ถูกทำซ้ำทุกครั้งที่เปิด ให้แก้เองในแอป
+  // entry ที่สร้างใหม่ Previous จะว่างเหมือน entry ใหม่ในแอป entry ที่แก้ยังมีค่าเดิมให้เทียบ
+  run : function (e, m, libname) {
     let action = "update";
     try {
       let d = JSON.parse(e.field("Previous"));
@@ -2727,7 +2734,7 @@ var mcp = {
     catch (err) {
       e.set("Previous", "");
     }
-    // validator เรียก message() + cancel() + exit() ซึ่งจะหยุด script และอาจยกเลิกการเปิดการ์ด
+    // validator เรียก message() + cancel() + exit() ซึ่งจะหยุด script ทั้งตัว (และอาจยกเลิกการเปิดการ์ด)
     // ระหว่างทำจึงเก็บข้อความไว้แล้ว throw แทน
     let realMessage = message, realCancel = cancel, realExit = exit;
     let lastMsg = "";
@@ -2737,24 +2744,68 @@ var mcp = {
     exit = function () { throw stop; };
     let why = null;
     try {
-      // ส่ง "update" ให้ Before เสมอ: entry ถูกบันทึกแล้ว ถ้าส่ง "create" ตัวตรวจข้อมูลซ้ำจะนับตัวเอง
       trig[m.before].call(m.obj, e, "update");
       trig[m.after].call(m.obj, e, action);
     }
     catch (err) {
       why = err === stop ? lastMsg : String(err);
-      log("mcp.catchUp " + libname + " " + e.id + ": " + why);
+      log("aic " + libname + " " + e.id + ": " + why);
     }
     finally {
       message = realMessage;
       cancel = realCancel;
       exit = realExit;
     }
+    return why;
+  },
+  // เปิดการ์ด: คืนค่า true ถ้า entry มีเครื่องหมายและได้ทำ trigger แล้ว (สำเร็จหรือไม่ก็ตาม)
+  catchUp : function (e, libname) {
+    if (!aic.marked(e)) return false;
+    let m = aic.map(libname);
+    if (!m) return false;
+    let why = aic.run(e, m, libname);
     if (why == null)
       message("AI: ทำ trigger ที่ค้างของ entry นี้แล้ว");
     else
       message("AI: ทำ trigger ไม่ผ่าน ต้องเปิดแก้แล้วบันทึกเอง: " + why);
     return true;
+  },
+  // เปิด library: ทำทุก entry ที่มีเครื่องหมาย (ครั้งละไม่เกิน MAX_PER_RUN) ตามลำดับที่ AI เขียน
+  catchUpLibrary : function (lb) {
+    let name = lb.title;
+    let now = new Date().getTime();
+    if (name == "FollowUp") {
+      let since = now - aic.FOLLOWUP_DAYS * 86400000;
+      let seen = {};
+      lb.entries().forEach(function (f) {
+        if (f.lastModifiedTime.getTime() < since) return;
+        let p = f.field("Patient");
+        if (p.length == 0 || seen[p[0].id]) return;
+        seen[p[0].id] = true;
+        try { rpo.syncPatient(p[0]); }
+        catch (err) { log("aic FollowUp " + p[0].title + ": " + err); }
+      });
+      return;
+    }
+    let m = aic.map(name);
+    if (!m) return;
+    let since = now - aic.DAYS * 86400000;
+    let marked = lb.entries().filter(function (e) {
+      return e.lastModifiedTime.getTime() >= since && aic.marked(e);
+    });
+    if (marked.length == 0) return;
+    marked.sort(function (a, b) { return a.lastModifiedTime - b.lastModifiedTime; });
+    let ok = 0, failed = [];
+    for (let i = 0; i < marked.length && i < aic.MAX_PER_RUN; i++) {
+      let why = aic.run(marked[i], m, name);
+      if (why == null) ok++;
+      else failed.push(marked[i].title + ": " + why);
+    }
+    let left = marked.length - Math.min(marked.length, aic.MAX_PER_RUN);
+    let text = "AI: ทำ trigger ที่ค้างใน " + name + " " + ok + " รายการ";
+    if (left) text += ", เหลือ " + left + " (เปิดใหม่เพื่อทำต่อ)";
+    if (failed.length) text += "\nต้องเปิดแก้เอง: " + failed.join("; ");
+    message(text);
   }
 };
 
@@ -2807,7 +2858,7 @@ var trig = {
     //log("cosult update done!");
   }, 
   PatientBeforeViewCard : function (e) {
-    mcp.catchUp(e, "Patient");
+    aic.catchUp(e, "Patient");
     pto.djStamp(e);
     pto.reop(e);
     old.save.call(pto, e);
@@ -2931,7 +2982,7 @@ var trig = {
   }, 
   BeforeViewCard : function (e) {
     // entry ที่ AI สร้าง/แก้: ทำ trigger ที่ค้างก่อน (AfterEdit เรียก old.save ให้แล้ว)
-    if (mcp.catchUp(e, this.lib)) return;
+    if (aic.catchUp(e, this.lib)) return;
     old.save.call(this, e);
   },
   BeforeUpdatingField : function (e) {
@@ -3020,7 +3071,7 @@ var trig = {
   },
   // ไม่มี view card trigger มาก่อน: เพิ่มไว้สำหรับ entry ที่ AI สร้าง/แก้ (ตั้งใน Opening an Entry View card)
   DxBeforeViewCard : function (e) {
-    if (mcp.catchUp(e, "DxAutoFill")) return;
+    if (aic.catchUp(e, "DxAutoFill")) return;
     old.save.call(dxo, e);
   },
   DxOpenEdit : function(e, value) {
@@ -3037,7 +3088,7 @@ var trig = {
     old.save.call(dxo, e);
   },
   OpListBeforeViewCard : function (e) {
-    if (mcp.catchUp(e, "OperationList")) return;
+    if (aic.catchUp(e, "OperationList")) return;
     old.save.call(opo, e);
   },
   OpListOpenEdit : function(e, value) {

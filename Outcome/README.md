@@ -5,12 +5,11 @@
 - ผลตรวจที่มีวันที่ของตัวเอง (CT, US, KUB, MRI, patho, lab, PSA): ลง **FollowUp** ทุกครั้ง แม้ทำระหว่าง admit
 - Report จับคู่ผลกับการผ่าตัดจากวันที่ให้เอง และอัปเดตทุกครั้งที่บันทึก FollowUp หรือการผ่าตัด
 
-ลง FollowUp ได้ 2 ทาง: พิมพ์เอง หรือถ่ายรูปผล → LINE แปลงเป็นข้อความ → Tasker ฝากไว้ในไฟล์ → กดปุ่ม **นำเข้าผลตรวจ** ใน FollowUp
+ลง FollowUp ได้ 2 ทาง: พิมพ์เอง หรือให้ AI ใน Memento อ่านใบผลแล้วลงให้ (AI ต้องเขียน `Data` ตามรูปแบบในข้อ 1 ด้วย)
 
 | ไฟล์ | ใช้ที่ไหน |
 |---|---|
-| `Outcome.js` | Memento JavaScript library (แบบ MyDate.js): เดา Clavien, นำเข้าผลจาก `outcomeInbox.json` เข้า FollowUp |
-| `outcomeextract.js` | Tasker action JavaScript: อ่านข้อความผล patho / imaging / PSA / lab → `%jsonline` |
+| `Outcome.js` | Memento JavaScript library (แบบ MyDate.js): เดา Clavien |
 
 ส่วนที่ Report ใช้ (`rpo.setResults`, `rpo.syncPatient`, `trig.FollowUpAfterEdit`, `trig.FollowUpAfterDelete`) อยู่ใน `UroObj.js`
 
@@ -43,9 +42,13 @@
 | `TumorSize` (cm) | Real number | Patho |
 | `Recurrence` | Single choice: `No`, `Yes`, `Suspicious` | หมอเลือกเอง (script ไม่เดา) |
 | `Finding` | Text (multi-line) | Impression / Diagnosis จากใบรายงาน |
-| `Data`, `Key` | Text ซ่อน | script ใช้ ห้ามแก้ |
+| `Data` | Text ซ่อน | JSON รายละเอียดที่ Report ใช้ (ดูด้านล่าง) |
+| `Key` | Text ซ่อน | เดิมใช้กันนำเข้าซ้ำจาก Tasker ตอนนี้ไม่ใช้แล้ว (ไม่ต้องลบ field) |
 
 - พิมพ์เองกรอกแค่ `Patient`, `Date`, `Type` และค่าที่มี เช่น PSA ก็กรอก `PSA` ช่องเดียว
+- `Data` ของ imaging ต้องใส่เมื่อมีนิ่วหรือ hydro เพราะ Report ใช้แยกข้างที่ผ่าตัด:
+  `{"stones":[{"side":"Rt","site":"renal pelvis","mm":12,"n":1,"hu":900},{"site":"bladder","mm":5,"n":"multiple"}],"hydroSide":{"Rt":"moderate","Lt":"none"}}`
+  นิ่ว 1 รายการต่อ 1 ตำแหน่ง, side เป็น `Rt`/`Lt`/`Bilat` หรือไม่ใส่ (เช่น bladder), hydroSide ใส่เฉพาะข้างที่ใบผลระบุ
 - `pT` ที่ลงท้ายด้วย `?` (เช่น `>=T2?`) คือเดาจากคำบรรยาย ใบรายงานไม่ได้เขียน TNM ตรงๆ ต้องตรวจเอง
 - ตั้งชื่อ entry (Entry name) เป็น `Date` + `Type` + `Patient`
 
@@ -57,7 +60,7 @@
 | Biopsy ก่อนผ่าตัด | `BxCell`, `BxGleason`, `BxGG`, `BxCores` | Patho ล่าสุดภายใน 365 วันก่อนวันผ่าตัด |
 | Patho การผ่าตัดนี้ | `PathoCell`, `PathoGrade`, `Gleason`, `GradeGroup`, `pT`, `pN`, `Margin`, `LVI`, `Muscle`, `NodesPos`, `NodesTotal`, `TumorSize`, `PathoNo` | Patho ตั้งแต่วันผ่าตัดถึง 120 วัน ที่การผ่าตัดนี้เป็นครั้งล่าสุดก่อนวันที่ของผล |
 
-**นิ่วและ Hydro ใช้เฉพาะข้างที่ผ่าตัด** ข้างอ่านจาก Op ก่อน ถ้าไม่มีดู Dx (Rt, Lt, Bilat หรือมีทั้ง Rt และ Lt) นิ่วที่ไม่มีข้าง (เช่น bladder) นับด้วย การผ่าตัดที่ไม่ระบุข้างใช้นิ่วทุกก้อน ค่ามาจากนิ่วแต่ละก้อนที่เก็บไว้ใน `Data` ของ FollowUp จึงใช้กับผลที่นำเข้าไปแล้วได้ ส่วน Hydro แยกข้างได้เฉพาะผลที่นำเข้าหลังอัปเดตนี้
+**นิ่วและ Hydro ใช้เฉพาะข้างที่ผ่าตัด** ข้างอ่านจาก Op ก่อน ถ้าไม่มีดู Dx (Rt, Lt, Bilat หรือมีทั้ง Rt และ Lt) นิ่วที่ไม่มีข้าง (เช่น bladder) นับด้วย การผ่าตัดที่ไม่ระบุข้างใช้นิ่วทุกก้อน ค่ามาจากนิ่วแต่ละก้อนที่เก็บไว้ใน `Data` ของ FollowUp จึงใช้กับผลที่นำเข้าไปแล้วได้ ส่วน Hydro แยกข้างได้เฉพาะผลที่มี `hydroSide` ใน `Data`
 
 ถ้ายังไม่สร้าง field ไหน script จะข้าม field นั้นและเขียน log ไว้ ไม่ทำให้ trigger เดิมล้ม
 stone-free หลังผ่าตัด, PSA ระยะยาว และ recurrence คำนวณตอนวิเคราะห์จาก FollowUp โดยตรง
@@ -73,49 +76,21 @@ stone-free หลังผ่าตัด, PSA ระยะยาว และ r
 
 ไม่ได้แก้ field หรือ trigger เดิมของ UroBase, Backup, Consult, Patient
 
-## 3. Tasker: task ใหม่ชื่อ setOutcome
-copy `outcomeextract.js` ไปไว้ในโฟลเดอร์ `Workload/` ของมือถือ (ที่เดียวกับ `emrextract.js` ดู [EmrIntake/README.md](../EmrIntake/README.md) ข้อ 1)
-
-| # | Action | ค่า | If |
-|---|---|---|---|
-| 1 | Variables > Variable Set | Name `%txt` To `%CLIP` | `%CLIP` Set |
-| 2 | Code > JavaScript | Path `Workload/outcomeextract.js`, Auto Exit ✓, Timeout 2, Continue Task After Error ✓ | |
-| 3 | Variables > Variable Set | Name `%fsrc` To `outcome` | |
-| 4 | Code > JavaScript | Path เดียวกับ action 2 แต่ชื่อไฟล์ `failmask.js` (จาก [EmrIntake](../EmrIntake/failmask.js)), Auto Exit ✓, Timeout 2, Continue Task After Error ✓ | `%txt` Set |
-| 5 | File > Write File | File `Workload/extractFail.json`, Text `%failline`, **Append ✓**, **Add Newline ✓** | `%failline` Set |
-| 6 | Task > If | | `%jsonline` Set |
-| 7 | File > Write File | File `Workload/outcomeInbox.json`, Text `%jsonline`, **Append ✓**, **Add Newline ✓** | |
-| 8 | Alert > Notify | Title `ผล %otype รอนำเข้า` Text `HN %hnx %namex วันที่ %odate` / `%osum` | |
-| 9 | Task > Else | | |
-| 10 | Alert > Flash | `อ่าน HN/ชื่อ หรือวันที่ไม่ได้ บันทึกเคสไว้แล้ว` | |
-| 11 | Task > End If | | |
-
-action 3-5 บันทึกเคสที่อ่านไม่ครบลง `extractFail.json` (ปิดชื่อ/HN ก่อน) ดู [EmrIntake/README.md](../EmrIntake/README.md) ข้อ 6 ถ้าค่าใน Notify ผิด กดปุ่ม `reportWrong`
-
-เรียก task นี้ด้วยมือ (ปุ่ม/shortcut) หลัง copy ข้อความจาก LINE ไม่ผูกกับ Clipboard Changed เพราะ setConsult ใช้อยู่แล้ว
-**HN**: ใช้เลขของ รพ.เราแบบ `HN 200-66-58 (03)` ก่อนเสมอ (เช่นสติกเกอร์บนใบส่งตัวหรือใบผลจาก รพ.อื่น) ถ้าไม่มีจึงใช้ `HN: 123456` ตัวแรก ถ้าไม่มีคำว่า HN เลย (ใบ patho ที่ส่งตรวจนอก รพ.) ใช้ `Hosp. NO:1234567-12` → `1234567` ใบส่งตัว (MOPH Refer) ที่ไม่มี HN ของ รพ.เรา จะไม่ถูกฝากเข้าไฟล์ (ขึ้น "อ่าน HN หรือวันที่ไม่ได้") เพราะ `HN:` ในใบนั้นเป็นของ รพ.ต้นทาง วันที่แบบ `วันที่ 12 เดือน ตุลาคม พ.ศ. 2569` อ่านได้
-
-**ไม่มี HN** (เช่นผล CT จาก รพ.อื่น): อ่านชื่อจาก `Patient Name :`, `Name:` หรือ `ชื่อ-สกุล :` แทน (ไม่ใช้ Patient ID ของ รพ.อื่น) ตอนนำเข้า Memento หาคนไข้จากชื่อ โดยตัดคำนำหน้า (นาย นาง นางสาว ฯลฯ) และช่องว่างออกก่อนเทียบ นำเข้าเฉพาะเมื่อเจอชื่อตรงกัน**คนเดียว** ถ้าไม่เจอหรือชื่อซ้ำหลายคน จะข้ามและค้างไว้ในไฟล์ คนไข้ต้องมีอยู่ใน Patient แล้ว ถ้า Notify ไม่มี `%namex` ให้แก้ Notify ตามตารางข้างบน
-
-ตรวจ Notify ทุกครั้ง ถ้า `%osum` ดูผิด ให้แก้ใน FollowUp หลังนำเข้า
-
-## 4. Memento
+## 3. Memento
 1. เพิ่ม JavaScript library `Outcome.js` (แบบเดียวกับ MyDate.js)
 2. สร้าง library **FollowUp** ตามข้อ 1
    - Trigger: **After saving the entry** (สร้างและแก้) โค้ด `trig.FollowUpAfterEdit(entry());`
    - Trigger: **After deleting an entry** โค้ด `trig.FollowUpAfterDelete(entry());`
-   - Action ชนิด library ชื่อ `นำเข้าผลตรวจ` โค้ด `oco.importFollowUp();`
 3. **UroBase** และ **Backup**: Action
    - ชนิด entry ชื่อ `Clavien` โค้ด `cdo.runOne(entry());`
    - ชนิด library ชื่อ `Clavien ทั้งหมด` โค้ด `cdo.runAll(lib());`
 4. trigger และปุ่มทั้งหมดเลือก library `UroObj.js`, `MyDate.js` (ปุ่มเพิ่ม `Outcome.js`) และให้สิทธิ์ Read/Write files
 
 ### ปุ่มทำอะไร
-- **นำเข้าผลตรวจ**: นำทุกบรรทัดที่ค้างในไฟล์เข้า FollowUp (หา Patient จาก HN ถ้าไม่มี HN หาจากชื่อที่ตรงกันคนเดียว) แล้วอัปเดต Report ของคนไข้เหล่านั้น บรรทัดที่หาคนไข้ไม่เจอหรือชื่อซ้ำค้างไว้ในไฟล์
 - **Clavien**: เดา Clavien ของการผ่าตัดนี้ เติมถ้ายังว่าง เก็บค่าที่เดาและเหตุผลใน Report แล้วแสดงเหตุผล
 - **Clavien ทั้งหมด**: ทำแบบเดียวกันกับทุก entry ที่ Done, ผ่าตัดมาแล้ว ≥ 30 วัน และยังว่าง (Backup มีหลายพัน entry อาจใช้เวลาหลายนาที)
 
-## 5. กติกาเดา Clavien (ภายใน 30 วันหลังผ่าตัด)
+## 4. กติกาเดา Clavien (ภายใน 30 วันหลังผ่าตัด)
 | เหตุการณ์ | grade |
 |---|---|
 | Patient = Dead และมีวันที่ เช่น `dead 29/3/2021` ใน OpResult/Rx ภายใน 30 วัน หรือเขียน dead ในบรรทัด P/O day | V |
@@ -132,21 +107,15 @@ action 3-5 บันทึกเคสที่อ่านไม่ครบล
 - IVb, IVa จาก septic shock ที่ไม่ได้ใช้ยากระตุ้นความดัน และ grade I ที่ไม่มีคำในรายการ ต้องเลือกเอง
 - ลองกับข้อมูลการผ่าตัดย้อนหลัง 5,372 ครั้ง: None 4,949, I 89, II 152, IIIa 94, IIIb 36, IVa 32, V 20
 
-## 6. ทดสอบ (ใช้ข้อมูลปลอม HN 123456)
+## 5. ทดสอบ (ใช้ข้อมูลปลอม HN 123456)
 1. สร้าง Patient HN 123456 และ UroBase การผ่าตัดปลอม 1 entry Status Done (ดูว่ามี Report แถวใหม่)
 2. FollowUp: สร้าง entry พิมพ์เอง Type `PSA`, PSA 8.2, วันที่ก่อนวันผ่าตัด 10 วัน → Report ของการผ่าตัดนี้ต้องได้ PSAPre 8.2
-3. ใส่ข้อความปลอมนี้ใน `%CLIP` แล้วรัน setOutcome
-   ```
-   CT KUB HN 123456
-   Exam date: (วันก่อนวันผ่าตัด 5 วัน)
-   IMPRESSION: Rt renal pelvic stone 12 mm with moderate hydronephrosis.
-   ```
-   Notify ควรขึ้น `CT, Residual >4mm, Rt renal pelvis 12mm, hydro moderate`
-4. FollowUp > นำเข้าผลตรวจ: ควรได้ "HN 123456 CT ..." และ Report ได้ StoneSize 12, Hydro moderate
-5. กดซ้ำ: ต้องขึ้น "ไม่มีผลรอนำเข้า"
-6. ลบ FollowUp PSA → Report PSAPre ต้องว่าง
-7. UroBase entry ปลอม > Clavien: ควรขึ้น None และ Report มี ClavienAuto None
-8. ลบข้อมูลปลอมทั้งหมด
+3. ให้ AI ใน Memento ลง FollowUp ปลอมของ HN 123456: CT วันก่อนวันผ่าตัด 5 วัน "Rt renal pelvic stone 12 mm with moderate hydronephrosis"
+   ดูว่า AI ใส่ `Data` เป็น `{"stones":[{"side":"Rt","site":"renal pelvis","mm":12,"n":1}],"hydroSide":{"Rt":"moderate"}}`
+4. เปิด library FollowUp ใหม่ (ให้ Report อัปเดต) → Report ได้ StoneSize 12, Hydro moderate
+5. ลบ FollowUp PSA → Report PSAPre ต้องว่าง
+6. UroBase entry ปลอม > Clavien: ควรขึ้น None และ Report มี ClavienAuto None
+7. ลบข้อมูลปลอมทั้งหมด
 
 ## ความเป็นส่วนตัว
-รูปและข้อความที่ประมวลบนมือถือมี HN ได้ (ต้องใช้จับคู่คนไข้) แต่ถ้าจะส่งรูปหรือข้อความออกนอกเครื่อง ให้ปิด HN/ชื่อก่อนทุกครั้ง
+รูปและข้อความใบผลมี HN และชื่อคนไข้ ถ้าจะส่งออกนอก Memento (เช่น ส่งให้คนอื่นดูหรือแนบใน issue) ให้ปิด HN/ชื่อก่อนทุกครั้ง
