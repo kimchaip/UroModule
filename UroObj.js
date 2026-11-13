@@ -87,6 +87,11 @@ var old = {
     },
     value : function (e, f) {
       // current value in the same form as Previous
+      // PatientId is not a real field (old.save keeps the Patient link id under this key)
+      if (f == "PatientId") {
+        let p = e.field("Patient");
+        return Array.isArray(p) && p.length > 0 ? p[0].id : "";
+      }
       let v = e.field(f);
       if(my.dateIsValid(v) || my.timeIsValid(v))
         return my.date(v);
