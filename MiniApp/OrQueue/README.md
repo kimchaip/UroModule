@@ -34,14 +34,19 @@ Mini app ใน Memento แสดงคิวผ่าตัดจาก UroBase
 | ไฟล์ | หน้าที่ |
 |---|---|
 | `orqueue-logic.js` | สูตรคำนวณ (ไม่มี Memento API) |
-| `src/app.js`, `src/style.css`, `src/body.html` | หน้าจอ และ `loadMemento()` ฟังก์ชันเดียวที่อ่านข้อมูลจาก Memento |
+| `src/app.js`, `src/style.css`, `src/body.html` | หน้าจอ, `loadMemento()` อ่านข้อมูล และ `openEntry()` เปิดการ์ด entry |
+| `repository.js` | ส่วนต่อ Memento ที่ Builder สร้าง (id ของ library และ field) คัดลอกมาจากแอปเมื่อ 2026-11-13 |
 | `build.js` | รวมทุกไฟล์เป็น `index.html` ไฟล์เดียว: `node MiniApp/OrQueue/build.js` |
-| `index.html` | หน้า mini app ที่ใช้จริง (สร้างจาก build.js อย่าแก้ตรง ๆ) |
+| `index.html` | หน้า mini app ที่ใช้จริง (สร้างจาก build.js อย่าแก้ตรง ๆ) ใช้คู่กับ `repository.js` |
 | `test/orqueue.test.js` | ทดสอบสูตร: `node MiniApp/OrQueue/test/orqueue.test.js` |
 
 ถ้าเปิด `index.html` นอก Memento จะแสดงข้อมูลตัวอย่าง (ผู้ป่วยสมมติ)
 
-## วิธีสร้างใน Memento
+## แก้แอปที่มีอยู่แล้ว
+
+แอปในมือถือมี `index.html` และ `repository.js` แล้ว ถ้าแก้โค้ดใน repo ให้รัน build แล้วแทน `index.html` ในแอป (Settings > Code) ทั้งไฟล์ได้เลย `loadMemento()` และ `openEntry()` ตัวจริงอยู่ใน repo แล้ว ไม่ต้องให้ Builder เขียนใหม่
+
+## วิธีสร้างใน Memento (ครั้งแรก)
 
 Mini app สร้างผ่าน Builder (AI) ในแอป และ Memento ยังไม่เปิดเอกสาร API ของ mini app
 จึงให้ Builder เขียนเฉพาะ `loadMemento()` ส่วนหน้าจอและสูตรใช้ไฟล์ใน repo

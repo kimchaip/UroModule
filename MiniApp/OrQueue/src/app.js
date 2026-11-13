@@ -8,15 +8,70 @@
 //   hols: one per Holidays entry
 //     { date: Date, title: Title, calendar: Calendar, holiday: Holiday (bool), outOfDuty: OutOfDuty (bool) }
 // UroBase OpLength is a duration in milliseconds -> divide by 60000.
-// This is the ONLY function that talks to Memento. Read only, never write.
+// loadMemento and openEntry are the only functions that talk to Memento (through repo in repository.js,
+// written by the Memento Builder). Read only, never write.
 async function loadMemento(from, to) {
-  throw new Error("NOT_CONNECTED");
+  if (typeof repo == "undefined") throw new Error("NOT_CONNECTED");   // outside Memento (mockup)
+  var dayString = function (date) {
+    return date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2);
+  };
+  var asDate = function (value) {
+    if (!value) return null;
+    if (value instanceof Date) return new Date(value.getFullYear(), value.getMonth(), value.getDate());
+    var match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (match) return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+    var parsed = new Date(value);
+    return isNaN(parsed.getTime()) ? null : new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+  };
+  var range = { $gte: dayString(from), $lte: dayString(to) };
+  var results = await Promise.all([
+    repo.urobase.list({ where: { date: range } }),
+    repo.holidays.list({ where: { date: range } })
+  ]);
+  var cases = results[0].map(function (entry) {
+    var patient = entry.patient;
+    var patientName = Array.isArray(patient) ? (patient[0] && patient[0].title) : (patient && patient.title);
+    var filenames = Array.isArray(entry.photo) ? entry.photo : [];
+    return {
+      id: entry.id,
+      date: asDate(entry.date),
+      type: entry.ortype,
+      que: entry.que,
+      minutes: entry.oplength == null || !(Number(entry.oplength) > 0) ? null : Number(entry.oplength) / 60000,
+      visit: entry.visittype,
+      status: entry.status,
+      dr: entry.dr,
+      name: patientName || "ไม่ระบุชื่อ",
+      op: entry.op,
+      dx: entry.dx,
+      photos: filenames.map(function (filename) {
+        return repo.urobase.fileUrl(entry.id, "photo", filename, { size: 512 });
+      })
+    };
+  }).filter(function (item) { return item.date; });
+  var hols = results[1].map(function (entry) {
+    return {
+      date: asDate(entry.date),
+      title: entry.title_2,
+      calendar: entry.calendar,
+      holiday: !!entry.holiday,
+      outOfDuty: !!entry.outofduty
+    };
+  }).filter(function (item) { return item.date; });
+  return { cases: cases, hols: hols };
 }
 
-// openEntry(c) opens the UroBase entry c (c.id) in Memento's entry view card.
-// Like loadMemento, this is written by the Builder with the mini app API. Return false if it cannot open.
-function openEntry(c) {
-  return false;
+// openEntry(c) opens the UroBase entry c (c.id) in Memento's entry view card. Resolves false if it cannot.
+async function openEntry(c) {
+  if (!c || !c.id || typeof repo == "undefined") return false;
+  try {
+    var entry = await repo.urobase.lib.findById(c.id);
+    if (!entry) return false;
+    await entry.show();
+    return true;
+  } catch (err) {
+    return false;
+  }
 }
 
 var DR = "ชัยพร";          // only kim's cases (empty Dr is counted too)
@@ -147,9 +202,10 @@ function renderMonth() {
 
 var ENTRIES = [];
 function tapEntry(i) {
-  var ok = false;
-  try { ok = openEntry(ENTRIES[i]) !== false; } catch (e) { ok = false; }
-  if (!ok) toast("เปิด entry ไม่ได้" + (ENTRIES[i] && String(ENTRIES[i].id).indexOf("demo-") == 0 ? " (ข้อมูลตัวอย่าง)" : ""));
+  var c = ENTRIES[i];
+  Promise.resolve().then(function () { return openEntry(c); }).catch(function () { return false; }).then(function (ok) {
+    if (ok === false) toast("เปิด entry ไม่ได้" + (c && String(c.id).indexOf("demo-") == 0 ? " (ข้อมูลตัวอย่าง)" : ""));
+  });
 }
 function toast(msg) {
   var t = $("toast"); t.textContent = msg; t.hidden = false;
