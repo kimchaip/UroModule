@@ -1,0 +1,29 @@
+<div class="wrap">
+  <div class="demo" id="demo" hidden>ข้อมูลตัวอย่าง (ผู้ป่วยสมมติ) เพราะยังไม่ได้เชื่อมกับ UroBase</div>
+  <div class="err" id="err"></div>
+  <div class="next" id="next"></div>
+  <div class="mhead">
+    <button id="prev" type="button" aria-label="เดือนก่อน">‹</button>
+    <h1 id="mtitle"></h1>
+    <button id="nextm" type="button" aria-label="เดือนถัดไป">›</button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="legend">
+    <span><i style="background:var(--freebg);border:1px solid var(--free)"></i>ว่าง</span>
+    <span><i style="background:var(--tightbg);border:1px solid var(--tight)"></i>เหลือไม่ถึง 1 ชม.</span>
+    <span><i style="background:var(--fullbg);border:1px solid var(--full)"></i>เต็ม</span>
+    <span><i style="background:var(--offbg)"></i>ปิด (วันหยุด/ไม่อยู่)</span>
+    <span style="color:var(--oh);font-weight:600">นอกเวลา = OR นอกเวลา</span>
+  </div>
+  <div class="day" id="day"></div>
+</div>
+<div class="viewer" id="viewer" hidden>
+  <img id="vimg" alt="รูปขยาย">
+  <div class="vbar">
+    <button type="button" id="vprev" aria-label="รูปก่อน">‹</button>
+    <span id="vcap"></span>
+    <button type="button" id="vnext" aria-label="รูปถัดไป">›</button>
+    <button type="button" id="vclose" aria-label="ปิด">✕</button>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>

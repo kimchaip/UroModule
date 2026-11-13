@@ -52,6 +52,7 @@
 | `ReportCheck/` | Action ตรวจ Report ให้ตรงกับ UroBase / Backup (ดู [ReportCheck/README.md](ReportCheck/README.md)) |
 | `AiCatchUp/` | ทำ trigger ที่ค้างของ entry ที่ AI ใน Memento สร้างหรือแก้ (ดู [AiCatchUp/README.md](AiCatchUp/README.md)) |
 | `Outcome/` | ผลการรักษา: เดา Clavien และเก็บผลตรวจหลังผ่าตัด (patho, imaging, PSA, lab) ใน library FollowUp แล้วรวมเข้า Report วิธีตั้งค่าใน [Outcome/README.md](Outcome/README.md) |
+| `MiniApp/OrQueue/` | mini app ปฏิทินคิวผ่าตัด 3 เดือน ดูวันที่ยังแทรกเคสได้ (ดู [MiniApp/OrQueue/README.md](MiniApp/OrQueue/README.md)) |
 
 ## การติดตั้ง
 
