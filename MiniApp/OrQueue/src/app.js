@@ -2,7 +2,8 @@
 // loadMemento(from, to) returns a Promise of { cases: [...], hols: [...] } for dates from..to.
 //   cases: one per UroBase entry
 //     { date: Date, type: ORType ("GA"|"LA"), que: Que, minutes: OpLength in minutes (null if empty),
-//       visit: VisitType ("OPD"|"Admit"), status: Status, dr: Dr, name: Patient link title, op: Op, dx: Dx }
+//       visit: VisitType ("OPD"|"Admit"), status: Status, dr: Dr, name: Patient link title, op: Op, dx: Dx,
+//       photos: Photo field (image) as an array of strings an <img src> in this app can show; [] if none }
 //   hols: one per Holidays entry
 //     { date: Date, title: Title, calendar: Calendar, holiday: Holiday (bool), outOfDuty: OutOfDuty (bool) }
 // UroBase OpLength is a duration in milliseconds -> divide by 60000.
@@ -25,7 +26,8 @@ function demoData(today) {
   var mon = function (w) { return d(firstMon + 7 * w); };
   var sat = function (w) { return d(firstMon + 7 * w + 5); };
   var C = function (date, type, que, op, minutes, visit, name) {
-    return { date: date, type: type, que: que, op: op, minutes: minutes, visit: visit, name: "ผู้ป่วยทดสอบ " + name, status: "Plan", dr: DR };
+    var photos = /URS|PCNL|lithotripsy|DJ/.test(op) ? [demoPhoto("KUB", name), demoPhoto("CT", name)] : [];
+    return { date: date, type: type, que: que, op: op, minutes: minutes, visit: visit, name: "ผู้ป่วยทดสอบ " + name, status: "Plan", dr: DR, photos: photos };
   };
   var cases = [
     C(mon(0), "LA", 1, "Cystoscopy + DJ removal", 10, "OPD", "ก"), C(mon(0), "LA", 2, "Circumcision", 25, "OPD", "ข"),
@@ -52,6 +54,15 @@ function demoData(today) {
     H(mon(3), "วันหยุดชดเชย", "Holidays", true, false), H(mon(8), "ไม่อยู่ (ประชุม)", "Kim", false, true)
   ];
   return { cases: cases, hols: hols };
+}
+
+// Placeholder picture for the demo (not a real image).
+function demoPhoto(kind, tag) {
+  var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500"><rect width="400" height="500" fill="#222"/>' +
+    '<ellipse cx="140" cy="230" rx="55" ry="95" fill="#555"/><ellipse cx="265" cy="230" rx="55" ry="95" fill="#555"/>' +
+    '<circle cx="' + (kind == "CT" ? 150 : 255) + '" cy="250" r="12" fill="#eee"/>' +
+    '<text x="200" y="460" fill="#aaa" font-size="28" text-anchor="middle" font-family="sans-serif">' + kind + ' ตัวอย่าง ' + tag + '</text></svg>';
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
 }
 
 // ===================== VIEW =====================
@@ -130,10 +141,34 @@ function renderMonth() {
 function caseRow(r) {
   return '<div class="case"><div class="t">' + (r.s != null ? hm(r.s) + "<br>" + hm(r.e) : "") + '</div><div><div class="n"><span class="type ' + r.type + '">' + r.type + " " + esc(("0" + (r.que || "")).slice(-2)) + "</span>" + esc(r.name) +
     '</div><div class="o">' + esc(r.op) + (r.guess ? "" : r.len ? " · " + dur(r.len) : "") + (r.visit ? " · " + esc(r.visit) : "") + (r.where ? " · " + r.where : "") + "</div>" +
-    (r.guess ? '<div class="warn">ไม่มีเวลาผ่าตัดในข้อมูล ใช้ค่าประมาณ ' + orq.DEFAULT_LEN[r.type] + " น.</div>" : "") + "</div></div>";
+    (r.guess ? '<div class="warn">ไม่มีเวลาผ่าตัดในข้อมูล ใช้ค่าประมาณ ' + orq.DEFAULT_LEN[r.type] + " น.</div>" : "") + photoStrip(r) + "</div></div>";
+}
+
+// Photo thumbnails (first 3), tap to open full screen.
+var PHOTOS = [];
+function photoStrip(r) {
+  var list = (r.photos || []).filter(Boolean);
+  if (!list.length) return "";
+  var id = PHOTOS.push({ list: list, name: r.name }) - 1;
+  var h = '<div class="ph">';
+  list.slice(0, 3).forEach(function (src, j) {
+    h += '<button type="button" class="thumb" onclick="openPhoto(' + id + "," + j + ')"><img loading="lazy" alt="รูป ' + (j + 1) + '" src="' + esc(src) + '" onerror="this.parentNode.classList.add(\'bad\')"></button>';
+  });
+  if (list.length > 3) h += '<button type="button" class="thumb more" onclick="openPhoto(' + id + ',3)">+' + (list.length - 3) + "</button>";
+  return h + "</div>";
+}
+var view = { id: 0, j: 0 };
+function openPhoto(id, j) { view = { id: id, j: j }; showPhoto(); $("viewer").hidden = false; }
+function showPhoto() {
+  var p = PHOTOS[view.id], n = p.list.length;
+  view.j = (view.j + n) % n;
+  $("vimg").src = p.list[view.j];
+  $("vcap").textContent = p.name + " · รูป " + (view.j + 1) + "/" + n;
+  $("vprev").hidden = $("vnext").hidden = n < 2;
 }
 
 function renderDay(d) {
+  PHOTOS = [];
   var i = dayInfo(d), box = $("day");
   if (i.kind != "op") {
     box.innerHTML = "<h2>" + thDate(d) + "</h2>" + (i.kind == "closed"
@@ -169,6 +204,10 @@ function show(data, demo) {
   if (first) renderDay(first);
 }
 
+$("vclose").onclick = function () { $("viewer").hidden = true; $("vimg").removeAttribute("src"); };
+$("vprev").onclick = function () { view.j--; showPhoto(); };
+$("vnext").onclick = function () { view.j++; showPhoto(); };
+$("vimg").onerror = function () { if ($("vimg").getAttribute("src")) $("vcap").textContent += " · เปิดรูปไม่ได้"; };
 $("prev").onclick = function () { mOff--; renderMonth(); };
 $("nextm").onclick = function () { mOff++; renderMonth(); };
 
