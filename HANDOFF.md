@@ -22,6 +22,7 @@
 | `dxop` | สร้าง/อัปเดต link ไป DxAutoFill และ OperationList และนับจำนวนครั้ง |
 | `cal` | link entry กับวันใน Holidays และเตือนเมื่อตรงวันหยุด/วันไม่อยู่/OR นอกเวลา |
 | `sync` | sync UroBase ไป Google Sheet ไม่เกินชั่วโมงละครั้ง (เวลา sync ล่าสุดเก็บในไฟล์ `lastsync_orsync.txt`) |
+| `aic` | ทำ trigger ที่ค้างของ entry ที่ AI ใน Memento เขียน (เครื่องหมาย `"_mcp"` ใน `Previous`) ตอนเปิดการ์ดหรือเปิด library ดู [AiCatchUp/README.md](AiCatchUp/README.md) |
 | `trig` | จุดเข้าที่ trigger ใน Memento เรียก |
 
 ### trigger
