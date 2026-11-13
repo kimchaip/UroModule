@@ -10,6 +10,7 @@ Mini app ใน Memento แสดงคิวผ่าตัดจาก UroBase
   เขียว = ว่าง, เหลือง = เหลือไม่ถึง 1 ชม., แดง = เต็ม, เทา = ปิด (วันหยุด/ไม่อยู่),
   แดง "นอกวัน OR" = มีเคสในวันที่ไม่ใช่วัน OR
 - กดวันไหนเห็นลำดับเคสพร้อมเวลาโดยประมาณ ช่วงรอ และช่องที่แทรกได้
+- กดชื่อคนไข้เพื่อเปิดการ์ด entry ใน UroBase
 - เคสที่มีรูปในฟิลด์ `Photo` (เช่น ภาพนิ่ว) แสดงรูปย่อ 3 รูปแรกใต้เคส กดเพื่อดูเต็มจอและเลื่อนดูรูปถัดไป
 
 ## กฎคำนวณ (kim, 2026-11-13)
@@ -60,12 +61,14 @@ Mini app สร้างผ่าน Builder (AI) ในแอป และ Meme
 Build a read-only app from my own HTML file. I will give you index.html (one self-contained page with inline CSS and JS).
 Rules:
 1. Use index.html exactly as given. Do not change layout, styles, the orq object or the rendering code.
-2. Implement ONLY the function loadMemento(from, to) near the top of the <script>. Its comment lists the exact output shape.
+2. Implement ONLY the functions loadMemento(from, to) and openEntry(c) near the top of the <script>. Its comment lists the exact output shape.
    - Read the UroBase library entries whose Date is between from and to.
      Map fields: Date->date, ORType->type, Que->que, OpLength->minutes (duration in ms, divide by 60000; null if empty),
      VisitType->visit, Status->status, Dr->dr, Patient (link; use the linked entry's title)->name, Op->op, Dx->dx.
      Photo (image field, may hold several images)->photos: an array of strings that an <img src> in this app can display
      (convert the stored files to whatever URL this app can show); [] when empty.
+     Also map the entry id -> id.
+   - Implement openEntry(c): open the UroBase entry with id c.id in Memento's normal entry view card. Return false if it fails.
    - Read the Holidays library entries whose Date is between from and to.
      Map fields: Date->date, Title->title, Calendar->calendar, Holiday->holiday, OutOfDuty->outOfDuty.
    - Return a Promise of { cases, hols }. Throw a normal Error with a clear message if a read fails.

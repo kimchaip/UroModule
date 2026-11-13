@@ -76,6 +76,8 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px
 .vbar{display:flex;align-items:center;gap:8px;padding:10px max(12px,env(safe-area-inset-left,0px));color:#eee;font-size:14px}
 .vbar span{flex:1;min-width:0;text-align:center}
 .vbar button{background:#333;color:#fff;border:0;border-radius:8px;width:44px;height:40px;font-size:18px;cursor:pointer}
+.link{background:none;border:0;padding:0;font:inherit;font-weight:600;color:var(--accent);text-decoration:underline;text-underline-offset:3px;cursor:pointer;text-align:left}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:99px;font-size:13.5px;max-width:90%}
 </style>
 <div class="wrap">
   <div class="demo" id="demo" hidden>ข้อมูลตัวอย่าง (ผู้ป่วยสมมติ) เพราะยังไม่ได้เชื่อมกับ UroBase</div>
@@ -105,6 +107,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px
     <button type="button" id="vclose" aria-label="ปิด">✕</button>
   </div>
 </div>
+<div class="toast" id="toast" hidden></div>
 <script>
 // OrQueue: estimate the OR timeline of one day and how much room is left.
 // Pure functions, no Memento API, so the same code runs in the mini app,
@@ -247,13 +250,20 @@ var orq = {
 //   cases: one per UroBase entry
 //     { date: Date, type: ORType ("GA"|"LA"), que: Que, minutes: OpLength in minutes (null if empty),
 //       visit: VisitType ("OPD"|"Admit"), status: Status, dr: Dr, name: Patient link title, op: Op, dx: Dx,
-//       photos: Photo field (image) as an array of strings an <img src> in this app can show; [] if none }
+//       photos: Photo field (image) as an array of strings an <img src> in this app can show; [] if none,
+//       id: the entry id (used by openEntry) }
 //   hols: one per Holidays entry
 //     { date: Date, title: Title, calendar: Calendar, holiday: Holiday (bool), outOfDuty: OutOfDuty (bool) }
 // UroBase OpLength is a duration in milliseconds -> divide by 60000.
 // This is the ONLY function that talks to Memento. Read only, never write.
 async function loadMemento(from, to) {
   throw new Error("NOT_CONNECTED");
+}
+
+// openEntry(c) opens the UroBase entry c (c.id) in Memento's entry view card.
+// Like loadMemento, this is written by the Builder with the mini app API. Return false if it cannot open.
+function openEntry(c) {
+  return false;
 }
 
 var DR = "ชัยพร";          // only kim's cases (empty Dr is counted too)
@@ -271,7 +281,7 @@ function demoData(today) {
   var sat = function (w) { return d(firstMon + 7 * w + 5); };
   var C = function (date, type, que, op, minutes, visit, name) {
     var photos = /URS|PCNL|lithotripsy|DJ/.test(op) ? [demoPhoto("KUB", name), demoPhoto("CT", name)] : [];
-    return { date: date, type: type, que: que, op: op, minutes: minutes, visit: visit, name: "ผู้ป่วยทดสอบ " + name, status: "Plan", dr: DR, photos: photos };
+    return { id: "demo-" + name, date: date, type: type, que: que, op: op, minutes: minutes, visit: visit, name: "ผู้ป่วยทดสอบ " + name, status: "Plan", dr: DR, photos: photos };
   };
   var cases = [
     C(mon(0), "LA", 1, "Cystoscopy + DJ removal", 10, "OPD", "ก"), C(mon(0), "LA", 2, "Circumcision", 25, "OPD", "ข"),
@@ -382,8 +392,20 @@ function renderMonth() {
   })(new Date(base.getFullYear(), base.getMonth(), day));
 }
 
+var ENTRIES = [];
+function tapEntry(i) {
+  var ok = false;
+  try { ok = openEntry(ENTRIES[i]) !== false; } catch (e) { ok = false; }
+  if (!ok) toast("เปิด entry ไม่ได้" + (ENTRIES[i] && String(ENTRIES[i].id).indexOf("demo-") == 0 ? " (ข้อมูลตัวอย่าง)" : ""));
+}
+function toast(msg) {
+  var t = $("toast"); t.textContent = msg; t.hidden = false;
+  clearTimeout(toast.h); toast.h = setTimeout(function () { t.hidden = true; }, 2500);
+}
+
 function caseRow(r) {
-  return '<div class="case"><div class="t">' + (r.s != null ? hm(r.s) + "<br>" + hm(r.e) : "") + '</div><div><div class="n"><span class="type ' + r.type + '">' + r.type + " " + esc(("0" + (r.que || "")).slice(-2)) + "</span>" + esc(r.name) +
+  var i = ENTRIES.push(r) - 1;
+  return '<div class="case"><div class="t">' + (r.s != null ? hm(r.s) + "<br>" + hm(r.e) : "") + '</div><div><div class="n"><span class="type ' + r.type + '">' + r.type + " " + esc(("0" + (r.que || "")).slice(-2)) + '</span><button type="button" class="link" onclick="tapEntry(' + i + ')">' + esc(r.name) + " ›</button>" +
     '</div><div class="o">' + esc(r.op) + (r.guess ? "" : r.len ? " · " + dur(r.len) : "") + (r.visit ? " · " + esc(r.visit) : "") + (r.where ? " · " + r.where : "") + "</div>" +
     (r.guess ? '<div class="warn">ไม่มีเวลาผ่าตัดในข้อมูล ใช้ค่าประมาณ ' + orq.DEFAULT_LEN[r.type] + " น.</div>" : "") + photoStrip(r) + "</div></div>";
 }
@@ -412,7 +434,7 @@ function showPhoto() {
 }
 
 function renderDay(d) {
-  PHOTOS = [];
+  PHOTOS = []; ENTRIES = [];
   var i = dayInfo(d), box = $("day");
   if (i.kind != "op") {
     box.innerHTML = "<h2>" + thDate(d) + "</h2>" + (i.kind == "closed"
